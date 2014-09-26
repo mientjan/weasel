@@ -25,28 +25,33 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
+
 /**
-* Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
-* and should not be instantiated.
-* @class UID
-* @static
-**/
-var createts;
-(function (createts) {
-    var UID = (function () {
-        function UID() {
-        }
-        /**
-        * Returns the next unique id.
-        * @method get
-        * @return {Number} The next unique id
-        * @static
-        **/
-        UID.get = function () {
-            return UID._nextID++;
-        };
-        UID._nextID = 0;
-        return UID;
-    })();
-    createts.UID = UID;
-})(createts || (createts = {}));
+ * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
+ * and should not be instantiated.
+ * @class UID
+ * @static
+ **/
+module createts {
+	export class UID {
+		/**
+		 * @property _nextID
+		 * @type Number
+		 * @protected
+		 **/
+		public static _nextID:number = 0;
+
+		/**
+		 * Returns the next unique id.
+		 * @method get
+		 * @return {Number} The next unique id
+		 * @static
+		 **/
+		public static get() {
+			return UID._nextID++;
+		}
+	}
+}
+
+
+

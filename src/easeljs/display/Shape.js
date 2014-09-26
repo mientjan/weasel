@@ -1,3 +1,11 @@
+/// <reference path="./DisplayObject.ts" />
+/// <reference path="./Graphics.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 /*
 * Shape
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -25,129 +33,76 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-
 /**
- * @module EaselJS
- */
+* @module EaselJS
+*/
+var createts;
+(function (createts) {
+    var Shape = (function (_super) {
+        __extends(Shape, _super);
+        /**
+        * Initialization method.
+        * @method initialize
+        * @param {Graphics} graphics
+        * @protected
+        **/
+        function Shape(graphics) {
+            _super.call(this);
 
-// namespace:
-this.createjs = this.createjs||{};
+            this.graphics = graphics ? graphics : new createts.Graphics();
+        }
+        /**
+        * Returns true or false indicating whether the Shape would be visible if drawn to a canvas.
+        * This does not account for whether it would be visible within the boundaries of the stage.
+        * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+        * @method isVisible
+        * @return {Boolean} Boolean indicating whether the Shape would be visible if drawn to a canvas
+        **/
+        Shape.prototype.isVisible = function () {
+            var hasContent = this.cacheCanvas || (this.graphics && !this.graphics.isEmpty());
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+        };
 
-(function() {
-	"use strict";
+        /**
+        * Draws the Shape into the specified context ignoring its visible, alpha, shadow, and transform. Returns true if
+        * the draw was handled (useful for overriding functionality).
+        *
+        * <i>NOTE: This method is mainly for internal use, though it may be useful for advanced uses.</i>
+        * @method draw
+        * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
+        * @param {Boolean} [ignoreCache=false] Indicates whether the draw operation should ignore any current cache. For example,
+        * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
+        * @return {Boolean}
+        **/
+        Shape.prototype.draw = function (ctx, ignoreCache) {
+            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+                return true;
+            }
+            this.graphics.draw(ctx, this);
+            return true;
+        };
 
-/**
- * A Shape allows you to display vector art in the display list. It composites a {{#crossLink "Graphics"}}{{/crossLink}}
- * instance which exposes all of the vector drawing methods. The Graphics instance can be shared between multiple Shape
- * instances to display the same vector graphics with different positions or transforms.
- *
- * If the vector art will not
- * change between draws, you may want to use the {{#crossLink "DisplayObject/cache"}}{{/crossLink}} method to reduce the
- * rendering cost.
- *
- * <h4>Example</h4>
- *
- *      var graphics = new createjs.Graphics().beginFill("#ff0000").drawRect(0, 0, 100, 100);
- *      var shape = new createjs.Shape(graphics);
- *
- *      //Alternatively use can also use the graphics property of the Shape class to renderer the same as above.
- *      var shape = new createjs.Shape();
- *      shape.graphics.beginFill("#ff0000").drawRect(0, 0, 100, 100);
- *
- * @class Shape
- * @extends DisplayObject
- * @constructor
- * @param {Graphics} graphics Optional. The graphics instance to display. If null, a new Graphics instance will be created.
- **/
-var Shape = function(graphics) {
-  this.initialize(graphics);
-};
-var p = Shape.prototype = new createjs.DisplayObject();
+        /**
+        * Returns a clone of this Shape. Some properties that are specific to this instance's current context are reverted to
+        * their defaults (for example .parent).
+        * @method clone
+        * @param {Boolean} recursive If true, this Shape's {{#crossLink "Graphics"}}{{/crossLink}} instance will also be
+        * cloned. If false, the Graphics instance will be shared with the new Shape.
+        **/
+        Shape.prototype.clone = function (recursive) {
+            var o = new Shape((recursive && this.graphics) ? this.graphics.clone() : this.graphics);
+            this.cloneProps(o);
+            return o;
+        };
 
-// public properties:
-	/**
-	 * The graphics instance to display.
-	 * @property graphics
-	 * @type Graphics
-	 **/
-	p.graphics = null;
-
-// constructor:
-	/**
-	 * @property DisplayObject_initialize
-	 * @private
-	 * @type Function
-	 **/
-	p.DisplayObject_initialize = p.initialize;
-
-	/**
-	 * Initialization method.
-	 * @method initialize
-	 * @param {Graphics} graphics
-	 * @protected
-	 **/
-	p.initialize = function(graphics) {
-		this.DisplayObject_initialize();
-		this.graphics = graphics ? graphics : new createjs.Graphics();
-	};
-
-	/**
-	 * Returns true or false indicating whether the Shape would be visible if drawn to a canvas.
-	 * This does not account for whether it would be visible within the boundaries of the stage.
-	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-	 * @method isVisible
-	 * @return {Boolean} Boolean indicating whether the Shape would be visible if drawn to a canvas
-	 **/
-	p.isVisible = function() {
-		var hasContent = this.cacheCanvas || (this.graphics && !this.graphics.isEmpty());
-		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
-	};
-
-	/**
-	 * @property DisplayObject_draw
-	 * @private
-	 * @type Function
-	 **/
-	p.DisplayObject_draw = p.draw;
-
-	/**
-	 * Draws the Shape into the specified context ignoring its visible, alpha, shadow, and transform. Returns true if
-	 * the draw was handled (useful for overriding functionality).
-	 *
-	 * <i>NOTE: This method is mainly for internal use, though it may be useful for advanced uses.</i>
-	 * @method draw
-	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
-	 * @param {Boolean} [ignoreCache=false] Indicates whether the draw operation should ignore any current cache. For example,
-	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
-	 * @return {Boolean}
-	 **/
-	p.draw = function(ctx, ignoreCache) {
-		if (this.DisplayObject_draw(ctx, ignoreCache)) { return true; }
-		this.graphics.draw(ctx, this);
-		return true;
-	};
-
-	/**
-	 * Returns a clone of this Shape. Some properties that are specific to this instance's current context are reverted to
-	 * their defaults (for example .parent).
-	 * @method clone
-	 * @param {Boolean} recursive If true, this Shape's {{#crossLink "Graphics"}}{{/crossLink}} instance will also be
-	 * cloned. If false, the Graphics instance will be shared with the new Shape.
-	 **/
-	p.clone = function(recursive) {
-		var o = new Shape((recursive && this.graphics) ? this.graphics.clone() : this.graphics);
-		this.cloneProps(o);
-		return o;
-	};
-
-	/**
-	 * Returns a string representation of this object.
-	 * @method toString
-	 * @return {String} a string representation of the instance.
-	 **/
-	p.toString = function() {
-		return "[Shape (name="+  this.name +")]";
-	};
-
-createjs.Shape = Shape;
-}());
+        /**
+        * Returns a string representation of this object.
+        * @method toString
+        * @return {String} a string representation of the instance.
+        **/
+        Shape.prototype.toString = function () {
+            return "[Shape ()]";
+        };
+        return Shape;
+    })(createts.DisplayObject);
+})(createts || (createts = {}));

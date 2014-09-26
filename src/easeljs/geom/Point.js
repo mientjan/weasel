@@ -25,92 +25,63 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-
 /**
- * @module EaselJS
- */
-
-// namespace:
-this.createjs = this.createjs||{};
-
-(function() {
-	"use strict";
-
+* @module EaselJS
+*/
 /**
- * Represents a point on a 2 dimensional x / y coordinate system.
- *
- * <h4>Example</h4>
- * 
- *      var point = new createjs.Point(0, 100);
- * 
- * @class Point
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-var Point = function(x, y) {
-  this.initialize(x, y);
-};
-var p = Point.prototype;
+* Represents a point on a 2 dimensional x / y coordinate system.
+*
+* <h4>Example</h4>
+*
+*      var point = new createjs.Point(0, 100);
+*
+* @class Point
+* @param {Number} [x=0] X position.
+* @param {Number} [y=0] Y position.
+* @constructor
+**/
+var createts;
+(function (createts) {
+    var Point = (function () {
+        /**
+        * Initialization method. Can also be used to reinitialize the instance.
+        * @method initialize
+        * @param {Number} [x=0] X position.
+        * @param {Number} [y=0] Y position.
+        * @return {Point} This instance. Useful for chaining method calls.
+        */
+        function Point(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        /**
+        * Copies all properties from the specified point to this point.
+        * @method copy
+        * @param {Point} point The point to copy properties from.
+        * @return {Point} This point. Useful for chaining method calls.
+        */
+        Point.prototype.copy = function (point) {
+            return new Point(point.x, point.y);
+        };
 
-// public properties:
+        /**
+        * Returns a clone of the Point instance.
+        * @method clone
+        * @return {Point} a clone of the Point instance.
+        **/
+        Point.prototype.clone = function () {
+            return new Point(this.x, this.y);
+        };
 
-	/**
-	 * X position.
-	 * @property x
-	 * @type Number
-	 **/
-	p.x = 0;
-
-	/**
-	 * Y position.
-	 * @property y
-	 * @type Number
-	 **/
-	p.y = 0;
-
-// constructor:
-	/** 
-	 * Initialization method. Can also be used to reinitialize the instance.
-	 * @method initialize
-	 * @param {Number} [x=0] X position.
-	 * @param {Number} [y=0] Y position.
-	 * @return {Point} This instance. Useful for chaining method calls.
-	*/
-	p.initialize = function(x, y) {
-		this.x = (x == null ? 0 : x);
-		this.y = (y == null ? 0 : y);
-		return this;
-	};
-	
-// public methods:
-	/**
-	 * Copies all properties from the specified point to this point.
-	 * @method copy
-	 * @param {Point} point The point to copy properties from.
-	 * @return {Point} This point. Useful for chaining method calls.
-	*/
-	p.copy = function(point) {
-		return this.initialize(point.x, point.y);
-	};
-	
-	/**
-	 * Returns a clone of the Point instance.
-	 * @method clone
-	 * @return {Point} a clone of the Point instance.
-	 **/
-	p.clone = function() {
-		return new Point(this.x, this.y);
-	};
-
-	/**
-	 * Returns a string representation of this object.
-	 * @method toString
-	 * @return {String} a string representation of the instance.
-	 **/
-	p.toString = function() {
-		return "[Point (x="+this.x+" y="+this.y+")]";
-	};
-	
-createjs.Point = Point;
-}());
+        /**
+        * Returns a string representation of this object.
+        * @method toString
+        * @return {String} a string representation of the instance.
+        **/
+        Point.prototype.toString = function () {
+            return "[Point (x=" + this.x + " y=" + this.y + ")]";
+        };
+        return Point;
+    })();
+    createts.Point = Point;
+})(createts || (createts = {}));
