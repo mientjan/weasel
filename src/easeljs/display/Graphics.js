@@ -1,4 +1,5 @@
 /// <reference path="../geom/Matrix2D.ts" />
+/// <reference path="../../easeljs/utils/Methods.ts" />
 /*
 * Graphics
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -477,7 +478,8 @@ var createts;
             for (var i = 0, l = colors.length; i < l; i++) {
                 o.addColorStop(ratios[i], colors[i]);
             }
-            o.props = { colors: colors, ratios: ratios, x0: x0, y0: y0, x1: x1, y1: y1, type: "linear" };
+
+            o['props'] = { colors: colors, ratios: ratios, x0: x0, y0: y0, x1: x1, y1: y1, type: "linear" };
             return this;
         };
 
@@ -499,7 +501,7 @@ var createts;
             for (var i = 0, l = colors.length; i < l; i++) {
                 o.addColorStop(ratios[i], colors[i]);
             }
-            o.props = { colors: colors, ratios: ratios, x0: x0, y0: y0, r0: r0, x1: x1, y1: y1, r1: r1, type: "radial" };
+            o['props'] = { colors: colors, ratios: ratios, x0: x0, y0: y0, r0: r0, x1: x1, y1: y1, r1: r1, type: "radial" };
             return this;
         };
 
@@ -512,7 +514,7 @@ var createts;
         */
         Fill.prototype.bitmap = function (image, repetition) {
             var o = this.style = Graphics._ctx.createPattern(image, repetition || "");
-            o.props = { image: image, repetition: repetition, type: "bitmap" };
+            o['props'] = { image: image, repetition: repetition, type: "bitmap" };
             return this;
         };
         return Fill;
@@ -832,6 +834,7 @@ var createts;
             * @default false
             **/
             this._dirty = false;
+            this._ctx = Graphics._ctx;
             /**
             * Maps the familiar ActionScript <code>curveTo()</code> method to the functionally similar {{#crossLink "Graphics/quadraticCurveTo"}}{{/crossLink}}
             * method.
@@ -1010,7 +1013,6 @@ var createts;
             **/
             this.p = this.decodePath;
             this.clear();
-            this._ctx = Graphics._ctx;
         }
         /**
         * The Graphics class exposes an easy to use API for generating vector drawing instructions and drawing them to a
@@ -1279,7 +1281,7 @@ var createts;
         * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
         **/
         Graphics.prototype.arc = function (x, y, radius, startAngle, endAngle, anticlockwise) {
-            return this.append(new G.Arc(x, y, radius, startAngle, endAngle, anticlockwise));
+            return this.append(new Graphics.Arc(x, y, radius, startAngle, endAngle, anticlockwise));
         };
 
         /**
@@ -1465,7 +1467,7 @@ var createts;
         **/
         Graphics.prototype.setStrokeStyle = function (thickness, caps, joints, miterLimit, ignoreScale) {
             this._updateInstructions(true);
-            this._strokeStyle = this.command = new Graphics.StrokeStyle(thickness, caps, joints, miterLimit, ignoreScale);
+            this._strokeStyle = this.command = new Graphics.StrokeStyle(thickness, caps, joints, miterLimit);
 
             // ignoreScale lives on Stroke, not StrokeStyle, so we do a little trickery:
             if (this._stroke) {
@@ -1483,7 +1485,7 @@ var createts;
         * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
         **/
         Graphics.prototype.beginStroke = function (color) {
-            return this._setStroke(color ? new Graphics.Stroke(color) : null);
+            return this._setStroke(color ? new Graphics.Stroke(color, null) : null);
         };
 
         /**
@@ -1507,7 +1509,7 @@ var createts;
         * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
         **/
         Graphics.prototype.beginLinearGradientStroke = function (colors, ratios, x0, y0, x1, y1) {
-            return this._setStroke(new Graphics.Stroke().linearGradient(colors, ratios, x0, y0, x1, y1));
+            return this._setStroke(new Graphics.Stroke(null, null).linearGradient(colors, ratios, x0, y0, x1, y1));
         };
 
         /**
@@ -1534,7 +1536,7 @@ var createts;
         * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
         **/
         Graphics.prototype.beginRadialGradientStroke = function (colors, ratios, x0, y0, r0, x1, y1, r1) {
-            return this._setStroke(new Graphics.Stroke().radialGradient(colors, ratios, x0, y0, r0, x1, y1, r1));
+            return this._setStroke(new Graphics.Stroke(null, null).radialGradient(colors, ratios, x0, y0, r0, x1, y1, r1));
         };
 
         /**
@@ -1550,7 +1552,7 @@ var createts;
         **/
         Graphics.prototype.beginBitmapStroke = function (image, repetition) {
             // NOTE: matrix is not supported for stroke because transforms on strokes also affect the drawn stroke width.
-            return this._setStroke(new Graphics.Stroke().bitmap(image, repetition));
+            return this._setStroke(new Graphics.Stroke(null, null).bitmap(image, repetition));
         };
 
         /**
@@ -1560,7 +1562,7 @@ var createts;
         * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
         **/
         Graphics.prototype.endStroke = function () {
-            return this.beginStroke();
+            return this.beginStroke(null);
         };
 
         /**
@@ -1907,14 +1909,11 @@ var createts;
 
         Graphics.STROKE_JOINTS_MAP = ["miter", "round", "bevel"];
 
+        Graphics._canvas = createts.createCanvas();
         Graphics._ctx = Graphics._canvas.getContext('2d');
         return Graphics;
     })();
     createts.Graphics = Graphics;
 })(createts || (createts = {}));
 
-var canvas = (createjs.createCanvas ? createjs.createCanvas() : document.createElement("canvas"));
-if (canvas.getContext) {
-    Graphics._ctx = canvas.getContext("2d");
-    canvas.width = canvas.height = 1;
-}
+createts.Graphics._canvas.width = createts.Graphics._canvas.height = 1;

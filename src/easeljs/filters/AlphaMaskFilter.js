@@ -1,4 +1,10 @@
 /// <reference path="./Filter.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 /*
 * AlphaMaskFilter
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -26,15 +32,8 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* @module EaselJS
-*/
-// namespace:
-this.createjs = this.createjs || {};
-
-(function () {
-    "use strict";
-
+var createts;
+(function (createts) {
     /**
     * Applies the alpha from the mask image (or canvas) to the target, such that the alpha channel of the result will
     * be derived from the mask, and the RGB channels will be copied from the target. This can be used, for example, to
@@ -63,79 +62,73 @@ this.createjs = this.createjs || {};
     * @constructor
     * @param {Image} mask
     **/
-    var AlphaMaskFilter = function (mask) {
-        this.initialize(mask);
-    };
-    var p = AlphaMaskFilter.prototype = new createjs.Filter();
+    var AlphaMaskFilter = (function (_super) {
+        __extends(AlphaMaskFilter, _super);
+        // constructor:
+        function AlphaMaskFilter(mask) {
+            _super.call(this);
+            // public properties:
+            /**
+            * The image (or canvas) to use as the mask.
+            * @property mask
+            * @type Image
+            **/
+            this.mask = null;
+            this.mask = mask;
+        }
+        // public methods:
+        /**
+        * Applies the filter to the specified context.
+        *
+        * <strong>IMPORTANT NOTE: This filter currently does not support the targetCtx, or targetX/Y parameters
+        * correctly.</strong>
+        * @method applyFilter
+        * @param {CanvasRenderingContext2D} ctx The 2D context to use as the source.
+        * @param {Number} x The x position to use for the source rect.
+        * @param {Number} y The y position to use for the source rect.
+        * @param {Number} width The width to use for the source rect.
+        * @param {Number} height The height to use for the source rect.
+        * @param {CanvasRenderingContext2D} [targetCtx] The 2D context to draw the result to. Defaults to the context passed to ctx.
+        * @param {Number} [targetX] The x position to draw the result to. Defaults to the value passed to x.
+        * @param {Number} [targetY] The y position to draw the result to. Defaults to the value passed to y.
+        * @return {Boolean} If the filter was applied successfully.
+        **/
+        AlphaMaskFilter.prototype.applyFilter = function (ctx, x, y, width, height, targetCtx, targetX, targetY) {
+            if (!this.mask) {
+                return true;
+            }
+            targetCtx = targetCtx || ctx;
+            if (targetX == null) {
+                targetX = x;
+            }
+            if (targetY == null) {
+                targetY = y;
+            }
 
-    // constructor:
-    /** @ignore */
-    p.initialize = function (mask) {
-        this.mask = mask;
-    };
+            targetCtx.save();
+            if (ctx != targetCtx) {
+                // TODO: support targetCtx and targetX/Y
+                // clearRect, then draw the ctx in?
+            }
 
-    // public properties:
-    /**
-    * The image (or canvas) to use as the mask.
-    * @property mask
-    * @type Image
-    **/
-    p.mask = null;
-
-    // public methods:
-    /**
-    * Applies the filter to the specified context.
-    *
-    * <strong>IMPORTANT NOTE: This filter currently does not support the targetCtx, or targetX/Y parameters
-    * correctly.</strong>
-    * @method applyFilter
-    * @param {CanvasRenderingContext2D} ctx The 2D context to use as the source.
-    * @param {Number} x The x position to use for the source rect.
-    * @param {Number} y The y position to use for the source rect.
-    * @param {Number} width The width to use for the source rect.
-    * @param {Number} height The height to use for the source rect.
-    * @param {CanvasRenderingContext2D} [targetCtx] The 2D context to draw the result to. Defaults to the context passed to ctx.
-    * @param {Number} [targetX] The x position to draw the result to. Defaults to the value passed to x.
-    * @param {Number} [targetY] The y position to draw the result to. Defaults to the value passed to y.
-    * @return {Boolean} If the filter was applied successfully.
-    **/
-    p.applyFilter = function (ctx, x, y, width, height, targetCtx, targetX, targetY) {
-        if (!this.mask) {
+            targetCtx.globalCompositeOperation = "destination-in";
+            targetCtx.drawImage(this.mask, targetX, targetY);
+            targetCtx.restore();
             return true;
-        }
-        targetCtx = targetCtx || ctx;
-        if (targetX == null) {
-            targetX = x;
-        }
-        if (targetY == null) {
-            targetY = y;
-        }
+        };
 
-        targetCtx.save();
-        if (ctx != targetCtx) {
-            // TODO: support targetCtx and targetX/Y
-            // clearRect, then draw the ctx in?
-        }
+        /**
+        * Returns a clone of this object.
+        * @method clone
+        * @return {AlphaMaskFilter}
+        **/
+        AlphaMaskFilter.prototype.clone = function () {
+            return new AlphaMaskFilter(this.mask);
+        };
 
-        targetCtx.globalCompositeOperation = "destination-in";
-        targetCtx.drawImage(this.mask, targetX, targetY);
-        targetCtx.restore();
-        return true;
-    };
-
-    /**
-    * Returns a clone of this object.
-    * @method clone
-    * @return {AlphaMaskFilter}
-    **/
-    p.clone = function () {
-        return new AlphaMaskFilter(this.mask);
-    };
-
-    p.toString = function () {
-        return "[AlphaMaskFilter]";
-    };
-
-    // private methods:
-    createjs.AlphaMaskFilter = AlphaMaskFilter;
-}());
+        AlphaMaskFilter.prototype.toString = function () {
+            return "[AlphaMaskFilter]";
+        };
+        return AlphaMaskFilter;
+    })(createts.Filter);
+})(createts || (createts = {}));

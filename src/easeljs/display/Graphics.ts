@@ -1,4 +1,5 @@
 /// <reference path="../geom/Matrix2D.ts" />
+/// <reference path="../../easeljs/utils/Methods.ts" />
 
 /*
  * Graphics
@@ -533,7 +534,7 @@ module createts
 		public style:any;
 		public matrix:createts.Matrix2D;
 
-		constructor(style:string, matrix:createts.Matrix2D)
+		constructor(style?:any, matrix?:createts.Matrix2D)
 		{
 			this.style = style;
 			this.matrix = matrix;
@@ -577,7 +578,8 @@ module createts
 			{
 				o.addColorStop(ratios[i], colors[i]);
 			}
-			o.props = {colors: colors, ratios: ratios, x0: x0, y0: y0, x1: x1, y1: y1, type: "linear"};
+
+			o['props'] = {colors: colors, ratios: ratios, x0: x0, y0: y0, x1: x1, y1: y1, type: "linear"};
 			return this;
 		}
 
@@ -601,7 +603,7 @@ module createts
 			{
 				o.addColorStop(ratios[i], colors[i]);
 			}
-			o.props = {colors: colors, ratios: ratios, x0: x0, y0: y0, r0: r0, x1: x1, y1: y1, r1: r1, type: "radial"};
+			o['props'] = {colors: colors, ratios: ratios, x0: x0, y0: y0, r0: r0, x1: x1, y1: y1, r1: r1, type: "radial"};
 			return this;
 		}
 
@@ -615,7 +617,7 @@ module createts
 		public bitmap(image, repetition)
 		{
 			var o = this.style = Graphics._ctx.createPattern(image, repetition || "");
-			o.props = {image: image, repetition: repetition, type: "bitmap"};
+			o['props'] = {image: image, repetition: repetition, type: "bitmap"};
 			return this;
 		}
 
@@ -1173,6 +1175,7 @@ module createts
 		 * @protected
 		 * @type {CanvasRenderingContext2D}
 		 **/
+		public static _canvas:HTMLCanvasElement = createts.createCanvas();
 		public static _ctx:CanvasRenderingContext2D = Graphics._canvas.getContext('2d');
 
 		// public properties
@@ -1248,6 +1251,9 @@ module createts
 		 **/
 		_dirty = false;
 
+
+		public _ctx:CanvasRenderingContext2D = Graphics._ctx;
+
 		/**
 		 * Initialization method.
 		 * @method initialize
@@ -1256,7 +1262,7 @@ module createts
 			constructor()
 		{
 			this.clear();
-			this._ctx = Graphics._ctx;
+
 		}
 
 		/**
@@ -1375,7 +1381,7 @@ module createts
 		 **/
 		public arc(x, y, radius, startAngle, endAngle, anticlockwise)
 		{
-			return this.append(new G.Arc(x, y, radius, startAngle, endAngle, anticlockwise));
+			return this.append(new Graphics.Arc(x, y, radius, startAngle, endAngle, anticlockwise));
 		}
 
 		/**
@@ -1465,7 +1471,7 @@ module createts
 		 * null will result in no fill.
 		 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 		 **/
-		public beginFill(color)
+		public beginFill(color?:string)
 		{
 			return this._setFill(color ? new Graphics.Fill(color) : null);
 		}
@@ -1572,7 +1578,7 @@ module createts
 		public setStrokeStyle(thickness, caps, joints, miterLimit, ignoreScale)
 		{
 			this._updateInstructions(true);
-			this._strokeStyle = this.command = new Graphics.StrokeStyle(thickness, caps, joints, miterLimit, ignoreScale);
+			this._strokeStyle = this.command = new Graphics.StrokeStyle(thickness, caps, joints, miterLimit);
 
 			// ignoreScale lives on Stroke, not StrokeStyle, so we do a little trickery:
 			if(this._stroke)
@@ -1592,7 +1598,7 @@ module createts
 		 **/
 		public beginStroke(color)
 		{
-			return this._setStroke(color ? new Graphics.Stroke(color) : null);
+			return this._setStroke(color ? new Graphics.Stroke(color, null) : null);
 		}
 
 		/**
@@ -1617,7 +1623,7 @@ module createts
 		 **/
 		public beginLinearGradientStroke(colors, ratios, x0, y0, x1, y1)
 		{
-			return this._setStroke(new Graphics.Stroke().linearGradient(colors, ratios, x0, y0, x1, y1));
+			return this._setStroke(new Graphics.Stroke(null, null).linearGradient(colors, ratios, x0, y0, x1, y1));
 		}
 
 		/**
@@ -1645,7 +1651,7 @@ module createts
 		 **/
 		public beginRadialGradientStroke(colors, ratios, x0, y0, r0, x1, y1, r1)
 		{
-			return this._setStroke(new Graphics.Stroke().radialGradient(colors, ratios, x0, y0, r0, x1, y1, r1));
+			return this._setStroke(new Graphics.Stroke(null,null).radialGradient(colors, ratios, x0, y0, r0, x1, y1, r1));
 		}
 
 		/**
@@ -1662,7 +1668,7 @@ module createts
 		public beginBitmapStroke(image, repetition)
 		{
 			// NOTE: matrix is not supported for stroke because transforms on strokes also affect the drawn stroke width.
-			return this._setStroke(new Graphics.Stroke().bitmap(image, repetition));
+			return this._setStroke(new Graphics.Stroke(null, null).bitmap(image, repetition));
 		}
 
 		/**
@@ -1673,7 +1679,7 @@ module createts
 		 **/
 		public endStroke()
 		{
-			return this.beginStroke();
+			return this.beginStroke(null);
 		}
 
 		/**
@@ -1830,7 +1836,7 @@ module createts
 		 * @param {boolean} clean The clean param is primarily for internal use. A value of true indicates that a command does not generate a path that should be stroked or filled.
 		 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 		 **/
-		public append(command, clean)
+		public append(command, clean?:boolean)
 		{
 			this._activeInstructions.push(command);
 			this.command = command;
@@ -2238,8 +2244,4 @@ module createts
 	}
 }
 
-var canvas = (createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"));
-if (canvas.getContext) {
-	Graphics._ctx = canvas.getContext("2d");
-	canvas.width = canvas.height = 1;
-}
+createts.Graphics._canvas.width = createts.Graphics._canvas.height = 1;
