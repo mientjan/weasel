@@ -424,7 +424,7 @@ module createts
 		 * @method getLabels
 		 * @return {Array[Object]} A sorted array of objects with label and position (aka frame) properties.
 		 **/
-			getLabels()
+		public getLabels()
 		{
 			return this.timeline.getLabels();
 		}
@@ -435,7 +435,7 @@ module createts
 		 * @method getCurrentLabel
 		 * @return {String} The name of the current label or null if there is no label.
 		 **/
-			getCurrentLabel()
+		public getCurrentLabel()
 		{
 			this._updateTimeline();
 			return this.timeline.getCurrentLabel();
