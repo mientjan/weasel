@@ -419,8 +419,8 @@ var createts;
         * @param {Number} width The width of the cache region.
         * @param {Number} height The height of the cache region.
         * @param {Number} [scale=1] The scale at which the cache will be created. For example, if you cache a vector shape using
-        * 	myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate
-        * 	cached elements with greater fidelity. Default is 1.
+        *    myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate
+        *    cached elements with greater fidelity. Default is 1.
         **/
         DisplayObject.prototype.cache = function (x, y, width, height, scale) {
             if (typeof scale === "undefined") { scale = 1; }
@@ -747,48 +747,48 @@ var createts;
         * bounds.
         *
         * <table>
-        * 	<tr><td><b>All</b></td><td>
-        * 		All display objects support setting bounds manually using setBounds(). Likewise, display objects that
-        * 		have been cached using cache() will return the bounds of their cache. Manual and cache bounds will override
-        * 		the automatic calculations listed below.
-        * 	</td></tr>
-        * 	<tr><td><b>Bitmap</b></td><td>
-        * 		Returns the width and height of the sourceRect (if specified) or image, extending from (x=0,y=0).
-        * 	</td></tr>
-        * 	<tr><td><b>Sprite</b></td><td>
-        * 		Returns the bounds of the current frame. May have non-zero x/y if a frame registration point was specified
-        * 		in the spritesheet data. See also {{#crossLink "SpriteSheet/getFrameBounds"}}{{/crossLink}}
-        * 	</td></tr>
-        * 	<tr><td><b>Container</b></td><td>
-        * 		Returns the aggregate (combined) bounds of all children that return a non-null value from getBounds().
-        * 	</td></tr>
-        * 	<tr><td><b>Shape</b></td><td>
-        * 		Does not currently support automatic bounds calculations. Use setBounds() to manually define bounds.
-        * 	</td></tr>
-        * 	<tr><td><b>Text</b></td><td>
-        * 		Returns approximate bounds. Horizontal values (x/width) are quite accurate, but vertical values (y/height) are
-        * 		not, especially when using textBaseline values other than "top".
-        * 	</td></tr>
-        * 	<tr><td><b>BitmapText</b></td><td>
-        * 		Returns approximate bounds. Values will be more accurate if spritesheet frame registration points are close
-        * 		to (x=0,y=0).
-        * 	</td></tr>
+        *    <tr><td><b>All</b></td><td>
+        *        All display objects support setting bounds manually using setBounds(). Likewise, display objects that
+        *        have been cached using cache() will return the bounds of their cache. Manual and cache bounds will override
+        *        the automatic calculations listed below.
+        *    </td></tr>
+        *    <tr><td><b>Bitmap</b></td><td>
+        *        Returns the width and height of the sourceRect (if specified) or image, extending from (x=0,y=0).
+        *    </td></tr>
+        *    <tr><td><b>Sprite</b></td><td>
+        *        Returns the bounds of the current frame. May have non-zero x/y if a frame registration point was specified
+        *        in the spritesheet data. See also {{#crossLink "SpriteSheet/getFrameBounds"}}{{/crossLink}}
+        *    </td></tr>
+        *    <tr><td><b>Container</b></td><td>
+        *        Returns the aggregate (combined) bounds of all children that return a non-null value from getBounds().
+        *    </td></tr>
+        *    <tr><td><b>Shape</b></td><td>
+        *        Does not currently support automatic bounds calculations. Use setBounds() to manually define bounds.
+        *    </td></tr>
+        *    <tr><td><b>Text</b></td><td>
+        *        Returns approximate bounds. Horizontal values (x/width) are quite accurate, but vertical values (y/height) are
+        *        not, especially when using textBaseline values other than "top".
+        *    </td></tr>
+        *    <tr><td><b>BitmapText</b></td><td>
+        *        Returns approximate bounds. Values will be more accurate if spritesheet frame registration points are close
+        *        to (x=0,y=0).
+        *    </td></tr>
         * </table>
         *
         * Bounds can be expensive to calculate for some objects (ex. text, or containers with many children), and
         * are recalculated each time you call getBounds(). You can prevent recalculation on static objects by setting the
         * bounds explicitly:
         *
-        * 	var bounds = obj.getBounds();
-        * 	obj.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-        * 	// getBounds will now use the set values, instead of recalculating
+        *    var bounds = obj.getBounds();
+        *    obj.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        *    // getBounds will now use the set values, instead of recalculating
         *
         * To reduce memory impact, the returned Rectangle instance may be reused internally; clone the instance or copy its
         * values if you need to retain it.
         *
-        * 	var myBounds = obj.getBounds().clone();
-        * 	// OR:
-        * 	myRect.copy(obj.getBounds());
+        *    var myBounds = obj.getBounds().clone();
+        *    // OR:
+        *    myRect.copy(obj.getBounds());
         *
         * @method getBounds
         * @return {Rectangle} A Rectangle instance representing the bounds, or null if bounds are not available for this
