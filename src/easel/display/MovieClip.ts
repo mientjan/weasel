@@ -328,7 +328,7 @@ module createts
 		 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 		 * into itself).
 		 **/
-			draw(ctx, ignoreCache)
+		public draw(ctx, ignoreCache)
 		{
 			// draw to cache first:
 			if(this.DisplayObject_draw(ctx, ignoreCache))
@@ -388,6 +388,7 @@ module createts
 		 */
 		public advance(time)
 		{
+
 			// TODO: should we worry at all about clips who change their own modes via frame scripts?
 			var independent = MovieClip.INDEPENDENT;
 			if(this.mode != independent)

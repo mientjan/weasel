@@ -1,5 +1,5 @@
-/// <reference path="../geom/Matrix2D.ts" />
-/// <reference path="../../easeljs/utils/Methods.ts" />
+import Methods = require('easel/utils/Methods');
+import Matrix2D = require('easel/geom/Matrix2D');
 
 /*
  * Graphics
@@ -32,9 +32,6 @@
 /**
  * @module EaselJS
  */
-
-module createts
-{
 
 		/**
 		 * Graphics command object. See {{#crossLink "Graphics"}}{{/crossLink}} and {{#crossLink "Graphics/append"}}{{/crossLink}} for more information.
@@ -917,7 +914,7 @@ module createts
 		}
 	}
 
-	export class Graphics
+	class Graphics
 	{
 
 		public static RoundRect = RoundRect;
@@ -2242,6 +2239,7 @@ module createts
 		 * @namespace Graphics
 		 */
 	}
-}
 
-createts.Graphics._canvas.width = createts.Graphics._canvas.height = 1;
+Graphics._canvas.width = Graphics._canvas.height = 1;
+
+export = Graphics;

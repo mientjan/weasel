@@ -1,4 +1,5 @@
 /// <reference path="./DisplayObject.ts" />
+import DisplayObject = require('easel/display/DisplayObject');
 
 /*
  * Container
@@ -29,8 +30,6 @@
  */
 
 
-module createts
-{
 
 	/**
 	 * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -53,7 +52,7 @@ module createts
 	 * @extends DisplayObject
 	 * @constructor
 	 **/
-	export class Container extends createts.DisplayObject
+	class Container extends DisplayObject
 	{
 
 
@@ -802,4 +801,5 @@ module createts
 			return (maxX == null) ? null : this._rectangle.initialize(minX, minY, maxX - minX, maxY - minY);
 		}
 	}
-}
+
+export = Container;

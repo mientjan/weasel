@@ -25,16 +25,18 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
+
 /**
-* Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
-* and should not be instantiated.
-* @class UID
-* @static
-**/
-var createts;
-(function (createts) {
-    function createCanvas() {
-        return document.createElement('canvas');
-    }
-    createts.createCanvas = createCanvas;
-})(createts || (createts = {}));
+ * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
+ * and should not be instantiated.
+ * @class UID
+ * @static
+ **/
+
+	export function createCanvas(){
+		return document.createElement('canvas');
+	}
+
+
+
+

@@ -1,66 +1,63 @@
-/// <reference path="./Container.ts" />
-/// <reference path="../events/MouseEvent.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* Stage
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-/**
-* @module EaselJS
-*/
-/**
-* A stage is the root level {{#crossLink "Container"}}{{/crossLink}} for a display list. Each time its {{#crossLink "Stage/tick"}}{{/crossLink}}
-* method is called, it will render its display list to its target canvas.
-*
-* <h4>Example</h4>
-* This example creates a stage, adds a child to it, then uses {{#crossLink "Ticker"}}{{/crossLink}} to update the child
-* and redraw the stage using {{#crossLink "Stage/update"}}{{/crossLink}}.
-*
-*      var stage = new createjs.Stage("canvasElementId");
-*      var image = new createjs.Bitmap("imagePath.png");
-*      stage.addChild(image);
-*      createjs.Ticker.addEventListener("tick", handleTick);
-*      function handleTick(event) {
-*          image.x += 10;
-*          stage.update();
-*      }
-*
-* @class Stage
-* @extends Container
-* @constructor
-* @param {HTMLCanvasElement | String | Object} canvas A canvas object that the Stage will render to, or the string id
-* of a canvas object in the current document.
-**/
-var createts;
-(function (createts) {
+define(["require", "exports", 'easel/display/Container'], function(require, exports, Container) {
+    /*
+    * Stage
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
+    /**
+    * @module EaselJS
+    */
+    /**
+    * A stage is the root level {{#crossLink "Container"}}{{/crossLink}} for a display list. Each time its {{#crossLink "Stage/tick"}}{{/crossLink}}
+    * method is called, it will render its display list to its target canvas.
+    *
+    * <h4>Example</h4>
+    * This example creates a stage, adds a child to it, then uses {{#crossLink "Ticker"}}{{/crossLink}} to update the child
+    * and redraw the stage using {{#crossLink "Stage/update"}}{{/crossLink}}.
+    *
+    *      var stage = new createjs.Stage("canvasElementId");
+    *      var image = new createjs.Bitmap("imagePath.png");
+    *      stage.addChild(image);
+    *      createjs.Ticker.addEventListener("tick", handleTick);
+    *      function handleTick(event) {
+    *          image.x += 10;
+    *          stage.update();
+    *      }
+    *
+    * @class Stage
+    * @extends Container
+    * @constructor
+    * @param {HTMLCanvasElement | String | Object} canvas A canvas object that the Stage will render to, or the string id
+    * of a canvas object in the current document.
+    **/
     var Stage = (function (_super) {
         __extends(Stage, _super);
         /**
@@ -254,14 +251,14 @@ var createts;
         * </OL>
         * To illustrate, in this example the targetStage would process mouse over interactions at 10hz (despite passing
         * 30 as it's desired frequency):
-        * 	topStage.nextStage = targetStage;
-        * 	topStage.enableMouseOver(10);
-        * 	targetStage.enableMouseOver(30);
+        *    topStage.nextStage = targetStage;
+        *    topStage.enableMouseOver(10);
+        *    targetStage.enableMouseOver(30);
         *
         * If the target stage's canvas is completely covered by this stage's canvas, you may also want to disable its
         * DOM events using:
         *
-        *	targetStage.enableDOMEvents(false);
+        *    targetStage.enableDOMEvents(false);
         *
         * @property nextStage
         * @type {Stage}
@@ -333,16 +330,16 @@ var createts;
         * a {{#crossLink "Ticker/tick:event"}}{{/crossLink}} event object (or equivalent) be passed as the first parameter
         * to tick(). For example:
         *
-        * 	    Ticker.on("tick", handleTick);
-        * 	    function handleTick(evtObj) {
+        *        Ticker.on("tick", handleTick);
+        *        function handleTick(evtObj) {
         * 	    	// do some work here, then update the stage, passing through the tick event object as the first param
         * 	    	// and some custom data as the second and third param:
         * 	    	myStage.update(evtObj, "hello", 2014);
         * 	    }
         *
-        * 	    // ...
-        * 	    myDisplayObject.on("tick", handleDisplayObjectTick);
-        * 	    function handleDisplayObjectTick(evt) {
+        *        // ...
+        *        myDisplayObject.on("tick", handleDisplayObjectTick);
+        *        function handleDisplayObjectTick(evt) {
         * 	    	console.log(evt.params[0]); // the original tick evtObj
         * 	    	console.log(evt.delta, evt.paused); // ex. "17 false"
         * 	    	console.log(evt.params[1], evt.params[2]); // "hello 2014"
@@ -515,16 +512,20 @@ var createts;
                 var t = window['addEventListener'] ? window : document;
                 var _this = this;
                 ls = this._eventListeners = {};
-                ls["mouseup"] = { t: t, f: function (e) {
+                ls["mouseup"] = {
+                    t: t, f: function (e) {
                         _this._handleMouseUp(e);
                     } };
-                ls["mousemove"] = { t: t, f: function (e) {
+                ls["mousemove"] = {
+                    t: t, f: function (e) {
                         _this._handleMouseMove(e);
                     } };
-                ls["dblclick"] = { t: this.canvas, f: function (e) {
+                ls["dblclick"] = {
+                    t: this.canvas, f: function (e) {
                         _this._handleDoubleClick(e);
                     } };
-                ls["mousedown"] = { t: this.canvas, f: function (e) {
+                ls["mousedown"] = {
+                    t: this.canvas, f: function (e) {
                         _this._handleMouseDown(e);
                     } };
 
@@ -892,5 +893,8 @@ var createts;
             target.dispatchEvent(evt);
         };
         return Stage;
-    })(createts.Container);
-})(createts || (createts = {}));
+    })(Container);
+
+    
+    return Stage;
+});

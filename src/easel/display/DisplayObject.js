@@ -1,44 +1,37 @@
-/// <reference path="../../createjs/events/EventDispatcher.ts" />
-/// <reference path="../utils/UID.ts" />
-/// <reference path="../geom/Matrix2D.ts" />
-/// <reference path="../geom/Rectangle.ts" />
-/// <reference path="../geom/Point.ts" />
-/// <reference path="./Shadow.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* DisplayObject
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-var createts;
-(function (createts) {
+define(["require", "exports", 'easel/display/Shadow'], function(require, exports, Shadow) {
+    /*
+    * DisplayObject
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
         function DisplayObject() {
@@ -312,6 +305,7 @@ var createts;
             * @default null
             **/
             this._bounds = null;
+            this.DisplayObject_draw = this.draw;
 
             this.id = createts.UID.get();
             this._matrix = new createts.Matrix2D(0, 0, 0, 0, 0, 0);
@@ -900,7 +894,7 @@ var createts;
         * @param {Shadow} shadow
         **/
         DisplayObject.prototype._applyShadow = function (ctx, shadow) {
-            shadow = shadow || createts.Shadow.identity;
+            shadow = shadow || Shadow.identity;
             ctx.shadowColor = shadow.color;
             ctx.shadowOffsetX = shadow.offsetX;
             ctx.shadowOffsetY = shadow.offsetY;
@@ -1086,6 +1080,8 @@ var createts;
 
         DisplayObject._nextCacheID = 1;
         return DisplayObject;
-    })(createts.EventDispatcher);
-    createts.DisplayObject = DisplayObject;
-})(createts || (createts = {}));
+    })(EventDispatcher);
+
+    
+    return DisplayObject;
+});
