@@ -1,47 +1,46 @@
 /// <reference path="../display/DisplayObject.ts" />
-/*
-* Matrix2D
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-/**
-* @module EaselJS
-*/
-/**
-* Represents an affine transformation matrix, and provides tools for constructing and concatenating matrixes.
-* @class Matrix2D
-* @param {Number} [a=1] Specifies the a property for the new matrix.
-* @param {Number} [b=0] Specifies the b property for the new matrix.
-* @param {Number} [c=0] Specifies the c property for the new matrix.
-* @param {Number} [d=1] Specifies the d property for the new matrix.
-* @param {Number} [tx=0] Specifies the tx property for the new matrix.
-* @param {Number} [ty=0] Specifies the ty property for the new matrix.
-* @constructor
-**/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /*
+    * Matrix2D
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
+    /**
+    * @module EaselJS
+    */
+    /**
+    * Represents an affine transformation matrix, and provides tools for constructing and concatenating matrixes.
+    * @class Matrix2D
+    * @param {Number} [a=1] Specifies the a property for the new matrix.
+    * @param {Number} [b=0] Specifies the b property for the new matrix.
+    * @param {Number} [c=0] Specifies the c property for the new matrix.
+    * @param {Number} [d=1] Specifies the d property for the new matrix.
+    * @param {Number} [tx=0] Specifies the tx property for the new matrix.
+    * @param {Number} [ty=0] Specifies the ty property for the new matrix.
+    * @constructor
+    **/
     var Matrix2D = (function () {
         // constructor:
         /**
@@ -556,5 +555,6 @@ var createts;
         Matrix2D.DEG_TO_RAD = Math.PI / 180;
         return Matrix2D;
     })();
-    createts.Matrix2D = Matrix2D;
-})(createts || (createts = {}));
+    
+    return Matrix2D;
+});

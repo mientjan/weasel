@@ -1,9 +1,12 @@
 import EventDispatcher = require('createts/events/EventDispatcher');
 import UID = require('easel/utils/UID');
-import Matrix2d = require('easel/geom/Matrix2d');
+import Methods = require('easel/utils/Methods');
+import Matrix2D = require('easel/geom/Matrix2D');
 import Rectangle = require('easel/geom/Rectangle');
 import Point = require('easel/geom/Point');
 import Shadow = require('easel/display/Shadow');
+import Event = require('createts/events/Event');
+import Stage = require('easel/display/DisplayObject');
 
 /*
  * DisplayObject
@@ -394,7 +397,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:createts.Rectangle = null;
+	public _rectangle:Rectangle = null;
 
 	/**
 	 * @property _bounds
@@ -408,9 +411,9 @@ class DisplayObject extends EventDispatcher
 	{
 		super();
 
-		this.id = createts.UID.get();
-		this._matrix = new createts.Matrix2D(0, 0, 0, 0, 0, 0);
-		this._rectangle = new createts.Rectangle(0, 0, 0, 0);
+		this.id = UID.get();
+		this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+		this._rectangle = new Rectangle(0, 0, 0, 0);
 	}
 
 	// public methods:
@@ -535,7 +538,7 @@ class DisplayObject extends EventDispatcher
 		//		scale = scale||1;
 		if(!this.cacheCanvas)
 		{
-			this.cacheCanvas = createts['createCanvas'] ? createts['createCanvas']() : document.createElement("canvas");
+			this.cacheCanvas = Methods.createCanvas();
 		}
 		this._cacheWidth = width;
 		this._cacheHeight = height;
@@ -650,7 +653,7 @@ class DisplayObject extends EventDispatcher
 			o = o.parent;
 		}
 		// using dynamic access to avoid circular dependencies;
-		if(o instanceof createts["Stage"])
+		if(o instanceof Stage)
 		{
 			return o;
 		}
@@ -685,7 +688,7 @@ class DisplayObject extends EventDispatcher
 			return null;
 		}
 		mtx.append(1, 0, 0, 1, x, y);
-		return new createts.Point(mtx.tx, mtx.ty);
+		return new Point(mtx.tx, mtx.ty);
 	}
 
 	/**
@@ -717,7 +720,7 @@ class DisplayObject extends EventDispatcher
 		}
 		mtx.invert();
 		mtx.append(1, 0, 0, 1, x, y);
-		return new createts.Point(mtx.tx, mtx.ty);
+		return new Point(mtx.tx, mtx.ty);
 	}
 
 	/**
@@ -783,10 +786,10 @@ class DisplayObject extends EventDispatcher
 	 * Matrix object is returned.
 	 * @return {Matrix2D} A matrix representing this display object's transform.
 	 **/
-	public getMatrix(matrix?:createts.Matrix2D)
+	public getMatrix(matrix?:Matrix2D)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new createts.Matrix2D(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new Matrix2D(0, 0, 0, 0, 0, 0))
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -810,7 +813,7 @@ class DisplayObject extends EventDispatcher
 		}
 		else
 		{
-			matrix = new createts.Matrix2D(0, 0, 0, 0, 0, 0);
+			matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
 		}
 		var o = this;
 		while(o != null)
@@ -984,7 +987,7 @@ class DisplayObject extends EventDispatcher
 		{
 			this._bounds = x;
 		}
-		this._bounds = (this._bounds || new createts.Rectangle(x, y, width, height) );
+		this._bounds = (this._bounds || new Rectangle(x, y, width, height) );
 	}
 
 	/**
@@ -1045,7 +1048,7 @@ class DisplayObject extends EventDispatcher
 	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {Shadow} shadow
 	 **/
-	public _applyShadow(ctx:CanvasRenderingContext2D, shadow:createts.Shadow)
+	public _applyShadow(ctx:CanvasRenderingContext2D, shadow:Shadow)
 	{
 		shadow = shadow || Shadow.identity;
 		ctx.shadowColor = shadow.color;
@@ -1067,7 +1070,7 @@ class DisplayObject extends EventDispatcher
 		var ls = this._listeners;
 		if(ls && ls["tick"])
 		{
-			var evt = new createts.Event("tick").set(props);
+			var evt = new Event("tick").set(props);
 			this._dispatchEvent(evt, this); // 2
 		}
 	}
@@ -1157,7 +1160,7 @@ class DisplayObject extends EventDispatcher
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix?:createts.Matrix2D, ignoreTransform?:boolean)
+	public _getBounds(matrix?:Matrix2D, ignoreTransform?:boolean)
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}

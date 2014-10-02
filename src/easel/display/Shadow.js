@@ -25,26 +25,25 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* @module EaselJS
-*/
-/**
-* This class encapsulates the properties required to define a shadow to apply to a {{#crossLink "DisplayObject"}}{{/crossLink}}
-* via its <code>shadow</code> property.
-*
-* <h4>Example</h4>
-*
-*      myImage.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-*
-* @class Shadow
-* @constructor
-* @param {String} color The color of the shadow.
-* @param {Number} offsetX The x offset of the shadow in pixels.
-* @param {Number} offsetY The y offset of the shadow in pixels.
-* @param {Number} blur The size of the blurring effect.
-**/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /**
+    * @module EaselJS
+    */
+    /**
+    * This class encapsulates the properties required to define a shadow to apply to a {{#crossLink "DisplayObject"}}{{/crossLink}}
+    * via its <code>shadow</code> property.
+    *
+    * <h4>Example</h4>
+    *
+    *      myImage.shadow = new createjs.Shadow("#000000", 5, 5, 10);
+    *
+    * @class Shadow
+    * @constructor
+    * @param {String} color The color of the shadow.
+    * @param {Number} offsetX The x offset of the shadow in pixels.
+    * @param {Number} offsetY The y offset of the shadow in pixels.
+    * @param {Number} blur The size of the blurring effect.
+    **/
     var Shadow = (function () {
         // constructor:
         /**
@@ -108,5 +107,7 @@ var createts;
         Shadow.identity = null;
         return Shadow;
     })();
-    createts.Shadow = Shadow;
-})(createts || (createts = {}));
+
+    
+    return Shadow;
+});

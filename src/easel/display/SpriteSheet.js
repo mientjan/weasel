@@ -1,40 +1,37 @@
-/// <reference path="../../createjs/events/EventDispatcher.ts" />
-/// <reference path="../geom/Rectangle.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* SpriteSheet
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-var createts;
-(function (createts) {
+define(["require", "exports", 'createts/events/EventDispatcher', 'easel/geom/Rectangle'], function(require, exports, EventDispatcher, Rectangle) {
+    /*
+    * SpriteSheet
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
     /**
     * Encapsulates the properties and methods associated with a sprite sheet. A sprite sheet is a series of images (usually
     * animation frames) combined into a larger image (or images). For example, an animation consisting of eight 100x100
@@ -274,7 +271,7 @@ var createts;
                 a = data.frames;
                 for (i = 0, l = a.length; i < l; i++) {
                     var arr = a[i];
-                    this._frames.push({ image: this._images[arr[4] ? arr[4] : 0], rect: new createts.Rectangle(arr[0], arr[1], arr[2], arr[3]), regX: arr[5] || 0, regY: arr[6] || 0 });
+                    this._frames.push({ image: this._images[arr[4] ? arr[4] : 0], rect: new Rectangle(arr[0], arr[1], arr[2], arr[3]), regX: arr[5] || 0, regY: arr[6] || 0 });
                 }
             } else {
                 o = data.frames;
@@ -407,7 +404,7 @@ var createts;
         **/
         SpriteSheet.prototype.getFrameBounds = function (frameIndex, rectangle) {
             var frame = this.getFrame(frameIndex);
-            return frame ? (rectangle || new createts.Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
+            return frame ? (rectangle || new Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
         };
 
         /**
@@ -470,12 +467,15 @@ var createts;
                 var rows = img.height / fh | 0;
                 var ttl = this._numFrames > 0 ? Math.min(this._numFrames - ttlFrames, cols * rows) : cols * rows;
                 for (var j = 0; j < ttl; j++) {
-                    this._frames.push({ image: img, rect: new createts.Rectangle(j % cols * fw, (j / cols | 0) * fh, fw, fh), regX: this._regX, regY: this._regY });
+                    this._frames.push({ image: img, rect: new Rectangle(j % cols * fw, (j / cols | 0) * fh, fw, fh), regX: this._regX, regY: this._regY });
                 }
                 ttlFrames += ttl;
             }
             this._numFrames = ttlFrames;
         };
         return SpriteSheet;
-    })(createts.EventDispatcher);
-})(createts || (createts = {}));
+    })(EventDispatcher);
+
+    
+    return SpriteSheet;
+});

@@ -42,8 +42,7 @@
  * @param {Number} [y=0] Y position.
  * @constructor
  **/
-module createts {
-	export class Point {
+class Point {
 		/**
 		 * X position.
 		 * @property x
@@ -96,4 +95,5 @@ module createts {
 			return "[Point (x="+this.x+" y="+this.y+")]";
 		}
 	}
-}
+
+export = Point;

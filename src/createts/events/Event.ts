@@ -37,234 +37,236 @@
  * @module CreateJS
  * @main CreateJS
  */
-module createts
+class Event
 {
-	export class Event
-	{
-		/**
-		 * Contains properties and methods shared by all events for use with
-		 * {{#crossLink "EventDispatcher"}}{{/crossLink}}.
-		 *
-		 * Note that Event objects are often reused, so you should never
-		 * rely on an event object's state outside of the call stack it was received in.
-		 * @class Event
-		 * @param {String} type The event type.
-		 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
-		 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
-		 * @constructor
-		 **/
+	/**
+	 * Contains properties and methods shared by all events for use with
+	 * {{#crossLink "EventDispatcher"}}{{/crossLink}}.
+	 *
+	 * Note that Event objects are often reused, so you should never
+	 * rely on an event object's state outside of the call stack it was received in.
+	 * @class Event
+	 * @param {String} type The event type.
+	 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
+	 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
+	 * @constructor
+	 **/
 		constructor(type:any, bubbles = null, cancelable = null)
-		{
-			this.type = type;
-			this.bubbles = bubbles;
-			this.cancelable = cancelable;
-			this.timeStamp = (new Date()).getTime();
-		}
-		// events:
+	{
+		this.type = type;
+		this.bubbles = bubbles;
+		this.cancelable = cancelable;
+		this.timeStamp = (new Date()).getTime();
+	}
 
-		// public properties:
+	// events:
 
-		/**
-		 * The type of event.
-		 * @property type
-		 * @type String
-		 **/
-		public type = null;
+	// public properties:
 
-		/**
-		 * The object that generated an event.
-		 * @property target
-		 * @type Object
-		 * @default null
-		 * @readonly
-		 */
-		public target = null;
+	/**
+	 * The type of event.
+	 * @property type
+	 * @type String
+	 **/
+	public type = null;
 
-		/**
-		 * The current target that a bubbling event is being dispatched from. For non-bubbling events, this will
-		 * always be the same as target. For example, if childObj.parent = parentObj, and a bubbling event
-		 * is generated from childObj, then a listener on parentObj would receive the event with
-		 * target=childObj (the original target) and currentTarget=parentObj (where the listener was added).
-		 * @property currentTarget
-		 * @type Object
-		 * @default null
-		 * @readonly
-		 */
-		public currentTarget = null;
+	/**
+	 * The object that generated an event.
+	 * @property target
+	 * @type Object
+	 * @default null
+	 * @readonly
+	 */
+	public target = null;
 
-		/**
-		 * For bubbling events, this indicates the current event phase:<OL>
-		 *    <LI> capture phase: starting from the top parent to the target</LI>
-		 *    <LI> at target phase: currently being dispatched from the target</LI>
-		 *    <LI> bubbling phase: from the target to the top parent</LI>
-		 * </OL>
-		 * @property eventPhase
-		 * @type Number
-		 * @default 0
-		 * @readonly
-		 */
-		public eventPhase = 0;
+	/**
+	 * The current target that a bubbling event is being dispatched from. For non-bubbling events, this will
+	 * always be the same as target. For example, if childObj.parent = parentObj, and a bubbling event
+	 * is generated from childObj, then a listener on parentObj would receive the event with
+	 * target=childObj (the original target) and currentTarget=parentObj (where the listener was added).
+	 * @property currentTarget
+	 * @type Object
+	 * @default null
+	 * @readonly
+	 */
+	public currentTarget = null;
 
-		/**
-		 * Indicates whether the event will bubble through the display list.
-		 * @property bubbles
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public bubbles = false;
+	/**
+	 * For bubbling events, this indicates the current event phase:<OL>
+	 *    <LI> capture phase: starting from the top parent to the target</LI>
+	 *    <LI> at target phase: currently being dispatched from the target</LI>
+	 *    <LI> bubbling phase: from the target to the top parent</LI>
+	 * </OL>
+	 * @property eventPhase
+	 * @type Number
+	 * @default 0
+	 * @readonly
+	 */
+	public eventPhase = 0;
 
-		/**
-		 * Indicates whether the default behaviour of this event can be cancelled via
-		 * {{#crossLink "Event/preventDefault"}}{{/crossLink}}. This is set via the Event constructor.
-		 * @property cancelable
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public cancelable = false;
+	/**
+	 * Indicates whether the event will bubble through the display list.
+	 * @property bubbles
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public bubbles = false;
 
-		/**
-		 * The epoch time at which this event was created.
-		 * @property timeStamp
-		 * @type Number
-		 * @default 0
-		 * @readonly
-		 */
-		public timeStamp = 0;
+	/**
+	 * Indicates whether the default behaviour of this event can be cancelled via
+	 * {{#crossLink "Event/preventDefault"}}{{/crossLink}}. This is set via the Event constructor.
+	 * @property cancelable
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public cancelable = false;
 
-		/**
-		 * Indicates if {{#crossLink "Event/preventDefault"}}{{/crossLink}} has been called
-		 * on this event.
-		 * @property defaultPrevented
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public defaultPrevented = false;
+	/**
+	 * The epoch time at which this event was created.
+	 * @property timeStamp
+	 * @type Number
+	 * @default 0
+	 * @readonly
+	 */
+	public timeStamp = 0;
 
-		/**
-		 * Indicates if {{#crossLink "Event/stopPropagation"}}{{/crossLink}} or
-		 * {{#crossLink "Event/stopImmediatePropagation"}}{{/crossLink}} has been called on this event.
-		 * @property propagationStopped
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public propagationStopped = false;
+	/**
+	 * Indicates if {{#crossLink "Event/preventDefault"}}{{/crossLink}} has been called
+	 * on this event.
+	 * @property defaultPrevented
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public defaultPrevented = false;
 
-		/**
-		 * Indicates if {{#crossLink "Event/stopImmediatePropagation"}}{{/crossLink}} has been called
-		 * on this event.
-		 * @property immediatePropagationStopped
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public immediatePropagationStopped = false;
+	/**
+	 * Indicates if {{#crossLink "Event/stopPropagation"}}{{/crossLink}} or
+	 * {{#crossLink "Event/stopImmediatePropagation"}}{{/crossLink}} has been called on this event.
+	 * @property propagationStopped
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public propagationStopped = false;
 
-		/**
-		 * Indicates if {{#crossLink "Event/remove"}}{{/crossLink}} has been called on this event.
-		 * @property removed
-		 * @type Boolean
-		 * @default false
-		 * @readonly
-		 */
-		public removed = false;
+	/**
+	 * Indicates if {{#crossLink "Event/stopImmediatePropagation"}}{{/crossLink}} has been called
+	 * on this event.
+	 * @property immediatePropagationStopped
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public immediatePropagationStopped = false;
 
-		// constructor:
-		/**
-		 * Initialization method.
-		 * @method initialize
-		 * @param {String} type The event type.
-		 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
-		 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
-		 * @protected
-		 **/
+	/**
+	 * Indicates if {{#crossLink "Event/remove"}}{{/crossLink}} has been called on this event.
+	 * @property removed
+	 * @type Boolean
+	 * @default false
+	 * @readonly
+	 */
+	public removed = false;
 
-		// public methods:
+	// constructor:
+	/**
+	 * Initialization method.
+	 * @method initialize
+	 * @param {String} type The event type.
+	 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
+	 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
+	 * @protected
+	 **/
 
-		/**
-		 * Sets {{#crossLink "Event/defaultPrevented"}}{{/crossLink}} to true.
-		 * Mirrors the DOM event standard.
-		 * @method preventDefault
-		 **/
-		public preventDefault()
-		{
-			this.defaultPrevented = true;
-		}
+	// public methods:
 
-		/**
-		 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} to true.
-		 * Mirrors the DOM event standard.
-		 * @method stopPropagation
-		 **/
-		public stopPropagation()
-		{
-			this.propagationStopped = true;
-		}
+	/**
+	 * Sets {{#crossLink "Event/defaultPrevented"}}{{/crossLink}} to true.
+	 * Mirrors the DOM event standard.
+	 * @method preventDefault
+	 **/
+	public preventDefault()
+	{
+		this.defaultPrevented = true;
+	}
 
-		/**
-		 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} and
-		 * {{#crossLink "Event/immediatePropagationStopped"}}{{/crossLink}} to true.
-		 * Mirrors the DOM event standard.
-		 * @method stopImmediatePropagation
-		 **/
-		public stopImmediatePropagation()
-		{
-			this.immediatePropagationStopped = this.propagationStopped = true;
-		}
+	/**
+	 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} to true.
+	 * Mirrors the DOM event standard.
+	 * @method stopPropagation
+	 **/
+	public stopPropagation()
+	{
+		this.propagationStopped = true;
+	}
 
-		/**
-		 * Causes the active listener to be removed via removeEventListener();
-		 *
-		 * myBtn.addEventListener("click", function(evt) {
+	/**
+	 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} and
+	 * {{#crossLink "Event/immediatePropagationStopped"}}{{/crossLink}} to true.
+	 * Mirrors the DOM event standard.
+	 * @method stopImmediatePropagation
+	 **/
+	public stopImmediatePropagation()
+	{
+		this.immediatePropagationStopped = this.propagationStopped = true;
+	}
+
+	/**
+	 * Causes the active listener to be removed via removeEventListener();
+	 *
+	 * myBtn.addEventListener("click", function(evt) {
 		 * 			// do stuff...
 		 * 			evt.remove(); // removes this listener.
 		 * 		});
-		 *
-		 * @method remove
-		 **/
-		public remove()
-		{
-			this.removed = true;
-		}
+	 *
+	 * @method remove
+	 **/
+	public remove()
+	{
+		this.removed = true;
+	}
 
-		/**
-		 * Returns a clone of the Event instance.
-		 * @method clone
-		 * @return {Event} a clone of the Event instance.
-		 **/
-		public clone()
-		{
-			return new Event(this.type, this.bubbles, this.cancelable);
-		}
+	/**
+	 * Returns a clone of the Event instance.
+	 * @method clone
+	 * @return {Event} a clone of the Event instance.
+	 **/
+	public clone()
+	{
+		return new Event(this.type, this.bubbles, this.cancelable);
+	}
 
-		/**
-		 * Provides a chainable shortcut method for setting a number of properties on the instance.
-		 *
-		 * @method set
-		 * @param {Object} props A generic object containing properties to copy to the instance.
-		 * @return {Event} Returns the instance the method is called on (useful for chaining calls.)
-		 */
-		public set(props)
+	/**
+	 * Provides a chainable shortcut method for setting a number of properties on the instance.
+	 *
+	 * @method set
+	 * @param {Object} props A generic object containing properties to copy to the instance.
+	 * @return {Event} Returns the instance the method is called on (useful for chaining calls.)
+	 */
+	public set(props)
+	{
+		for(var n in props)
 		{
-			for(var n in props)
+			if(props.hasOwnProperty(n))
 			{
-				if(props.hasOwnProperty(n)) this[n] = props[n];
+				this[n] = props[n];
 			}
-
-			return this;
 		}
 
-		/**
-		 * Returns a string representation of this object.
-		 * @method toString
-		 * @return {String} a string representation of the instance.
-		 **/
-		public toString()
-		{
-			return "[Event (type=" + this.type + ")]";
-		}
+		return this;
+	}
+
+	/**
+	 * Returns a string representation of this object.
+	 * @method toString
+	 * @return {String} a string representation of the instance.
+	 **/
+	public toString()
+	{
+		return "[Event (type=" + this.type + ")]";
 	}
 }
+export = Event;

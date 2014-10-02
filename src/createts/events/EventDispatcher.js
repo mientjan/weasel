@@ -1,86 +1,85 @@
-/// <reference path="./Event.ts" />
-/*
-* EventDispatcher
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-/**
-* @module CreateJS
-*/
-"use strict";
-/**
-* EventDispatcher provides methods for managing queues of event listeners and dispatching events.
-*
-* You can either extend EventDispatcher or mix its methods into an existing prototype or instance by using the
-* EventDispatcher {{#crossLink "EventDispatcher/initialize"}}{{/crossLink}} method.
-*
-* Together with the CreateJS Event class, EventDispatcher provides an extended event model that is based on the
-* DOM Level 2 event model, including addEventListener, removeEventListener, and dispatchEvent. It supports
-* bubbling / capture, preventDefault, stopPropagation, stopImmediatePropagation, and handleEvent.
-*
-* EventDispatcher also exposes a {{#crossLink "EventDispatcher/on"}}{{/crossLink}} method, which makes it easier
-* to create scoped listeners, listeners that only run once, and listeners with associated arbitrary data. The
-* {{#crossLink "EventDispatcher/off"}}{{/crossLink}} method is merely an alias to
-* {{#crossLink "EventDispatcher/removeEventListener"}}{{/crossLink}}.
-*
-* Another addition to the DOM Level 2 model is the {{#crossLink "EventDispatcher/removeAllEventListeners"}}{{/crossLink}}
-* method, which can be used to listeners for all events, or listeners for a specific event. The Event object also
-* includes a {{#crossLink "Event/remove"}}{{/crossLink}} method which removes the active listener.
-*
-* <h4>Example</h4>
-* Add EventDispatcher capabilities to the "MyClass" class.
-*
-*      EventDispatcher.initialize(MyClass.prototype);
-*
-* Add an event (see {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}}).
-*
-*      instance.addEventListener("eventName", handlerMethod);
-*      function handlerMethod(event) {
-*          console.log(event.target + " Was Clicked");
-*      }
-*
-* <b>Maintaining proper scope</b><br />
-* Scope (ie. "this") can be be a challenge with events. Using the {{#crossLink "EventDispatcher/on"}}{{/crossLink}}
-* method to subscribe to events simplifies this.
-*
-*      instance.addEventListener("click", function(event) {
-*          console.log(instance == this); // false, scope is ambiguous.
-*      });
-*
-*      instance.on("click", function(event) {
-*          console.log(instance == this); // true, "on" uses dispatcher scope by default.
-*      });
-*
-* If you want to use addEventListener instead, you may want to use function.bind() or a similar proxy to manage scope.
-*
-*
-* @class EventDispatcher
-* @constructor
-**/
-var createts;
-(function (createts) {
+define(["require", "exports", 'createts/events/Event'], function(require, exports, Event) {
+    /*
+    * EventDispatcher
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
+    /**
+    * @module CreateJS
+    */
+    "use strict";
+
+    /**
+    * EventDispatcher provides methods for managing queues of event listeners and dispatching events.
+    *
+    * You can either extend EventDispatcher or mix its methods into an existing prototype or instance by using the
+    * EventDispatcher {{#crossLink "EventDispatcher/initialize"}}{{/crossLink}} method.
+    *
+    * Together with the CreateJS Event class, EventDispatcher provides an extended event model that is based on the
+    * DOM Level 2 event model, including addEventListener, removeEventListener, and dispatchEvent. It supports
+    * bubbling / capture, preventDefault, stopPropagation, stopImmediatePropagation, and handleEvent.
+    *
+    * EventDispatcher also exposes a {{#crossLink "EventDispatcher/on"}}{{/crossLink}} method, which makes it easier
+    * to create scoped listeners, listeners that only run once, and listeners with associated arbitrary data. The
+    * {{#crossLink "EventDispatcher/off"}}{{/crossLink}} method is merely an alias to
+    * {{#crossLink "EventDispatcher/removeEventListener"}}{{/crossLink}}.
+    *
+    * Another addition to the DOM Level 2 model is the {{#crossLink "EventDispatcher/removeAllEventListeners"}}{{/crossLink}}
+    * method, which can be used to listeners for all events, or listeners for a specific event. The Event object also
+    * includes a {{#crossLink "Event/remove"}}{{/crossLink}} method which removes the active listener.
+    *
+    * <h4>Example</h4>
+    * Add EventDispatcher capabilities to the "MyClass" class.
+    *
+    *      EventDispatcher.initialize(MyClass.prototype);
+    *
+    * Add an event (see {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}}).
+    *
+    *      instance.addEventListener("eventName", handlerMethod);
+    *      function handlerMethod(event) {
+    *          console.log(event.target + " Was Clicked");
+    *      }
+    *
+    * <b>Maintaining proper scope</b><br />
+    * Scope (ie. "this") can be be a challenge with events. Using the {{#crossLink "EventDispatcher/on"}}{{/crossLink}}
+    * method to subscribe to events simplifies this.
+    *
+    *      instance.addEventListener("click", function(event) {
+    *          console.log(instance == this); // false, scope is ambiguous.
+    *      });
+    *
+    *      instance.on("click", function(event) {
+    *          console.log(instance == this); // true, "on" uses dispatcher scope by default.
+    *      });
+    *
+    * If you want to use addEventListener instead, you may want to use function.bind() or a similar proxy to manage scope.
+    *
+    *
+    * @class EventDispatcher
+    * @constructor
+    **/
     var EventDispatcher = (function () {
         /**
         * Static initializer to mix EventDispatcher methods into a target object or prototype.
@@ -246,7 +245,7 @@ var createts;
                 if (!listeners || !listeners[eventObj]) {
                     return false;
                 }
-                eventObj = new createts.Event(eventObj);
+                eventObj = new Event(eventObj);
             }
 
             try  {
@@ -355,5 +354,7 @@ var createts;
         };
         return EventDispatcher;
     })();
-    createts.EventDispatcher = EventDispatcher;
-})(createts || (createts = {}));
+
+    
+    return EventDispatcher;
+});

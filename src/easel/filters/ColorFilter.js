@@ -186,6 +186,6 @@ var createts;
             return new ColorFilter(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
         };
         return ColorFilter;
-    })(createts.Filter);
+    })(Filter);
     createts.ColorFilter = ColorFilter;
 })(createts || (createts = {}));

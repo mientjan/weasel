@@ -25,11 +25,10 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* @module EaselJS
-*/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /**
+    * @module EaselJS
+    */
     /**
     * Base class that all filters should inherit from. Filters need to be applied to objects that have been cached using
     * the {{#crossLink "DisplayObject/cache"}}{{/crossLink}} method. If an object changes, please cache it again, or use
@@ -116,5 +115,7 @@ var createts;
         };
         return Filter;
     })();
-    createts.Filter = Filter;
-})(createts || (createts = {}));
+
+    
+    return Filter;
+});

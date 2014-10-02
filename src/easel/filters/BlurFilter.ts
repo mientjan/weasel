@@ -1,5 +1,5 @@
-/// <reference path="./Filter.ts" />
-/// <reference path="../geom/Rectangle.ts" />
+import Rectangle = require('easel/geom/Rectangle');
+import Filter = require('easel/filters/Filter');
 
 /*
  * BlurFilter
@@ -122,7 +122,7 @@ module createts
 		public getBounds()
 		{
 			var q = Math.pow(this.quality, 0.6) * 0.5;
-			return new createts.Rectangle(-this.blurX * q, -this.blurY * q, 2 * this.blurX * q, 2 * this.blurY * q);
+			return new Rectangle(-this.blurX * q, -this.blurY * q, 2 * this.blurX * q, 2 * this.blurY * q);
 		}
 
 		public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY)

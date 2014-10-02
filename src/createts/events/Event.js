@@ -25,19 +25,18 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* A collection of Classes that are shared across all the CreateJS libraries.  The classes are included in the minified
-* files of each library and are available on the createsjs namespace directly.
-*
-* <h4>Example</h4>
-*
-*      myObject.addEventListener("change", createjs.proxy(myMethod, scope));
-*
-* @module CreateJS
-* @main CreateJS
-*/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /**
+    * A collection of Classes that are shared across all the CreateJS libraries.  The classes are included in the minified
+    * files of each library and are available on the createsjs namespace directly.
+    *
+    * <h4>Example</h4>
+    *
+    *      myObject.addEventListener("change", createjs.proxy(myMethod, scope));
+    *
+    * @module CreateJS
+    * @main CreateJS
+    */
     var Event = (function () {
         /**
         * Contains properties and methods shared by all events for use with
@@ -228,8 +227,9 @@ var createts;
         */
         Event.prototype.set = function (props) {
             for (var n in props) {
-                if (props.hasOwnProperty(n))
+                if (props.hasOwnProperty(n)) {
                     this[n] = props[n];
+                }
             }
 
             return this;
@@ -245,5 +245,6 @@ var createts;
         };
         return Event;
     })();
-    createts.Event = Event;
-})(createts || (createts = {}));
+    
+    return Event;
+});

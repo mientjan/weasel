@@ -32,8 +32,8 @@
  * @class UID
  * @static
  **/
-module createts {
-	export class UID {
+
+class UID {
 		/**
 		 * @property _nextID
 		 * @type Number
@@ -51,7 +51,8 @@ module createts {
 			return UID._nextID++;
 		}
 	}
-}
+
+export = UID;
 
 
 

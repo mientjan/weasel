@@ -25,25 +25,24 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* @module EaselJS
-*/
-/**
-* Represents a rectangle as defined by the points (x, y) and (x+width, y+height).
-*
-* <h4>Example</h4>
-*
-*      var rect = new createjs.Rectangle(0, 0, 100, 100);
-*
-* @class Rectangle
-* @param {Number} [x=0] X position.
-* @param {Number} [y=0] Y position.
-* @param {Number} [width=0] The width of the Rectangle.
-* @param {Number} [height=0] The height of the Rectangle.
-* @constructor
-**/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /**
+    * @module EaselJS
+    */
+    /**
+    * Represents a rectangle as defined by the points (x, y) and (x+width, y+height).
+    *
+    * <h4>Example</h4>
+    *
+    *      var rect = new createjs.Rectangle(0, 0, 100, 100);
+    *
+    * @class Rectangle
+    * @param {Number} [x=0] X position.
+    * @param {Number} [y=0] Y position.
+    * @param {Number} [width=0] The width of the Rectangle.
+    * @param {Number} [height=0] The height of the Rectangle.
+    * @constructor
+    **/
     var Rectangle = (function () {
         // constructor:
         /**
@@ -121,5 +120,7 @@ var createts;
         };
         return Rectangle;
     })();
-    createts.Rectangle = Rectangle;
-})(createts || (createts = {}));
+
+    
+    return Rectangle;
+});

@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'easel/display/Shadow'], function(require, exports, Shadow) {
+define(["require", "exports", 'createts/events/EventDispatcher', 'easel/utils/UID', 'easel/utils/Methods', 'easel/geom/Matrix2D', 'easel/geom/Rectangle', 'easel/geom/Point', 'easel/display/Shadow', 'createts/events/Event', 'easel/display/DisplayObject'], function(require, exports, EventDispatcher, UID, Methods, Matrix2D, Rectangle, Point, Shadow, Event, Stage) {
     /*
     * DisplayObject
     * Visit http://createjs.com/ for documentation, updates and examples.
@@ -307,9 +307,9 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             this._bounds = null;
             this.DisplayObject_draw = this.draw;
 
-            this.id = createts.UID.get();
-            this._matrix = new createts.Matrix2D(0, 0, 0, 0, 0, 0);
-            this._rectangle = new createts.Rectangle(0, 0, 0, 0);
+            this.id = UID.get();
+            this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+            this._rectangle = new Rectangle(0, 0, 0, 0);
         }
         // public methods:
         /**
@@ -421,7 +421,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             // draw to canvas.
             //		scale = scale||1;
             if (!this.cacheCanvas) {
-                this.cacheCanvas = createts['createCanvas'] ? createts['createCanvas']() : document.createElement("canvas");
+                this.cacheCanvas = Methods.createCanvas();
             }
             this._cacheWidth = width;
             this._cacheHeight = height;
@@ -526,7 +526,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             }
 
             // using dynamic access to avoid circular dependencies;
-            if (o instanceof createts["Stage"]) {
+            if (o instanceof Stage) {
                 return o;
             }
             return null;
@@ -558,7 +558,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
                 return null;
             }
             mtx.append(1, 0, 0, 1, x, y);
-            return new createts.Point(mtx.tx, mtx.ty);
+            return new Point(mtx.tx, mtx.ty);
         };
 
         /**
@@ -588,7 +588,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             }
             mtx.invert();
             mtx.append(1, 0, 0, 1, x, y);
-            return new createts.Point(mtx.tx, mtx.ty);
+            return new Point(mtx.tx, mtx.ty);
         };
 
         /**
@@ -654,7 +654,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
         **/
         DisplayObject.prototype.getMatrix = function (matrix) {
             var o = this;
-            return (matrix ? matrix.identity() : new createts.Matrix2D(0, 0, 0, 0, 0, 0)).appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
+            return (matrix ? matrix.identity() : new Matrix2D(0, 0, 0, 0, 0, 0)).appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
         };
 
         /**
@@ -672,7 +672,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             if (matrix) {
                 matrix.identity();
             } else {
-                matrix = new createts.Matrix2D(0, 0, 0, 0, 0, 0);
+                matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
             }
             var o = this;
             while (o != null) {
@@ -836,7 +836,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             if (x == null) {
                 this._bounds = x;
             }
-            this._bounds = (this._bounds || new createts.Rectangle(x, y, width, height));
+            this._bounds = (this._bounds || new Rectangle(x, y, width, height));
         };
 
         /**
@@ -912,7 +912,7 @@ define(["require", "exports", 'easel/display/Shadow'], function(require, exports
             // because tick can be really performance sensitive, we'll inline some of the dispatchEvent work.
             var ls = this._listeners;
             if (ls && ls["tick"]) {
-                var evt = new createts.Event("tick").set(props);
+                var evt = new Event("tick").set(props);
                 this._dispatchEvent(evt, this); // 2
             }
         };

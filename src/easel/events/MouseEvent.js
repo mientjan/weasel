@@ -1,59 +1,57 @@
-/// <reference path="../../createjs/events/Event.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* MouseEvent
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-/**
-* @module EaselJS
-*/
-/**
-* Passed as the parameter to all mouse/pointer/touch related events. For a listing of mouse events and their properties,
-* see the {{#crossLink "DisplayObject"}}{{/crossLink}} and {{#crossLink "Stage"}}{{/crossLink}} event listings.
-* @class MouseEvent
-* @param {String} type The event type.
-* @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
-* @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
-* @param {Number} stageX The normalized x position relative to the stage.
-* @param {Number} stageY The normalized y position relative to the stage.
-* @param {MouseEvent} nativeEvent The native DOM event related to this mouse event.
-* @param {Number} pointerID The unique id for the pointer.
-* @param {Boolean} primary Indicates whether this is the primary pointer in a multitouch environment.
-* @param {Number} rawX The raw x position relative to the stage.
-* @param {Number} rawY The raw y position relative to the stage.
-* @extends Event
-* @constructor
-**/
-var createts;
-(function (createts) {
+define(["require", "exports", 'createts/events/Event'], function(require, exports, Event) {
+    /*
+    * MouseEvent
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
+    /**
+    * @module Easel
+    */
+    /**
+    * Passed as the parameter to all mouse/pointer/touch related events. For a listing of mouse events and their properties,
+    * see the {{#crossLink "DisplayObject"}}{{/crossLink}} and {{#crossLink "Stage"}}{{/crossLink}} event listings.
+    * @class MouseEvent
+    * @param {String} type The event type.
+    * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
+    * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
+    * @param {Number} stageX The normalized x position relative to the stage.
+    * @param {Number} stageY The normalized y position relative to the stage.
+    * @param {MouseEvent} nativeEvent The native DOM event related to this mouse event.
+    * @param {Number} pointerID The unique id for the pointer.
+    * @param {Boolean} primary Indicates whether this is the primary pointer in a multitouch environment.
+    * @param {Number} rawX The raw x position relative to the stage.
+    * @param {Number} rawY The raw y position relative to the stage.
+    * @extends Event
+    * @constructor
+    **/
     var MouseEvent = (function (_super) {
         __extends(MouseEvent, _super);
         //	try {
@@ -216,6 +214,5 @@ var createts;
             return "[MouseEvent (type=" + this.type + " stageX=" + this.stageX + " stageY=" + this.stageY + ")]";
         };
         return MouseEvent;
-    })(createts.Event);
-    createts.MouseEvent = MouseEvent;
-})(createts || (createts = {}));
+    })(Event);
+});

@@ -1,4 +1,4 @@
-/// <reference path="./Event.ts" />
+import Event = require('createts/events/Event');
 
 /*
  * EventDispatcher
@@ -86,9 +86,7 @@
 
 
 
-module createts
-{
-	export class EventDispatcher
+class EventDispatcher
 	{
 		/**
 		 * Static initializer to mix EventDispatcher methods into a target object or prototype.
@@ -289,7 +287,7 @@ module createts
 				{
 					return false;
 				}
-				eventObj = new createts.Event(eventObj);
+				eventObj = new Event(eventObj);
 			}
 			// TODO: deprecated. Target param is deprecated, only use case is MouseEvent/mousemove, remove.
 			try
@@ -423,4 +421,5 @@ module createts
 			}
 		}
 	}
-}
+
+export = EventDispatcher;

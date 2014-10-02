@@ -1,6 +1,6 @@
 /// <reference path="./DisplayObject.ts" />
 /// <reference path="../../easeljs/utils/Methods.ts" />
-
+import Dis
 /*
  * Text
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -60,7 +60,7 @@ module createts
 	 * @param {String} [color] The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex.
 	 * "#F00", "red", or "#FF0000").
 	 **/
-	export class Text extends createts.DisplayObject
+	export class Text extends DisplayObject
 	{
 
 		// static properties:

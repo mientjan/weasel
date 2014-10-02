@@ -25,23 +25,22 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-/**
-* @module EaselJS
-*/
-/**
-* Represents a point on a 2 dimensional x / y coordinate system.
-*
-* <h4>Example</h4>
-*
-*      var point = new createjs.Point(0, 100);
-*
-* @class Point
-* @param {Number} [x=0] X position.
-* @param {Number} [y=0] Y position.
-* @constructor
-**/
-var createts;
-(function (createts) {
+define(["require", "exports"], function(require, exports) {
+    /**
+    * @module EaselJS
+    */
+    /**
+    * Represents a point on a 2 dimensional x / y coordinate system.
+    *
+    * <h4>Example</h4>
+    *
+    *      var point = new createjs.Point(0, 100);
+    *
+    * @class Point
+    * @param {Number} [x=0] X position.
+    * @param {Number} [y=0] Y position.
+    * @constructor
+    **/
     var Point = (function () {
         /**
         * Initialization method. Can also be used to reinitialize the instance.
@@ -83,5 +82,7 @@ var createts;
         };
         return Point;
     })();
-    createts.Point = Point;
-})(createts || (createts = {}));
+
+    
+    return Point;
+});
