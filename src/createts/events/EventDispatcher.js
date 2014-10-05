@@ -115,6 +115,29 @@ define(["require", "exports", 'createts/events/Event'], function(require, export
             //			target._dispatchEvent = p._dispatchEvent;
             //			target.willTrigger = p.willTrigger;
         }
+        /**
+        * Static initializer to mix EventDispatcher methods into a target object or prototype.
+        *
+        *        EventDispatcher.initialize(MyClass.prototype); // add to the prototype of the class
+        *        EventDispatcher.initialize(myObject); // add to a specific instance
+        *
+        * @method initialize
+        * @static
+        * @param {Object} target The target object to inject EventDispatcher methods into. This can be an instance or a
+        * prototype.
+        **/
+        EventDispatcher.initialize = function (target) {
+            var p = EventDispatcher.prototype;
+            target.addEventListener = p.addEventListener;
+            target.on = p.on;
+            target.removeEventListener = target.off = p.removeEventListener;
+            target.removeAllEventListeners = p.removeAllEventListeners;
+            target.hasEventListener = p.hasEventListener;
+            target.dispatchEvent = p.dispatchEvent;
+            target._dispatchEvent = p._dispatchEvent;
+            target.willTrigger = p.willTrigger;
+        };
+
         // public methods:
         /**
         * Adds the specified event listener. Note that adding multiple listeners to the same function will result in

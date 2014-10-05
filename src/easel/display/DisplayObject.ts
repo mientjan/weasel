@@ -1022,7 +1022,7 @@ class DisplayObject extends EventDispatcher
 	 * @param {DisplayObject} o The DisplayObject instance which will have properties from the current DisplayObject
 	 * instance copied into.
 	 **/
-	public cloneProps(o)
+	public cloneProps(o:DisplayObject)
 	{
 		o.alpha = this.alpha;
 		o.name = this.name;

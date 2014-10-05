@@ -1,3 +1,6 @@
+import EventDispatcher = require('createts/events/EventDispatcher');
+import Event = require('createts/events/Event');
+
 /*
 * Ticker
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -182,8 +185,6 @@ class Ticker {
 	public static hasEventListener = null;
 	public static _listeners = null;
 
-	createjs.EventDispatcher.initialize(Ticker); // inject EventDispatcher methods.
-
 	public static _addEventListener = Ticker.addEventListener;
 	public static addEventListener = function() {
 		!Ticker._inited && Ticker.init();
@@ -255,7 +256,7 @@ class Ticker {
 	 * @type {Array}
 	 * @protected
 	 **/
-	public static _times = null;
+	public static _times:any[] = null;
 
 	/**
 	 * @property _tickTimes
@@ -304,7 +305,7 @@ class Ticker {
 	 **/
 	public static reset() {
 		if (Ticker._raf) {
-			var f = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame;
+			var f = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || window['oCancelAnimationFrame'] || window['msCancelAnimationFrame'];
 			f&&f(Ticker._timerId);
 		} else {
 			clearTimeout(Ticker._timerId);
@@ -358,7 +359,7 @@ class Ticker {
 	 **/
 	public static getFPS() {
 		return 1000/Ticker._interval;
-	};
+	}
 
 	/**
 	 * Returns the average time spent within a tick. This can vary significantly from the value provided by getMeasuredFPS
@@ -403,7 +404,7 @@ class Ticker {
 		// by default, calculate fps for the past ~1 second:
 		ticks = Math.min(times.length-1, ticks||(Ticker.getFPS()|0));
 		return 1000/((times[0]-times[ticks])/ticks);
-	};
+	}
 
 	/**
 	 * Changes the "paused" state of the Ticker, which can be retrieved by the {{#crossLink "Ticker/getPaused"}}{{/crossLink}}
@@ -450,7 +451,7 @@ class Ticker {
 	 **/
 	public static getPaused() {
 		return Ticker._paused;
-	};
+	}
 
 	/**
 	 * Returns the number of milliseconds that have elapsed since Ticker was initialized via {{#crossLink "Ticker/init"}}.
@@ -464,7 +465,7 @@ class Ticker {
 	 **/
 	public static getTime(runTime) {
 		return Ticker._startTime ? Ticker._getTime() - Ticker._startTime - (runTime ? Ticker._pausedTime : 0) : -1;
-	};
+	}
 
 	/**
 	 * Similar to getTime(), but returns the time included with the current (or most recent) tick event object.
@@ -488,7 +489,7 @@ class Ticker {
 	 **/
 	public static getTicks(pauseable) {
 		return Ticker._ticks - (pauseable ?Ticker._pausedTicks : 0);
-	};
+	}
 
 // private static methods:
 	/**
@@ -505,7 +506,7 @@ class Ticker {
 		if (time - Ticker._lastTime >= (Ticker._interval-1)*0.97) {
 			Ticker._tick();
 		}
-	};
+	}
 
 	/**
 	 * @method _handleRAF
@@ -548,7 +549,7 @@ class Ticker {
 		}
 		Ticker._raf = false;
 		Ticker._timerId = setTimeout(Ticker._handleTimeout, Ticker._interval);
-	};
+	}
 
 	/**
 	 * @method _tick
@@ -568,21 +569,25 @@ class Ticker {
 		Ticker._lastTime = time;
 		
 		if (Ticker.hasEventListener("tick")) {
-			var event = new createjs.Event("tick");
+			var event = new Event("tick");
 			var maxDelta = Ticker.maxDelta;
-			event.delta = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
-			event.paused = paused;
-			event.time = time;
-			event.runTime = time-Ticker._pausedTime;
-			Ticker.dispatchEvent(event);
+
+			// heavy performance problems, should be defined by event.
+			// @todo refactor
+			event['delta'] = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
+			event['paused'] = paused;
+			event['time'] = time;
+			event['runTime'] = time - Ticker._pausedTime;
+
+			Ticker.dispatchEvent( event );
 		}
 		
-		Ticker._tickTimes.unshift(Ticker._getTime()-time);
+		Ticker._tickTimes.unshift( Ticker._getTime() - time );
 		while (Ticker._tickTimes.length > 100) { Ticker._tickTimes.pop(); }
 
 		Ticker._times.unshift(time);
 		while (Ticker._times.length > 100) { Ticker._times.pop(); }
-	};
+	}
 
 	/**
 	 * @method _getTime
@@ -594,5 +599,7 @@ class Ticker {
 		return (Ticker.now&&Ticker.now.call(performance))||(new Date().getTime());
 	}
 }
+
+EventDispatcher.initialize(Ticker); // inject EventDispatcher methods.
 
 export =  Ticker;

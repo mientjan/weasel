@@ -64,8 +64,7 @@ define(["require", "exports", 'easel/display/DisplayObject', 'easel/utils/Method
     var Text = (function (_super) {
         __extends(Text, _super);
         /**
-        * Initialization method.
-        * @method initialize
+        * @method constructor
         * @param {String} [text] The text to display.
         * @param {String} [font] The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold
         * 36px Arial").
@@ -300,6 +299,9 @@ define(["require", "exports", 'easel/display/DisplayObject', 'easel/utils/Method
 
         /**
         * Draws multiline text.
+        *
+        * @todo define what {Object} o actual is.
+        *
         * @method _drawText
         * @param {CanvasRenderingContext2D} ctx
         * @param {Object} o

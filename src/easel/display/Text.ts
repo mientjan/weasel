@@ -88,14 +88,14 @@ class Text extends DisplayObject
 	 * @property text
 	 * @type String
 	 **/
-	text = "";
+	text:string = "";
 
 	/**
 	 * The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold 36px Arial").
 	 * @property font
 	 * @type String
 	 **/
-	font = null;
+	font:string = null;
 
 	/**
 	 * The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex. "#F00"). Default is "#000".
@@ -103,7 +103,7 @@ class Text extends DisplayObject
 	 * @property color
 	 * @type String
 	 **/
-	color = null;
+	color:string = null;
 
 	/**
 	 * The horizontal text alignment. Any of "start", "end", "left", "right", and "center". For detailed
@@ -113,7 +113,7 @@ class Text extends DisplayObject
 	 * @property textAlign
 	 * @type String
 	 **/
-	textAlign = "left";
+	textAlign:string = "left";
 
 	/**
 	 * The vertical alignment point on the font. Any of "top", "hanging", "middle", "alphabetic", "ideographic", or
@@ -122,7 +122,7 @@ class Text extends DisplayObject
 	 * @property textBaseline
 	 * @type String
 	 */
-	textBaseline = "top";
+	textBaseline:string = "top";
 
 	/**
 	 * The maximum width to draw the text. If maxWidth is specified (not null), the text will be condensed or
@@ -132,14 +132,14 @@ class Text extends DisplayObject
 	 * @property maxWidth
 	 * @type Number
 	 */
-	maxWidth = null;
+	maxWidth:number = null;
 
 	/**
 	 * If greater than 0, the text will be drawn as a stroke (outline) of the specified width.
 	 * @property outline
 	 * @type Number
 	 **/
-	outline = 0;
+	outline:number = 0;
 
 	/**
 	 * Indicates the line height (vertical distance between baselines) for multi-line text. If null or 0,
@@ -147,7 +147,7 @@ class Text extends DisplayObject
 	 * @property lineHeight
 	 * @type Number
 	 **/
-	lineHeight = 0;
+	lineHeight:number = 0;
 
 	/**
 	 * Indicates the maximum width for a line of text before it is wrapped to multiple lines. If null,
@@ -155,12 +155,11 @@ class Text extends DisplayObject
 	 * @property lineWidth
 	 * @type Number
 	 **/
-	lineWidth = null;
+	lineWidth:number = null;
 
 
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 * @method constructor
 	 * @param {String} [text] The text to display.
 	 * @param {String} [font] The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold
 	 * 36px Arial").
@@ -168,7 +167,7 @@ class Text extends DisplayObject
 	 * "#F00", "red", or "#FF0000").
 	 * @protected
 	 */
-		constructor(text, font, color)
+	constructor(text:string, font:string, color:string)
 	{
 		super();
 		this.text = text;
@@ -183,7 +182,7 @@ class Text extends DisplayObject
 	 * @method isVisible
 	 * @return {Boolean} Whether the display object would be visible if drawn to a canvas
 	 **/
-		isVisible()
+	public isVisible()
 	{
 		var hasContent = this.cacheCanvas || (this.text != null && this.text !== "");
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
@@ -310,7 +309,7 @@ class Text extends DisplayObject
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-		toString()
+	public toString()
 	{
 		return "[Text (text=" + (this.text.length > 20 ? this.text.substr(0, 17) + "..." : this.text) + ")]";
 	}
@@ -322,7 +321,7 @@ class Text extends DisplayObject
 	 * @param {Text} o
 	 * @protected
 	 **/
-		cloneProps(o)
+	public cloneProps(o:Text)
 	{
 		super.cloneProps(o);
 		o.textAlign = this.textAlign;
@@ -349,6 +348,9 @@ class Text extends DisplayObject
 
 	/**
 	 * Draws multiline text.
+	 *
+	 * @todo define what {Object} o actual is.
+	 *
 	 * @method _drawText
 	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {Object} o
@@ -371,8 +373,8 @@ class Text extends DisplayObject
 		var hardLines = String(this.text).split(/(?:\r\n|\r|\n)/);
 		for(var i = 0, l = hardLines.length; i < l; i++)
 		{
-			var str = hardLines[i];
-			var w = null;
+			var str:string = hardLines[i];
+			var w:number = null;
 
 			if(this.lineWidth != null && (w = ctx.measureText(str).width) > this.lineWidth)
 			{
