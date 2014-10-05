@@ -1,35 +1,35 @@
-/// <reference path="../createjs/events/EventDispatcher.ts" />
+import EventDispatcher = require('createts/events/EventDispatcher');
 
 /*
-* Tween
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Tween
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 
-module createts {
+
 /**
  * The TweenJS Javascript library provides a simple but powerful tweening interface. It supports tweening of both
  * numeric object properties & CSS style properties, and allows you to chain tweens and actions together to create
@@ -38,9 +38,9 @@ module createts {
  * <h4>Simple Tween</h4>
  * This tween will tween the target's alpha property from 0 to 1 for 1s then call the <code>handleComplete</code> function.
  *
- *	    target.alpha = 0;
- *	    Tween.get(target).to({alpha:1}, 1000).call(handleComplete);
- *	    function handleComplete() {
+ *        target.alpha = 0;
+ *        Tween.get(target).to({alpha:1}, 1000).call(handleComplete);
+ *        function handleComplete() {
  *	    	//Tween complete
  *	    }
  *
@@ -56,9 +56,9 @@ module createts {
  * This tween will wait 0.5s, tween the target's alpha property to 0 over 1s, set it's visible to false, then call the
  * <code>handleComplete</code> function.
  *
- *	    target.alpha = 1;
- *	    Tween.get(target).wait(500).to({alpha:0, visible:false}, 1000).call(handleComplete);
- *	    function handleComplete() {
+ *        target.alpha = 1;
+ *        Tween.get(target).wait(500).to({alpha:0, visible:false}, 1000).call(handleComplete);
+ *        function handleComplete() {
  *	    	//Tween complete
  *	    }
  *
@@ -83,11 +83,11 @@ module createts {
  * <h4>Example</h4>
  *
  *      target.alpha = 1;
- *	    Tween.get(target)
- *	         .wait(500)
- *	         .to({alpha:0, visible:false}, 1000)
- *	         .call(handleComplete);
- *	    function handleComplete() {
+ *        Tween.get(target)
+ *             .wait(500)
+ *             .to({alpha:0, visible:false}, 1000)
+ *             .call(handleComplete);
+ *        function handleComplete() {
  *	    	//Tween complete
  *	    }
  *
@@ -122,9 +122,10 @@ module createts {
  * @extends EventDispatcher
  * @constructor
  */
-export class Tween extends createts.EventDispatcher {
+class Tween extends EventDispatcher
+{
 
-// static interface:
+	// static interface:
 	/**
 	 * Constant defining the none actionsMode for use with setPosition.
 	 * @property NONE
@@ -180,7 +181,7 @@ export class Tween extends createts.EventDispatcher {
 	 * Returns a new tween instance. This is functionally identical to using "new Tween(...)", but looks cleaner
 	 * with the chained syntax of TweenJS.
 	 * @example
-	 *	var tween = createjs.Tween.get(target);
+	 *    var tween = createjs.Tween.get(target);
 	 * @method get
 	 * @param {Object} target The target object that will have its properties tweened.
 	 * @param {Object} [props] The configuration properties to apply to this tween instance (ex. <code>{loop:true, paused:true}</code>).
@@ -201,8 +202,12 @@ export class Tween extends createts.EventDispatcher {
 	 * applied to the returned tween instance.
 	 * @static
 	 */
-	public static get(target, props, pluginData, override) {
-		if (override) { Tween.removeTweens(target); }
+	public static get(target, props, pluginData, override)
+	{
+		if(override)
+		{
+			Tween.removeTweens(target);
+		}
 		return new Tween(target, props, pluginData);
 	}
 
@@ -218,12 +223,17 @@ export class Tween extends createts.EventDispatcher {
 	 * will ignore this, but all others will pause if this is true.
 	 * @static
 	 */
-	public static tick(delta, paused) {
+	public static tick(delta, paused)
+	{
 		var tweens = Tween._tweens.slice(); // to avoid race conditions.
-		for (var i=tweens.length-1; i>=0; i--) {
+		for(var i = tweens.length - 1; i >= 0; i--)
+		{
 			var tween = tweens[i];
-			if ((paused && !tween.ignoreGlobalPause) || tween._paused) { continue; }
-			tween.tick(tween._useTicks?1:delta);
+			if((paused && !tween.ignoreGlobalPause) || tween._paused)
+			{
+				continue;
+			}
+			tween.tick(tween._useTicks ? 1 : delta);
 		}
 	}
 
@@ -236,8 +246,10 @@ export class Tween extends createts.EventDispatcher {
 	 * @static
 	 * @since 0.4.2
 	 */
-	public static handleEvent(event) {
-		if (event.type == "tick") {
+	public static handleEvent(event)
+	{
+		if(event.type == "tick")
+		{
 			this.tick(event.delta, event.paused);
 		}
 	}
@@ -249,12 +261,18 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} target The target object to remove existing tweens from.
 	 * @static
 	 */
-	public static removeTweens(target:any) {
-		if (!target.tweenjs_count) { return; }
+	public static removeTweens(target:any)
+	{
+		if(!target.tweenjs_count)
+		{
+			return;
+		}
 		var tweens = Tween._tweens;
-		for (var i=tweens.length-1; i>=0; i--) {
+		for(var i = tweens.length - 1; i >= 0; i--)
+		{
 			var tween = tweens[i];
-			if (tween._target == target) {
+			if(tween._target == target)
+			{
 				tween._paused = true;
 				tweens.splice(i, 1);
 			}
@@ -268,9 +286,11 @@ export class Tween extends createts.EventDispatcher {
 	 * @static
 	 * @since 0.4.1
 	 */
-	public static removeAllTweens() {
+	public static removeAllTweens()
+	{
 		var tweens = Tween._tweens;
-		for (var i= 0, l=tweens.length; i<l; i++) {
+		for(var i = 0, l = tweens.length; i < l; i++)
+		{
 			var tween = tweens[i];
 			tween._paused = true;
 			tween.target.tweenjs_count = 0;
@@ -286,8 +306,12 @@ export class Tween extends createts.EventDispatcher {
 	 * @return {Boolean} If there are active tweens.
 	 * @static
 	 */
-	public static hasActiveTweens(target:any) {
-		if (target) { return target.tweenjs_count; }
+	public static hasActiveTweens(target:any)
+	{
+		if(target)
+		{
+			return target.tweenjs_count;
+		}
 		return Tween._tweens && !!Tween._tweens.length;
 	}
 
@@ -299,18 +323,31 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} plugin The plugin class to install
 	 * @param {Array} properties An array of properties that the plugin will handle.
 	 */
-	public static installPlugin(plugin:any, properties:any) {
+	public static installPlugin(plugin:any, properties:any)
+	{
 		var priority = plugin.priority;
-		if (priority == null) { plugin.priority = priority = 0; }
-		for (var i=0,l=properties.length,p=Tween._plugins;i<l;i++) {
+		if(priority == null)
+		{
+			plugin.priority = priority = 0;
+		}
+		for(var i = 0, l = properties.length, p = Tween._plugins; i < l; i++)
+		{
 			var n = properties[i];
-			if (!p[n]) { p[n] = [plugin]; }
-			else {
+			if(!p[n])
+			{
+				p[n] = [plugin];
+			}
+			else
+			{
 				var arr = p[n];
-				for (var j=0,jl=arr.length;j<jl;j++) {
-					if (priority < arr[j].priority) { break; }
+				for(var j = 0, jl = arr.length; j < jl; j++)
+				{
+					if(priority < arr[j].priority)
+					{
+						break;
+					}
 				}
-				p[n].splice(j,0,plugin);
+				p[n].splice(j, 0, plugin);
 			}
 		}
 	}
@@ -319,23 +356,39 @@ export class Tween extends createts.EventDispatcher {
 	 * Registers or unregisters a tween with the ticking system.
 	 * @method _register
 	 * @param {Tween} tween The tween instance to register or unregister.
-	 * @param {Boolean} value If true, the tween is registered. If false the tween is unregistered. 
+	 * @param {Boolean} value If true, the tween is registered. If false the tween is unregistered.
 	 * @static
 	 * @protected
 	 */
-	public static _register(tween:Tween, value) {
+	public static _register(tween:Tween, value)
+	{
 		var target = tween._target;
 		var tweens = Tween._tweens;
-		if (value) {
+		if(value)
+		{
 			// TODO: this approach might fail if a dev is using sealed objects in ES5
-			if (target) { target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count+1 : 1; }
+			if(target)
+			{
+				target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count + 1 : 1;
+			}
 			tweens.push(tween);
-			if (!Tween._inited && createts.Ticker) { createts.Ticker.addEventListener("tick", Tween); Tween._inited = true; }
-		} else {
-			if (target) { target.tweenjs_count--; }
+			if(!Tween._inited && Ticker)
+			{
+				Ticker.addEventListener("tick", Tween);
+				Tween._inited = true;
+			}
+		}
+		else
+		{
+			if(target)
+			{
+				target.tweenjs_count--;
+			}
 			var i = tweens.length;
-			while (i--) {
-				if (tweens[i] == tween) {
+			while(i--)
+			{
+				if(tweens[i] == tween)
+				{
 					tweens.splice(i, 1);
 					return;
 				}
@@ -343,7 +396,7 @@ export class Tween extends createts.EventDispatcher {
 		}
 	}
 
-// public properties:
+	// public properties:
 	/**
 	 * Causes this tween to continue playing when a global pause is active. For example, if TweenJS is using Ticker,
 	 * then setting this to true (the default) will cause this tween to be paused when <code>Ticker.setPaused(true)</code> is called.
@@ -376,11 +429,11 @@ export class Tween extends createts.EventDispatcher {
 	 * Allows you to specify data that will be used by installed plugins. Each plugin uses this differently, but in general
 	 * you specify data by setting it to a property of pluginData with the same name as the plugin class.
 	 * @example
-	 *	myTween.pluginData.PluginClassName = data;
+	 *    myTween.pluginData.PluginClassName = data;
 	 * <br/>
 	 * Also, most plugins support a property to enable or disable them. This is typically the plugin class name followed by "_enabled".<br/>
 	 * @example
-	 *	myTween.pluginData.PluginClassName_enabled = false;<br/>
+	 *    myTween.pluginData.PluginClassName_enabled = false;<br/>
 	 * <br/>
 	 * Some plugins also store instance data in this object, usually in a property named _PluginClassName.
 	 * See the documentation for individual plugins for more details.
@@ -413,14 +466,14 @@ export class Tween extends createts.EventDispatcher {
 	 **/
 	public passive = false;
 
-// events:
+	// events:
 	/**
 	 * Called whenever the tween's position changes.
 	 * @event change
 	 * @since 0.4.0
 	 **/
 
-// private properties:
+	// private properties:
 
 	/**
 	 * @property _paused
@@ -508,7 +561,7 @@ export class Tween extends createts.EventDispatcher {
 	 */
 	public _inited = false;
 
-// constructor:
+	// constructor:
 	/**
 	 * @method initialize
 	 * @param {Object} target
@@ -516,14 +569,19 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} pluginData
 	 * @protected
 	 */
-	constructor(target, props, pluginData) {
+		constructor(target, props, pluginData)
+	{
 		this.target = this._target = target;
-		if (props) {
+		if(props)
+		{
 			this._useTicks = props.useTicks;
 			this.ignoreGlobalPause = props.ignoreGlobalPause;
 			this.loop = props.loop;
 			props.onChange && this.addEventListener("change", props.onChange);
-			if (props.override) { Tween.removeTweens(target); }
+			if(props.override)
+			{
+				Tween.removeTweens(target);
+			}
 		}
 
 		this.pluginData = pluginData || {};
@@ -531,17 +589,26 @@ export class Tween extends createts.EventDispatcher {
 		this._initQueueProps = {};
 		this._steps = [];
 		this._actions = [];
-		if (props&&props.paused) { this._paused=true; }
-		else { Tween._register(this,true); }
-		if (props&&props.position!=null) { this.setPosition(props.position, Tween.NONE); }
+		if(props && props.paused)
+		{
+			this._paused = true;
+		}
+		else
+		{
+			Tween._register(this, true);
+		}
+		if(props && props.position != null)
+		{
+			this.setPosition(props.position, Tween.NONE);
+		}
 	}
 
-// public methods:
+	// public methods:
 	/**
 	 * Queues a wait (essentially an empty tween).
 	 * @example
-	 *	//This tween will wait 1s before alpha is faded to 0.
-	 *	createjs.Tween.get(target).wait(1000).to({alpha:0}, 1000);
+	 *    //This tween will wait 1s before alpha is faded to 0.
+	 *    createjs.Tween.get(target).wait(1000).to({alpha:0}, 1000);
 	 * @method wait
 	 * @param {Number} duration The duration of the wait in milliseconds (or in ticks if <code>useTicks</code> is true).
 	 * @param {Boolean} passive Tween properties will not be updated during a passive wait. This
@@ -549,10 +616,14 @@ export class Tween extends createts.EventDispatcher {
 	 * at different times.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 **/
-	public wait(duration, passive) {
-		if (duration == null || duration <= 0) { return this; }
+	public wait(duration, passive)
+	{
+		if(duration == null || duration <= 0)
+		{
+			return this;
+		}
 		var o = this._cloneProps(this._curQueueProps);
-		return this._addStep({d:duration, p0:o, e:this._linearEase, p1:o, v:passive});
+		return this._addStep({d: duration, p0: o, e: this._linearEase, p1: o, v: passive});
 	}
 
 	/**
@@ -560,7 +631,7 @@ export class Tween extends createts.EventDispatcher {
 	 * Numeric properties will be tweened from their current value in the tween to the target value. Non-numeric
 	 * properties will be set at the end of the specified duration.
 	 * @example
-	 *	createjs.Tween.get(target).to({alpha:0}, 1000);
+	 *    createjs.Tween.get(target).to({alpha:0}, 1000);
 	 * @method to
 	 * @param {Object} props An object specifying property target values for this tween (Ex. <code>{x:300}</code> would tween the x
 	 *      property of the target to 300).
@@ -569,16 +640,20 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Function} ease Optional. The easing function to use for this tween. Defaults to a linear ease.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 */
-	public to(props, duration, ease) {
-		if (isNaN(duration) || duration < 0) { duration = 0; }
-		return this._addStep({d:duration||0, p0:this._cloneProps(this._curQueueProps), e:ease, p1:this._cloneProps(this._appendQueueProps(props))});
+	public to(props, duration, ease)
+	{
+		if(isNaN(duration) || duration < 0)
+		{
+			duration = 0;
+		}
+		return this._addStep({d: duration || 0, p0: this._cloneProps(this._curQueueProps), e: ease, p1: this._cloneProps(this._appendQueueProps(props))});
 	}
 
 	/**
 	 * Queues an action to call the specified function.
-	 *	@example
-	 *   	//would call myFunction() after 1s.
-	 *   	myTween.wait(1000).call(myFunction);
+	 *    @example
+	 *    //would call myFunction() after 1s.
+	 *    myTween.wait(1000).call(myFunction);
 	 * @method call
 	 * @param {Function} callback The function to call.
 	 * @param {Array} params Optional. The parameters to call the function with. If this is omitted, then the function
@@ -587,8 +662,9 @@ export class Tween extends createts.EventDispatcher {
 	 *      scope.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 */
-	public call(callback, params, scope) {
-		return this._addAction({f:callback, p:params ? params : [this], o:scope ? scope : this._target});
+	public call(callback, params, scope)
+	{
+		return this._addAction({f: callback, p: params ? params : [this], o: scope ? scope : this._target});
 	}
 
 	// TODO: add clarification between this and a 0 duration .to:
@@ -596,26 +672,31 @@ export class Tween extends createts.EventDispatcher {
 	 * Queues an action to set the specified props on the specified target. If target is null, it will use this tween's
 	 * target.
 	 * @example
-	 *	myTween.wait(1000).set({visible:false},foo);
+	 *    myTween.wait(1000).set({visible:false},foo);
 	 * @method set
 	 * @param {Object} props The properties to set (ex. <code>{visible:false}</code>).
 	 * @param {Object} target Optional. The target to set the properties on. If omitted, they will be set on the tween's target.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 */
-	public set(props, target) {
-		return this._addAction({f:this._set, o:this, p:[props, target ? target : this._target]});
+	public set(props, target)
+	{
+		return this._addAction({f: this._set, o: this, p: [props, target ? target : this._target]});
 	}
 
 	/**
 	 * Queues an action to to play (unpause) the specified tween. This enables you to sequence multiple tweens.
 	 * @example
-	 *	myTween.to({x:100},500).play(otherTween);
+	 *    myTween.to({x:100},500).play(otherTween);
 	 * @method play
 	 * @param {Tween} tween The tween to play.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 */
-	public play(tween:Tween) {
-		if (!tween) { tween = this; }
+	public play(tween:Tween)
+	{
+		if(!tween)
+		{
+			tween = this;
+		}
 		return this.call(tween.setPaused, [false], tween);
 	}
 
@@ -625,8 +706,12 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Tween} tween The tween to play. If null, it pauses this tween.
 	 * @return {Tween} This tween instance (for chaining calls)
 	 */
-	public pause(tween) {
-		if (!tween) { tween = this; }
+	public pause(tween)
+	{
+		if(!tween)
+		{
+			tween = this;
+		}
 		return this.call(tween.setPaused, [true], tween);
 	}
 
@@ -640,21 +725,36 @@ export class Tween extends createts.EventDispatcher {
 	 *      position is less than old, run all actions between them in reverse.
 	 * @return {Boolean} Returns true if the tween is complete (ie. the full tween has run & loop is false).
 	 */
-	public setPosition(value, actionsMode) {
-		if (value < 0) { value = 0; }
-		if (actionsMode == null) { actionsMode = 1; }
+	public setPosition(value, actionsMode)
+	{
+		if(value < 0)
+		{
+			value = 0;
+		}
+		if(actionsMode == null)
+		{
+			actionsMode = 1;
+		}
 
 		// normalize position:
 		var t = value;
 		var end = false;
-		if (t >= this.duration) {
-			if (this.loop) { t = t%this.duration; }
-			else {
+		if(t >= this.duration)
+		{
+			if(this.loop)
+			{
+				t = t % this.duration;
+			}
+			else
+			{
 				t = this.duration;
 				end = true;
 			}
 		}
-		if (t == this._prevPos) { return end; }
+		if(t == this._prevPos)
+		{
+			return end;
+		}
 
 
 		var prevPos = this._prevPos;
@@ -662,36 +762,56 @@ export class Tween extends createts.EventDispatcher {
 		this._prevPosition = value;
 
 		// handle tweens:
-		if (this._target) {
-			if (end) {
+		if(this._target)
+		{
+			if(end)
+			{
 				// addresses problems with an ending zero length step.
-				this._updateTargetProps(null,1);
-			} else if (this._steps.length > 0) {
+				this._updateTargetProps(null, 1);
+			}
+			else if(this._steps.length > 0)
+			{
 				// find our new tween index:
-				for (var i=0, l=this._steps.length; i<l; i++) {
-					if (this._steps[i].t > t) { break; }
+				for(var i = 0, l = this._steps.length; i < l; i++)
+				{
+					if(this._steps[i].t > t)
+					{
+						break;
+					}
 				}
-				var step = this._steps[i-1];
-				this._updateTargetProps(step,(this._stepPosition = t-step.t)/step.d);
+				var step = this._steps[i - 1];
+				this._updateTargetProps(step, (this._stepPosition = t - step.t) / step.d);
 			}
 		}
 
 		// run actions:
-		if (actionsMode != 0 && this._actions.length > 0) {
-			if (this._useTicks) {
+		if(actionsMode != 0 && this._actions.length > 0)
+		{
+			if(this._useTicks)
+			{
 				// only run the actions we landed on.
-				this._runActions(t,t);
-			} else if (actionsMode == 1 && t<prevPos) {
-				if (prevPos != this.duration) { this._runActions(prevPos, this.duration); }
+				this._runActions(t, t);
+			}
+			else if(actionsMode == 1 && t < prevPos)
+			{
+				if(prevPos != this.duration)
+				{
+					this._runActions(prevPos, this.duration);
+				}
 				this._runActions(0, t, true);
-			} else {
+			}
+			else
+			{
 				this._runActions(prevPos, t);
 			}
 		}
 
-		if (end) { this.setPaused(true); }
+		if(end)
+		{
+			this.setPaused(true);
+		}
 
-        this.dispatchEvent("change");
+		this.dispatchEvent("change");
 		return end;
 	}
 
@@ -701,9 +821,13 @@ export class Tween extends createts.EventDispatcher {
 	 * @method tick
 	 * @param {Number} delta The time to advance in milliseconds (or ticks if <code>useTicks</code> is true).
 	 */
-	tick(delta) {
-		if (this._paused) { return; }
-		this.setPosition(this._prevPosition+delta);
+	public tick(delta:number)
+	{
+		if(this._paused)
+		{
+			return;
+		}
+		this.setPosition(this._prevPosition + delta);
 	}
 
 	/**
@@ -712,8 +836,12 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Boolean} value Indicates whether the tween should be paused (true) or played (false).
 	 * @return {Tween} This tween instance (for chaining calls)
 	 */
-	setPaused(value) {
-		if (this._paused === !!value) { return this; }
+	public setPaused(value)
+	{
+		if(this._paused === !!value)
+		{
+			return this;
+		}
 		this._paused = !!value;
 		Tween._register(this, !value);
 		return this;
@@ -730,7 +858,8 @@ export class Tween extends createts.EventDispatcher {
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 */
-	toString() {
+	public toString()
+	{
 		return "[Tween]";
 	}
 
@@ -738,51 +867,83 @@ export class Tween extends createts.EventDispatcher {
 	 * @method clone
 	 * @protected
 	 */
-	clone() {
+	public clone()
+	{
 		throw("Tween can not be cloned.")
 	}
 
-// private methods:
+	// private methods:
 	/**
 	 * @method _updateTargetProps
 	 * @param {Object} step
 	 * @param {Number} ratio
 	 * @protected
 	 */
-	_updateTargetProps(step, ratio) {
-		var p0,p1,v,v0,v1,arr;
-		if (!step && ratio == 1) {
+	public _updateTargetProps(step, ratio)
+	{
+		var p0, p1, v, v0, v1, arr;
+		if(!step && ratio == 1)
+		{
 			// GDS: when does this run? Just at the very end? Shouldn't.
 			this.passive = false;
 			p0 = p1 = this._curQueueProps;
-		} else {
+		}
+		else
+		{
 			this.passive = !!step.v;
-			if (this.passive) { return; } // don't update props.
+			if(this.passive)
+			{
+				return;
+			} // don't update props.
 			// apply ease to ratio.
-			if (step.e) { ratio = step.e(ratio,0,1,1); }
+			if(step.e)
+			{
+				ratio = step.e(ratio, 0, 1, 1);
+			}
 			p0 = step.p0;
 			p1 = step.p1;
 		}
 
-		for (var n in this._initQueueProps) {
-			if ((v0 = p0[n]) == null) { p0[n] = v0 = this._initQueueProps[n]; }
-			if ((v1 = p1[n]) == null) { p1[n] = v1 = v0; }
-			if (v0 == v1 || ratio == 0 || ratio == 1 || (typeof(v0) != "number")) {
+		for(var n in this._initQueueProps)
+		{
+			if((v0 = p0[n]) == null)
+			{
+				p0[n] = v0 = this._initQueueProps[n];
+			}
+			if((v1 = p1[n]) == null)
+			{
+				p1[n] = v1 = v0;
+			}
+			if(v0 == v1 || ratio == 0 || ratio == 1 || (typeof(v0) != "number"))
+			{
 				// no interpolation - either at start, end, values don't change, or the value is non-numeric.
 				v = ratio == 1 ? v1 : v0;
-			} else {
-				v = v0+(v1-v0)*ratio;
+			}
+			else
+			{
+				v = v0 + (v1 - v0) * ratio;
 			}
 
 			var ignore = false;
-			if (arr = Tween._plugins[n]) {
-				for (var i=0,l=arr.length;i<l;i++) {
-					var v2 = arr[i].tween(this, n, v, p0, p1, ratio, !!step&&p0==p1, !step);
-					if (v2 == Tween.IGNORE) { ignore = true; }
-					else { v = v2; }
+			if(arr = Tween._plugins[n])
+			{
+				for(var i = 0, l = arr.length; i < l; i++)
+				{
+					var v2 = arr[i].tween(this, n, v, p0, p1, ratio, !!step && p0 == p1, !step);
+					if(v2 == Tween.IGNORE)
+					{
+						ignore = true;
+					}
+					else
+					{
+						v = v2;
+					}
 				}
 			}
-			if (!ignore) { this._target[n] = v; }
+			if(!ignore)
+			{
+				this._target[n] = v;
+			}
 		}
 	}
 
@@ -793,23 +954,27 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Boolean} includeStart
 	 * @protected
 	 */
-	_runActions(startPos, endPos, includeStart) {
+	public _runActions(startPos, endPos, includeStart)
+	{
 		var sPos = startPos;
 		var ePos = endPos;
 		var i = -1;
 		var j = this._actions.length;
 		var k = 1;
-		if (startPos > endPos) {
+		if(startPos > endPos)
+		{
 			// running backwards, flip everything:
 			sPos = endPos;
 			ePos = startPos;
 			i = j;
 			j = k = -1;
 		}
-		while ((i+=k) != j) {
+		while((i += k) != j)
+		{
 			var action = this._actions[i];
 			var pos = action.t;
-			if (pos == ePos || (pos > sPos && pos < ePos) || (includeStart && pos == startPos) ) {
+			if(pos == ePos || (pos > sPos && pos < ePos) || (includeStart && pos == startPos))
+			{
 				action.f.apply(action.o, action.p);
 			}
 		}
@@ -820,36 +985,52 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} o
 	 * @protected
 	 */
-	_appendQueueProps(o) {
-		var arr,oldValue,i, l, injectProps;
-		for (var n in o) {
-			if (this._initQueueProps[n] === undefined) {
+	public _appendQueueProps(o)
+	{
+		var arr, oldValue, i, l, injectProps;
+		for(var n in o)
+		{
+			if(this._initQueueProps[n] === undefined)
+			{
 				oldValue = this._target[n];
 
 				// init plugins:
-				if (arr = Tween._plugins[n]) {
-					for (i=0,l=arr.length;i<l;i++) {
+				if(arr = Tween._plugins[n])
+				{
+					for(i = 0, l = arr.length; i < l; i++)
+					{
 						oldValue = arr[i].init(this, n, oldValue);
 					}
 				}
-				this._initQueueProps[n] = this._curQueueProps[n] = (oldValue===undefined) ? null : oldValue;
-			} else {
+				this._initQueueProps[n] = this._curQueueProps[n] = (oldValue === undefined) ? null : oldValue;
+			}
+			else
+			{
 				oldValue = this._curQueueProps[n];
 			}
 		}
 
-		for (var n in o) {
+		for(var n in o)
+		{
 			oldValue = this._curQueueProps[n];
-			if (arr = Tween._plugins[n]) {
-				injectProps = injectProps||{};
-				for (i=0, l=arr.length;i<l;i++) {
+			if(arr = Tween._plugins[n])
+			{
+				injectProps = injectProps || {};
+				for(i = 0, l = arr.length; i < l; i++)
+				{
 					// TODO: remove the check for .step in the next version. It's here for backwards compatibility.
-					if (arr[i].step) { arr[i].step(this, n, oldValue, o[n], injectProps); }
+					if(arr[i].step)
+					{
+						arr[i].step(this, n, oldValue, o[n], injectProps);
+					}
 				}
 			}
 			this._curQueueProps[n] = o[n];
 		}
-		if (injectProps) { this._appendQueueProps(injectProps); }
+		if(injectProps)
+		{
+			this._appendQueueProps(injectProps);
+		}
 		return this._curQueueProps;
 	}
 
@@ -858,9 +1039,11 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} props
 	 * @protected
 	 */
-	_cloneProps(props) {
+	public _cloneProps(props)
+	{
 		var o = {};
-		for (var n in props) {
+		for(var n in props)
+		{
 			o[n] = props[n];
 		}
 		return o;
@@ -871,8 +1054,10 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} o
 	 * @protected
 	 */
-	_addStep(o) {
-		if (o.d > 0) {
+	public _addStep(o)
+	{
+		if(o.d > 0)
+		{
 			this._steps.push(o);
 			o.t = this.duration;
 			this.duration += o.d;
@@ -885,7 +1070,8 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} o
 	 * @protected
 	 */
-	_addAction(o) {
+	public _addAction(o)
+	{
 		o.t = this.duration;
 		this._actions.push(o);
 		return this;
@@ -897,10 +1083,13 @@ export class Tween extends createts.EventDispatcher {
 	 * @param {Object} o
 	 * @protected
 	 */
-	_set(props, o) {
-		for (var n in props) {
+	public _set(props, o)
+	{
+		for(var n in props)
+		{
 			o[n] = props[n];
 		}
 	}
 }
-}
+
+export = Tween;

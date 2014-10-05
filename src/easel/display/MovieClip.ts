@@ -1,5 +1,6 @@
 /// <reference path="./Container.ts" />
-
+import Container = require('easel/display/Container');
+import Timeline = require('tweenjs/Timeline');
 /*
  * MovieClip
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -28,8 +29,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-module createts
-{
 	/**
 	 * The MovieClip class associates a TweenJS Timeline with an EaselJS {{#crossLink "Container"}}{{/crossLink}}. It allows
 	 * you to create objects which encapsulate timeline animations, state changes, and synched actions. Due to the
@@ -80,7 +79,7 @@ module createts
 	 * @param {Object} [labels=null] A hash of labels to pass to the timeline instance associated with this MovieClip.
 	 * Labels only need to be passed if they need to be used.
 	 **/
-	export class MovieClip extends createts.Container
+	class MovieClip extends Container
 	{
 		/**
 		 * The MovieClip will advance independently of its parent, even if its parent is paused.
@@ -300,7 +299,7 @@ module createts
 			this.loop = loop;
 			var props = {paused: true, position: startPosition, useTicks: true};
 
-			this.timeline = new createts.Timeline(null, labels, props);
+			this.timeline = new Timeline(null, labels, props);
 			this._managed = {};
 		}
 
@@ -746,6 +745,4 @@ module createts
 	}
 
 
-}
-
-createts.MovieClipPlugin.install();
+MovieClipPlugin.install();

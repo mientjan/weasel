@@ -598,7 +598,7 @@ define(["require", "exports", 'easel/display/DisplayObject'], function(require, 
         * @protected
         **/
         Container.prototype._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener) {
-            var ctx = createts.DisplayObject._hitTestContext;
+            var ctx = DisplayObject._hitTestContext;
             var mtx = this._matrix;
             activeListener = activeListener || (mouse && this._hasMouseEventListener());
 

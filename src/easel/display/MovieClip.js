@@ -1,39 +1,37 @@
-/// <reference path="./Container.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* MovieClip
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-var createts;
-(function (createts) {
+define(["require", "exports", 'easel/display/Container', 'tweenjs/Timeline'], function(require, exports, Container, Timeline) {
+    /*
+    * MovieClip
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
     /**
     * The MovieClip class associates a TweenJS Timeline with an EaselJS {{#crossLink "Container"}}{{/crossLink}}. It allows
     * you to create objects which encapsulate timeline animations, state changes, and synched actions. Due to the
@@ -232,7 +230,7 @@ var createts;
             this.loop = loop;
             var props = { paused: true, position: startPosition, useTicks: true };
 
-            this.timeline = new createts.Timeline(null, labels, props);
+            this.timeline = new Timeline(null, labels, props);
             this._managed = {};
         }
         // public methods:
@@ -555,8 +553,7 @@ var createts;
 
         MovieClip.SYNCHED = "synched";
         return MovieClip;
-    })(createts.Container);
-    createts.MovieClip = MovieClip;
+    })(Container);
 
     /**
     * This plugin works with <a href="http://tweenjs.com" target="_blank">TweenJS</a> to prevent the startPosition
@@ -617,7 +614,7 @@ var createts;
         MovieClipPlugin.priority = 100;
         return MovieClipPlugin;
     })();
-    createts.MovieClipPlugin = MovieClipPlugin;
-})(createts || (createts = {}));
+    exports.MovieClipPlugin = MovieClipPlugin;
 
-createts.MovieClipPlugin.install();
+    MovieClipPlugin.install();
+});

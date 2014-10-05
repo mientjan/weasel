@@ -1,43 +1,63 @@
-/// <reference path="./DisplayObject.ts" />
-/// <reference path="./Graphics.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* Shape
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-/**
-* @module EaselJS
-*/
-var createts;
-(function (createts) {
+define(["require", "exports", 'easel/display/Graphics', 'easel/display/DisplayObject'], function(require, exports, Graphics, DisplayObject) {
+    /*
+    * Shape
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
+    /**
+    * @module EaselJS
+    */
+    /**
+    * A Shape allows you to display vector art in the display list. It composites a {{#crossLink "Graphics"}}{{/crossLink}}
+    * instance which exposes all of the vector drawing methods. The Graphics instance can be shared between multiple Shape
+    * instances to display the same vector graphics with different positions or transforms.
+    *
+    * If the vector art will not
+    * change between draws, you may want to use the {{#crossLink "DisplayObject/cache"}}{{/crossLink}} method to reduce the
+    * rendering cost.
+    *
+    * <h4>Example</h4>
+    *
+    *      var graphics = new createjs.Graphics().beginFill("#ff0000").drawRect(0, 0, 100, 100);
+    *      var shape = new createjs.Shape(graphics);
+    *
+    *      //Alternatively use can also use the graphics property of the Shape class to renderer the same as above.
+    *      var shape = new createjs.Shape();
+    *      shape.graphics.beginFill("#ff0000").drawRect(0, 0, 100, 100);
+    *
+    * @class Shape
+    * @extends DisplayObject
+    * @constructor
+    * @param {Graphics} graphics Optional. The graphics instance to display. If null, a new Graphics instance will be created.
+    **/
     var Shape = (function (_super) {
         __extends(Shape, _super);
         /**
@@ -49,7 +69,7 @@ var createts;
         function Shape(graphics) {
             _super.call(this);
 
-            this.graphics = graphics ? graphics : new createts.Graphics();
+            this.graphics = graphics ? graphics : new Graphics();
         }
         /**
         * Returns true or false indicating whether the Shape would be visible if drawn to a canvas.
@@ -90,6 +110,7 @@ var createts;
         * cloned. If false, the Graphics instance will be shared with the new Shape.
         **/
         Shape.prototype.clone = function (recursive) {
+            if (typeof recursive === "undefined") { recursive = false; }
             var o = new Shape((recursive && this.graphics) ? this.graphics.clone() : this.graphics);
             this.cloneProps(o);
             return o;
@@ -104,5 +125,8 @@ var createts;
             return "[Shape ()]";
         };
         return Shape;
-    })(createts.DisplayObject);
-})(createts || (createts = {}));
+    })(DisplayObject);
+
+    
+    return Shape;
+});

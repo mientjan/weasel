@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", 'easel/utils/Methods'], function(require, exports, Methods) {
     /*
     * Graphics
     * Visit http://createjs.com/ for documentation, updates and examples.
@@ -1906,7 +1906,7 @@ define(["require", "exports"], function(require, exports) {
 
         Graphics.STROKE_JOINTS_MAP = ["miter", "round", "bevel"];
 
-        Graphics._canvas = createts.createCanvas();
+        Graphics._canvas = Methods.createCanvas();
         Graphics._ctx = Graphics._canvas.getContext('2d');
         return Graphics;
     })();

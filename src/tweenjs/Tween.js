@@ -1,39 +1,37 @@
-/// <reference path="../createjs/events/EventDispatcher.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/*
-* Tween
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
-var createts;
-(function (createts) {
+define(["require", "exports", 'createts/events/EventDispatcher'], function(require, exports, EventDispatcher) {
+    /*
+    * Tween
+    * Visit http://createjs.com/ for documentation, updates and examples.
+    *
+    * Copyright (c) 2010 gskinner.com, inc.
+    *
+    * Permission is hereby granted, free of charge, to any person
+    * obtaining a copy of this software and associated documentation
+    * files (the "Software"), to deal in the Software without
+    * restriction, including without limitation the rights to use,
+    * copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the
+    * Software is furnished to do so, subject to the following
+    * conditions:
+    *
+    * The above copyright notice and this permission notice shall be
+    * included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    * OTHER DEALINGS IN THE SOFTWARE.
+    */
     /**
     * The TweenJS Javascript library provides a simple but powerful tweening interface. It supports tweening of both
     * numeric object properties & CSS style properties, and allows you to chain tweens and actions together to create
@@ -42,9 +40,9 @@ var createts;
     * <h4>Simple Tween</h4>
     * This tween will tween the target's alpha property from 0 to 1 for 1s then call the <code>handleComplete</code> function.
     *
-    *	    target.alpha = 0;
-    *	    Tween.get(target).to({alpha:1}, 1000).call(handleComplete);
-    *	    function handleComplete() {
+    *        target.alpha = 0;
+    *        Tween.get(target).to({alpha:1}, 1000).call(handleComplete);
+    *        function handleComplete() {
     *	    	//Tween complete
     *	    }
     *
@@ -60,9 +58,9 @@ var createts;
     * This tween will wait 0.5s, tween the target's alpha property to 0 over 1s, set it's visible to false, then call the
     * <code>handleComplete</code> function.
     *
-    *	    target.alpha = 1;
-    *	    Tween.get(target).wait(500).to({alpha:0, visible:false}, 1000).call(handleComplete);
-    *	    function handleComplete() {
+    *        target.alpha = 1;
+    *        Tween.get(target).wait(500).to({alpha:0, visible:false}, 1000).call(handleComplete);
+    *        function handleComplete() {
     *	    	//Tween complete
     *	    }
     *
@@ -85,11 +83,11 @@ var createts;
     * <h4>Example</h4>
     *
     *      target.alpha = 1;
-    *	    Tween.get(target)
-    *	         .wait(500)
-    *	         .to({alpha:0, visible:false}, 1000)
-    *	         .call(handleComplete);
-    *	    function handleComplete() {
+    *        Tween.get(target)
+    *             .wait(500)
+    *             .to({alpha:0, visible:false}, 1000)
+    *             .call(handleComplete);
+    *        function handleComplete() {
     *	    	//Tween complete
     *	    }
     *
@@ -166,11 +164,11 @@ var createts;
             * Allows you to specify data that will be used by installed plugins. Each plugin uses this differently, but in general
             * you specify data by setting it to a property of pluginData with the same name as the plugin class.
             * @example
-            *	myTween.pluginData.PluginClassName = data;
+            *    myTween.pluginData.PluginClassName = data;
             * <br/>
             * Also, most plugins support a property to enable or disable them. This is typically the plugin class name followed by "_enabled".<br/>
             * @example
-            *	myTween.pluginData.PluginClassName_enabled = false;<br/>
+            *    myTween.pluginData.PluginClassName_enabled = false;<br/>
             * <br/>
             * Some plugins also store instance data in this object, usually in a property named _PluginClassName.
             * See the documentation for individual plugins for more details.
@@ -313,7 +311,7 @@ var createts;
         * Returns a new tween instance. This is functionally identical to using "new Tween(...)", but looks cleaner
         * with the chained syntax of TweenJS.
         * @example
-        *	var tween = createjs.Tween.get(target);
+        *    var tween = createjs.Tween.get(target);
         * @method get
         * @param {Object} target The target object that will have its properties tweened.
         * @param {Object} [props] The configuration properties to apply to this tween instance (ex. <code>{loop:true, paused:true}</code>).
@@ -478,8 +476,8 @@ var createts;
                     target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count + 1 : 1;
                 }
                 tweens.push(tween);
-                if (!Tween._inited && createts.Ticker) {
-                    createts.Ticker.addEventListener("tick", Tween);
+                if (!Tween._inited && Ticker) {
+                    Ticker.addEventListener("tick", Tween);
                     Tween._inited = true;
                 }
             } else {
@@ -500,8 +498,8 @@ var createts;
         /**
         * Queues a wait (essentially an empty tween).
         * @example
-        *	//This tween will wait 1s before alpha is faded to 0.
-        *	createjs.Tween.get(target).wait(1000).to({alpha:0}, 1000);
+        *    //This tween will wait 1s before alpha is faded to 0.
+        *    createjs.Tween.get(target).wait(1000).to({alpha:0}, 1000);
         * @method wait
         * @param {Number} duration The duration of the wait in milliseconds (or in ticks if <code>useTicks</code> is true).
         * @param {Boolean} passive Tween properties will not be updated during a passive wait. This
@@ -522,7 +520,7 @@ var createts;
         * Numeric properties will be tweened from their current value in the tween to the target value. Non-numeric
         * properties will be set at the end of the specified duration.
         * @example
-        *	createjs.Tween.get(target).to({alpha:0}, 1000);
+        *    createjs.Tween.get(target).to({alpha:0}, 1000);
         * @method to
         * @param {Object} props An object specifying property target values for this tween (Ex. <code>{x:300}</code> would tween the x
         *      property of the target to 300).
@@ -540,9 +538,9 @@ var createts;
 
         /**
         * Queues an action to call the specified function.
-        *	@example
-        *   	//would call myFunction() after 1s.
-        *   	myTween.wait(1000).call(myFunction);
+        *    @example
+        *    //would call myFunction() after 1s.
+        *    myTween.wait(1000).call(myFunction);
         * @method call
         * @param {Function} callback The function to call.
         * @param {Array} params Optional. The parameters to call the function with. If this is omitted, then the function
@@ -560,7 +558,7 @@ var createts;
         * Queues an action to set the specified props on the specified target. If target is null, it will use this tween's
         * target.
         * @example
-        *	myTween.wait(1000).set({visible:false},foo);
+        *    myTween.wait(1000).set({visible:false},foo);
         * @method set
         * @param {Object} props The properties to set (ex. <code>{visible:false}</code>).
         * @param {Object} target Optional. The target to set the properties on. If omitted, they will be set on the tween's target.
@@ -573,7 +571,7 @@ var createts;
         /**
         * Queues an action to to play (unpause) the specified tween. This enables you to sequence multiple tweens.
         * @example
-        *	myTween.to({x:100},500).play(otherTween);
+        *    myTween.to({x:100},500).play(otherTween);
         * @method play
         * @param {Tween} tween The tween to play.
         * @return {Tween} This tween instance (for chaining calls).
@@ -909,6 +907,8 @@ var createts;
 
         Tween._plugins = {};
         return Tween;
-    })(createts.EventDispatcher);
-    createts.Tween = Tween;
-})(createts || (createts = {}));
+    })(EventDispatcher);
+
+    
+    return Tween;
+});
