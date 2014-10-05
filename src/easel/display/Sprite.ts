@@ -1,5 +1,5 @@
-/// <reference path="./DisplayObject.ts" />
-/// <reference path="../../createjs/events/Event.ts" />
+import Event = require('createts/events/Event');
+import DisplayObject = require('easel/display/DisplayObject');
 
 /*
  * Sprite
@@ -29,8 +29,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-module createts
-{
 	/**
 	 * Displays a frame or sequence of frames (ie. an animation) from a SpriteSheet instance. A sprite sheet is a series of
 	 * images (usually animation frames) combined into a single image. For example, an animation consisting of 8 100x100
@@ -54,7 +52,7 @@ module createts
 	 * dimensions, and frame data. See {{#crossLink "SpriteSheet"}}{{/crossLink}} for more information.
 	 * @param {String|Number} [frameOrAnimation] The frame number or animation to play initially.
 	 **/
-	class Sprite extends createts.DisplayObject
+	class Sprite extends DisplayObject
 	{
 
 		// events:
@@ -458,12 +456,12 @@ module createts
 		 * @private
 		 * @type {Function}
 		 **/
-			_dispatchAnimationEnd(animation, frame, paused, next, end)
+		public _dispatchAnimationEnd(animation, frame, paused, next, end)
 		{
 			var name = animation ? animation.name : null;
 			if(this.hasEventListener("animationend"))
 			{
-				var evt = new createts.Event("animationend");
+				var evt = new Event("animationend");
 				//			evt.name = name;
 				//			evt.next = next;
 				this.dispatchEvent(evt);
@@ -525,4 +523,5 @@ module createts
 			}
 		}
 	}
-}
+
+export = Sprite;
