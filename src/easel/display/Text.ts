@@ -338,7 +338,7 @@ class Text extends DisplayObject
 	 * @return {CanvasRenderingContext2D}
 	 * @protected
 	 **/
-	public _prepContext(ctx:CanvasRenderingContext2D)
+	public _prepContext(ctx:CanvasRenderingContext2D):CanvasRenderingContext2D
 	{
 		ctx.font = this.font || "10px sans-serif";
 		ctx.textAlign = this.textAlign || "left";
@@ -451,7 +451,7 @@ class Text extends DisplayObject
 	 * @param {Number} y
 	 * @protected
 	 **/
-	public _drawTextLine(ctx, text, y)
+	public _drawTextLine(ctx:CanvasRenderingContext2D, text:string, y:number)
 	{
 		// Chrome 17 will fail to draw the text if the last param is included but null, so we feed it a large value instead:
 		if(this.outline)

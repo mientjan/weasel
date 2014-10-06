@@ -234,3 +234,5 @@ class MouseEvent extends Event
 	}
 
 }
+
+export = MouseEvent;

@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'easel/display/Container'], function(require, exports, Container) {
+define(["require", "exports", 'easel/display/DisplayObject', 'easel/display/Container', 'easel/events/MouseEvent'], function(require, exports, DisplayObject, Container, MouseEvent) {
     /*
     * Stage
     * Visit http://createjs.com/ for documentation, updates and examples.
@@ -295,7 +295,8 @@ define(["require", "exports", 'easel/display/Container'], function(require, expo
             if (this.dispatchEvent("drawstart")) {
                 return;
             }
-            createts.DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
+
+            DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
             var r = this.drawRect, ctx = this.canvas.getContext("2d");
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             if (this.autoClear) {
@@ -868,6 +869,9 @@ define(["require", "exports", 'easel/display/Container'], function(require, expo
         };
 
         /**
+        *
+        * @todo what is the o param
+        *
         * @method _dispatchMouseEvent
         * @protected
         * @param {DisplayObject} target
@@ -889,7 +893,7 @@ define(["require", "exports", 'easel/display/Container'], function(require, expo
             var pt = this._mtx.transformPoint(o.x, o.y);
             var evt = new createts.MouseEvent(type, bubbles, false, pt.x, pt.y, nativeEvent, pointerId, pointerId==this._primaryPointerID, o.rawX, o.rawY);
             */
-            var evt = new createts.MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
+            var evt = new MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
             target.dispatchEvent(evt);
         };
         return Stage;

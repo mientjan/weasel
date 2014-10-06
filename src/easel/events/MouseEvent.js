@@ -215,4 +215,7 @@ define(["require", "exports", 'createts/events/Event'], function(require, export
         };
         return MouseEvent;
     })(Event);
+
+    
+    return MouseEvent;
 });
