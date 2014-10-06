@@ -1,6 +1,5 @@
 /*
  * BitmapText
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
  *
@@ -25,6 +24,18 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import Container = require('./Container');
+import SpriteSheet = require('./SpriteSheet');
+import Sprite = require('./Sprite');
+
+class BitmapTextProperties {
+	text:string = '';
+	spriteSheet:string = null;
+	lineHeight:number = 0;
+	letterSpacing:number = 0;
+	spaceWidth:number = 0;
+}
 
 class BitmapText extends Container
 {
@@ -58,7 +69,7 @@ class BitmapText extends Container
 	 * @type String
 	 * @default ""
 	 **/
-	public text = "";
+	public text:string = "";
 
 	/**
 	 * A SpriteSheet instance that defines the glyphs for this bitmap text. Each glyph/character
@@ -80,7 +91,7 @@ class BitmapText extends Container
 	 * @type String
 	 * @default null
 	 **/
-	public spriteSheet = null;
+	public spriteSheet:SpriteSheet = null;
 
 	/**
 	 * The height of each line of text. If 0, then it will use a line height calculated
@@ -91,7 +102,7 @@ class BitmapText extends Container
 	 * @type Number
 	 * @default 0
 	 **/
-	public lineHeight = 0;
+	public lineHeight:number = 0;
 
 	/**
 	 * This spacing (in pixels) will be added after each character in the output.
@@ -99,7 +110,7 @@ class BitmapText extends Container
 	 * @type Number
 	 * @default 0
 	 **/
-	public letterSpacing = 0;
+	public letterSpacing:number = 0;
 
 	/**
 	 * If a space character is not defined in the sprite sheet, then empty pixels equal to
@@ -111,43 +122,44 @@ class BitmapText extends Container
 	 * @type Number
 	 * @default 0
 	 **/
-	public spaceWidth = 0;
+	public spaceWidth:number = 0;
 
 	/**
 	 * @property _oldProps
 	 * @type Object
 	 * @protected
 	 **/
-	public _oldProps = null;
+	private _oldProps:BitmapTextProperties = new BitmapTextProperties();
 
 
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 * @constructor
 	 * @param {String} [text=""] The text to display.
 	 * @param {SpriteSheet} [spriteSheet=null] The spritesheet that defines the character glyphs.
-	 * @protected
 	 **/
-		constructor(text, spriteSheet)
+	constructor(text:string, spriteSheet:SpriteSheet)
 	{
 		super();
 
 		this.text = text;
 		this.spriteSheet = spriteSheet;
-		this._oldProps = {text: 0, spriteSheet: 0, lineHeight: 0, letterSpacing: 0, spaceWidth: 0};
 	}
 
 	/**
 	 * Docced in superclass.
 	 **/
-	public draw(ctx, ignoreCache)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
-		if(this.DisplayObject_draw(ctx, ignoreCache))
-		{
-			return;
-		}
+		// throws maximumiteration
+//		if(this.DisplayObject_draw(ctx, ignoreCache))
+//		{
+//			return true;
+//		}
+
 		this._updateText();
 		super.draw(ctx, ignoreCache);
+
+		return true;
 	}
 
 	/**
@@ -213,7 +225,7 @@ class BitmapText extends Container
 	 * @return {Number}
 	 * @protected
 	 **/
-	public _getLineHeight = function(ss)
+	public _getLineHeight(ss)
 	{
 		var frame = this._getFrame("1", ss) || this._getFrame("T", ss) || this._getFrame("L", ss) || ss.getFrame(0);
 		return frame ? frame.rect.height : 1;
@@ -231,25 +243,35 @@ class BitmapText extends Container
 		return frame ? frame.rect.width : 1;
 	}
 
-;
-
 	/**
 	 * @method _drawText
 	 * @protected
 	 **/
 	public _updateText()
 	{
-		var x = 0, y = 0, o = this._oldProps, change = false, spaceW = this.spaceWidth, lineH = this.lineHeight, ss = this.spriteSheet;
-		var pool = BitmapText._spritePool, kids = this.children, childIndex = 0, numKids = kids.length, sprite;
+		var x = 0,
+			y = 0,
+			oldProperties = this._oldProps,
+			change = false,
+			spaceW = this.spaceWidth,
+			lineH = this.lineHeight,
+			ss = this.spriteSheet;
 
-		for(var n in o)
+		var pool = BitmapText._spritePool,
+			kids = this.children,
+			childIndex = 0,
+			numKids = kids.length,
+			sprite:Sprite;
+
+		for(var n in oldProperties)
 		{
-			if(o[n] != this[n])
+			if(oldProperties[n] != this[n])
 			{
-				o[n] = this[n];
+				oldProperties[n] = this[n];
 				change = true;
 			}
 		}
+
 		if(!change)
 		{
 			return;
@@ -273,6 +295,7 @@ class BitmapText extends Container
 				x += spaceW;
 				continue;
 			}
+
 			else if(character == "\n" || character == "\r")
 			{
 				if(character == "\r" && this.text.charAt(i + 1) == "\n")
@@ -296,9 +319,10 @@ class BitmapText extends Container
 			}
 			else
 			{
-				sprite = this.addChild(pool.length ? pool.pop() : new createjs.Sprite());
+				sprite = this.addChild( pool.length ? pool.pop() : new Sprite(ss) );
 				numKids++;
 			}
+
 			sprite.spriteSheet = ss;
 			sprite.gotoAndStop(index);
 			sprite.x = x;
@@ -307,12 +331,16 @@ class BitmapText extends Container
 
 			x += sprite.getBounds().width + this.letterSpacing;
 		}
+
 		while(numKids > childIndex)
 		{
 			pool.push(sprite = kids.pop());
 			sprite.parent = null;
 			numKids--;
-		} // faster than removeChild.
+		}
+
+		// faster than removeChild.
+
 		if(pool.length > BitmapText.maxPoolSize)
 		{
 			pool.length = BitmapText.maxPoolSize;

@@ -1,5 +1,5 @@
-import EventDispatcher = require('createts/events/EventDispatcher');
-import Rectangle = require('easel/geom/Rectangle');
+import EventDispatcher = require('../../createts/events/EventDispatcher');
+import Rectangle = require('../geom/Rectangle');
 
 /*
  * SpriteSheet
@@ -157,7 +157,7 @@ class SpriteSheet extends EventDispatcher
 	 * @type Boolean
 	 * @readonly
 	 **/
-	complete = true;
+	public complete = true;
 
 
 	/**
@@ -166,7 +166,7 @@ class SpriteSheet extends EventDispatcher
 	 * @property framerate
 	 * @type Number
 	 **/
-	framerate = 0;
+	public framerate = 0;
 
 	// TODO: deprecated.
 	/**
@@ -182,69 +182,69 @@ class SpriteSheet extends EventDispatcher
 	 * @property _animations
 	 * @protected
 	 **/
-	_animations = null;
+	public _animations = null;
 
 	/**
 	 * @property _frames
 	 * @protected
 	 **/
-	_frames = null;
+	public _frames = null;
 
 	/**
 	 * @property _images
 	 * @protected
 	 **/
-	_images = null;
+	public _images = null;
 
 	/**
 	 * @property _data
 	 * @protected
 	 **/
-	_data = null;
+	public _data = null;
 
 	/**
 	 * @property _loadCount
 	 * @protected
 	 **/
-	_loadCount = 0;
+	public _loadCount = 0;
 
 	// only used for simple frame defs:
 	/**
 	 * @property _frameHeight
 	 * @protected
 	 **/
-	_frameHeight = 0;
+	public _frameHeight = 0;
 
 	/**
 	 * @property _frameWidth
 	 * @protected
 	 **/
-	_frameWidth = 0;
+	public _frameWidth = 0;
 
 	/**
 	 * @property _numFrames
 	 * @protected
 	 **/
-	_numFrames = 0;
+	public _numFrames = 0;
 
 	/**
 	 * @property _regX
 	 * @protected
 	 **/
-	_regX = 0;
+	public _regX = 0;
 
 	/**
 	 * @property _regY
 	 * @protected
 	 **/
-	_regY = 0;
+	public _regY = 0;
 
 	/**
 	 * @method constructor
 	 * @param {Object} data An object describing the SpriteSheet data.
 	 * @protected
 	 **/
-		constructor(data?)
+	constructor(data?)
 	{
 		super();
 
@@ -457,9 +457,10 @@ class SpriteSheet extends EventDispatcher
 	 * @param {Rectangle} [rectangle] A Rectangle instance to copy the values into. By default a new instance is created.
 	 * @return {Rectangle} A Rectangle instance. Returns null if the frame does not exist, or the image is not fully loaded.
 	 **/
-		getFrameBounds(frameIndex, rectangle?)
+	public getFrameBounds(frameIndex, rectangle?)
 	{
 		var frame:any = this.getFrame(frameIndex);
+
 		return frame ? (rectangle || new Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
 	}
 
@@ -468,7 +469,7 @@ class SpriteSheet extends EventDispatcher
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-		toString()
+	public toString()
 	{
 		return "[SpriteSheet]";
 	}
@@ -478,7 +479,7 @@ class SpriteSheet extends EventDispatcher
 	 * @method clone
 	 * @return {SpriteSheet} a clone of the SpriteSheet instance.
 	 **/
-		clone()
+	public clone()
 	{
 		// TODO: there isn't really any reason to clone SpriteSheet instances, because they can be reused.
 		var o = new SpriteSheet();

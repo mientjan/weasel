@@ -2,12 +2,10 @@ import Stage = require('../../src/easel/display/Stage');
 import SpriteSheet = require('../../src/easel/display/SpriteSheet');
 import BitmapText = require('../../src/easel/display/BitmapText');
 
-class BitmapText
+class Test
 {
 	constructor()
 	{
-
-
 		var stage = new Stage("canvasElement");
 
 		var img = new Image();
@@ -97,4 +95,4 @@ class BitmapText
 	}
 }
 
-var bt = new BitmapText();
+var bt = new Test();

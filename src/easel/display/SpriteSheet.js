@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'createts/events/EventDispatcher', 'easel/geom/Rectangle'], function(require, exports, EventDispatcher, Rectangle) {
+define(["require", "exports", '../../createts/events/EventDispatcher', '../geom/Rectangle'], function(require, exports, EventDispatcher, Rectangle) {
     /*
     * SpriteSheet
     * Visit http://createjs.com/ for documentation, updates and examples.
@@ -404,6 +404,7 @@ define(["require", "exports", 'createts/events/EventDispatcher', 'easel/geom/Rec
         **/
         SpriteSheet.prototype.getFrameBounds = function (frameIndex, rectangle) {
             var frame = this.getFrame(frameIndex);
+
             return frame ? (rectangle || new Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
         };
 

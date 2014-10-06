@@ -340,6 +340,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             if (ignoreCache || !cacheCanvas) {
                 return false;
             }
+
             var scale = this._cacheScale, offX = this._cacheOffsetX, offY = this._cacheOffsetY, fBounds;
             if (fBounds = this._applyFilterBounds(offX, offY, 0, 0)) {
                 offX = fBounds.x;

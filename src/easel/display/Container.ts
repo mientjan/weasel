@@ -64,7 +64,7 @@ class Container extends DisplayObject
 	 * @type Array
 	 * @default null
 	 **/
-	children:any[] = null;
+	public children:any[] = null;
 
 	/**
 	 * Indicates whether the children of this container are independently enabled for mouse/pointer interaction.
@@ -74,7 +74,7 @@ class Container extends DisplayObject
 	 * @type Boolean
 	 * @default true
 	 **/
-	mouseChildren = true;
+	public mouseChildren = true;
 
 	/**
 	 * If false, the tick will not be propagated to children of this Container. This can provide some performance benefits.
@@ -84,7 +84,7 @@ class Container extends DisplayObject
 	 * @type Boolean
 	 * @default true
 	 **/
-	tickChildren = true;
+	public tickChildren = true;
 
 	/**
 	 * Initialization method.
@@ -124,7 +124,7 @@ class Container extends DisplayObject
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
 	 **/
-	public draw(ctx, ignoreCache)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
 		if(super.draw(ctx, ignoreCache))
 		{

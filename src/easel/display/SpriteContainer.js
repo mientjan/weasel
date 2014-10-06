@@ -1,8 +1,5 @@
-/// <reference path="./Container.ts" />
-/// <reference path="./DisplayObject.ts" />
 /*
 * SpriteContainer
-* Visit http://createjs.com/ for documentation, updates and examples.
 *
 * Copyright (c) 2010 gskinner.com, inc.
 *
@@ -33,8 +30,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var createts;
-(function (createts) {
+define(["require", "exports", './Container'], function(require, exports, Container) {
     /**
     * A SpriteContainer is a nestable display list that enables aggressively optimized rendering of bitmap content.
     * In order to accomplish these optimizations, SpriteContainer enforces a few restrictions on its content.
@@ -66,14 +62,11 @@ var createts;
     var SpriteContainer = (function (_super) {
         __extends(SpriteContainer, _super);
         /**
-        * Initialization method.
-        * @method initialize
+        * @constructor
         * @param {SpriteSheet} spriteSheet Optional. The spriteSheet to use for this SpriteContainer and its children.
-        * @protected
         */
         function SpriteContainer(spriteSheet) {
             _super.call(this);
-            // public properties:
             /**
             * The SpriteSheet that this container enforces use of.
             * @property spriteSheet
@@ -181,6 +174,8 @@ var createts;
             return "[SpriteContainer (name=" + this.name + ")]";
         };
         return SpriteContainer;
-    })(createts.Container);
-    createts.SpriteContainer = SpriteContainer;
-})(createts || (createts = {}));
+    })(Container);
+
+    
+    return SpriteContainer;
+});

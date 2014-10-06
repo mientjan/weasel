@@ -441,13 +441,14 @@ class DisplayObject extends EventDispatcher
 	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx, ignoreCache?)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean)
 	{
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
 		{
 			return false;
 		}
+
 		var scale = this._cacheScale, offX = this._cacheOffsetX, offY = this._cacheOffsetY, fBounds;
 		if(fBounds = this._applyFilterBounds(offX, offY, 0, 0))
 		{
