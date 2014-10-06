@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EaselJS Example: Bitmap Text</title>
+
+	<link href="_createjs/assets/demoStyles.css" rel="stylesheet" type="text/css"/>
+
+	<!-- We also provide hosted minified versions of all CreateJS libraries.
+	  http://code.createjs.com -->
+
+	<script data-main="src/BitmapText.js" src="lib/require.js"></script>
+</head>
+<body onload="init()">
+<div id="loader"></div>
+<header id="header" class="EaselJS">
+	<h1><span class="text-product">Easel<strong>JS</strong></span> BitmapText</h1>
+
+	<p>
+		The BitmapText class uses a <strong>SpriteSheet</strong> to display text characters. Characters are defined in
+		the SpriteSheet definition, and any defined characters can be displayed, as well as spaces and line breaks.
+		BitmapText will check for uppercase or lowercase variations, but accented characters must be specifically
+		defined in order to be displayed.
+	</p>
+</header>
+
+<canvas id="canvasElement" width="960" height="400"></canvas>
+</body>
+</html>

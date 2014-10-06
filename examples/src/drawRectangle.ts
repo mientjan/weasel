@@ -1,5 +1,5 @@
-import Stage = require('../src/easel/display/Stage');
-import Shape = require('../src/easel/display/Shape');
+import Stage = require('../../src/easel/display/Stage');
+import Shape = require('../../src/easel/display/Shape');
 
 class Start {
 	constructor(){
