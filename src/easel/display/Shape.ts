@@ -1,5 +1,5 @@
-import Graphics = require('easel/display/Graphics');
-import DisplayObject = require('easel/display/DisplayObject');
+import Graphics = require('./Graphics');
+import DisplayObject = require('./DisplayObject');
 
 /*
  * Shape

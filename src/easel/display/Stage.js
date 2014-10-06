@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'easel/display/DisplayObject', 'easel/display/Container', 'easel/events/MouseEvent'], function(require, exports, DisplayObject, Container, MouseEvent) {
+define(["require", "exports", './DisplayObject', './Container', '../events/MouseEvent'], function(require, exports, DisplayObject, Container, MouseEvent) {
     /*
     * Stage
     * Visit http://createjs.com/ for documentation, updates and examples.

@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'createts/events/EventDispatcher', 'easel/utils/UID', 'easel/utils/Methods', 'easel/geom/Matrix2D', 'easel/geom/Rectangle', 'easel/geom/Point', 'easel/display/Shadow', 'createts/events/Event', 'easel/display/DisplayObject'], function(require, exports, EventDispatcher, UID, Methods, Matrix2D, Rectangle, Point, Shadow, Event, Stage) {
+define(["require", "exports", '../../createts/events/EventDispatcher', '../utils/UID', '../utils/Methods', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Point', '../display/Shadow', '../../createts/events/Event', './Stage'], function(require, exports, EventDispatcher, UID, Methods, Matrix2D, Rectangle, Point, Shadow, Event, Stage) {
     /*
     * DisplayObject
     * Visit http://createjs.com/ for documentation, updates and examples.

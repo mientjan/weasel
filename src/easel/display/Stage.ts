@@ -1,6 +1,6 @@
-import DisplayObject = require('easel/display/DisplayObject');
-import Container = require('easel/display/Container');
-import MouseEvent = require('easel/events/MouseEvent');
+import DisplayObject = require('./DisplayObject');
+import Container = require('./Container');
+import MouseEvent = require('../events/MouseEvent');
 
 /*
  * Stage

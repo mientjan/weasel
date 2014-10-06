@@ -1,12 +1,5 @@
-declare var require:any;
-//
-require.config( {
-	baseUrl: "../src/"
-});
-
-
 import Stage = require('../src/easel/display/Stage');
-import Shape = require('../src/easel/display/Shape')
+import Shape = require('../src/easel/display/Shape');
 
 class Start {
 	constructor(){

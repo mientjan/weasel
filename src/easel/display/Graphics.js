@@ -1,4 +1,4 @@
-define(["require", "exports", 'easel/utils/Methods'], function(require, exports, Methods) {
+define(["require", "exports", '../utils/Methods'], function(require, exports, Methods) {
     /*
     * Graphics
     * Visit http://createjs.com/ for documentation, updates and examples.

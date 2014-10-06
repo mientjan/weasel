@@ -1,4 +1,4 @@
-define(["require", "exports", 'createts/events/Event'], function(require, exports, Event) {
+define(["require", "exports", './Event'], function(require, exports, Event) {
     /*
     * EventDispatcher
     * Visit http://createjs.com/ for documentation, updates and examples.

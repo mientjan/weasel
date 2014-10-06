@@ -76,7 +76,7 @@ module createts
 		 * @param {SpriteSheet} spriteSheet Optional. The spriteSheet to use for this SpriteContainer and its children.
 		 * @protected
 		 */
-			constructor(spriteSheet)
+		constructor(spriteSheet)
 		{
 			super();
 			this.spriteSheet = spriteSheet;

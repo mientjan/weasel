@@ -1,12 +1,12 @@
-import EventDispatcher = require('createts/events/EventDispatcher');
-import UID = require('easel/utils/UID');
-import Methods = require('easel/utils/Methods');
-import Matrix2D = require('easel/geom/Matrix2D');
-import Rectangle = require('easel/geom/Rectangle');
-import Point = require('easel/geom/Point');
-import Shadow = require('easel/display/Shadow');
-import Event = require('createts/events/Event');
-import Stage = require('easel/display/DisplayObject');
+import EventDispatcher = require('../../createts/events/EventDispatcher');
+import UID = require('../utils/UID');
+import Methods = require('../utils/Methods');
+import Matrix2D = require('../geom/Matrix2D');
+import Rectangle = require('../geom/Rectangle');
+import Point = require('../geom/Point');
+import Shadow = require('../display/Shadow');
+import Event = require('../../createts/events/Event');
+import Stage = require('./Stage');
 
 /*
  * DisplayObject

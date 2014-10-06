@@ -1,5 +1,5 @@
-import Methods = require('easel/utils/Methods');
-import Matrix2D = require('easel/geom/Matrix2D');
+import Methods = require('../utils/Methods');
+import Matrix2D = require('../geom/Matrix2D');
 
 /*
  * Graphics

@@ -1,4 +1,4 @@
-import DisplayObject = require('easel/display/DisplayObject');
+import DisplayObject = require('./DisplayObject');
 
 /*
  * Container

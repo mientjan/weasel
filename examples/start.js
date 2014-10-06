@@ -1,9 +1,4 @@
 define(["require", "exports", '../src/easel/display/Stage', '../src/easel/display/Shape'], function(require, exports, Stage, Shape) {
-    //
-    require.config({
-        baseUrl: "../src/"
-    });
-
     var Start = (function () {
         function Start() {
             var stage = new Stage(document.getElementById('canvasElement'));
