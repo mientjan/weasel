@@ -1573,7 +1573,7 @@ class Graphics
 	 * of active transformations.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public setStrokeStyle(thickness, caps, joints, miterLimit, ignoreScale)
+	public setStrokeStyle(thickness:number, caps:any = null, joints:any = null, miterLimit:number = null, ignoreScale:boolean = false)
 	{
 		this._updateInstructions(true);
 		this._strokeStyle = this.command = new Graphics.StrokeStyle(thickness, caps, joints, miterLimit);

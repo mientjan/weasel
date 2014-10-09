@@ -1,5 +1,5 @@
-import EventDispatcher = require('createts/events/EventDispatcher');
-import Event = require('createts/events/Event');
+import EventDispatcher = require('../../createts/events/EventDispatcher');
+import Event = require('../../createts/events/Event');
 
 /*
 * Ticker

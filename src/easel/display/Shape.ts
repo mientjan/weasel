@@ -67,12 +67,10 @@ class Shape extends DisplayObject
 	graphics:Graphics;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 * @constructor
 	 * @param {Graphics} graphics
-	 * @protected
 	 **/
-		constructor(graphics?:Graphics)
+	constructor(graphics?:Graphics)
 	{
 		super();
 

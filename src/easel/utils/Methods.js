@@ -25,13 +25,13 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     /**
-    * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
-    * and should not be instantiated.
-    * @class UID
-    * @static
-    **/
+     * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
+     * and should not be instantiated.
+     * @class UID
+     * @static
+     **/
     function createCanvas() {
         return document.createElement('canvas');
     }

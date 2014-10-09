@@ -174,7 +174,7 @@ class EventDispatcher
 	 * @param {Boolean} [useCapture] For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 	 * @return {Function | Object} Returns the listener for chaining or assignment.
 	 **/
-	public addEventListener(type, listener, useCapture)
+	public addEventListener(type:string, listener:Function, useCapture?:boolean)
 	{
 		var listeners;
 		if(useCapture)

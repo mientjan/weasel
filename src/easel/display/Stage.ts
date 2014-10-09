@@ -1,6 +1,7 @@
 import DisplayObject = require('./DisplayObject');
 import Container = require('./Container');
 import MouseEvent = require('../events/MouseEvent');
+import TouchInjectProperties = require('../ui/TouchInjectProperties');
 
 /*
  * Stage
@@ -131,7 +132,6 @@ class Stage extends Container
 	// public properties:
 	_eventListeners:any;
 
-
 	/**
 	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
 	 * to manually control clearing (for generative art, or when pointing multiple stages at the same canvas for
@@ -225,7 +225,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default false
 	 **/
-	snapToPixelEnabled = false;
+	public snapToPixelEnabled = false;
 
 	/**
 	 * Indicates whether the mouse is currently within the bounds of the canvas.
@@ -233,7 +233,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default false
 	 **/
-	mouseInBounds = false;
+	public mouseInBounds = false;
 
 	/**
 	 * If true, tick callbacks will be called on all display objects on the stage prior to rendering to the canvas.
@@ -241,7 +241,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	tickOnUpdate = true;
+	public tickOnUpdate = true;
 
 	/**
 	 * If true, mouse move events will continue to be called when the mouse leaves the target canvas. See
@@ -251,7 +251,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default false
 	 **/
-	mouseMoveOutside = false;
+	public mouseMoveOutside = false;
 
 	/**
 	 * The hitArea property is not supported for Stage.
@@ -259,6 +259,8 @@ class Stage extends Container
 	 * @type {DisplayObject}
 	 * @default null
 	 */
+
+	public __touch:TouchInjectProperties;
 
 	// getter / setters:
 	/**
@@ -324,7 +326,7 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	_pointerData = null;
+	public _pointerData = null;
 
 	/**
 	 * Number of active pointers.
@@ -332,7 +334,7 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	_pointerCount = 0;
+	public _pointerCount = 0;
 
 	/**
 	 * The ID of the primary pointer.
@@ -340,36 +342,35 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	_primaryPointerID = null;
+	public _primaryPointerID = null;
 
 	/**
 	 * @property _mouseOverIntervalID
 	 * @protected
 	 * @type Number
 	 **/
-	_mouseOverIntervalID = null;
+	public _mouseOverIntervalID = null;
 
 	/**
 	 * @property _nextStage
 	 * @protected
 	 * @type Stage
 	 **/
-	_nextStage = null;
+	public _nextStage = null;
 
 	/**
 	 * @property _prevStage
 	 * @protected
 	 * @type Stage
 	 **/
-	_prevStage = null;
+	public _prevStage = null;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 * @constructor
 	 * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
 	 * @protected
 	 **/
-		constructor(canvas)
+	constructor(canvas)
 	{
 		super();
 

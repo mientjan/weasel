@@ -1,6 +1,6 @@
-import DisplayObject = require('easel/display/DisplayObject');
-import Rectangle = require('easel/geom/Rectangle');
-import Methods = require('easel/utils/Methods');
+import DisplayObject = require('./DisplayObject');
+import Rectangle = require('../geom/Rectangle');
+import Methods = require('../utils/Methods');
 /*
  * Text
  * Visit http://createjs.com/ for documentation, updates and examples.
