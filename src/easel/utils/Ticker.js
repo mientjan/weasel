@@ -1,35 +1,31 @@
-define(["require", "exports", '../../createts/events/EventDispatcher', '../../createts/events/Event'], function (require, exports, EventDispatcher, Event) {
-    /*
-    * Ticker
-    * Visit http://createjs.com/ for documentation, updates and examples.
-    *
-    * Copyright (c) 2010 gskinner.com, inc.
-    *
-    * Permission is hereby granted, free of charge, to any person
-    * obtaining a copy of this software and associated documentation
-    * files (the "Software"), to deal in the Software without
-    * restriction, including without limitation the rights to use,
-    * copy, modify, merge, publish, distribute, sublicense, and/or sell
-    * copies of the Software, and to permit persons to whom the
-    * Software is furnished to do so, subject to the following
-    * conditions:
-    *
-    * The above copyright notice and this permission notice shall be
-    * included in all copies or substantial portions of the Software.
-    *
-    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-    * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-    * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-    * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    * OTHER DEALINGS IN THE SOFTWARE.
-    */
-    /**
-     * @module EaselJS
-     */
-    // constructor:
+/*
+* Ticker
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+* Copyright (c) 2010 gskinner.com, inc.
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*/
+define(["require", "exports", '../../createts/events/TimeEvent', '../../createts/events/Signal1'], function (require, exports, TimeEvent, Signal1) {
     /**
      * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick
      * event to be notified when a set time interval has elapsed.
@@ -59,9 +55,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
      **/
     var Ticker = (function () {
         function Ticker() {
-            throw "Ticker cannot be instantiated.";
         }
-        // public static methods:
         /**
          * Starts the tick. This is called automatically when the first listener is added.
          * @method init
@@ -91,9 +85,16 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
             else {
                 clearTimeout(Ticker._timerId);
             }
-            Ticker.removeAllEventListeners("tick");
             Ticker._timerId = null;
             Ticker._inited = false;
+        };
+        /**
+         *
+         * @returns {*}
+         */
+        Ticker.addTickListener = function (fn) {
+            !Ticker._inited && Ticker.init();
+            return Ticker.ticker.connectImpl(fn, false);
         };
         /**
          * Sets the target time (in milliseconds) between ticks. Default is 50 (20 FPS).
@@ -314,16 +315,16 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
                 Ticker._pausedTime += elapsedTime;
             }
             Ticker._lastTime = time;
-            if (Ticker.hasEventListener("tick")) {
-                var event = new Event("tick");
+            if (Ticker.ticker.hasListeners()) {
+                var event = new TimeEvent("tick");
                 var maxDelta = Ticker.maxDelta;
                 // heavy performance problems, should be defined by event.
                 // @todo refactor
-                event['delta'] = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
-                event['paused'] = paused;
-                event['time'] = time;
-                event['runTime'] = time - Ticker._pausedTime;
-                Ticker.dispatchEvent(event);
+                event.delta = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
+                event.paused = paused;
+                event.time = time;
+                event.runTime = time - Ticker._pausedTime;
+                Ticker.ticker.emit(event);
             }
             Ticker._tickTimes.unshift(Ticker._getTime() - time);
             while (Ticker._tickTimes.length > 100) {
@@ -334,7 +335,6 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
                 Ticker._times.pop();
             }
         };
-        // constants:
         /**
          * In this mode, Ticker uses the requestAnimationFrame API, but attempts to synch the ticks to target framerate. It
          * uses a simple heuristic that compares the time of the RAF return to the target time for the current frame and
@@ -439,16 +439,16 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
         Ticker.maxDelta = 0;
         // mix-ins:
         // EventDispatcher methods:
-        Ticker.removeEventListener = null;
-        Ticker.removeAllEventListeners = null;
-        Ticker.dispatchEvent = null;
-        Ticker.hasEventListener = null;
-        Ticker._listeners = null;
-        Ticker._addEventListener = Ticker.addEventListener;
-        Ticker.addEventListener = function () {
-            !Ticker._inited && Ticker.init();
-            return Ticker._addEventListener.apply(Ticker, arguments);
-        };
+        //	public static removeEventListener = null;
+        //	public static removeAllEventListeners = null;
+        //	public static dispatchEvent = null;
+        //	public static hasEventListener = null;
+        //	public static _listeners = null;
+        //	public static _addEventListener = Ticker.addEventListener;
+        //	public static addEventListener() {
+        //		!Ticker._inited && Ticker.init();
+        //		return Ticker._addEventListener.apply(Ticker, arguments);
+        //	};
         // private static properties:
         /**
          * @property _paused
@@ -526,6 +526,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
          * @protected
          **/
         Ticker._raf = true;
+        Ticker.ticker = new Signal1(null);
         /**
          * Changes the "paused" state of the Ticker, which can be retrieved by the {{#crossLink "Ticker/getPaused"}}{{/crossLink}}
          * method, and is passed as the "paused" property of the <code>tick</code> event. When the ticker is paused, all
@@ -560,6 +561,5 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
         };
         return Ticker;
     })();
-    EventDispatcher.initialize(Ticker); // inject EventDispatcher methods.
     return Ticker;
 });

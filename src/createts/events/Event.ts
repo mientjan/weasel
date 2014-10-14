@@ -51,7 +51,7 @@ class Event
 	 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
 	 * @constructor
 	 **/
-		constructor(type:any, bubbles = null, cancelable = null)
+	constructor(type:any, bubbles = null, cancelable = null)
 	{
 		this.type = type;
 		this.bubbles = bubbles;

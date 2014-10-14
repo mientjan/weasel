@@ -935,18 +935,19 @@ class DisplayObject extends EventDispatcher
 	 * @return {Rectangle} A Rectangle instance representing the bounds, or null if bounds are not available for this
 	 * object.
 	 **/
-	public getBounds()
+	public getBounds():Rectangle
 	{
 		if(this._bounds)
 		{
 			return this._rectangle.copy(this._bounds);
 		}
-		var cacheCanvas = this.cacheCanvas;
+		var cacheCanvas = <HTMLCanvasElement> this.cacheCanvas;
 		if(cacheCanvas)
 		{
 			var scale = this._cacheScale;
 			return this._rectangle.initialize(this._cacheOffsetX, this._cacheOffsetY, cacheCanvas.width / scale, cacheCanvas.height / scale);
 		}
+
 		return null;
 	}
 
@@ -965,7 +966,7 @@ class DisplayObject extends EventDispatcher
 	 * @method getTransformedBounds
 	 * @return {Rectangle} A Rectangle instance representing the bounds, or null if bounds are not available for this object.
 	 **/
-	public getTransformedBounds()
+	public getTransformedBounds():Rectangle
 	{
 		return this._getBounds();
 	}
@@ -983,7 +984,7 @@ class DisplayObject extends EventDispatcher
 	 * @param {Number} width The width of the bounds.
 	 * @param {Number} height The height of the bounds.
 	 **/
-	public setBounds(x:number, y:number, width:number, height:number)
+	public setBounds(x:number, y:number, width:number, height:number):void
 	{
 		if(x == null)
 		{

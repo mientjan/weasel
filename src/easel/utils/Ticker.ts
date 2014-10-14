@@ -1,5 +1,3 @@
-import EventDispatcher = require('../../createts/events/EventDispatcher');
-import Event = require('../../createts/events/Event');
 
 /*
 * Ticker
@@ -29,12 +27,12 @@ import Event = require('../../createts/events/Event');
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
- * @module EaselJS
- */
+//import EventDispatcher = require('../../createts/events/EventDispatcher');
+import Event = require('../../createts/events/Event');
+import TimeEvent = require('../../createts/events/TimeEvent');
+import Signal1 = require('../../createts/events/Signal1');
+import SignalConnection = require('../../createts/events/SignalConnection');
 
-
-// constructor:
 /**
  * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick
  * event to be notified when a set time interval has elapsed.
@@ -63,10 +61,7 @@ import Event = require('../../createts/events/Event');
  * @static
  **/
 class Ticker {
-	constructor(){
-		throw "Ticker cannot be instantiated.";
-	}
-// constants:
+
 	/**
 	 * In this mode, Ticker uses the requestAnimationFrame API, but attempts to synch the ticks to target framerate. It
 	 * uses a simple heuristic that compares the time of the RAF return to the target time for the current frame and
@@ -113,7 +108,7 @@ class Ticker {
 	 **/
 	public static TIMEOUT = "timeout";
 
-// events:
+	// events:
 
 	/**
 	 * Dispatched each tick. The event will be dispatched to each listener even when the Ticker has been paused using
@@ -137,7 +132,7 @@ class Ticker {
 	 * @since 0.6.0
 	 */
 
-// public static properties:
+	// public static properties:
 	/**
 	 * Deprecated in favour of {{#crossLink "Ticker/timingMode"}}{{/crossLink}}, and will be removed in a future version. If true, timingMode will
 	 * use {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} by default.
@@ -165,10 +160,10 @@ class Ticker {
 	 * based animations and systems to prevent issues caused by large time gaps caused by background tabs, system sleep,
 	 * alert dialogs, or other blocking routines. Double the expected frame duration is often an effective value
 	 * (ex. maxDelta=50 when running at 40fps).
-	 * 
+	 *
 	 * This does not impact any other values (ex. time, runTime, etc), so you may experience issues if you enable maxDelta
 	 * when using both delta and other values.
-	 * 
+	 *
 	 * If 0, there is no maximum.
 	 * @property maxDelta
 	 * @static
@@ -177,23 +172,23 @@ class Ticker {
 	 */
 	public static maxDelta = 0;
 
-// mix-ins:
+	// mix-ins:
 	// EventDispatcher methods:
-	public static removeEventListener = null;
-	public static removeAllEventListeners = null;
-	public static dispatchEvent = null;
-	public static hasEventListener = null;
-	public static _listeners = null;
+//	public static removeEventListener = null;
+//	public static removeAllEventListeners = null;
+//	public static dispatchEvent = null;
+//	public static hasEventListener = null;
+//	public static _listeners = null;
 
-	public static _addEventListener = Ticker.addEventListener;
-	public static addEventListener = function() {
-		!Ticker._inited && Ticker.init();
-		return Ticker._addEventListener.apply(Ticker, arguments);
-	};
+//	public static _addEventListener = Ticker.addEventListener;
+//	public static addEventListener() {
+//		!Ticker._inited && Ticker.init();
+//		return Ticker._addEventListener.apply(Ticker, arguments);
+//	};
 
-// private static properties:
-	
-	/** 
+	// private static properties:
+
+	/**
 	 * @property _paused
 	 * @type {Boolean}
 	 * @protected
@@ -263,7 +258,7 @@ class Ticker {
 	 * @type {Array}
 	 * @protected
 	 **/
-	public static _tickTimes = null;
+	public static _tickTimes:number[] = null;
 
 	/**
 	 * Stores the timeout or requestAnimationFrame id.
@@ -272,7 +267,7 @@ class Ticker {
 	 * @protected
 	 **/
 	public static _timerId = null;
-	
+
 	/**
 	 * True if currently using requestAnimationFrame, false if using setTimeout.
 	 * @property _raf
@@ -281,8 +276,8 @@ class Ticker {
 	 **/
 	public static _raf = true;
 
-// public static methods:
-	
+	public static ticker:Signal1<TimeEvent> = new Signal1(null);
+
 	/**
 	 * Starts the tick. This is called automatically when the first listener is added.
 	 * @method init
@@ -297,7 +292,7 @@ class Ticker {
 		Ticker._times.push(Ticker._lastTime = 0);
 		Ticker.setInterval(Ticker._interval);
 	}
-	
+
 	/**
 	 * Stops the Ticker and removes all listeners. Use init() to restart the Ticker.
 	 * @method reset
@@ -306,15 +301,24 @@ class Ticker {
 	public static reset() {
 		if (Ticker._raf) {
 			var f = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || window['oCancelAnimationFrame'] || window['msCancelAnimationFrame'];
-			f&&f(Ticker._timerId);
+			f && f(Ticker._timerId);
 		} else {
 			clearTimeout(Ticker._timerId);
 		}
-		Ticker.removeAllEventListeners("tick");
+
 		Ticker._timerId = null;
 		Ticker._inited = false;
 	}
-	
+
+	/**
+	 *
+	 * @returns {*}
+	 */
+	public static addTickListener(fn:Function):SignalConnection {
+		!Ticker._inited && Ticker.init();
+		return Ticker.ticker.connectImpl(fn, false);
+	}
+
 	/**
 	 * Sets the target time (in milliseconds) between ticks. Default is 50 (20 FPS).
 	 *
@@ -363,10 +367,10 @@ class Ticker {
 
 	/**
 	 * Returns the average time spent within a tick. This can vary significantly from the value provided by getMeasuredFPS
-	 * because it only measures the time spent within the tick execution stack. 
-	 * 
-	 * Example 1: With a target FPS of 20, getMeasuredFPS() returns 20fps, which indicates an average of 50ms between 
-	 * the end of one tick and the end of the next. However, getMeasuredTickTime() returns 15ms. This indicates that 
+	 * because it only measures the time spent within the tick execution stack.
+	 *
+	 * Example 1: With a target FPS of 20, getMeasuredFPS() returns 20fps, which indicates an average of 50ms between
+	 * the end of one tick and the end of the next. However, getMeasuredTickTime() returns 15ms. This indicates that
 	 * there may be up to 35ms of "idle" time between the end of one tick and the start of the next.
 	 *
 	 * Example 2: With a target FPS of 30, getFPS() returns 10fps, which indicates an average of 100ms between the end of
@@ -476,7 +480,7 @@ class Ticker {
 	public static getEventTime(runTime) {
 		return Ticker._startTime ? (Ticker._lastTime || Ticker._startTime) - (runTime ? Ticker._pausedTime : 0) : -1;
 	}
-	
+
 	/**
 	 * Returns the number of ticks that have been broadcast by Ticker.
 	 * @method getTicks
@@ -491,7 +495,7 @@ class Ticker {
 		return Ticker._ticks - (pauseable ?Ticker._pausedTicks : 0);
 	}
 
-// private static methods:
+	// private static methods:
 	/**
 	 * @method _handleSynch
 	 * @static
@@ -560,28 +564,28 @@ class Ticker {
 		var time = Ticker._getTime()-Ticker._startTime;
 		var elapsedTime = time-Ticker._lastTime;
 		var paused = Ticker._paused;
-		
+
 		Ticker._ticks++;
 		if (paused) {
 			Ticker._pausedTicks++;
 			Ticker._pausedTime += elapsedTime;
 		}
 		Ticker._lastTime = time;
-		
-		if (Ticker.hasEventListener("tick")) {
-			var event = new Event("tick");
+
+		if (Ticker.ticker.hasListeners()) {
+			var event = new TimeEvent("tick");
 			var maxDelta = Ticker.maxDelta;
 
 			// heavy performance problems, should be defined by event.
 			// @todo refactor
-			event['delta'] = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
-			event['paused'] = paused;
-			event['time'] = time;
-			event['runTime'] = time - Ticker._pausedTime;
+			event.delta = (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime;
+			event.paused = paused;
+			event.time = time;
+			event.runTime = time - Ticker._pausedTime;
 
-			Ticker.dispatchEvent( event );
+			Ticker.ticker.emit(event);
 		}
-		
+
 		Ticker._tickTimes.unshift( Ticker._getTime() - time );
 		while (Ticker._tickTimes.length > 100) { Ticker._tickTimes.pop(); }
 
@@ -599,7 +603,5 @@ class Ticker {
 		return (Ticker.now&&Ticker.now.call(performance))||(new Date().getTime());
 	}
 }
-
-EventDispatcher.initialize(Ticker); // inject EventDispatcher methods.
 
 export =  Ticker;
