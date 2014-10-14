@@ -605,10 +605,9 @@ class Stage extends Container
 		{
 			return;
 		}
-		var o = this;
-		this._mouseOverIntervalID = setInterval(function()
-		{
-			o._testMouseOver();
+
+		this._mouseOverIntervalID = setInterval(() => {
+			this._testMouseOver();
 		}, 1000 / Math.min(50, frequency));
 	}
 

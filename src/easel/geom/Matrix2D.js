@@ -44,15 +44,13 @@ define(["require", "exports"], function (require, exports) {
     var Matrix2D = (function () {
         // constructor:
         /**
-         * Initialization method. Can also be used to reinitialize the instance.
-         * @method initialize
+         * @constructor
          * @param {Number} [a=1] Specifies the a property for the new matrix.
          * @param {Number} [b=0] Specifies the b property for the new matrix.
          * @param {Number} [c=0] Specifies the c property for the new matrix.
          * @param {Number} [d=1] Specifies the d property for the new matrix.
          * @param {Number} [tx=0] Specifies the tx property for the new matrix.
          * @param {Number} [ty=0] Specifies the ty property for the new matrix.
-         * @return {Matrix2D} This instance. Useful for chaining method calls.
          */
         function Matrix2D(a, b, c, d, tx, ty) {
             // public properties:

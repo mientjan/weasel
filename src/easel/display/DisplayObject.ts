@@ -1,13 +1,3 @@
-import EventDispatcher = require('../../createts/events/EventDispatcher');
-import UID = require('../utils/UID');
-import Methods = require('../utils/Methods');
-import Matrix2D = require('../geom/Matrix2D');
-import Rectangle = require('../geom/Rectangle');
-import Point = require('../geom/Point');
-import Shadow = require('../display/Shadow');
-import Event = require('../../createts/events/Event');
-import Stage = require('./Stage');
-
 /*
  * DisplayObject
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -35,6 +25,20 @@ import Stage = require('./Stage');
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import EventDispatcher = require('../../createts/events/EventDispatcher');
+import UID = require('../utils/UID');
+import Methods = require('../utils/Methods');
+import Matrix2D = require('../geom/Matrix2D');
+import Rectangle = require('../geom/Rectangle');
+import Point = require('../geom/Point');
+import Shadow = require('../display/Shadow');
+import Event = require('../../createts/events/Event');
+import Stage = require('./Stage');
+import Container = require('./Container');
+import Filter = require('../filters/Filter');
+
+
 class DisplayObject extends EventDispatcher
 {
 
@@ -80,8 +84,8 @@ class DisplayObject extends EventDispatcher
 	 * @protected
 	 **/
 
-	public static _hitTestCanvas:HTMLCanvasElement;
-	public static _hitTestContext:CanvasRenderingContext2D;
+	public static _hitTestCanvas:HTMLCanvasElement = Methods.createCanvas();
+	public static _hitTestContext:CanvasRenderingContext2D = <CanvasRenderingContext2D> DisplayObject._hitTestCanvas.getContext('2d');
 
 
 	/**
@@ -92,9 +96,6 @@ class DisplayObject extends EventDispatcher
 	 **/
 	public static _nextCacheID = 1;
 
-	// events:
-
-
 	// public properties:
 	/**
 	 * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
@@ -102,7 +103,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 1
 	 **/
-	public alpha = 1;
+	public alpha:number = 1;
 
 	/**
 	 * If a cache is active, this returns the canvas that holds the cached version of this display object. See {{#crossLink "cache"}}{{/crossLink}}
@@ -112,7 +113,7 @@ class DisplayObject extends EventDispatcher
 	 * @default null
 	 * @readonly
 	 **/
-	public cacheCanvas = null;
+	public cacheCanvas:HTMLCanvasElement = null;
 
 	/**
 	 * Unique ID for this display object. Makes display objects easier for some uses.
@@ -120,7 +121,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default -1
 	 **/
-	public id = -1;
+	public id:number;
 
 	/**
 	 * Indicates whether to include this object when running mouse interactions. Setting this to `false` for children
@@ -135,7 +136,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Boolean}
 	 * @default true
 	 **/
-	public mouseEnabled = true;
+	public mouseEnabled:boolean = true;
 
 	/**
 	 * If false, the tick will not run on this display object (or its children). This can provide some performance benefits.
@@ -145,7 +146,7 @@ class DisplayObject extends EventDispatcher
 	 * @type Boolean
 	 * @default true
 	 **/
-	public tickEnabled = true;
+	public tickEnabled:boolean = true;
 
 	/**
 	 * An optional name for this display object. Included in {{#crossLink "DisplayObject/toString"}}{{/crossLink}} . Useful for
@@ -154,7 +155,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {String}
 	 * @default null
 	 **/
-	public name = null;
+	public name:string = null;
 
 	/**
 	 * A reference to the {{#crossLink "Container"}}{{/crossLink}} or {{#crossLink "Stage"}}{{/crossLink}} object that
@@ -166,7 +167,7 @@ class DisplayObject extends EventDispatcher
 	 * @default null
 	 * @readonly
 	 **/
-	public parent = null;
+	public parent:Container = null;
 
 	/**
 	 * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
@@ -175,7 +176,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public regX = 0;
+	public regX:number = 0;
 
 	/**
 	 * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
@@ -184,7 +185,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public regY = 0;
+	public regY:number = 0;
 
 	/**
 	 * The rotation in degrees for this display object.
@@ -192,7 +193,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public rotation = 0;
+	public rotation:number = 0;
 
 	/**
 	 * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
@@ -201,7 +202,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 1
 	 **/
-	public scaleX = 1;
+	public scaleX:number = 1;
 
 	/**
 	 * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
@@ -210,7 +211,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 1
 	 **/
-	public scaleY = 1;
+	public scaleY:number = 1;
 
 	/**
 	 * The factor to skew this display object horizontally.
@@ -218,7 +219,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public skewX = 0;
+	public skewX:number = 0;
 
 	/**
 	 * The factor to skew this display object vertically.
@@ -226,7 +227,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public skewY = 0;
+	public skewY:number = 0;
 
 	/**
 	 * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
@@ -235,7 +236,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Shadow}
 	 * @default null
 	 **/
-	public shadow = null;
+	public shadow:Shadow = null;
 
 	/**
 	 * Indicates whether this display object should be rendered to the canvas and included when running the Stage
@@ -244,7 +245,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Boolean}
 	 * @default true
 	 **/
-	public visible = true;
+	public visible:boolean = true;
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
@@ -252,14 +253,14 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public x = 0;
+	public x:number = 0;
 
 	/** The y (vertical) position of the display object, relative to its parent.
 	 * @property y
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public y = 0;
+	public y:number = 0;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -270,7 +271,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {String}
 	 * @default null
 	 **/
-	public compositeOperation = null;
+	public compositeOperation:string = null;
 
 	/**
 	 * Indicates whether the display object should be drawn to a whole pixel when
@@ -280,7 +281,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Boolean}
 	 * @default true
 	 **/
-	public snapToPixel = true;
+	public snapToPixel:boolean = true;
 
 	/**
 	 * An array of Filter objects to apply to this display object. Filters are only applied / updated when {{#crossLink "cache"}}{{/crossLink}}
@@ -290,7 +291,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Array}
 	 * @default null
 	 **/
-	public filters = null;
+	public filters:Filter[] = null;
 
 	/**
 	 * Returns an ID number that uniquely identifies the current cache for this display object. This can be used to
@@ -389,7 +390,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix = null;
+	public _matrix:Matrix2D;
 
 	/**
 	 * @property _rectangle
@@ -397,7 +398,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:Rectangle = null;
+	public _rectangle:Rectangle;
 
 	/**
 	 * @property _bounds
@@ -405,7 +406,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _bounds = null;
+	public _bounds:Rectangle = null;
 
 	constructor()
 	{
@@ -986,8 +987,9 @@ class DisplayObject extends EventDispatcher
 	{
 		if(x == null)
 		{
-			this._bounds = x;
+			this._bounds = null;
 		}
+
 		this._bounds = (this._bounds || new Rectangle(x, y, width, height) );
 	}
 

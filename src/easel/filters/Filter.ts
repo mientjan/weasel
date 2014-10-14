@@ -96,7 +96,7 @@ class Filter
 	 * @param {Number} [targetY] The y position to draw the result to. Defaults to the value passed to y.
 	 * @return {Boolean} If the filter was applied successfully.
 	 **/
-	public applyFilter(ctx:CanvasRenderingContext2D, x:number, y:number, width:number, height:number, targetCtx:CanvasRenderingContext2D, targetX:number, targetY:number):boolean
+	public applyFilter(ctx:CanvasRenderingContext2D, x:number, y:number, width:number, height:number, targetCtx?:CanvasRenderingContext2D, targetX?:number, targetY?:number):boolean
 	{
 		return false;
 	}

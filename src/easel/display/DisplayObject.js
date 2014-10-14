@@ -1,3 +1,30 @@
+/*
+ * DisplayObject
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5,38 +32,10 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", '../../createts/events/EventDispatcher', '../utils/UID', '../utils/Methods', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Point', '../display/Shadow', '../../createts/events/Event', './Stage'], function (require, exports, EventDispatcher, UID, Methods, Matrix2D, Rectangle, Point, Shadow, Event, Stage) {
-    /*
-     * DisplayObject
-     * Visit http://createjs.com/ for documentation, updates and examples.
-     *
-     * Copyright (c) 2010 gskinner.com, inc.
-     *
-     * Permission is hereby granted, free of charge, to any person
-     * obtaining a copy of this software and associated documentation
-     * files (the "Software"), to deal in the Software without
-     * restriction, including without limitation the rights to use,
-     * copy, modify, merge, publish, distribute, sublicense, and/or sell
-     * copies of the Software, and to permit persons to whom the
-     * Software is furnished to do so, subject to the following
-     * conditions:
-     *
-     * The above copyright notice and this permission notice shall be
-     * included in all copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-     * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-     * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-     * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-     * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-     * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-     * OTHER DEALINGS IN THE SOFTWARE.
-     */
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
         function DisplayObject() {
             _super.call(this);
-            // events:
             // public properties:
             /**
              * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
@@ -54,13 +53,6 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              * @readonly
              **/
             this.cacheCanvas = null;
-            /**
-             * Unique ID for this display object. Makes display objects easier for some uses.
-             * @property id
-             * @type {Number}
-             * @default -1
-             **/
-            this.id = -1;
             /**
              * Indicates whether to include this object when running mouse interactions. Setting this to `false` for children
              * of a {{#crossLink "Container"}}{{/crossLink}} will cause events on the Container to not fire when that child is
@@ -284,20 +276,6 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              * @default null
              */
             this._cacheDataURL = null;
-            /**
-             * @property _matrix
-             * @protected
-             * @type {Matrix2D}
-             * @default null
-             **/
-            this._matrix = null;
-            /**
-             * @property _rectangle
-             * @protected
-             * @type {Rectangle}
-             * @default null
-             **/
-            this._rectangle = null;
             /**
              * @property _bounds
              * @protected
@@ -807,7 +785,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
          **/
         DisplayObject.prototype.setBounds = function (x, y, width, height) {
             if (x == null) {
-                this._bounds = x;
+                this._bounds = null;
             }
             this._bounds = (this._bounds || new Rectangle(x, y, width, height));
         };
@@ -1060,6 +1038,20 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
          * @default false
          **/
         DisplayObject._snapToPixelEnabled = false; // stage.snapToPixelEnabled is temporarily copied here during a draw to provide global access.
+        /**
+         * @property _hitTestCanvas
+         * @type {HTMLCanvasElement | Object}
+         * @static
+         * @protected
+         **/
+        /**
+         * @property _hitTestContext
+         * @type {CanvasRenderingContext2D}
+         * @static
+         * @protected
+         **/
+        DisplayObject._hitTestCanvas = Methods.createCanvas();
+        DisplayObject._hitTestContext = DisplayObject._hitTestCanvas.getContext('2d');
         /**
          * @property _nextCacheID
          * @type {Number}

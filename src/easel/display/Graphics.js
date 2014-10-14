@@ -737,9 +737,7 @@ define(["require", "exports", '../utils/Methods'], function (require, exports, M
     })();
     var Graphics = (function () {
         /**
-         * Initialization method.
-         * @method initialize
-         * @protected
+         * @constructor
          **/
         function Graphics() {
             // public properties

@@ -1253,11 +1253,9 @@ class Graphics
 	public _ctx:CanvasRenderingContext2D = Graphics._ctx;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
-	 * @protected
+	 * @constructor
 	 **/
-		constructor()
+	constructor()
 	{
 		this.clear();
 

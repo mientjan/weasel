@@ -438,6 +438,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
          * responsive, but uses less CPU.
          **/
         Stage.prototype.enableMouseOver = function (frequency) {
+            var _this = this;
             if (this._mouseOverIntervalID) {
                 clearInterval(this._mouseOverIntervalID);
                 this._mouseOverIntervalID = null;
@@ -451,9 +452,8 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
             else if (frequency <= 0) {
                 return;
             }
-            var o = this;
             this._mouseOverIntervalID = setInterval(function () {
-                o._testMouseOver();
+                _this._testMouseOver();
             }, 1000 / Math.min(50, frequency));
         };
         /**
