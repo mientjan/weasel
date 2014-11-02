@@ -27,7 +27,7 @@ import Event = require('./Event');
 
 class TimeEvent extends Event
 {
-	public delta:number
+	public delta:number;
 	public paused:boolean;
 	public time:number;
 	public runTime:number;

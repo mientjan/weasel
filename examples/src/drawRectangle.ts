@@ -1,7 +1,7 @@
 import Stage = require('../../src/easel/display/Stage');
 import Shape = require('../../src/easel/display/Shape');
 
-class Start { 
+class Test {
 	constructor(){
 		var stage = new Stage( document.getElementById('canvasElement') );
 
@@ -15,4 +15,4 @@ class Start {
 	}
 }
 
-var s = new Start();
+new Test();
