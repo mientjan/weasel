@@ -65,7 +65,7 @@ class Bitmap extends DisplayObject {
 	 * @property image
 	 * @type Image | HTMLCanvasElement | HTMLVideoElement
 	 **/
-	image:HTMLImageElement = null;
+	public image:HTMLImageElement = null;
 
 	/**
 	 * Specifies an area of the source image to draw. If omitted, the whole image will be drawn.
