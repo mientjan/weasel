@@ -1,6 +1,6 @@
 define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/display/Shape'], function (require, exports, Stage, Shape) {
-    var Start = (function () {
-        function Start() {
+    var Test = (function () {
+        function Test() {
             var stage = new Stage(document.getElementById('canvasElement'));
             var shape = new Shape();
             shape.graphics.beginFill('#FF0000');
@@ -8,7 +8,7 @@ define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/
             stage.addChild(shape);
             stage.update();
         }
-        return Start;
+        return Test;
     })();
-    var s = new Start();
+    new Test();
 });

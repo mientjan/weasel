@@ -9,7 +9,7 @@ import BlurFilter = require('../../src/easel/filters/BlurFilter');
 import AlphaMaskFilter = require('../../src/easel/filters/AlphaMaskFilter');
 
 class Test
-{
+{ 
 	stage;
 	isDrawing;
 	drawingCanvas;
