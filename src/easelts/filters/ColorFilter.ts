@@ -26,12 +26,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+import Filter = require('./Filter');
 
-module createts
-{
-
-
-	/**
+/**
 	 * Applies a color transform to DisplayObjects.
 	 *
 	 * <h4>Example</h4>
@@ -63,7 +60,7 @@ module createts
 	 * @constructor
 	 * @extends Filter
 	 **/
-	export class ColorFilter extends Filter
+class ColorFilter extends Filter
 	{
 
 		// public properties:
@@ -202,4 +199,5 @@ module createts
 			return new ColorFilter(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
 		}
 	}
-}
+
+export = ColorFilter;

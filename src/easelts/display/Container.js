@@ -1,37 +1,37 @@
+/*
+ * Container
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject'], function (require, exports, DisplayObject) {
-    /*
-     * Container
-     * Visit http://createjs.com/ for documentation, updates and examples.
-     *
-     * Copyright (c) 2010 gskinner.com, inc.
-     *
-     * Permission is hereby granted, free of charge, to any person
-     * obtaining a copy of this software and associated documentation
-     * files (the "Software"), to deal in the Software without
-     * restriction, including without limitation the rights to use,
-     * copy, modify, merge, publish, distribute, sublicense, and/or sell
-     * copies of the Software, and to permit persons to whom the
-     * Software is furnished to do so, subject to the following
-     * conditions:
-     *
-     * The above copyright notice and this permission notice shall be
-     * included in all copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-     * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-     * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-     * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-     * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-     * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-     * OTHER DEALINGS IN THE SOFTWARE.
-     */
+define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, Size) {
     /**
      * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
      * group arm, leg, torso and head {{#crossLink "Bitmap"}}{{/crossLink}} instances together into a Person Container, and
@@ -56,13 +56,24 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
     var Container = (function (_super) {
         __extends(Container, _super);
         /**
-         * Initialization method.
-         * @method initialize
-         * @protected
+         * @constructor
+         * @param width
+         * @param height
+         * @param x
+         * @param y
+         * @param regX
+         * @param regY
          */
-        function Container() {
-            _super.call(this);
+        function Container(width, height, x, y, regX, regY) {
+            if (width === void 0) { width = '100%'; }
+            if (height === void 0) { height = '100%'; }
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (regX === void 0) { regX = 0; }
+            if (regY === void 0) { regY = 0; }
+            _super.call(this, width, height, x, y, regX, regY);
             // public properties:
+            this.type = 2 /* CONTAINER */;
             /**
              * The array of children in the display list. You should usually use the child management methods such as
              * {{#crossLink "Container/addChild"}}{{/crossLink}}, {{#crossLink "Container/removeChild"}}{{/crossLink}},
@@ -72,28 +83,30 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
              * @type Array
              * @default null
              **/
-            this.children = null;
+            this.children = [];
             /**
              * Indicates whether the children of this container are independently enabled for mouse/pointer interaction.
              * If false, the children will be aggregated under the container - for example, a click on a child shape would
              * trigger a click event on the container.
              * @property mouseChildren
              * @type Boolean
-             * @default true
+             * @default false
              **/
-            this.mouseChildren = true;
+            this.mouseChildren = false;
             /**
              * If false, the tick will not be propagated to children of this Container. This can provide some performance benefits.
              * In addition to preventing the "tick" event from being dispatched, it will also prevent tick related updates
              * on some display objects (ex. Sprite & MovieClip frame advancing, DOMElement visibility handling).
              * @property tickChildren
              * @type Boolean
-             * @default true
+             * @default false
              **/
             this.tickChildren = true;
-            this.children = [];
         }
-        // public methods:
+        Container.prototype.initialize = function () {
+            this['constructor'].call(this);
+            //		super.initialize();
+        };
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
          * This does not account for whether it would be visible within the boundaries of the stage.
@@ -103,8 +116,19 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
          **/
         Container.prototype.isVisible = function () {
-            var hasContent = this.cacheCanvas || this.children.length;
-            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length));
+        };
+        /**
+         *
+         * @method enableMouseInteraction
+         */
+        Container.prototype.enableMouseInteraction = function () {
+            this.mouseChildren = true;
+            _super.prototype.enableMouseInteraction.call(this);
+        };
+        Container.prototype.disableMouseInteraction = function () {
+            this.mouseChildren = false;
+            _super.prototype.disableMouseInteraction.call(this);
         };
         /**
          * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -122,9 +146,9 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                 return true;
             }
             // this ensures we don't have issues with display list changes that occur during a draw:
-            var list = this.children.slice(0);
+            var list = this.children, child;
             for (var i = 0, l = list.length; i < l; i++) {
-                var child = list[i];
+                child = list[i];
                 if (!child.isVisible()) {
                     continue;
                 }
@@ -151,21 +175,32 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * @param {DisplayObject} child The display object to add.
          * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
          **/
-        Container.prototype.addChild = function (child) {
-            if (child == null) {
-                return child;
+        Container.prototype.addChild = function () {
+            var children = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                children[_i - 0] = arguments[_i];
             }
-            var l = arguments.length;
+            var l = children.length;
+            if (l == 0) {
+                return null;
+            }
             if (l > 1) {
                 for (var i = 0; i < l; i++) {
-                    this.addChild(arguments[i]);
+                    this.addChild(children[i]);
                 }
-                return arguments[l - 1];
+                return children[l - 1];
             }
+            var child = children[0];
             if (child.parent) {
                 child.parent.removeChild(child);
             }
             child.parent = this;
+            if (this._parentSizeIsKnown) {
+                if (typeof child.onResize == 'function') {
+                    child.onResize(new Size(this.width, this.height));
+                }
+            }
+            //		child.initBehaviourList();
             this.children.push(child);
             return child;
         };
@@ -209,6 +244,12 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                 child.parent.removeChild(child);
             }
             child.parent = this;
+            if (this._parentSizeIsKnown) {
+                if (typeof child.onResize == 'function') {
+                    child.onResize(new Size(this.width, this.height));
+                }
+            }
+            //		child.initBehaviourList();
             this.children.splice(index, 0, child);
             return child;
         };
@@ -293,9 +334,9 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * @method removeAllChildren
          **/
         Container.prototype.removeAllChildren = function () {
-            var kids = this.children;
-            while (kids.length) {
-                kids.pop().parent = null;
+            var children = this.children;
+            while (children.length) {
+                children.pop().parent = null;
             }
         };
         /**
@@ -413,9 +454,10 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
         };
         /**
          * Changes the depth of the specified child. Fails silently if the child is not a child of this container, or the index is out of range.
+         *
+         * @method setChildIndex
          * @param {DisplayObject} child
          * @param {Number} index
-         * @method setChildIndex
          **/
         Container.prototype.setChildIndex = function (child, index) {
             var kids = this.children, l = kids.length;
@@ -436,6 +478,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
         /**
          * Returns true if the specified display object either is this container or is a descendent (child, grandchild, etc)
          * of this container.
+         *
          * @method contains
          * @param {DisplayObject} child The DisplayObject to be checked.
          * @return {Boolean} true if the specified display object either is this container or is a descendent.
@@ -453,6 +496,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * Tests whether the display object intersects the specified local point (ie. draws a pixel with alpha > 0 at the
          * specified position). This ignores the alpha, shadow and compositeOperation of the display object, and all
          * transform properties including regX/Y.
+         *
          * @method hitTest
          * @param {Number} x The x position to check in the display object's local coordinates.
          * @param {Number} y The y position to check in the display object's local coordinates.
@@ -536,6 +580,17 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
+        Container.prototype.onResize = function (e) {
+            _super.prototype.onResize.call(this, e);
+            var size = new Size(this.width, this.height);
+            var child = null;
+            for (var i = 0; i < this.children.length; i++) {
+                child = this.children[i];
+                if (typeof child.onResize == 'function') {
+                    child.onResize(size);
+                }
+            }
+        };
         // private properties:
         /**
          * @property DisplayObject__tick
@@ -598,7 +653,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     ctx.clearRect(0, 0, 2, 2);
                 }
                 // if a child container has a hitArea then we only need to check its hitArea, so we can treat it as a normal DO:
-                if (!hitArea && child instanceof Container) {
+                if (!hitArea && child.type == 2 /* CONTAINER */) {
                     var result = child._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
                     if (!arr && result) {
                         return (mouse && !this.mouseChildren) ? this : result;
@@ -669,6 +724,16 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                 }
             }
             return (maxX == null) ? null : this._rectangle.initialize(minX, minY, maxX - minX, maxY - minY);
+        };
+        Container.prototype.destruct = function () {
+            for (var i = 0; i < this.children.length; i++) {
+                if (typeof this.children[i].destruct == 'function') {
+                    this.children[i].destruct();
+                }
+            }
+            this.disableMouseInteraction();
+            this.removeAllChildren();
+            _super.prototype.destruct.call(this);
         };
         return Container;
     })(DisplayObject);

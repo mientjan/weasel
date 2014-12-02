@@ -1,3 +1,6 @@
+/**
+ * @enum TimingMode
+ */
 enum TimingMode {
 	TIMEOUT,
 	RAF,

@@ -1,5 +1,3 @@
-import DisplayObject = require('./DisplayObject');
-
 /*
  * Container
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -28,6 +26,10 @@ import DisplayObject = require('./DisplayObject');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import DisplayObject = require('./DisplayObject');
+import DisplayType = require('../enum/DisplayType');
+import Size = require('../geom/Size');
+import Matrix2D = require('../geom/Matrix2D');
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -52,9 +54,9 @@ import DisplayObject = require('./DisplayObject');
  **/
 class Container extends DisplayObject
 {
-
-
 	// public properties:
+	public type:DisplayType = DisplayType.CONTAINER;
+
 	/**
 	 * The array of children in the display list. You should usually use the child management methods such as
 	 * {{#crossLink "Container/addChild"}}{{/crossLink}}, {{#crossLink "Container/removeChild"}}{{/crossLink}},
@@ -64,7 +66,7 @@ class Container extends DisplayObject
 	 * @type Array
 	 * @default null
 	 **/
-	public children:any[] = null;
+	public children:any[] = [];
 
 	/**
 	 * Indicates whether the children of this container are independently enabled for mouse/pointer interaction.
@@ -72,9 +74,9 @@ class Container extends DisplayObject
 	 * trigger a click event on the container.
 	 * @property mouseChildren
 	 * @type Boolean
-	 * @default true
+	 * @default false
 	 **/
-	public mouseChildren = true;
+	public mouseChildren = false;
 
 	/**
 	 * If false, the tick will not be propagated to children of this Container. This can provide some performance benefits.
@@ -82,22 +84,30 @@ class Container extends DisplayObject
 	 * on some display objects (ex. Sprite & MovieClip frame advancing, DOMElement visibility handling).
 	 * @property tickChildren
 	 * @type Boolean
-	 * @default true
+	 * @default false
 	 **/
 	public tickChildren = true;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
-	 * @protected
+	 * @constructor
+	 * @param width
+	 * @param height
+	 * @param x
+	 * @param y
+	 * @param regX
+	 * @param regY
 	 */
-		constructor()
+	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
-		super();
-		this.children = [];
+		super(width, height, x, y, regX, regY);
 	}
 
-	// public methods:
+	public initialize()
+	{
+
+		this['constructor'].call(this)
+		//		super.initialize();
+	}
 
 	/**
 	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
@@ -109,8 +119,23 @@ class Container extends DisplayObject
 	 **/
 	public isVisible()
 	{
-		var hasContent = this.cacheCanvas || this.children.length;
-		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length) );
+	}
+
+	/**
+	 *
+	 * @method enableMouseInteraction
+	 */
+	public enableMouseInteraction()
+	{
+		this.mouseChildren = true;
+		super.enableMouseInteraction();
+	}
+
+	public disableMouseInteraction()
+	{
+		this.mouseChildren = false;
+		super.disableMouseInteraction();
 	}
 
 	/**
@@ -132,10 +157,12 @@ class Container extends DisplayObject
 		}
 
 		// this ensures we don't have issues with display list changes that occur during a draw:
-		var list = this.children.slice(0);
+		var list = this.children, //.slice(0);
+			child;
 		for(var i = 0, l = list.length; i < l; i++)
 		{
-			var child = list[i];
+			child = list[i];
+
 			if(!child.isVisible())
 			{
 				continue;
@@ -147,6 +174,7 @@ class Container extends DisplayObject
 			child.draw(ctx);
 			ctx.restore();
 		}
+
 		return true;
 	}
 
@@ -165,26 +193,39 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	public addChild(child)
+	public addChild(...children:DisplayObject[]):DisplayObject
 	{
-		if(child == null)
+		var l = children.length;
+		if(l == 0)
 		{
-			return child;
+			return null;
 		}
-		var l = arguments.length;
+
 		if(l > 1)
 		{
 			for(var i = 0; i < l; i++)
 			{
-				this.addChild(arguments[i]);
+				this.addChild(children[i]);
 			}
-			return arguments[l - 1];
+			return children[l - 1];
 		}
+
+		var child = children[0];
 		if(child.parent)
 		{
 			child.parent.removeChild(child);
 		}
+
 		child.parent = this;
+		if(this._parentSizeIsKnown)
+		{
+			if(typeof child.onResize == 'function')
+			{
+				child.onResize(new Size(this.width, this.height));
+			}
+		}
+		//		child.initBehaviourList();
+
 		this.children.push(child);
 		return child;
 	}
@@ -233,7 +274,17 @@ class Container extends DisplayObject
 		{
 			child.parent.removeChild(child);
 		}
+
 		child.parent = this;
+		if(this._parentSizeIsKnown)
+		{
+			if(typeof child.onResize == 'function')
+			{
+				child.onResize(new Size(this.width, this.height));
+			}
+		}
+		//		child.initBehaviourList();
+
 		this.children.splice(index, 0, child);
 		return child;
 	}
@@ -332,10 +383,10 @@ class Container extends DisplayObject
 	 **/
 	public removeAllChildren()
 	{
-		var kids = this.children;
-		while(kids.length)
+		var children = this.children;
+		while(children.length)
 		{
-			kids.pop().parent = null;
+			children.pop().parent = null;
 		}
 	}
 
@@ -476,9 +527,10 @@ class Container extends DisplayObject
 
 	/**
 	 * Changes the depth of the specified child. Fails silently if the child is not a child of this container, or the index is out of range.
+	 *
+	 * @method setChildIndex
 	 * @param {DisplayObject} child
 	 * @param {Number} index
-	 * @method setChildIndex
 	 **/
 	public setChildIndex(child, index)
 	{
@@ -505,6 +557,7 @@ class Container extends DisplayObject
 	/**
 	 * Returns true if the specified display object either is this container or is a descendent (child, grandchild, etc)
 	 * of this container.
+	 *
 	 * @method contains
 	 * @param {DisplayObject} child The DisplayObject to be checked.
 	 * @return {Boolean} true if the specified display object either is this container or is a descendent.
@@ -526,6 +579,7 @@ class Container extends DisplayObject
 	 * Tests whether the display object intersects the specified local point (ie. draws a pixel with alpha > 0 at the
 	 * specified position). This ignores the alpha, shadow and compositeOperation of the display object, and all
 	 * transform properties including regX/Y.
+	 *
 	 * @method hitTest
 	 * @param {Number} x The x position to check in the display object's local coordinates.
 	 * @param {Number} y The y position to check in the display object's local coordinates.
@@ -625,6 +679,24 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
+	public onResize(e:Size)
+	{
+
+		super.onResize(e);
+
+		var size = new Size(this.width, this.height);
+		var child = null;
+		for(var i = 0; i < this.children.length; i++)
+		{
+			child = this.children[i];
+			if(typeof child.onResize == 'function')
+			{
+				child.onResize(size)
+			}
+		}
+
+	}
+
 	// private properties:
 	/**
 	 * @property DisplayObject__tick
@@ -651,6 +723,7 @@ class Container extends DisplayObject
 					child._tick(props);
 				}
 			}
+
 		}
 		super._tick(props);
 	}
@@ -665,7 +738,7 @@ class Container extends DisplayObject
 	 * @return {Array}
 	 * @protected
 	 **/
-	public _getObjectsUnderPoint(x, y, arr?, mouse?, activeListener?)
+	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean)
 	{
 		var ctx = DisplayObject._hitTestContext;
 		var mtx = this._matrix;
@@ -702,9 +775,9 @@ class Container extends DisplayObject
 			}
 
 			// if a child container has a hitArea then we only need to check its hitArea, so we can treat it as a normal DO:
-			if(!hitArea && child instanceof Container)
+			if(!hitArea && child.type == DisplayType.CONTAINER)
 			{
-				var result = child._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
+				var result = ( <Container> child)._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
 				if(!arr && result)
 				{
 					return (mouse && !this.mouseChildren) ? this : result;
@@ -734,6 +807,7 @@ class Container extends DisplayObject
 				}
 				ctx.setTransform(1, 0, 0, 1, 0, 0);
 				ctx.clearRect(0, 0, 2, 2);
+
 				if(arr)
 				{
 					arr.push(child);
@@ -744,6 +818,7 @@ class Container extends DisplayObject
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -754,7 +829,7 @@ class Container extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix, ignoreTransform)
+	public _getBounds(matrix:Matrix2D, ignoreTransform:boolean)
 	{
 		var bounds = super.getBounds();
 		if(bounds)
@@ -797,6 +872,24 @@ class Container extends DisplayObject
 		}
 
 		return (maxX == null) ? null : this._rectangle.initialize(minX, minY, maxX - minX, maxY - minY);
+	}
+
+
+	public destruct()
+	{
+
+		for(var i = 0; i < this.children.length; i++)
+		{
+			if(typeof this.children[i].destruct == 'function')
+			{
+				this.children[i].destruct();
+			}
+		}
+
+		this.disableMouseInteraction();
+		this.removeAllChildren();
+
+		super.destruct();
 	}
 }
 

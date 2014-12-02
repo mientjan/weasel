@@ -26,31 +26,92 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+// event
 import EventDispatcher = require('../../createts/events/EventDispatcher');
+import Event = require('../../createts/events/Event');
+
+// utils
 import UID = require('../utils/UID');
 import Methods = require('../utils/Methods');
-import Matrix2D = require('../geom/Matrix2D');
-import Rectangle = require('../geom/Rectangle');
-import Point = require('../geom/Point');
-import Shadow = require('../display/Shadow');
-import Event = require('../../createts/events/Event');
+
+// display
+import Shape = require('./Shape');
+import Shadow = require('./Shadow');
 import Stage = require('./Stage');
 import Container = require('./Container');
+
+// filter
 import Filter = require('../filters/Filter');
 
+// enum
+import CalculationType = require('../enum/CalculationType');
+import DisplayType = require('../enum/DisplayType');
 
+// geom
+import FluidCalculation = require('../geom/FluidCalculation');
+import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
+import Matrix2D = require('../geom/Matrix2D');
+import Rectangle = require('../geom/Rectangle');
+import Size = require('../geom/Size');
+import Point = require('../geom/Point');
+
+import AbstractBehaviour = require('../behaviour/AbstractBehaviour');
+
+/**
+ * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
+ */
 class DisplayObject extends EventDispatcher
 {
 
-	// static properties:
+	public static EVENT_MOUSE_CLICK = 'click';
+	public static EVENT_MOUSE_MOUSEDOWN = 'mousedown';
+	public static EVENT_MOUSE_MOUSEOUT = 'mouseout';
+	public static EVENT_MOUSE_MOUSEOVER = 'mouseover';
+
+	/**
+	 *
+	 * @type {string}
+	 */
+	public static EVENT_MOUSE_MOUSEMOVE = 'mousemove';
+
+	public static EVENT_MOUSE_PRESSMOVE = 'pressmove';
+	public static EVENT_MOUSE_PRESSUP = 'pressup';
+	public static EVENT_MOUSE_ROLLOUT = 'rollout';
+	public static EVENT_MOUSE_ROLLOVER = 'rollover';
+
 	/**
 	 * Listing of mouse event names. Used in _hasMouseEventListener.
 	 * @property _MOUSE_EVENTS
 	 * @protected
 	 * @static
-	 * @type {Array}
+	 * @type {string[]}
 	 **/
-	public static _MOUSE_EVENTS = ["click", "dblclick", "mousedown", "mouseout", "mouseover", "pressmove", "pressup", "rollout", "rollover"];
+	public static _MOUSE_EVENTS = [
+		DisplayObject.EVENT_MOUSE_CLICK,
+		DisplayObject.EVENT_MOUSE_MOUSEDOWN,
+		DisplayObject.EVENT_MOUSE_MOUSEOUT,
+		DisplayObject.EVENT_MOUSE_MOUSEOVER,
+		DisplayObject.EVENT_MOUSE_PRESSMOVE,
+		DisplayObject.EVENT_MOUSE_PRESSUP,
+		DisplayObject.EVENT_MOUSE_ROLLOUT,
+		DisplayObject.EVENT_MOUSE_ROLLOVER,
+		"dblclick" // @todo make depricated
+	];
+
+	public static COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';
+	public static COMPOSITE_OPERATION_SOURCE_IN = 'source-in';
+	public static COMPOSITE_OPERATION_SOURCE_OUT = 'source-out';
+	public static COMPOSITE_OPERATION_SOURCE_OVER = 'source-over';
+
+	public static COMPOSITE_OPERATION_DESTINATION_ATOP = 'destination-atop';
+	public static COMPOSITE_OPERATION_DESTINATION_IN = 'destination-in';
+	public static COMPOSITE_OPERATION_DESTINATION_OUT = 'destination-out';
+	public static COMPOSITE_OPERATION_DESTINATION_OVER = 'destination-over';
+
+	public static COMPOSITE_OPERATION_LIGHTER = 'lighter';
+	public static COMPOSITE_OPERATION_DARKER = 'darker';
+	public static COMPOSITE_OPERATION_XOR = 'xor';
+	public static COMPOSITE_OPERATION_COPY = 'copy';
 
 	/**
 	 * Suppresses errors generated when using features like hitTest, mouse events, and {{#crossLink "getObjectsUnderPoint"}}{{/crossLink}}
@@ -94,9 +155,12 @@ class DisplayObject extends EventDispatcher
 	 * @static
 	 * @protected
 	 **/
-	public static _nextCacheID = 1;
+	public static _nextCacheID:number = 1;
 
 	// public properties:
+
+	public type:DisplayType = DisplayType.DISPLAYOBJECT;
+
 	/**
 	 * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
 	 * @property alpha
@@ -121,7 +185,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Number}
 	 * @default -1
 	 **/
-	public id:number;
+	public id:number = UID.get();
 
 	/**
 	 * Indicates whether to include this object when running mouse interactions. Setting this to `false` for children
@@ -134,9 +198,9 @@ class DisplayObject extends EventDispatcher
 	 * provided in the next release of EaselJS.
 	 * @property mouseEnabled
 	 * @type {Boolean}
-	 * @default true
+	 * @default false
 	 **/
-	public mouseEnabled:boolean = true;
+	public mouseEnabled:boolean = false;
 
 	/**
 	 * If false, the tick will not run on this display object (or its children). This can provide some performance benefits.
@@ -262,6 +326,47 @@ class DisplayObject extends EventDispatcher
 	 **/
 	public y:number = 0;
 
+	/** When true the geom of this object will be updated when its parent resizes.
+	 *
+	 * @property updateGeomOnResize
+	 * @type {Boolean}
+	 * @default true
+	 **/
+	public updateGeomOnResize = true;
+
+	public width:number = 0;
+	public height:number = 0;
+
+	public _x_type:CalculationType = CalculationType.STATIC;
+	public _x_procent:number = .0;
+	public _x_calc:FluidMeasurementsUnit[];
+
+	public _y_type:CalculationType;
+	public _y_procent:number = .0;
+	public _y_calc:FluidMeasurementsUnit[];
+
+	public _width_type:CalculationType = CalculationType.STATIC;
+	public _width_procent:number = .0;
+	public _width_calc:FluidMeasurementsUnit[];
+
+	public _height_type:CalculationType = CalculationType.STATIC;
+	public _height_procent:number = .0;
+	public _height_calc:FluidMeasurementsUnit[];
+
+	public _regX_type:CalculationType = CalculationType.STATIC;
+	public _regX_procent:number = .0;
+	public _regX_calc:FluidMeasurementsUnit[];
+
+	public _regY_type:CalculationType = CalculationType.STATIC;
+	public _regY_procent:number = .0;
+	public _regY_calc:FluidMeasurementsUnit[];
+
+	public _behaviourList:AbstractBehaviour[] = null;
+	public _parentSizeIsKnown:boolean = false;
+
+	public minimumContainerSize:Rectangle = null;
+	public maximumContainerSize:Rectangle = null;
+
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
 	 * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -309,7 +414,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Shape}
 	 * @default null
 	 */
-	public mask = null;
+	public mask:Shape = null;
 
 	/**
 	 * A display object that will be tested when checking mouse interactions or testing {{#crossLink "Container/getObjectsUnderPoint"}}{{/crossLink}}.
@@ -390,7 +495,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:Matrix2D;
+	public _matrix:Matrix2D = new Matrix2D(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -398,7 +503,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:Rectangle;
+	public _rectangle:Rectangle =  new Rectangle(0, 0, 0, 0);
 
 	/**
 	 * @property _bounds
@@ -408,16 +513,240 @@ class DisplayObject extends EventDispatcher
 	 **/
 	public _bounds:Rectangle = null;
 
-	constructor()
+	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super();
 
-		this.id = UID.get();
-		this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
-		this._rectangle = new Rectangle(0, 0, 0, 0);
+		this.setGeomTransform(width, height, x, y, regX, regY);;
 	}
 
-	// public methods:
+	initialize() {
+
+
+	}
+
+	public setWidth(width:string):any;
+	public setWidth(width:number):any;
+	public setWidth(width:any):any
+	{
+		if(typeof(width) == 'string')
+		{
+			if(width.substr(-1) == '%')
+			{
+				this._width_procent = parseFloat(width.substr(0, width.length - 1)) / 100;
+				this._width_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._width_calc = FluidCalculation.dissolveCalcElements(width);
+				this._width_type = CalculationType.CALC;
+			}
+
+		}
+		else
+		{
+			this.width = width;
+			this._width_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+		return this;
+	}
+
+	public setHeight(height:string):any;
+	public setHeight(height:number):any;
+	public setHeight(height:any):any
+	{
+		if(typeof(height) == 'string')
+		{
+			// @todo check if only procent unit.
+			if(height.substr(-1) == '%')
+			{
+				this._height_procent = parseFloat(height.substr(0, height.length - 1)) / 100;
+				this._height_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._height_calc = FluidCalculation.dissolveCalcElements(height);
+				this._height_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.height = height;
+			this._height_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+		return this;
+	}
+
+	public setX(x:string):any;
+	public setX(x:number):any;
+	public setX(x:any):any
+	{
+		if(typeof(x) == 'string')
+		{
+			if(x.substr(-1) == '%')
+			{
+				this._x_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._x_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._x_calc = FluidCalculation.dissolveCalcElements(x);
+				this._x_type = CalculationType.CALC;
+			}
+
+		}
+		else
+		{
+			this.x = x;
+			this._x_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+
+		return this;
+	}
+
+	public setY(y:string):any;
+	public setY(y:number):any;
+	public setY(y:any):any
+	{
+		if(typeof(y) == 'string')
+		{
+			if(y.substr(-1) == '%')
+			{
+				this._y_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._y_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._y_calc = FluidCalculation.dissolveCalcElements(y);
+				this._y_type = CalculationType.CALC;
+			}
+
+		}
+		else
+		{
+			this.y = y;
+			this._y_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+		return this;
+	}
+
+	public setRegX(x:string):any;
+	public setRegX(x:number):any;
+	public setRegX(x:any):any
+	{
+		if(typeof(x) == 'string')
+		{
+			if(x.substr(-1) == '%')
+			{
+				this._regX_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._regX_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._regX_calc = FluidCalculation.dissolveCalcElements(x);
+				this._regX_type = CalculationType.CALC;
+			}
+
+		}
+		else
+		{
+			this.regX = x;
+			this._regX_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+
+		return this;
+	}
+
+	public setRegY(y:string):any;
+	public setRegY(y:number):any;
+	public setRegY(y:any):any
+	{
+		if(typeof(y) == 'string')
+		{
+			if(y.substr(-1) == '%')
+			{
+				this._regY_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._regY_type = CalculationType.PROCENT;
+			}
+			else
+			{
+				this._regY_calc = FluidCalculation.dissolveCalcElements(y);
+				this._regY_type = CalculationType.CALC;
+			}
+
+		}
+		else
+		{
+			this.regY = y;
+			this._regY_type = CalculationType.STATIC;
+		}
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
+		return this;
+	}
+
+	public addBehaviour(behaviour:AbstractBehaviour):void
+	{
+		if(!this._behaviourList){
+			this._behaviourList = [];
+		}
+		this._behaviourList.push(behaviour);
+		behaviour.initialize(this);
+	}
+
+	/**
+	 * Removes all be behaviors
+	 *
+	 * @method removeAllBehaviors
+	 * @return void
+	 */
+	public removeAllBehaviors():void
+	{
+		if( this._behaviourList ){
+			while(this._behaviourList.length){
+				this._behaviourList.pop().destruct();
+			}
+		}
+	}
+
+	/**
+	 * @method enableMouseInteraction
+	 * @return void
+	 */
+	public enableMouseInteraction(){
+		this.mouseEnabled = true;
+	}
+
+	/**
+	 * @method disableMouseInteraction
+	 * @return void
+	 */
+	public disableMouseInteraction(){
+		this.mouseEnabled = false;
+	}
+
 	/**
 	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
 	 * This does not account for whether it would be visible within the boundaries of the stage.
@@ -442,15 +771,19 @@ class DisplayObject extends EventDispatcher
 	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
+
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
 		{
 			return false;
 		}
 
-		var scale = this._cacheScale, offX = this._cacheOffsetX, offY = this._cacheOffsetY, fBounds;
+		var scale = this._cacheScale;
+		var offX = this._cacheOffsetX;
+		var offY = this._cacheOffsetY
+		var fBounds;
 		if(fBounds = this._applyFilterBounds(offX, offY, 0, 0))
 		{
 			offX = fBounds.x;
@@ -465,10 +798,11 @@ class DisplayObject extends EventDispatcher
 	/**
 	 * Applies this display object's transformation, alpha, globalCompositeOperation, clipping path (mask), and shadow
 	 * to the specified context. This is typically called prior to {{#crossLink "DisplayObject/draw"}}{{/crossLink}}.
+	 *
 	 * @method updateContext
 	 * @param {CanvasRenderingContext2D} ctx The canvas 2D to update.
 	 **/
-	public updateContext(ctx:CanvasRenderingContext2D)
+	public updateContext(ctx:CanvasRenderingContext2D):void
 	{
 		var mtx, mask = this.mask, o = this;
 
@@ -534,7 +868,7 @@ class DisplayObject extends EventDispatcher
 	 *    myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate
 	 *    cached elements with greater fidelity. Default is 1.
 	 **/
-	public cache(x:number, y:number, width:number, height:number, scale = 1)
+	public cache(x:number, y:number, width:number, height:number, scale = 1):void
 	{
 		// draw to canvas.
 		//		scale = scale||1;
@@ -569,7 +903,7 @@ class DisplayObject extends EventDispatcher
 	 * <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#compositing">
 	 * whatwg spec on compositing</a>.
 	 **/
-	public updateCache(compositeOperation?:string)
+	public updateCache(compositeOperation?:string):void
 	{
 		var cacheCanvas = this.cacheCanvas, scale = this._cacheScale, offX = this._cacheOffsetX * scale, offY = this._cacheOffsetY * scale;
 		var w = this._cacheWidth, h = this._cacheHeight, fBounds;
@@ -615,7 +949,7 @@ class DisplayObject extends EventDispatcher
 	 * Clears the current cache. See {{#crossLink "DisplayObject/cache"}}{{/crossLink}} for more information.
 	 * @method uncache
 	 **/
-	public uncache()
+	public uncache():void
 	{
 		this._cacheDataURL = this.cacheCanvas = null;
 		this.cacheID = this._cacheOffsetX = this._cacheOffsetY = 0;
@@ -628,16 +962,18 @@ class DisplayObject extends EventDispatcher
 	 * @method getCacheDataURL
 	 * @return {String} The image data url for the cache.
 	 **/
-	public getCacheDataURL()
+	public getCacheDataURL():string
 	{
 		if(!this.cacheCanvas)
 		{
 			return null;
 		}
+
 		if(this.cacheID != this._cacheDataURLID)
 		{
 			this._cacheDataURL = this.cacheCanvas.toDataURL();
 		}
+
 		return this._cacheDataURL;
 	}
 
@@ -647,18 +983,20 @@ class DisplayObject extends EventDispatcher
 	 * @return {Stage} The Stage instance that the display object is a descendent of. null if the DisplayObject has not
 	 * been added to a Stage.
 	 **/
-	public getStage()
+	public getStage():Stage
 	{
 		var o = this;
 		while(o.parent)
 		{
 			o = o.parent;
 		}
+
 		// using dynamic access to avoid circular dependencies;
-		if(o instanceof Stage)
+		if(o.type == DisplayType.STAGE )
 		{
-			return o;
+			return <Stage> o;
 		}
+
 		return null;
 	}
 
@@ -682,7 +1020,7 @@ class DisplayObject extends EventDispatcher
 	 * @return {Point} A Point instance with x and y properties correlating to the transformed coordinates
 	 * on the stage.
 	 **/
-	public localToGlobal(x, y)
+	public localToGlobal(x:number, y:number)
 	{
 		var mtx = this.getConcatenatedMatrix(this._matrix);
 		if(mtx == null)
@@ -769,18 +1107,49 @@ class DisplayObject extends EventDispatcher
 	 */
 	public setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
 	{
-		this.x = x || 0;
-		this.y = y || 0;
-		this.scaleX = scaleX == null ? 1 : scaleX;
-		this.scaleY = scaleY == null ? 1 : scaleY;
-		this.rotation = rotation || 0;
-		this.skewX = skewX || 0;
-		this.skewY = skewY || 0;
-		this.regX = regX || 0;
-		this.regY = regY || 0;
+		 this.x = x || 0;
+		 this.y = y || 0;
+		 this.scaleX = scaleX == null ? 1 : scaleX;
+		 this.scaleY = scaleY == null ? 1 : scaleY;
+		 this.rotation = rotation || 0;
+		 this.skewX = skewX || 0;
+		 this.skewY = skewY || 0;
+		 this.regX = regX || 0;
+		 this.regY = regY || 0;
+
+		 return this;
+	 }
+
+	/**
+	 *
+	 * @param w
+	 * @param h
+	 * @param x
+	 * @param y
+	 * @param rx
+	 * @param ry
+	 * @returns {DisplayObject}
+	 */
+	public setGeomTransform(w:any = null, h:any = null, x:any = null, y:any = null, rx:any = null, ry:any = null):any
+	{
+		var parentIsKnown = this._parentSizeIsKnown;
+		this._parentSizeIsKnown = false;
+
+		if(x!=null) this.setX(x);
+		if(y!=null) this.setY(y);
+		if(w!=null) this.setWidth(w);
+		if(h!=null) this.setHeight(h);
+		if(rx!=null) this.setRegX(rx);
+		if(ry!=null) this.setRegY(ry);
+
+		this._parentSizeIsKnown = parentIsKnown;
+
+		if(this._parentSizeIsKnown){
+			this.onResize(new Size(this.parent.width, this.parent.height))
+		}
+
 		return this;
 	}
-
 	/**
 	 * Returns a matrix based on this object's transform.
 	 * @method getMatrix
@@ -869,8 +1238,10 @@ class DisplayObject extends EventDispatcher
 	 * @method set
 	 * @param {Object} props A generic object containing properties to copy to the DisplayObject instance.
 	 * @return {DisplayObject} Returns the instance the method is called on (useful for chaining calls.)
+	 *
+	 * @todo remove this functionality, it completely removes efficient jit compile optimizations in v8 and other engines.
 	 */
-	public set(props)
+	public set(props:any)
 	{
 		for(var n in props)
 		{
@@ -1094,7 +1465,7 @@ class DisplayObject extends EventDispatcher
 		{
 			if(!DisplayObject.suppressCrossDomainErrors)
 			{
-				throw "An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.";
+				throw new Error('An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.');
 			}
 		}
 		return hit;
@@ -1169,6 +1540,9 @@ class DisplayObject extends EventDispatcher
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
 
+	public DisplayObject_getBounds = this._getBounds;
+
+
 	/**
 	 * @method _transformBounds
 	 * @param {Rectangle} bounds
@@ -1177,7 +1551,7 @@ class DisplayObject extends EventDispatcher
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _transformBounds(bounds, matrix, ignoreTransform)
+	public _transformBounds(bounds:Rectangle, matrix:Matrix2D, ignoreTransform:boolean)
 	{
 		if(!bounds)
 		{
@@ -1256,11 +1630,12 @@ class DisplayObject extends EventDispatcher
 
 	/**
 	 * Indicates whether the display object has any mouse event listeners or a cursor.
-	 * @method _isMouseOpaque
+	 *
+	 * @method _hasMouseEventListener
 	 * @return {Boolean}
 	 * @protected
 	 **/
-	public _hasMouseEventListener()
+	public _hasMouseEventListener():boolean
 	{
 		var evts = DisplayObject._MOUSE_EVENTS;
 		for(var i = 0, l = evts.length; i < l; i++)
@@ -1270,7 +1645,87 @@ class DisplayObject extends EventDispatcher
 				return true;
 			}
 		}
-		return !!this.cursor;
+
+		return this.cursor != null;
+	}
+
+	public onResize(e:Size)
+	{
+		this._parentSizeIsKnown = true;
+
+		if(this.updateGeomOnResize)
+		{
+
+			if(this.minimumContainerSize || this.maximumContainerSize)
+			{
+				// size object is cloned because we are going to change the value.
+				// and this object is used by multiple display objects.
+				var mincs = this.minimumContainerSize;
+				this.scaleX = this.scaleY = Math.min(1, e.width / mincs.width, e.height / mincs.height);
+			}
+
+			if(this._width_type == CalculationType.PROCENT)
+			{
+				this.width = this._width_procent * e.width;
+			}
+			else if(this._width_type == CalculationType.CALC)
+			{
+				this.width = FluidCalculation.calcUnit(e.width, this._width_calc);
+			}
+
+			if(this._height_type == CalculationType.PROCENT)
+			{
+				this.height = this._height_procent * e.height;
+			}
+			else if(this._height_type == CalculationType.CALC)
+			{
+				this.height = FluidCalculation.calcUnit(e.height, this._height_calc);
+			}
+
+			if(this._regX_type == CalculationType.PROCENT)
+			{
+				this.regX = this._regX_procent * this.width;
+			}
+			else if(this._regX_type == CalculationType.CALC)
+			{
+				this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
+			}
+
+			if( this._regY_type == CalculationType.PROCENT)
+			{
+				this.regY = this._regY_procent * this.height;
+			}
+			else if( this._regY_type == CalculationType.CALC)
+			{
+				this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+			}
+
+			if( this._x_type == CalculationType.PROCENT)
+			{
+				this.x = Math.round(this._x_procent * e.width);
+			}
+			else if( this._x_type == CalculationType.CALC)
+			{
+				this.x = Math.round(FluidCalculation.calcUnit(e.width, this._x_calc));
+			}
+
+			if( this._y_type == CalculationType.PROCENT)
+			{
+				this.y = Math.round(this._y_procent * e.height);
+			}
+			else if( this._y_type == CalculationType.CALC)
+			{
+				this.y = Math.round(FluidCalculation.calcUnit(e.height, this._y_calc));
+			}
+		}
+
+	}
+
+	public destruct(){
+		this.parent = null;
+		this.removeAllBehaviors();
+
+		super.destruct();
 	}
 }
 

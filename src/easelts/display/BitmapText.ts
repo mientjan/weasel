@@ -319,7 +319,7 @@ class BitmapText extends Container
 			}
 			else
 			{
-				sprite = this.addChild( pool.length ? pool.pop() : new Sprite(ss) );
+				sprite = <any> this.addChild( pool.length ? pool.pop() : new Sprite(ss) );
 				numKids++;
 			}
 

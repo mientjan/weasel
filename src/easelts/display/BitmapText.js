@@ -31,10 +31,6 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", './Container', './Sprite'], function (require, exports, Container, Sprite) {
-    /**
-     * @module easelts
-     * @submodule display
-     */
     var BitmapTextProperties = (function () {
         function BitmapTextProperties() {
             this.text = '';
@@ -45,15 +41,13 @@ define(["require", "exports", './Container', './Sprite'], function (require, exp
         }
         return BitmapTextProperties;
     })();
-    /**
-     * @class BitmapText
-     * @extends Container
-     * @constructor
-     * @param {String} [text=""] The text to display.
-     * @param {SpriteSheet} [spriteSheet=null] The spritesheet that defines the character glyphs.
-     **/
     var BitmapText = (function (_super) {
         __extends(BitmapText, _super);
+        /**
+         * @constructor
+         * @param {String} [text=""] The text to display.
+         * @param {SpriteSheet} [spriteSheet=null] The spritesheet that defines the character glyphs.
+         **/
         function BitmapText(text, spriteSheet) {
             _super.call(this);
             // events:

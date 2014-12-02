@@ -70,7 +70,7 @@ class SignalAbstract
 	 * @returns {SignalConnection}
 	 */
 
-	public connectImpl(listener:Function, prioritize:boolean):SignalConnection
+	public connectImpl(listener:Function, prioritize:boolean = false):SignalConnection
 	{
 		var _g:SignalAbstract = this;
 		var conn:SignalConnection = new SignalConnection(this, listener);

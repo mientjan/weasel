@@ -494,7 +494,7 @@ define(["require", "exports", '../utils/Methods'], function (require, exports, M
          * @return {Fill} Returns this Fill object for chaining or assignment.
          */
         Fill.prototype.bitmap = function (image, repetition) {
-            var o = this.style = Graphics._ctx.createPattern(image, repetition || "");
+            var o = this.style = Graphics._ctx.createPattern(image, ""); //repetition || "");
             o['props'] = { image: image, repetition: repetition, type: "bitmap" };
             return this;
         };
@@ -825,7 +825,7 @@ define(["require", "exports", '../utils/Methods'], function (require, exports, M
              * @protected
              * @type {Function}
              **/
-            this.mt = moveTo;
+            this.mt = this.moveTo;
             /** Shortcut to lineTo.
              * @method lt
              * @protected
@@ -1108,6 +1108,7 @@ define(["require", "exports", '../utils/Methods'], function (require, exports, M
          * "rgba(255,255,255,1.0)", or if alpha is null then in the format "rgb(255,255,255)".
          **/
         Graphics.getRGB = function (r, g, b, alpha) {
+            if (alpha === void 0) { alpha = null; }
             if (r != null && b == null) {
                 alpha = g;
                 b = r & 0xFF;
@@ -1386,6 +1387,7 @@ define(["require", "exports", '../utils/Methods'], function (require, exports, M
          * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
          **/
         Graphics.prototype.beginBitmapFill = function (image, repetition, matrix) {
+            if (repetition === void 0) { repetition = 'repeat'; }
             return this._setFill(new Graphics.Fill(null, matrix).bitmap(image, repetition));
         };
         /**

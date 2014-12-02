@@ -1,8 +1,6 @@
 /// <reference path="./Filter.ts" />
 /// <reference path="../utils/Methods.ts" />
 
-import Methods = require('easel/utils/Methods');
-import Filter = require('easel/filters/Filter');
 
 /*
  * AlphaMapFilter
@@ -31,6 +29,9 @@ import Filter = require('easel/filters/Filter');
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import Methods = require('../utils/Methods');
+import Filter = require('./Filter');
 
 /**
  * Applies a greyscale alpha map image (or canvas) to the target, such that the alpha channel of the result will
@@ -83,7 +84,7 @@ class AlphaMapFilter extends Filter
 
 	// private properties:
 	private _alphaMap = null;
-	private _mapData:Uint8Array = null;
+	private _mapData:number[] = null;
 
 	// public methods:
 

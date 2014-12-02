@@ -55,28 +55,28 @@ class Rectangle
 	 * @property x
 	 * @type Number
 	 **/
-	x = 0;
+	public x = 0;
 
 	/**
 	 * Y position.
 	 * @property y
 	 * @type Number
 	 **/
-	y = 0;
+	public y = 0;
 
 	/**
 	 * Width.
 	 * @property width
 	 * @type Number
 	 **/
-	width = 0;
+	public width = 0;
 
 	/**
 	 * Height.
 	 * @property height
 	 * @type Number
 	 **/
-	height = 0;
+	public height = 0;
 
 	// constructor:
 	/**
@@ -88,7 +88,7 @@ class Rectangle
 	 * @param {Number} [height=0] The height of the Rectangle.
 	 * @return {Rectangle} This instance. Useful for chaining method calls.
 	 */
-		constructor(x:number, y:number, width:number, height:number)
+	constructor(x:number, y:number, width:number, height:number)
 	{
 		this.initialize(x, y, width, height);
 	}

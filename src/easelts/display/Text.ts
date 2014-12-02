@@ -1,6 +1,4 @@
-import DisplayObject = require('./DisplayObject');
-import Rectangle = require('../geom/Rectangle');
-import Methods = require('../utils/Methods');
+
 /*
  * Text
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -29,6 +27,13 @@ import Methods = require('../utils/Methods');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import DisplayObject = require('./DisplayObject');
+import Rectangle = require('../geom/Rectangle');
+import Methods = require('../utils/Methods');
+
+/**
+ * @module easelts
+ */
 /**
  * Display one or more lines of dynamic text (not user editable) in the display list. Line wrapping support (using the
  * lineWidth) is very basic, wrapping on spaces and tabs only. Note that as an alternative to Text, you can position HTML
@@ -49,6 +54,7 @@ import Methods = require('../utils/Methods');
  *
  * <strong>Note:</strong> Text can be expensive to generate, so cache instances where possible. Be aware that not all
  * browsers will render Text exactly the same.
+ * @namespace easelts.display
  * @class Text
  * @extends DisplayObject
  * @constructor
@@ -60,8 +66,26 @@ import Methods = require('../utils/Methods');
  **/
 class Text extends DisplayObject
 {
+	/**
+	 *
+	 */
+	public static TEXT_BASELINE_TOP = 'top';
+	public static TEXT_BASELINE_HANGING = 'hanging';
+	public static TEXT_BASELINE_MIDDLE = 'middle';
+	public static TEXT_BASELINE_ALPHABETIC = 'alphabetic';
+	public static TEXT_BASELINE_IDEOGRAPHIC = 'ideographic';
+	public static TEXT_BASELINE_BOTTOM = 'bottom';
 
-	// static properties:
+	/**
+	 *
+	 */
+	public static TEXT_ALIGN_START = 'start';
+	public static TEXT_ALIGN_END = 'end';
+	public static TEXT_ALIGN_LEFT = 'left';
+	public static TEXT_ALIGN_RIGHT = 'right';
+	public static TEXT_ALIGN_CENTER = 'center';
+	public static TEXT_ALIGN_BOTTOM = 'bottom';
+
 	/**
 	 * Lookup table for the ratio to offset bounds x calculations based on the textAlign property.
 	 * @property H_OFFSETS
@@ -88,14 +112,36 @@ class Text extends DisplayObject
 	 * @property text
 	 * @type String
 	 **/
-	text:string = "";
+	public set text(value:string){
+
+		// replace space before and after newlines
+		value = value.replace(/\s+\n|\n\s+/g, "\n" );
+
+		if( this._text != value ){
+
+			this._text = value;
+
+			if(this._autoWidth){
+				this.setWidth('auto');
+			}
+			if(this._autoHeight){
+				this.setHeight('auto');
+			}
+		}
+	}
+
+	public get text(){
+		return this._text;
+	}
+
+	public _text:string = "";
 
 	/**
 	 * The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold 36px Arial").
 	 * @property font
 	 * @type String
 	 **/
-	font:string = null;
+	public font:string = null;
 
 	/**
 	 * The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex. "#F00"). Default is "#000".
@@ -103,7 +149,7 @@ class Text extends DisplayObject
 	 * @property color
 	 * @type String
 	 **/
-	color:string = null;
+	public color:string = null;
 
 	/**
 	 * The horizontal text alignment. Any of "start", "end", "left", "right", and "center". For detailed
@@ -113,7 +159,7 @@ class Text extends DisplayObject
 	 * @property textAlign
 	 * @type String
 	 **/
-	textAlign:string = "left";
+	public textAlign:string = Text.TEXT_ALIGN_LEFT;
 
 	/**
 	 * The vertical alignment point on the font. Any of "top", "hanging", "middle", "alphabetic", "ideographic", or
@@ -122,7 +168,7 @@ class Text extends DisplayObject
 	 * @property textBaseline
 	 * @type String
 	 */
-	textBaseline:string = "top";
+	public textBaseline:string = Text.TEXT_BASELINE_TOP;
 
 	/**
 	 * The maximum width to draw the text. If maxWidth is specified (not null), the text will be condensed or
@@ -132,14 +178,14 @@ class Text extends DisplayObject
 	 * @property maxWidth
 	 * @type Number
 	 */
-	maxWidth:number = null;
+	public maxWidth:number = null;
 
 	/**
 	 * If greater than 0, the text will be drawn as a stroke (outline) of the specified width.
 	 * @property outline
 	 * @type Number
 	 **/
-	outline:number = 0;
+	public outline:number = 0;
 
 	/**
 	 * Indicates the line height (vertical distance between baselines) for multi-line text. If null or 0,
@@ -147,7 +193,7 @@ class Text extends DisplayObject
 	 * @property lineHeight
 	 * @type Number
 	 **/
-	lineHeight:number = 0;
+	public lineHeight:number = 0;
 
 	/**
 	 * Indicates the maximum width for a line of text before it is wrapped to multiple lines. If null,
@@ -155,7 +201,10 @@ class Text extends DisplayObject
 	 * @property lineWidth
 	 * @type Number
 	 **/
-	lineWidth:number = null;
+	public lineWidth:number = null;
+
+	private _autoWidth:boolean = true;
+	private _autoHeight:boolean = true;
 
 
 	/**
@@ -169,10 +218,31 @@ class Text extends DisplayObject
 	 */
 	constructor(text:string, font:string, color:string)
 	{
-		super();
+		super(1, 1, 0, 0, 0, 0);
+
 		this.text = text;
 		this.font = font;
 		this.color = color;
+	}
+
+	public setWidth(value:any){
+		if(value == 'auto'){
+			this._autoWidth = true;
+			super.setWidth( this.getBounds().width );
+		} else {
+			this._autoWidth = false;
+			super.setWidth(value);
+		}
+	}
+
+	public setHeight(value:any){
+		if(value == 'auto'){
+			this._autoHeight = true;
+			super.setHeight(this.getMeasuredHeight());
+		} else {
+			this._autoHeight = false;
+			super.setHeight(value);
+		}
 	}
 
 	/**
@@ -198,7 +268,7 @@ class Text extends DisplayObject
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
 	 **/
-	public draw(ctx, ignoreCache):boolean
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
 		if(super.draw(ctx, ignoreCache))
 		{
@@ -227,6 +297,8 @@ class Text extends DisplayObject
 	 **/
 	public getMeasuredWidth():number
 	{
+
+
 		return this._getMeasuredWidth(this.text);
 	}
 
@@ -251,7 +323,7 @@ class Text extends DisplayObject
 	 **/
 	public getMeasuredHeight():number
 	{
-		return this._drawText(null, {}).height;
+		return  this._drawText(null, {}).height;
 	}
 
 	/**
@@ -370,7 +442,7 @@ class Text extends DisplayObject
 		var lineHeight = this.lineHeight || this.getMeasuredLineHeight();
 
 		var maxW = 0, count = 0;
-		var hardLines = String(this.text).split(/(?:\r\n|\r|\n)/);
+		var hardLines = String(this._text).split(/(?:\r\n|\r|\n)/);
 		for(var i = 0, l = hardLines.length; i < l; i++)
 		{
 			var str:string = hardLines[i];

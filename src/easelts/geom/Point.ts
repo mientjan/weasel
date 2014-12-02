@@ -48,14 +48,14 @@ class Point {
 		 * @property x
 		 * @type Number
 		 **/
-		public x;
+		public x:number;
 
 		/**
 		 * Y position.
 		 * @property y
 		 * @type Number
 		 **/
-		public y;
+		public y:number;
 
 		/**
 		 * Initialization method. Can also be used to reinitialize the instance.

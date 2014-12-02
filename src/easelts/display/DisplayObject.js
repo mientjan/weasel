@@ -31,12 +31,22 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/events/EventDispatcher', '../utils/UID', '../utils/Methods', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Point', '../display/Shadow', '../../createts/events/Event', './Stage'], function (require, exports, EventDispatcher, UID, Methods, Matrix2D, Rectangle, Point, Shadow, Event, Stage) {
+define(["require", "exports", '../../createts/events/EventDispatcher', '../../createts/events/Event', '../utils/UID', '../utils/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, Event, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
+    /**
+     * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
+     */
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
-        function DisplayObject() {
+        function DisplayObject(width, height, x, y, regX, regY) {
+            if (width === void 0) { width = '100%'; }
+            if (height === void 0) { height = '100%'; }
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (regX === void 0) { regX = 0; }
+            if (regY === void 0) { regY = 0; }
             _super.call(this);
             // public properties:
+            this.type = 3 /* DISPLAYOBJECT */;
             /**
              * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
              * @property alpha
@@ -54,6 +64,13 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              **/
             this.cacheCanvas = null;
             /**
+             * Unique ID for this display object. Makes display objects easier for some uses.
+             * @property id
+             * @type {Number}
+             * @default -1
+             **/
+            this.id = UID.get();
+            /**
              * Indicates whether to include this object when running mouse interactions. Setting this to `false` for children
              * of a {{#crossLink "Container"}}{{/crossLink}} will cause events on the Container to not fire when that child is
              * clicked. Setting this property to `false` does not prevent the {{#crossLink "Container/getObjectsUnderPoint"}}{{/crossLink}}
@@ -64,9 +81,9 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              * provided in the next release of EaselJS.
              * @property mouseEnabled
              * @type {Boolean}
-             * @default true
+             * @default false
              **/
-            this.mouseEnabled = true;
+            this.mouseEnabled = false;
             /**
              * If false, the tick will not run on this display object (or its children). This can provide some performance benefits.
              * In addition to preventing the "tick" event from being dispatched, it will also prevent tick related updates
@@ -177,6 +194,30 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              * @default 0
              **/
             this.y = 0;
+            /** When true the geom of this object will be updated when its parent resizes.
+             *
+             * @property updateGeomOnResize
+             * @type {Boolean}
+             * @default true
+             **/
+            this.updateGeomOnResize = true;
+            this.width = 0;
+            this.height = 0;
+            this._x_type = 2 /* STATIC */;
+            this._x_procent = .0;
+            this._y_procent = .0;
+            this._width_type = 2 /* STATIC */;
+            this._width_procent = .0;
+            this._height_type = 2 /* STATIC */;
+            this._height_procent = .0;
+            this._regX_type = 2 /* STATIC */;
+            this._regX_procent = .0;
+            this._regY_type = 2 /* STATIC */;
+            this._regY_procent = .0;
+            this._behaviourList = null;
+            this._parentSizeIsKnown = false;
+            this.minimumContainerSize = null;
+            this.maximumContainerSize = null;
             /**
              * The composite operation indicates how the pixels of this display object will be composited with the elements
              * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -277,6 +318,20 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              */
             this._cacheDataURL = null;
             /**
+             * @property _matrix
+             * @protected
+             * @type {Matrix2D}
+             * @default null
+             **/
+            this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+            /**
+             * @property _rectangle
+             * @protected
+             * @type {Rectangle}
+             * @default null
+             **/
+            this._rectangle = new Rectangle(0, 0, 0, 0);
+            /**
              * @property _bounds
              * @protected
              * @type {Rectangle}
@@ -284,11 +339,167 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
              **/
             this._bounds = null;
             this.DisplayObject_draw = this.draw;
-            this.id = UID.get();
-            this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
-            this._rectangle = new Rectangle(0, 0, 0, 0);
+            this.DisplayObject_getBounds = this._getBounds;
+            this.setGeomTransform(width, height, x, y, regX, regY);
+            ;
         }
-        // public methods:
+        DisplayObject.prototype.initialize = function () {
+        };
+        DisplayObject.prototype.setWidth = function (width) {
+            if (typeof (width) == 'string') {
+                if (width.substr(-1) == '%') {
+                    this._width_procent = parseFloat(width.substr(0, width.length - 1)) / 100;
+                    this._width_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._width_calc = FluidCalculation.dissolveCalcElements(width);
+                    this._width_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.width = width;
+                this._width_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.setHeight = function (height) {
+            if (typeof (height) == 'string') {
+                // @todo check if only procent unit.
+                if (height.substr(-1) == '%') {
+                    this._height_procent = parseFloat(height.substr(0, height.length - 1)) / 100;
+                    this._height_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._height_calc = FluidCalculation.dissolveCalcElements(height);
+                    this._height_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.height = height;
+                this._height_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.setX = function (x) {
+            if (typeof (x) == 'string') {
+                if (x.substr(-1) == '%') {
+                    this._x_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
+                    this._x_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._x_calc = FluidCalculation.dissolveCalcElements(x);
+                    this._x_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.x = x;
+                this._x_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.setY = function (y) {
+            if (typeof (y) == 'string') {
+                if (y.substr(-1) == '%') {
+                    this._y_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
+                    this._y_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._y_calc = FluidCalculation.dissolveCalcElements(y);
+                    this._y_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.y = y;
+                this._y_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.setRegX = function (x) {
+            if (typeof (x) == 'string') {
+                if (x.substr(-1) == '%') {
+                    this._regX_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
+                    this._regX_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._regX_calc = FluidCalculation.dissolveCalcElements(x);
+                    this._regX_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.regX = x;
+                this._regX_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.setRegY = function (y) {
+            if (typeof (y) == 'string') {
+                if (y.substr(-1) == '%') {
+                    this._regY_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
+                    this._regY_type = 1 /* PROCENT */;
+                }
+                else {
+                    this._regY_calc = FluidCalculation.dissolveCalcElements(y);
+                    this._regY_type = 3 /* CALC */;
+                }
+            }
+            else {
+                this.regY = y;
+                this._regY_type = 2 /* STATIC */;
+            }
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        DisplayObject.prototype.addBehaviour = function (behaviour) {
+            if (!this._behaviourList) {
+                this._behaviourList = [];
+            }
+            this._behaviourList.push(behaviour);
+            behaviour.initialize(this);
+        };
+        /**
+         * Removes all be behaviors
+         *
+         * @method removeAllBehaviors
+         * @return void
+         */
+        DisplayObject.prototype.removeAllBehaviors = function () {
+            if (this._behaviourList) {
+                while (this._behaviourList.length) {
+                    this._behaviourList.pop().destruct();
+                }
+            }
+        };
+        /**
+         * @method enableMouseInteraction
+         * @return void
+         */
+        DisplayObject.prototype.enableMouseInteraction = function () {
+            this.mouseEnabled = true;
+        };
+        /**
+         * @method disableMouseInteraction
+         * @return void
+         */
+        DisplayObject.prototype.disableMouseInteraction = function () {
+            this.mouseEnabled = false;
+        };
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
          * This does not account for whether it would be visible within the boundaries of the stage.
@@ -316,7 +527,10 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             if (ignoreCache || !cacheCanvas) {
                 return false;
             }
-            var scale = this._cacheScale, offX = this._cacheOffsetX, offY = this._cacheOffsetY, fBounds;
+            var scale = this._cacheScale;
+            var offX = this._cacheOffsetX;
+            var offY = this._cacheOffsetY;
+            var fBounds;
             if (fBounds = this._applyFilterBounds(offX, offY, 0, 0)) {
                 offX = fBounds.x;
                 offY = fBounds.y;
@@ -327,6 +541,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
         /**
          * Applies this display object's transformation, alpha, globalCompositeOperation, clipping path (mask), and shadow
          * to the specified context. This is typically called prior to {{#crossLink "DisplayObject/draw"}}{{/crossLink}}.
+         *
          * @method updateContext
          * @param {CanvasRenderingContext2D} ctx The canvas 2D to update.
          **/
@@ -488,7 +703,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
                 o = o.parent;
             }
             // using dynamic access to avoid circular dependencies;
-            if (o instanceof Stage) {
+            if (o.type == 1 /* STAGE */) {
                 return o;
             }
             return null;
@@ -603,6 +818,43 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             return this;
         };
         /**
+         *
+         * @param w
+         * @param h
+         * @param x
+         * @param y
+         * @param rx
+         * @param ry
+         * @returns {DisplayObject}
+         */
+        DisplayObject.prototype.setGeomTransform = function (w, h, x, y, rx, ry) {
+            if (w === void 0) { w = null; }
+            if (h === void 0) { h = null; }
+            if (x === void 0) { x = null; }
+            if (y === void 0) { y = null; }
+            if (rx === void 0) { rx = null; }
+            if (ry === void 0) { ry = null; }
+            var parentIsKnown = this._parentSizeIsKnown;
+            this._parentSizeIsKnown = false;
+            if (x != null)
+                this.setX(x);
+            if (y != null)
+                this.setY(y);
+            if (w != null)
+                this.setWidth(w);
+            if (h != null)
+                this.setHeight(h);
+            if (rx != null)
+                this.setRegX(rx);
+            if (ry != null)
+                this.setRegY(ry);
+            this._parentSizeIsKnown = parentIsKnown;
+            if (this._parentSizeIsKnown) {
+                this.onResize(new Size(this.parent.width, this.parent.height));
+            }
+            return this;
+        };
+        /**
          * Returns a matrix based on this object's transform.
          * @method getMatrix
          * @param {Matrix2D} matrix Optional. A Matrix2D object to populate with the calculated values. If null, a new
@@ -678,6 +930,8 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
          * @method set
          * @param {Object} props A generic object containing properties to copy to the DisplayObject instance.
          * @return {DisplayObject} Returns the instance the method is called on (useful for chaining calls.)
+         *
+         * @todo remove this functionality, it completely removes efficient jit compile optimizations in v8 and other engines.
          */
         DisplayObject.prototype.set = function (props) {
             for (var n in props) {
@@ -874,7 +1128,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             }
             catch (e) {
                 if (!DisplayObject.suppressCrossDomainErrors) {
-                    throw "An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.";
+                    throw new Error('An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.');
                 }
             }
             return hit;
@@ -999,7 +1253,8 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
         };
         /**
          * Indicates whether the display object has any mouse event listeners or a cursor.
-         * @method _isMouseOpaque
+         *
+         * @method _hasMouseEventListener
          * @return {Boolean}
          * @protected
          **/
@@ -1010,17 +1265,103 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
                     return true;
                 }
             }
-            return !!this.cursor;
+            return this.cursor != null;
         };
-        // static properties:
+        DisplayObject.prototype.onResize = function (e) {
+            this._parentSizeIsKnown = true;
+            if (this.updateGeomOnResize) {
+                if (this.minimumContainerSize || this.maximumContainerSize) {
+                    // size object is cloned because we are going to change the value.
+                    // and this object is used by multiple display objects.
+                    var mincs = this.minimumContainerSize;
+                    this.scaleX = this.scaleY = Math.min(1, e.width / mincs.width, e.height / mincs.height);
+                }
+                if (this._width_type == 1 /* PROCENT */) {
+                    this.width = this._width_procent * e.width;
+                }
+                else if (this._width_type == 3 /* CALC */) {
+                    this.width = FluidCalculation.calcUnit(e.width, this._width_calc);
+                }
+                if (this._height_type == 1 /* PROCENT */) {
+                    this.height = this._height_procent * e.height;
+                }
+                else if (this._height_type == 3 /* CALC */) {
+                    this.height = FluidCalculation.calcUnit(e.height, this._height_calc);
+                }
+                if (this._regX_type == 1 /* PROCENT */) {
+                    this.regX = this._regX_procent * this.width;
+                }
+                else if (this._regX_type == 3 /* CALC */) {
+                    this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
+                }
+                if (this._regY_type == 1 /* PROCENT */) {
+                    this.regY = this._regY_procent * this.height;
+                }
+                else if (this._regY_type == 3 /* CALC */) {
+                    this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+                }
+                if (this._x_type == 1 /* PROCENT */) {
+                    this.x = Math.round(this._x_procent * e.width);
+                }
+                else if (this._x_type == 3 /* CALC */) {
+                    this.x = Math.round(FluidCalculation.calcUnit(e.width, this._x_calc));
+                }
+                if (this._y_type == 1 /* PROCENT */) {
+                    this.y = Math.round(this._y_procent * e.height);
+                }
+                else if (this._y_type == 3 /* CALC */) {
+                    this.y = Math.round(FluidCalculation.calcUnit(e.height, this._y_calc));
+                }
+            }
+        };
+        DisplayObject.prototype.destruct = function () {
+            this.parent = null;
+            this.removeAllBehaviors();
+            _super.prototype.destruct.call(this);
+        };
+        DisplayObject.EVENT_MOUSE_CLICK = 'click';
+        DisplayObject.EVENT_MOUSE_MOUSEDOWN = 'mousedown';
+        DisplayObject.EVENT_MOUSE_MOUSEOUT = 'mouseout';
+        DisplayObject.EVENT_MOUSE_MOUSEOVER = 'mouseover';
+        /**
+         *
+         * @type {string}
+         */
+        DisplayObject.EVENT_MOUSE_MOUSEMOVE = 'mousemove';
+        DisplayObject.EVENT_MOUSE_PRESSMOVE = 'pressmove';
+        DisplayObject.EVENT_MOUSE_PRESSUP = 'pressup';
+        DisplayObject.EVENT_MOUSE_ROLLOUT = 'rollout';
+        DisplayObject.EVENT_MOUSE_ROLLOVER = 'rollover';
         /**
          * Listing of mouse event names. Used in _hasMouseEventListener.
          * @property _MOUSE_EVENTS
          * @protected
          * @static
-         * @type {Array}
+         * @type {string[]}
          **/
-        DisplayObject._MOUSE_EVENTS = ["click", "dblclick", "mousedown", "mouseout", "mouseover", "pressmove", "pressup", "rollout", "rollover"];
+        DisplayObject._MOUSE_EVENTS = [
+            DisplayObject.EVENT_MOUSE_CLICK,
+            DisplayObject.EVENT_MOUSE_MOUSEDOWN,
+            DisplayObject.EVENT_MOUSE_MOUSEOUT,
+            DisplayObject.EVENT_MOUSE_MOUSEOVER,
+            DisplayObject.EVENT_MOUSE_PRESSMOVE,
+            DisplayObject.EVENT_MOUSE_PRESSUP,
+            DisplayObject.EVENT_MOUSE_ROLLOUT,
+            DisplayObject.EVENT_MOUSE_ROLLOVER,
+            "dblclick"
+        ];
+        DisplayObject.COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';
+        DisplayObject.COMPOSITE_OPERATION_SOURCE_IN = 'source-in';
+        DisplayObject.COMPOSITE_OPERATION_SOURCE_OUT = 'source-out';
+        DisplayObject.COMPOSITE_OPERATION_SOURCE_OVER = 'source-over';
+        DisplayObject.COMPOSITE_OPERATION_DESTINATION_ATOP = 'destination-atop';
+        DisplayObject.COMPOSITE_OPERATION_DESTINATION_IN = 'destination-in';
+        DisplayObject.COMPOSITE_OPERATION_DESTINATION_OUT = 'destination-out';
+        DisplayObject.COMPOSITE_OPERATION_DESTINATION_OVER = 'destination-over';
+        DisplayObject.COMPOSITE_OPERATION_LIGHTER = 'lighter';
+        DisplayObject.COMPOSITE_OPERATION_DARKER = 'darker';
+        DisplayObject.COMPOSITE_OPERATION_XOR = 'xor';
+        DisplayObject.COMPOSITE_OPERATION_COPY = 'copy';
         /**
          * Suppresses errors generated when using features like hitTest, mouse events, and {{#crossLink "getObjectsUnderPoint"}}{{/crossLink}}
          * with cross domain content.

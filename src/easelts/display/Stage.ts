@@ -1,8 +1,3 @@
-import DisplayObject = require('./DisplayObject');
-import Container = require('./Container');
-import MouseEvent = require('../events/MouseEvent');
-import TouchInjectProperties = require('../ui/TouchInjectProperties');
-
 /*
  * Stage
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -31,10 +26,22 @@ import TouchInjectProperties = require('../ui/TouchInjectProperties');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module EaselJS
- */
+import jQuery = require('jquery');
+import DisplayObject = require('./DisplayObject');
+import Ticker = require('../utils/Ticker');
+import Container = require('./Container');
+import MouseEvent = require('../events/MouseEvent');
+import TouchInjectProperties = require('../ui/TouchInjectProperties');
+import Rectangle = require('../geom/Rectangle');
+import Size = require('../geom/Size');
+import DisplayType = require('../enum/DisplayType');
+import SignalConnection = require('../../createts/events/SignalConnection');
 
+import QualityType = require('../enum/QualityType');
+
+/**
+ * @module createts
+ */
 
 /**
  * A stage is the root level {{#crossLink "Container"}}{{/crossLink}} for a display list. Each time its {{#crossLink "Stage/tick"}}{{/crossLink}}
@@ -53,6 +60,7 @@ import TouchInjectProperties = require('../ui/TouchInjectProperties');
  *          stage.update();
  *      }
  *
+ * @namespace easelts.display
  * @class Stage
  * @extends Container
  * @constructor
@@ -130,6 +138,11 @@ class Stage extends Container
 	 */
 
 	// public properties:
+	public type:DisplayType = DisplayType.STAGE;
+	public _isRunning:boolean = false;
+	public _tickEventConnection:SignalConnection = null;
+	public _fps:number = 60;
+
 	_eventListeners:any;
 
 	/**
@@ -146,7 +159,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	autoClear = true;
+	public autoClear = true;
 
 	/**
 	 * The canvas the stage will render to. Multiple stages can share a single canvas, but you must disable autoClear for all but the
@@ -160,9 +173,15 @@ class Stage extends Container
 	 *      myStage.enableDOMEvents(true);
 	 *
 	 * @property canvas
-	 * @type HTMLCanvasElement | Object
+	 * @type HTMLCanvasElement
 	 **/
-	canvas = null;
+	public canvas:HTMLCanvasElement = null;
+	public ctx:CanvasRenderingContext2D = null;
+
+	/**
+	 *
+	 */
+	public holder:HTMLElement = null;
 
 	/**
 	 * The current mouse X position on the canvas. If the mouse leaves the canvas, this will indicate the most recent
@@ -171,7 +190,7 @@ class Stage extends Container
 	 * @type Number
 	 * @readonly
 	 **/
-	mouseX = 0;
+	public mouseX = 0;
 
 	/**
 	 * The current mouse Y position on the canvas. If the mouse leaves the canvas, this will indicate the most recent
@@ -180,11 +199,11 @@ class Stage extends Container
 	 * @type Number
 	 * @readonly
 	 **/
-	mouseY = 0;
+	public mouseY = 0;
 
-	_mouseOverY:number;
-	_mouseOverX:number;
-	_mouseOverTarget:any[];
+	private _mouseOverY:number;
+	private _mouseOverX:number;
+	private _mouseOverTarget:any[];
 
 	/**
 	 * Specifies the area of the stage to affect when calling update. This can be use to selectively
@@ -192,30 +211,7 @@ class Stage extends Container
 	 * @property drawRect
 	 * @type {Rectangle}
 	 */
-	drawRect = null;
-
-	// TODO: deprecated.
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the "{{#crossLink "Stage/stagemousemove:event"}}{{/crossLink}}
-	 * event.
-	 * @property onMouseMove
-	 * @type Function
-	 * @deprecated Use addEventListener and the "stagemousemove" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "Stage/stagemouseup:event"}}{{/crossLink}}
-	 * event.
-	 * @property onMouseUp
-	 * @type Function
-	 * @deprecated Use addEventListener and the "stagemouseup" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "Stage/stagemousedown:event"}}{{/crossLink}}
-	 * event.
-	 * @property onMouseDown
-	 * @type Function
-	 * @deprecated Use addEventListener and the "stagemousedown" event.
-	 */
+	public drawRect:Rectangle = null;
 
 	/**
 	 * Indicates whether display objects should be rendered on whole pixels. You can set the
@@ -293,12 +289,12 @@ class Stage extends Container
 	 * @property nextStage
 	 * @type {Stage}
 	 **/
-	public _get_nextStage()
+	public get nextStage()
 	{
 		return this._nextStage;
 	}
 
-	public _set_nextStage(value)
+	public set nextStage(value:Stage)
 	{
 		if(this._nextStage)
 		{
@@ -311,14 +307,6 @@ class Stage extends Container
 		this._nextStage = value;
 	}
 
-	//	try {
-	//		Object.defineProperties(p, {
-	//			nextStage: { get: p._get_nextStage, set: p._set_nextStage }
-	//		});
-	//	} catch (e) {} // TODO: use Log
-
-	// private properties:
-
 	/**
 	 * Holds objects with data for each active pointer id. Each object has the following properties:
 	 * x, y, event, target, overTarget, overX, overY, inBounds, posEvtObj (native event that last updated position)
@@ -326,15 +314,15 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	public _pointerData = null;
+	public _pointerData:any = null;
 
 	/**
 	 * Number of active pointers.
 	 * @property _pointerCount
-	 * @type {Object}
+	 * @type {number}
 	 * @private
 	 */
-	public _pointerCount = 0;
+	public _pointerCount:number = 0;
 
 	/**
 	 * The ID of the primary pointer.
@@ -356,7 +344,7 @@ class Stage extends Container
 	 * @protected
 	 * @type Stage
 	 **/
-	public _nextStage = null;
+	public _nextStage:Stage = null;
 
 	/**
 	 * @property _prevStage
@@ -370,13 +358,101 @@ class Stage extends Container
 	 * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
 	 * @protected
 	 **/
-	constructor(canvas)
+	constructor(element:HTMLDivElement);
+	constructor(element:HTMLCanvasElement);
+	constructor(element:any)
 	{
-		super();
+		super('100%', '100%', 0, 0, 0, 0);
 
-		this.canvas = (typeof canvas == "string") ? document.getElementById(canvas) : canvas;
+		//
+		var onResize:Function = null
+
+		switch(element.tagName)
+		{
+			case 'CANVAS':
+			{
+				this.canvas = element;
+				this.holder = element.parentElement;
+
+				var size = new Size(jQuery(this.canvas).width(), jQuery(this.canvas).height());
+
+				this.onResize(size);
+				break;
+			}
+
+			case 'DIV':
+			{
+				var canvas = document.createElement('canvas');
+				element.appendChild(canvas);
+
+				this.canvas = canvas;
+				this.holder = element;
+
+				var onResize = function(){
+					this.onResize( new Size($(this.holder).width(), $(this.holder).height()) );
+				}.bind(this);
+
+				window.addEventListener('resize', <any> onResize );
+
+				break;
+			}
+
+			default:
+			{
+				throw new Error('unsupported element used "' + element.tagName + '"');
+				break;
+			}
+		}
+
 		this._pointerData = {};
 		this.enableDOMEvents(true);
+		this.setFps(this._fps);
+		this.ctx = this.canvas.getContext('2d');
+		this.setQuality(QualityType.LOW);
+
+		if( onResize ){
+			onResize.call(window);
+		}
+
+		//		this.setStage(this);
+
+		//		createjs.Ticker.timingMode = createjs.Ticker.RAF;
+		//		createjs.Ticker.addEventListener('tick', <any> this.onUpdate);
+		//
+		//		if(Browser.Platform.name == 'android' || Browser.Platform.name == 'ios'){
+		//			createjs.Touch.enable(this.stage);
+		//		}
+		//
+		//		this.stage.addChild(<createjs.Container> this.view);
+
+	}
+
+
+
+	/**
+	 * @method setQuality
+	 * @param {QualityType} value
+	 * @public
+	 */
+	public setQuality(value:QualityType){
+
+		switch(value){
+			case QualityType.LOW:{
+				this.ctx['mozImageSmoothingEnabled'] = false;
+				this.ctx['webkitImageSmoothingEnabled'] = false;
+				this.ctx['msImageSmoothingEnabled'] = false;
+				this.ctx['imageSmoothingEnabled'] = false;
+				break;
+			}
+
+			case QualityType.NORMAL:{
+				this.ctx['mozImageSmoothingEnabled'] = true;
+				this.ctx['webkitImageSmoothingEnabled'] = true;
+				this.ctx['msImageSmoothingEnabled'] = true;
+				this.ctx['imageSmoothingEnabled'] = true;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -387,23 +463,30 @@ class Stage extends Container
 	 * @method update
 	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
 	 **/
-	public update(params?:any)
-	{
+	public update = (params?:any) => {
+
 		if(!this.canvas)
 		{
 			return;
 		}
+
 		if(this.tickOnUpdate)
-		{ // update this logic in SpriteStage when necessary
+		{
+			// update this logic in SpriteStage when necessary
 			this.tick.apply(this, arguments);
 		}
+
 		if(this.dispatchEvent("drawstart"))
 		{
 			return;
 		}
 
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
-		var r = this.drawRect, ctx = this.canvas.getContext("2d");
+
+		var r = this.drawRect,
+			ctx = this.ctx;
+
+
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		if(this.autoClear)
 		{
@@ -416,6 +499,7 @@ class Stage extends Container
 				ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 			}
 		}
+
 		ctx.save();
 		if(this.drawRect)
 		{
@@ -423,6 +507,7 @@ class Stage extends Container
 			ctx.rect(r.x, r.y, r.width, r.height);
 			ctx.clip();
 		}
+
 		this.updateContext(ctx);
 		this.draw(ctx, false);
 		ctx.restore();
@@ -460,7 +545,7 @@ class Stage extends Container
 	 * @method tick
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public tick(params)
+	public tick()
 	{
 		if(!this.tickEnabled || this.dispatchEvent("tickstart"))
 		{
@@ -586,7 +671,7 @@ class Stage extends Container
 	 * mouse over/out events. Set to 0 to disable mouse over events completely. Maximum is 50. A lower frequency is less
 	 * responsive, but uses less CPU.
 	 **/
-	public enableMouseOver(frequency)
+	public enableMouseOver(frequency:number = null)
 	{
 		if(this._mouseOverIntervalID)
 		{
@@ -609,6 +694,9 @@ class Stage extends Container
 		this._mouseOverIntervalID = setInterval(() => {
 			this._testMouseOver();
 		}, 1000 / Math.min(50, frequency));
+
+		
+		this.enableMouseInteraction();
 	}
 
 	/**
@@ -645,24 +733,32 @@ class Stage extends Container
 		else if(enable && !ls && this.canvas)
 		{
 			var t = window['addEventListener'] ? <any> window : <any> document;
-			var _this = this;
 			ls = this._eventListeners = {};
-			ls["mouseup"] = {t: t, f: function(e)
-			{
-				_this._handleMouseUp(e)
-			} };
-			ls["mousemove"] = {t: t, f: function(e)
-			{
-				_this._handleMouseMove(e)
-			} };
-			ls["dblclick"] = {t: this.canvas, f: function(e)
-			{
-				_this._handleDoubleClick(e)
-			} };
-			ls["mousedown"] = {t: this.canvas, f: function(e)
-			{
-				_this._handleMouseDown(e)
-			} };
+			ls["mouseup"] = {
+				t: t,
+				f: (e) => {
+					this._handleMouseUp(e)
+				}
+			};
+			ls["mousemove"] = {
+				t: t,
+				f: (e) => {
+					this._handleMouseMove(e)
+				}
+			};
+			ls["dblclick"] = {
+				t: this.canvas,
+				f: (e) => {
+					this._handleDoubleClick(e)
+				}
+			};
+
+			ls["mousedown"] = {
+				t: this.canvas,
+				f: (e) => {
+					this._handleMouseDown(e)
+				}
+			};
 
 			for(n in ls)
 			{
@@ -867,7 +963,7 @@ class Stage extends Container
 	 * @param {Boolean} clear
 	 * @param {Stage} owner Indicates that the event has already been captured & handled by the indicated stage.
 	 **/
-	public _handlePointerUp(id, e, clear, owner?:Stage)
+	public _handlePointerUp(id, e, clear, owner?:Stage):void
 	{
 		var nextStage = this._nextStage, o = this._getPointerData(id);
 		if(this._prevStage && owner === undefined)
@@ -909,7 +1005,7 @@ class Stage extends Container
 	 * @protected
 	 * @param {MouseEvent} e
 	 **/
-	public _handleMouseDown(e)
+	public _handleMouseDown(e):void
 	{
 		this._handlePointerDown(-1, e, e.pageX, e.pageY);
 	}
@@ -923,7 +1019,7 @@ class Stage extends Container
 	 * @param {Number} pageY
 	 * @param {Stage} owner Indicates that the event has already been captured & handled by the indicated stage.
 	 **/
-	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage)
+	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage):void
 	{
 		if(pageY != null)
 		{
@@ -1084,6 +1180,113 @@ class Stage extends Container
 		 */
 		var evt = new MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
 		target.dispatchEvent(evt);
+	}
+
+
+	/**
+	 * So you can specify the fps of the animation. This operation sets
+	 * the fps for all createjs operations and tweenlite.
+	 *
+	 * @method setFps
+	 * @param value
+	 */
+	public setFps(value:number):void
+	{
+		Ticker.init();
+		this._fps = value;
+		Ticker.setFPS(value);
+		TweenLite.ticker.fps(value);
+	}
+
+	/**
+	 * Return the current fps of this stage.
+	 *
+	 * @returns {number}
+	 */
+	public getFps():number
+	{
+		return this._fps;
+	}
+
+	/**
+	 * Start the update loop.
+	 *
+	 * @method start
+	 * @returns {boolean}
+	 */
+	public start():boolean
+	{
+		if(!this._isRunning)
+		{
+			this.update();
+			this._tickEventConnection = Ticker.ticker.connectImpl( <any> this.update );
+			this._isRunning = true;
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Will stop all animation and updates to the stage.
+	 *
+	 * @method stop
+	 * @returns {boolean}
+	 */
+	public stop():boolean
+	{
+		if(this._isRunning)
+		{
+			// remove Signal connection
+			this._tickEventConnection.dispose();
+
+			// update stage for a last tick, solves rendering
+			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
+			setTimeout(this.update, 1000 / this._fps);
+
+			this._isRunning = false;
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if stage is running
+	 *
+	 * @method isRunning
+	 * @returns {boolean}
+	 */
+	public isRunning():boolean
+	{
+		return this._isRunning;
+	}
+
+	/**
+	 * Is triggerd when the stage (canvas) is resized.
+	 * Will give this new information to all children.
+	 *
+	 * @method onResize
+	 * @param {Size} e
+	 */
+	public onResize(e:Size)
+	{
+		// anti-half pixel fix
+		e.width = e.width >> 1 << 1;
+		e.height = e.height >> 1 << 1;
+
+		if(this.width != e.width || this.height != e.height)
+		{
+			this.canvas.width = e.width;
+			this.canvas.height = e.height;
+
+			super.onResize(e);
+
+			if(!this._isRunning)
+			{
+				this.update(); 
+			}
+		}
 	}
 }
 

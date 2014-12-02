@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject'], function (require, exports, DisplayObject) {
+define(["require", "exports", './DisplayObject', '../enum/DisplayType'], function (require, exports, DisplayObject, DisplayType) {
     /**
      * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
      * HTML element, or a string.
@@ -56,15 +56,17 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
      * @class Bitmap
      * @extends DisplayObject
      * @constructor
+     * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to
      * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
      * If it is a URI, a new Image object will be constructed and assigned to the .image property.
      **/
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
-        function Bitmap(imageOrUri) {
-            _super.call(this);
+        function Bitmap(imageOrUri, width, height, x, y, regX, regY) {
+            _super.call(this, width, height, x, y, regX, regY);
             // public properties:
+            this.type = 7 /* BITMAP */;
             /**
              * The image to render. This can be an Image, a Canvas, or a Video.
              * @property image
@@ -96,9 +98,11 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
          **/
         Bitmap.prototype.isVisible = function () {
-            var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+            return this.visible;
         };
+        //		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
+        //		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+        //	}
         /**
          * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
          * Returns true if the draw was handled (useful for overriding functionality).

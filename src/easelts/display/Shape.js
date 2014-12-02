@@ -28,7 +28,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Graphics', './DisplayObject'], function (require, exports, Graphics, DisplayObject) {
+define(["require", "exports", './Graphics', './DisplayObject', '../enum/DisplayType'], function (require, exports, Graphics, DisplayObject, DisplayType) {
     /**
      * @module easelts
      * @submodule display
@@ -62,8 +62,16 @@ define(["require", "exports", './Graphics', './DisplayObject'], function (requir
          * @constructor
          * @param {Graphics} graphics
          **/
-        function Shape(graphics) {
-            _super.call(this);
+        function Shape(graphics, width, height, x, y, regX, regY) {
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (regX === void 0) { regX = 0; }
+            if (regY === void 0) { regY = 0; }
+            _super.call(this, width, height, x, y, regX, regY);
+            // public properties:
+            this.type = 4 /* SHAPE */;
             this.graphics = graphics ? graphics : new Graphics();
         }
         /**

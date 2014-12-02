@@ -1,5 +1,3 @@
-import Event = require('./Event');
-
 /*
  * EventDispatcher
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -29,10 +27,12 @@ import Event = require('./Event');
  */
 
 /**
- * @module CreateJS
+ * @module createts
  */
 
 "use strict";
+
+import Event = require('./Event');
 
 /**
  * EventDispatcher provides methods for managing queues of event listeners and dispatching events.
@@ -79,11 +79,10 @@ import Event = require('./Event');
  *
  * If you want to use addEventListener instead, you may want to use function.bind() or a similar proxy to manage scope.
  *
- *
+ * @namespace createts.events
  * @class EventDispatcher
  * @constructor
  **/
-
 
 class EventDispatcher
 {
@@ -138,7 +137,7 @@ class EventDispatcher
 	/**
 	 * parent element
 	 */
-	parent:any;
+	public parent:EventDispatcher;
 
 	// private properties:
 	/**
@@ -146,14 +145,14 @@ class EventDispatcher
 	 * @property _listeners
 	 * @type Object
 	 **/
-	_listeners = null;
+	public _listeners = null;
 
 	/**
 	 * @protected
 	 * @property _captureListeners
 	 * @type Object
 	 **/
-	_captureListeners = null;
+	public _captureListeners = null;
 
 	// public methods:
 	/**
@@ -174,7 +173,7 @@ class EventDispatcher
 	 * @param {Boolean} [useCapture] For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 	 * @return {Function | Object} Returns the listener for chaining or assignment.
 	 **/
-	public addEventListener(type:string, listener:Function, useCapture?:boolean)
+	public addEventListener(type:string, listener:Function, useCapture?:boolean):any
 	{
 		var listeners;
 		if(useCapture)
@@ -219,7 +218,7 @@ class EventDispatcher
 	 * @param {Function | Object} listener The listener function or object.
 	 * @param {Boolean} [useCapture] For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 	 **/
-	public removeEventListener(type, listener, useCapture)
+	public removeEventListener(type:string, listener:Function, useCapture?:boolean)
 	{
 		var listeners = useCapture ? this._captureListeners : this._listeners;
 		if(!listeners)
@@ -262,7 +261,7 @@ class EventDispatcher
 	 * @method removeAllEventListeners
 	 * @param {String} [type] The string type of the event. If omitted, all listeners for all types will be removed.
 	 **/
-	public removeAllEventListeners(type)
+	public removeAllEventListeners(type?:string)
 	{
 		if(!type)
 		{
@@ -443,6 +442,10 @@ class EventDispatcher
 				}
 			}
 		}
+	}
+
+	public destruct(){
+		this.removeAllEventListeners();
 	}
 }
 

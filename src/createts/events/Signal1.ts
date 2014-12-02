@@ -25,16 +25,19 @@ import Event = require('./Event');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * Signal provides method for managing queues of a single event listener and dispatching it.
- **/
-
 import SignalAbstract = require('./SignalAbstract');
 
+/**
+ * @namespace createts.events
+ * @module createts
+ * @class Signal1
+ */
 class Signal1<T> extends SignalAbstract
 {
 	/**
 	 * Emit the signal, notifying each connected listener.
+	 *
+	 * @method emit
 	 */
 	public emit(arg1:T)
 	{

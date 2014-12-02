@@ -26,6 +26,7 @@
 
 import Graphics = require('./Graphics');
 import DisplayObject = require('./DisplayObject');
+import DisplayType = require('../enum/DisplayType');
 
 /**
  * @module easelts
@@ -58,20 +59,23 @@ import DisplayObject = require('./DisplayObject');
 class Shape extends DisplayObject
 {
 	// public properties:
+	public type:DisplayType = DisplayType.SHAPE;
+
+
 	/**
 	 * The graphics instance to display.
 	 * @property graphics
 	 * @type Graphics
 	 **/
-	graphics:Graphics;
+	public graphics:Graphics;
 
 	/**
 	 * @constructor
 	 * @param {Graphics} graphics
 	 **/
-	constructor(graphics?:Graphics)
+	constructor(graphics?:Graphics, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
-		super();
+		super(width, height, x, y, regX, regY);
 
 		this.graphics = graphics ? graphics : new Graphics();
 	}
@@ -83,7 +87,7 @@ class Shape extends DisplayObject
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the Shape would be visible if drawn to a canvas
 	 **/
-	public isVisible()
+	public isVisible():boolean
 	{
 		var hasContent = this.cacheCanvas || (this.graphics && !this.graphics.isEmpty());
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
@@ -100,12 +104,14 @@ class Shape extends DisplayObject
 	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx, ignoreCache)
+	public draw(ctx, ignoreCache):boolean
 	{
 		if(super.draw(ctx, ignoreCache))
 		{
 			return true;
 		}
+
+
 		this.graphics.draw(ctx, this);
 		return true;
 	}
@@ -117,7 +123,7 @@ class Shape extends DisplayObject
 	 * @param {Boolean} recursive If true, this Shape's {{#crossLink "Graphics"}}{{/crossLink}} instance will also be
 	 * cloned. If false, the Graphics instance will be shared with the new Shape.
 	 **/
-	public clone(recursive:boolean = false)
+	public clone(recursive:boolean = false):Shape
 	{
 		var o = new Shape((recursive && this.graphics) ? this.graphics.clone() : this.graphics);
 		this.cloneProps(o);
@@ -129,7 +135,7 @@ class Shape extends DisplayObject
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	public toString()
+	public toString():string
 	{
 		return "[Shape ()]";
 	}

@@ -5,6 +5,11 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", './SignalAbstract'], function (require, exports, SignalAbstract) {
+    /**
+     * @namespace createts.events
+     * @module createts
+     * @class Signal1
+     */
     var Signal1 = (function (_super) {
         __extends(Signal1, _super);
         function Signal1() {
@@ -12,6 +17,8 @@ define(["require", "exports", './SignalAbstract'], function (require, exports, S
         }
         /**
          * Emit the signal, notifying each connected listener.
+         *
+         * @method emit
          */
         Signal1.prototype.emit = function (arg1) {
             var _this = this;

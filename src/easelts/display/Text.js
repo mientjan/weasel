@@ -1,3 +1,30 @@
+/*
+ * Text
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5,32 +32,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", './DisplayObject', '../utils/Methods'], function (require, exports, DisplayObject, Methods) {
-    /*
-     * Text
-     * Visit http://createjs.com/ for documentation, updates and examples.
-     *
-     * Copyright (c) 2010 gskinner.com, inc.
-     *
-     * Permission is hereby granted, free of charge, to any person
-     * obtaining a copy of this software and associated documentation
-     * files (the "Software"), to deal in the Software without
-     * restriction, including without limitation the rights to use,
-     * copy, modify, merge, publish, distribute, sublicense, and/or sell
-     * copies of the Software, and to permit persons to whom the
-     * Software is furnished to do so, subject to the following
-     * conditions:
-     *
-     * The above copyright notice and this permission notice shall be
-     * included in all copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-     * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-     * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-     * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-     * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-     * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-     * OTHER DEALINGS IN THE SOFTWARE.
+    /**
+     * @module easelts
      */
     /**
      * Display one or more lines of dynamic text (not user editable) in the display list. Line wrapping support (using the
@@ -52,6 +55,7 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
      *
      * <strong>Note:</strong> Text can be expensive to generate, so cache instances where possible. Be aware that not all
      * browsers will render Text exactly the same.
+     * @namespace easelts.display
      * @class Text
      * @extends DisplayObject
      * @constructor
@@ -73,14 +77,8 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
          * @protected
          */
         function Text(text, font, color) {
-            _super.call(this);
-            // public properties:
-            /**
-             * The text to display.
-             * @property text
-             * @type String
-             **/
-            this.text = "";
+            _super.call(this, 1, 1, 0, 0, 0, 0);
+            this._text = "";
             /**
              * The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold 36px Arial").
              * @property font
@@ -102,7 +100,7 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
              * @property textAlign
              * @type String
              **/
-            this.textAlign = "left";
+            this.textAlign = Text.TEXT_ALIGN_LEFT;
             /**
              * The vertical alignment point on the font. Any of "top", "hanging", "middle", "alphabetic", "ideographic", or
              * "bottom". For detailed information view the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#text-styles">
@@ -110,7 +108,7 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
              * @property textBaseline
              * @type String
              */
-            this.textBaseline = "top";
+            this.textBaseline = Text.TEXT_BASELINE_TOP;
             /**
              * The maximum width to draw the text. If maxWidth is specified (not null), the text will be condensed or
              * shrunk to make it fit in this width. For detailed information view the
@@ -140,10 +138,58 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
              * @type Number
              **/
             this.lineWidth = null;
+            this._autoWidth = true;
+            this._autoHeight = true;
             this.text = text;
             this.font = font;
             this.color = color;
         }
+        Object.defineProperty(Text.prototype, "text", {
+            get: function () {
+                return this._text;
+            },
+            // public properties:
+            /**
+             * The text to display.
+             * @property text
+             * @type String
+             **/
+            set: function (value) {
+                // replace space before and after newlines
+                value = value.replace(/\s+\n|\n\s+/g, "\n");
+                if (this._text != value) {
+                    this._text = value;
+                    if (this._autoWidth) {
+                        this.setWidth('auto');
+                    }
+                    if (this._autoHeight) {
+                        this.setHeight('auto');
+                    }
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Text.prototype.setWidth = function (value) {
+            if (value == 'auto') {
+                this._autoWidth = true;
+                _super.prototype.setWidth.call(this, this.getBounds().width);
+            }
+            else {
+                this._autoWidth = false;
+                _super.prototype.setWidth.call(this, value);
+            }
+        };
+        Text.prototype.setHeight = function (value) {
+            if (value == 'auto') {
+                this._autoHeight = true;
+                _super.prototype.setHeight.call(this, this.getMeasuredHeight());
+            }
+            else {
+                this._autoHeight = false;
+                _super.prototype.setHeight.call(this, value);
+            }
+        };
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
          * This does not account for whether it would be visible within the boundaries of the stage.
@@ -306,7 +352,7 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
             }
             var lineHeight = this.lineHeight || this.getMeasuredLineHeight();
             var maxW = 0, count = 0;
-            var hardLines = String(this.text).split(/(?:\r\n|\r|\n)/);
+            var hardLines = String(this._text).split(/(?:\r\n|\r|\n)/);
             for (var i = 0, l = hardLines.length; i < l; i++) {
                 var str = hardLines[i];
                 var w = null;
@@ -389,7 +435,24 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
             ctx.restore();
             return w;
         };
-        // static properties:
+        /**
+         *
+         */
+        Text.TEXT_BASELINE_TOP = 'top';
+        Text.TEXT_BASELINE_HANGING = 'hanging';
+        Text.TEXT_BASELINE_MIDDLE = 'middle';
+        Text.TEXT_BASELINE_ALPHABETIC = 'alphabetic';
+        Text.TEXT_BASELINE_IDEOGRAPHIC = 'ideographic';
+        Text.TEXT_BASELINE_BOTTOM = 'bottom';
+        /**
+         *
+         */
+        Text.TEXT_ALIGN_START = 'start';
+        Text.TEXT_ALIGN_END = 'end';
+        Text.TEXT_ALIGN_LEFT = 'left';
+        Text.TEXT_ALIGN_RIGHT = 'right';
+        Text.TEXT_ALIGN_CENTER = 'center';
+        Text.TEXT_ALIGN_BOTTOM = 'bottom';
         /**
          * Lookup table for the ratio to offset bounds x calculations based on the textAlign property.
          * @property H_OFFSETS

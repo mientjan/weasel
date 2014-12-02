@@ -1,39 +1,39 @@
+/*
+ * Stage
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', './Container', '../events/MouseEvent'], function (require, exports, DisplayObject, Container, MouseEvent) {
-    /*
-     * Stage
-     * Visit http://createjs.com/ for documentation, updates and examples.
-     *
-     * Copyright (c) 2010 gskinner.com, inc.
-     *
-     * Permission is hereby granted, free of charge, to any person
-     * obtaining a copy of this software and associated documentation
-     * files (the "Software"), to deal in the Software without
-     * restriction, including without limitation the rights to use,
-     * copy, modify, merge, publish, distribute, sublicense, and/or sell
-     * copies of the Software, and to permit persons to whom the
-     * Software is furnished to do so, subject to the following
-     * conditions:
-     *
-     * The above copyright notice and this permission notice shall be
-     * included in all copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-     * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-     * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-     * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-     * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-     * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-     * OTHER DEALINGS IN THE SOFTWARE.
-     */
+define(["require", "exports", 'jquery', './DisplayObject', '../utils/Ticker', './Container', '../events/MouseEvent', '../geom/Size', '../enum/DisplayType', '../enum/QualityType'], function (require, exports, jQuery, DisplayObject, Ticker, Container, MouseEvent, Size, DisplayType, QualityType) {
     /**
-     * @module EaselJS
+     * @module createts
      */
     /**
      * A stage is the root level {{#crossLink "Container"}}{{/crossLink}} for a display list. Each time its {{#crossLink "Stage/tick"}}{{/crossLink}}
@@ -52,6 +52,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
      *          stage.update();
      *      }
      *
+     * @namespace easelts.display
      * @class Stage
      * @extends Container
      * @constructor
@@ -60,13 +61,71 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
      **/
     var Stage = (function (_super) {
         __extends(Stage, _super);
-        /**
-         * @constructor
-         * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
-         * @protected
-         **/
-        function Stage(canvas) {
-            _super.call(this);
+        function Stage(element) {
+            var _this = this;
+            _super.call(this, '100%', '100%', 0, 0, 0, 0);
+            // events:
+            /**
+             * Dispatched when the user moves the mouse over the canvas.
+             * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
+             * @event stagemousemove
+             * @since 0.6.0
+             */
+            /**
+             * Dispatched when the user presses their left mouse button on the canvas. See the {{#crossLink "MouseEvent"}}{{/crossLink}}
+             * class for a listing of event properties.
+             * @event stagemousedown
+             * @since 0.6.0
+             */
+            /**
+             * Dispatched when the user the user releases the mouse button anywhere that the page can detect it (this varies slightly between browsers).
+             * You can use {{#crossLink "Stage/mouseInBounds:property"}}{{/crossLink}} to check whether the mouse is currently within the stage bounds.
+             * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
+             * @event stagemouseup
+             * @since 0.6.0
+             */
+            /**
+             * Dispatched when the mouse moves from within the canvas area (mouseInBounds == true) to outside it (mouseInBounds == false).
+             * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
+             * class for a listing of event properties.
+             * @event mouseleave
+             * @since 0.7.0
+             */
+            /**
+             * Dispatched when the mouse moves into the canvas area (mouseInBounds == false) from outside it (mouseInBounds == true).
+             * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
+             * class for a listing of event properties.
+             * @event mouseenter
+             * @since 0.7.0
+             */
+            /**
+             * Dispatched each update immediately before the tick event is propagated through the display list.
+             * You can call preventDefault on the event object to cancel propagating the tick event.
+             * @event tickstart
+             * @since 0.7.0
+             */
+            /**
+             * Dispatched each update immediately after the tick event is propagated through the display list. Does not fire if
+             * tickOnUpdate is false. Precedes the "drawstart" event.
+             * @event tickend
+             * @since 0.7.0
+             */
+            /**
+             * Dispatched each update immediately before the canvas is cleared and the display list is drawn to it.
+             * You can call preventDefault on the event object to cancel the draw.
+             * @event drawstart
+             * @since 0.7.0
+             */
+            /**
+             * Dispatched each update immediately after the display list is drawn to the canvas and the canvas context is restored.
+             * @event drawend
+             * @since 0.7.0
+             */
+            // public properties:
+            this.type = 1 /* STAGE */;
+            this._isRunning = false;
+            this._tickEventConnection = null;
+            this._fps = 60;
             /**
              * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
              * to manually control clearing (for generative art, or when pointing multiple stages at the same canvas for
@@ -94,9 +153,14 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
              *      myStage.enableDOMEvents(true);
              *
              * @property canvas
-             * @type HTMLCanvasElement | Object
+             * @type HTMLCanvasElement
              **/
             this.canvas = null;
+            this.ctx = null;
+            /**
+             *
+             */
+            this.holder = null;
             /**
              * The current mouse X position on the canvas. If the mouse leaves the canvas, this will indicate the most recent
              * position over the canvas, and mouseInBounds will be set to false.
@@ -120,28 +184,6 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
              * @type {Rectangle}
              */
             this.drawRect = null;
-            // TODO: deprecated.
-            /**
-             * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the "{{#crossLink "Stage/stagemousemove:event"}}{{/crossLink}}
-             * event.
-             * @property onMouseMove
-             * @type Function
-             * @deprecated Use addEventListener and the "stagemousemove" event.
-             */
-            /**
-             * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "Stage/stagemouseup:event"}}{{/crossLink}}
-             * event.
-             * @property onMouseUp
-             * @type Function
-             * @deprecated Use addEventListener and the "stagemouseup" event.
-             */
-            /**
-             * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "Stage/stagemousedown:event"}}{{/crossLink}}
-             * event.
-             * @property onMouseDown
-             * @type Function
-             * @deprecated Use addEventListener and the "stagemousedown" event.
-             */
             /**
              * Indicates whether display objects should be rendered on whole pixels. You can set the
              * {{#crossLink "DisplayObject/snapToPixel"}}{{/crossLink}} property of
@@ -174,12 +216,6 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
              * @default false
              **/
             this.mouseMoveOutside = false;
-            //	try {
-            //		Object.defineProperties(p, {
-            //			nextStage: { get: p._get_nextStage, set: p._set_nextStage }
-            //		});
-            //	} catch (e) {} // TODO: use Log
-            // private properties:
             /**
              * Holds objects with data for each active pointer id. Each object has the following properties:
              * x, y, event, target, overTarget, overX, overY, inBounds, posEvtObj (native event that last updated position)
@@ -191,7 +227,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
             /**
              * Number of active pointers.
              * @property _pointerCount
-             * @type {Object}
+             * @type {number}
              * @private
              */
             this._pointerCount = 0;
@@ -220,92 +256,165 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
              * @type Stage
              **/
             this._prevStage = null;
-            this.canvas = (typeof canvas == "string") ? document.getElementById(canvas) : canvas;
+            /**
+             * Each time the update method is called, the stage will call {{#crossLink "Stage/tick"}}{{/crossLink}}
+             * unless {{#crossLink "Stage/tickOnUpdate:property"}}{{/crossLink}} is set to false,
+             * and then render the display list to the canvas.
+             *
+             * @method update
+             * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
+             **/
+            this.update = function (params) {
+                if (!_this.canvas) {
+                    return;
+                }
+                if (_this.tickOnUpdate) {
+                    // update this logic in SpriteStage when necessary
+                    _this.tick.apply(_this, arguments);
+                }
+                if (_this.dispatchEvent("drawstart")) {
+                    return;
+                }
+                DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
+                var r = _this.drawRect, ctx = _this.ctx;
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                if (_this.autoClear) {
+                    if (r) {
+                        ctx.clearRect(r.x, r.y, r.width, r.height);
+                    }
+                    else {
+                        ctx.clearRect(0, 0, _this.canvas.width + 1, _this.canvas.height + 1);
+                    }
+                }
+                ctx.save();
+                if (_this.drawRect) {
+                    ctx.beginPath();
+                    ctx.rect(r.x, r.y, r.width, r.height);
+                    ctx.clip();
+                }
+                _this.updateContext(ctx);
+                _this.draw(ctx, false);
+                ctx.restore();
+                _this.dispatchEvent("drawend");
+            };
+            //
+            var onResize = null;
+            switch (element.tagName) {
+                case 'CANVAS':
+                    {
+                        this.canvas = element;
+                        this.holder = element.parentElement;
+                        var size = new Size(jQuery(this.canvas).width(), jQuery(this.canvas).height());
+                        this.onResize(size);
+                        break;
+                    }
+                case 'DIV':
+                    {
+                        var canvas = document.createElement('canvas');
+                        element.appendChild(canvas);
+                        this.canvas = canvas;
+                        this.holder = element;
+                        var onResize = function () {
+                            this.onResize(new Size($(this.holder).width(), $(this.holder).height()));
+                        }.bind(this);
+                        window.addEventListener('resize', onResize);
+                        break;
+                    }
+                default:
+                    {
+                        throw new Error('unsupported element used "' + element.tagName + '"');
+                        break;
+                    }
+            }
             this._pointerData = {};
             this.enableDOMEvents(true);
+            this.setFps(this._fps);
+            this.ctx = this.canvas.getContext('2d');
+            this.setQuality(1 /* LOW */);
+            if (onResize) {
+                onResize.call(window);
+            }
+            //		this.setStage(this);
+            //		createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            //		createjs.Ticker.addEventListener('tick', <any> this.onUpdate);
+            //
+            //		if(Browser.Platform.name == 'android' || Browser.Platform.name == 'ios'){
+            //			createjs.Touch.enable(this.stage);
+            //		}
+            //
+            //		this.stage.addChild(<createjs.Container> this.view);
         }
-        // getter / setters:
-        /**
-         * Specifies a target stage that will have mouse / touch interactions relayed to it after this stage handles them.
-         * This can be useful in cases where you have multiple layered canvases and want user interactions
-         * events to pass through. For example, this would relay mouse events from topStage to bottomStage:
-         *
-         *      topStage.nextStage = bottomStage;
-         *
-         * To disable relaying, set nextStage to null.
-         *
-         * MouseOver, MouseOut, RollOver, and RollOut interactions are also passed through using the mouse over settings
-         * of the top-most stage, but are only processed if the target stage has mouse over interactions enabled.
-         * Considerations when using roll over in relay targets:<OL>
-         * <LI> The top-most (first) stage must have mouse over interactions enabled (via enableMouseOver)</LI>
-         * <LI> All stages that wish to participate in mouse over interaction must enable them via enableMouseOver</LI>
-         * <LI> All relay targets will share the frequency value of the top-most stage</LI>
-         * </OL>
-         * To illustrate, in this example the targetStage would process mouse over interactions at 10hz (despite passing
-         * 30 as it's desired frequency):
-         *    topStage.nextStage = targetStage;
-         *    topStage.enableMouseOver(10);
-         *    targetStage.enableMouseOver(30);
-         *
-         * If the target stage's canvas is completely covered by this stage's canvas, you may also want to disable its
-         * DOM events using:
-         *
-         *    targetStage.enableDOMEvents(false);
-         *
-         * @property nextStage
-         * @type {Stage}
-         **/
-        Stage.prototype._get_nextStage = function () {
-            return this._nextStage;
-        };
-        Stage.prototype._set_nextStage = function (value) {
-            if (this._nextStage) {
-                this._nextStage._prevStage = null;
-            }
-            if (value) {
-                value._prevStage = this;
-            }
-            this._nextStage = value;
-        };
-        /**
-         * Each time the update method is called, the stage will call {{#crossLink "Stage/tick"}}{{/crossLink}}
-         * unless {{#crossLink "Stage/tickOnUpdate:property"}}{{/crossLink}} is set to false,
-         * and then render the display list to the canvas.
-         *
-         * @method update
-         * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
-         **/
-        Stage.prototype.update = function (params) {
-            if (!this.canvas) {
-                return;
-            }
-            if (this.tickOnUpdate) {
-                this.tick.apply(this, arguments);
-            }
-            if (this.dispatchEvent("drawstart")) {
-                return;
-            }
-            DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
-            var r = this.drawRect, ctx = this.canvas.getContext("2d");
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            if (this.autoClear) {
-                if (r) {
-                    ctx.clearRect(r.x, r.y, r.width, r.height);
+        Object.defineProperty(Stage.prototype, "nextStage", {
+            // getter / setters:
+            /**
+             * Specifies a target stage that will have mouse / touch interactions relayed to it after this stage handles them.
+             * This can be useful in cases where you have multiple layered canvases and want user interactions
+             * events to pass through. For example, this would relay mouse events from topStage to bottomStage:
+             *
+             *      topStage.nextStage = bottomStage;
+             *
+             * To disable relaying, set nextStage to null.
+             *
+             * MouseOver, MouseOut, RollOver, and RollOut interactions are also passed through using the mouse over settings
+             * of the top-most stage, but are only processed if the target stage has mouse over interactions enabled.
+             * Considerations when using roll over in relay targets:<OL>
+             * <LI> The top-most (first) stage must have mouse over interactions enabled (via enableMouseOver)</LI>
+             * <LI> All stages that wish to participate in mouse over interaction must enable them via enableMouseOver</LI>
+             * <LI> All relay targets will share the frequency value of the top-most stage</LI>
+             * </OL>
+             * To illustrate, in this example the targetStage would process mouse over interactions at 10hz (despite passing
+             * 30 as it's desired frequency):
+             *    topStage.nextStage = targetStage;
+             *    topStage.enableMouseOver(10);
+             *    targetStage.enableMouseOver(30);
+             *
+             * If the target stage's canvas is completely covered by this stage's canvas, you may also want to disable its
+             * DOM events using:
+             *
+             *    targetStage.enableDOMEvents(false);
+             *
+             * @property nextStage
+             * @type {Stage}
+             **/
+            get: function () {
+                return this._nextStage;
+            },
+            set: function (value) {
+                if (this._nextStage) {
+                    this._nextStage._prevStage = null;
                 }
-                else {
-                    ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+                if (value) {
+                    value._prevStage = this;
                 }
+                this._nextStage = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @method setQuality
+         * @param {QualityType} value
+         * @public
+         */
+        Stage.prototype.setQuality = function (value) {
+            switch (value) {
+                case 1 /* LOW */:
+                    {
+                        this.ctx['mozImageSmoothingEnabled'] = false;
+                        this.ctx['webkitImageSmoothingEnabled'] = false;
+                        this.ctx['msImageSmoothingEnabled'] = false;
+                        this.ctx['imageSmoothingEnabled'] = false;
+                        break;
+                    }
+                case 0 /* NORMAL */:
+                    {
+                        this.ctx['mozImageSmoothingEnabled'] = true;
+                        this.ctx['webkitImageSmoothingEnabled'] = true;
+                        this.ctx['msImageSmoothingEnabled'] = true;
+                        this.ctx['imageSmoothingEnabled'] = true;
+                        break;
+                    }
             }
-            ctx.save();
-            if (this.drawRect) {
-                ctx.beginPath();
-                ctx.rect(r.x, r.y, r.width, r.height);
-                ctx.clip();
-            }
-            this.updateContext(ctx);
-            this.draw(ctx, false);
-            ctx.restore();
-            this.dispatchEvent("drawend");
         };
         /**
          * Propagates a tick event through the display list. This is automatically called by {{#crossLink "Stage/update"}}{{/crossLink}}
@@ -338,7 +447,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
          * @method tick
          * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
          **/
-        Stage.prototype.tick = function (params) {
+        Stage.prototype.tick = function () {
             if (!this.tickEnabled || this.dispatchEvent("tickstart")) {
                 return;
             }
@@ -439,6 +548,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
          **/
         Stage.prototype.enableMouseOver = function (frequency) {
             var _this = this;
+            if (frequency === void 0) { frequency = null; }
             if (this._mouseOverIntervalID) {
                 clearInterval(this._mouseOverIntervalID);
                 this._mouseOverIntervalID = null;
@@ -455,6 +565,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
             this._mouseOverIntervalID = setInterval(function () {
                 _this._testMouseOver();
             }, 1000 / Math.min(50, frequency));
+            this.enableMouseInteraction();
         };
         /**
          * Enables or disables the event listeners that stage adds to DOM elements (window, document and canvas). It is good
@@ -472,6 +583,7 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
          * @param {Boolean} [enable=true] Indicates whether to enable or disable the events. Default is true.
          **/
         Stage.prototype.enableDOMEvents = function (enable) {
+            var _this = this;
             if (enable == null) {
                 enable = true;
             }
@@ -485,20 +597,31 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
             }
             else if (enable && !ls && this.canvas) {
                 var t = window['addEventListener'] ? window : document;
-                var _this = this;
                 ls = this._eventListeners = {};
-                ls["mouseup"] = { t: t, f: function (e) {
-                    _this._handleMouseUp(e);
-                } };
-                ls["mousemove"] = { t: t, f: function (e) {
-                    _this._handleMouseMove(e);
-                } };
-                ls["dblclick"] = { t: this.canvas, f: function (e) {
-                    _this._handleDoubleClick(e);
-                } };
-                ls["mousedown"] = { t: this.canvas, f: function (e) {
-                    _this._handleMouseDown(e);
-                } };
+                ls["mouseup"] = {
+                    t: t,
+                    f: function (e) {
+                        _this._handleMouseUp(e);
+                    }
+                };
+                ls["mousemove"] = {
+                    t: t,
+                    f: function (e) {
+                        _this._handleMouseMove(e);
+                    }
+                };
+                ls["dblclick"] = {
+                    t: this.canvas,
+                    f: function (e) {
+                        _this._handleDoubleClick(e);
+                    }
+                };
+                ls["mousedown"] = {
+                    t: this.canvas,
+                    f: function (e) {
+                        _this._handleMouseDown(e);
+                    }
+                };
                 for (n in ls) {
                     o = ls[n];
                     o.t.addEventListener(n, o.f, false);
@@ -822,6 +945,89 @@ define(["require", "exports", './DisplayObject', './Container', '../events/Mouse
              */
             var evt = new MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
             target.dispatchEvent(evt);
+        };
+        /**
+         * So you can specify the fps of the animation. This operation sets
+         * the fps for all createjs operations and tweenlite.
+         *
+         * @method setFps
+         * @param value
+         */
+        Stage.prototype.setFps = function (value) {
+            Ticker.init();
+            this._fps = value;
+            Ticker.setFPS(value);
+            TweenLite.ticker.fps(value);
+        };
+        /**
+         * Return the current fps of this stage.
+         *
+         * @returns {number}
+         */
+        Stage.prototype.getFps = function () {
+            return this._fps;
+        };
+        /**
+         * Start the update loop.
+         *
+         * @method start
+         * @returns {boolean}
+         */
+        Stage.prototype.start = function () {
+            if (!this._isRunning) {
+                this.update();
+                this._tickEventConnection = Ticker.ticker.connectImpl(this.update);
+                this._isRunning = true;
+                return true;
+            }
+            return false;
+        };
+        /**
+         * Will stop all animation and updates to the stage.
+         *
+         * @method stop
+         * @returns {boolean}
+         */
+        Stage.prototype.stop = function () {
+            if (this._isRunning) {
+                // remove Signal connection
+                this._tickEventConnection.dispose();
+                // update stage for a last tick, solves rendering
+                // issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
+                setTimeout(this.update, 1000 / this._fps);
+                this._isRunning = false;
+                return true;
+            }
+            return false;
+        };
+        /**
+         * Check if stage is running
+         *
+         * @method isRunning
+         * @returns {boolean}
+         */
+        Stage.prototype.isRunning = function () {
+            return this._isRunning;
+        };
+        /**
+         * Is triggerd when the stage (canvas) is resized.
+         * Will give this new information to all children.
+         *
+         * @method onResize
+         * @param {Size} e
+         */
+        Stage.prototype.onResize = function (e) {
+            // anti-half pixel fix
+            e.width = e.width >> 1 << 1;
+            e.height = e.height >> 1 << 1;
+            if (this.width != e.width || this.height != e.height) {
+                this.canvas.width = e.width;
+                this.canvas.height = e.height;
+                _super.prototype.onResize.call(this, e);
+                if (!this._isRunning) {
+                    this.update();
+                }
+            }
         };
         return Stage;
     })(Container);

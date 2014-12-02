@@ -31,5 +31,15 @@ class TimeEvent extends Event
 	public paused:boolean;
 	public time:number;
 	public runTime:number;
+
+	constructor(type:string, delta:number, paused:boolean, time:number, runtime:number, bubbles:boolean = null, cancelable:boolean = null)
+	{
+		super(type, bubbles, cancelable);
+
+		this.delta = delta;
+		this.paused = paused;
+		this.time = time;
+		this.runTime = runtime;
+	}
 }
 export = TimeEvent;

@@ -1,4 +1,7 @@
 define(["require", "exports"], function (require, exports) {
+    /**
+     * @enum TimingMode
+     */
     var TimingMode;
     (function (TimingMode) {
         TimingMode[TimingMode["TIMEOUT"] = 0] = "TIMEOUT";

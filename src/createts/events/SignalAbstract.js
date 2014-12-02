@@ -25,6 +25,7 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
          * @returns {SignalConnection}
          */
         SignalAbstract.prototype.connectImpl = function (listener, prioritize) {
+            if (prioritize === void 0) { prioritize = false; }
             var _g = this;
             var conn = new SignalConnection(this, listener);
             if (this.dispatching()) {

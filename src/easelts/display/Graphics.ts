@@ -611,9 +611,11 @@ class Fill
 	 * @param {String} [repetition] One of: repeat, repeat-x, repeat-y, or no-repeat.
 	 * @return {Fill} Returns this Fill object for chaining or assignment.
 	 */
-	public bitmap(image, repetition)
+	public bitmap(image:HTMLImageElement, repetition)
 	{
-		var o = this.style = Graphics._ctx.createPattern(image, repetition || "");
+		var o = this.style = Graphics._ctx.createPattern(image, ""); //repetition || "");
+
+		
 		o['props'] = {image: image, repetition: repetition, type: "bitmap"};
 		return this;
 	}
@@ -1065,7 +1067,7 @@ class Graphics
 	 * @return {String} A CSS compatible color string based on the specified RGB numeric color values in the format
 	 * "rgba(255,255,255,1.0)", or if alpha is null then in the format "rgb(255,255,255)".
 	 **/
-	public static getRGB(r, g, b, alpha)
+	public static getRGB(r, g, b, alpha = null)
 	{
 		if(r != null && b == null)
 		{
@@ -1280,7 +1282,7 @@ class Graphics
 	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
 	 * @param {Object} data Optional data that is passed to graphics command exec methods. When called from a Shape instance, the shape passes itself as the data parameter. This can be used by custom graphic commands to insert contextual data.
 	 **/
-	public draw(ctx, data)
+	public draw(ctx, data?)
 	{
 		this._updateInstructions();
 		var instr = this._instructions;
@@ -1534,9 +1536,9 @@ class Graphics
 	 * will be applied relative to the parent transform.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public beginBitmapFill(image, repetition, matrix)
+	public beginBitmapFill(image:HTMLImageElement, repetition:string = 'repeat', matrix?:Matrix2D)
 	{
-		return this._setFill(new Graphics.Fill(null, matrix).bitmap(image, repetition));
+		return this._setFill( new Graphics.Fill(null, matrix).bitmap(image, repetition));
 	}
 
 	/**
@@ -1592,7 +1594,7 @@ class Graphics
 	 * null will result in no stroke.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public beginStroke(color)
+	public beginStroke(color?:string)
 	{
 		return this._setStroke(color ? new Graphics.Stroke(color, null) : null);
 	}
@@ -1981,189 +1983,189 @@ class Graphics
 	 * @protected
 	 * @type {Function}
 	 **/
-	mt = moveTo;
+	public mt = this.moveTo;
 
 	/** Shortcut to lineTo.
 	 * @method lt
 	 * @protected
 	 * @type {Function}
 	 **/
-	lt = this.lineTo;
+	public lt = this.lineTo;
 
 	/** Shortcut to arcTo.
 	 * @method at
 	 * @protected
 	 * @type {Function}
 	 **/
-	at = this.arcTo;
+	public at = this.arcTo;
 
 	/** Shortcut to bezierCurveTo.
 	 * @method bt
 	 * @protected
 	 * @type {Function}
 	 **/
-	bt = this.bezierCurveTo;
+	public bt = this.bezierCurveTo;
 
 	/** Shortcut to quadraticCurveTo / curveTo.
 	 * @method qt
 	 * @protected
 	 * @type {Function}
 	 **/
-	qt = this.quadraticCurveTo;
+	public qt = this.quadraticCurveTo;
 
 	/** Shortcut to arc.
 	 * @method a
 	 * @protected
 	 * @type {Function}
 	 **/
-	a = this.arc;
+	public a = this.arc;
 
 	/** Shortcut to rect.
 	 * @method r
 	 * @protected
 	 * @type {Function}
 	 **/
-	r = this.rect;
+	public r = this.rect;
 
 	/** Shortcut to closePath.
 	 * @method cp
 	 * @protected
 	 * @type {Function}
 	 **/
-	cp = this.closePath;
+	public cp = this.closePath;
 
 	/** Shortcut to clear.
 	 * @method c
 	 * @protected
 	 * @type {Function}
 	 **/
-	c = this.clear;
+	public c = this.clear;
 
 	/** Shortcut to beginFill.
 	 * @method f
 	 * @protected
 	 * @type {Function}
 	 **/
-	f = this.beginFill;
+	public f = this.beginFill;
 
 	/** Shortcut to beginLinearGradientFill.
 	 * @method lf
 	 * @protected
 	 * @type {Function}
 	 **/
-	lf = this.beginLinearGradientFill;
+	public lf = this.beginLinearGradientFill;
 
 	/** Shortcut to beginRadialGradientFill.
 	 * @method rf
 	 * @protected
 	 * @type {Function}
 	 **/
-	rf = this.beginRadialGradientFill;
+	public rf = this.beginRadialGradientFill;
 
 	/** Shortcut to beginBitmapFill.
 	 * @method bf
 	 * @protected
 	 * @type {Function}
 	 **/
-	bf = this.beginBitmapFill;
+	public bf = this.beginBitmapFill;
 
 	/** Shortcut to endFill.
 	 * @method ef
 	 * @protected
 	 * @type {Function}
 	 **/
-	ef = this.endFill;
+	public ef = this.endFill;
 
 	/** Shortcut to setStrokeStyle.
 	 * @method ss
 	 * @protected
 	 * @type {Function}
 	 **/
-	ss = this.setStrokeStyle;
+	public ss = this.setStrokeStyle;
 
 	/** Shortcut to beginStroke.
 	 * @method s
 	 * @protected
 	 * @type {Function}
 	 **/
-	s = this.beginStroke;
+	public s = this.beginStroke;
 
 	/** Shortcut to beginLinearGradientStroke.
 	 * @method ls
 	 * @protected
 	 * @type {Function}
 	 **/
-	ls = this.beginLinearGradientStroke;
+	public ls = this.beginLinearGradientStroke;
 
 	/** Shortcut to beginRadialGradientStroke.
 	 * @method rs
 	 * @protected
 	 * @type {Function}
 	 **/
-	rs = this.beginRadialGradientStroke;
+	public rs = this.beginRadialGradientStroke;
 
 	/** Shortcut to beginBitmapStroke.
 	 * @method bs
 	 * @protected
 	 * @type {Function}
 	 **/
-	bs = this.beginBitmapStroke;
+	public bs = this.beginBitmapStroke;
 
 	/** Shortcut to endStroke.
 	 * @method es
 	 * @protected
 	 * @type {Function}
 	 **/
-	es = this.endStroke;
+	public es = this.endStroke;
 
 	/** Shortcut to drawRect.
 	 * @method dr
 	 * @protected
 	 * @type {Function}
 	 **/
-	dr = this.drawRect;
+	public dr = this.drawRect;
 
 	/** Shortcut to drawRoundRect.
 	 * @method rr
 	 * @protected
 	 * @type {Function}
 	 **/
-	rr = this.drawRoundRect;
+	public rr = this.drawRoundRect;
 
 	/** Shortcut to drawRoundRectComplex.
 	 * @method rc
 	 * @protected
 	 * @type {Function}
 	 **/
-	rc = this.drawRoundRectComplex;
+	public rc = this.drawRoundRectComplex;
 
 	/** Shortcut to drawCircle.
 	 * @method dc
 	 * @protected
 	 * @type {Function}
 	 **/
-	dc = this.drawCircle;
+	public dc = this.drawCircle;
 
 	/** Shortcut to drawEllipse.
 	 * @method de
 	 * @protected
 	 * @type {Function}
 	 **/
-	de = this.drawEllipse;
+	public de = this.drawEllipse;
 
 	/** Shortcut to drawPolyStar.
 	 * @method dp
 	 * @protected
 	 * @type {Function}
 	 **/
-	dp = this.drawPolyStar;
+	public dp = this.drawPolyStar;
 
 	/** Shortcut to decodePath.
 	 * @method p
 	 * @protected
 	 * @type Function
 	 **/
-	p = this.decodePath;
+	public p = this.decodePath;
 
 
 	// private methods:
@@ -2173,7 +2175,9 @@ class Graphics
 	 **/
 	public _updateInstructions(commit?:boolean)
 	{
-		var instr = this._instructions, active = this._activeInstructions, commitIndex = this._commitIndex;
+		var instr = this._instructions,
+			active = this._activeInstructions,
+			commitIndex = this._commitIndex;
 
 		if(this._dirty && active.length)
 		{
@@ -2185,10 +2189,12 @@ class Graphics
 			{
 				instr.push(this._fill);
 			}
+
 			if(this._stroke && this._strokeStyle)
 			{
 				instr.push(this._strokeStyle);
 			}
+
 			if(this._stroke)
 			{
 				instr.push(this._stroke);

@@ -27,6 +27,7 @@
 */
 
 import DisplayObject = require('./DisplayObject');
+import DisplayType = require('../enum/DisplayType');
 import Rectangle = require('../geom/Rectangle');
 
 /**
@@ -53,6 +54,7 @@ import Rectangle = require('../geom/Rectangle');
  * @class Bitmap
  * @extends DisplayObject
  * @constructor
+ * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to
  * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
  * If it is a URI, a new Image object will be constructed and assigned to the .image property.
@@ -60,6 +62,9 @@ import Rectangle = require('../geom/Rectangle');
 class Bitmap extends DisplayObject {
 
 // public properties:
+
+	public type:DisplayType = DisplayType.BITMAP;
+
 	/**
 	 * The image to render. This can be an Image, a Canvas, or a Video.
 	 * @property image
@@ -83,11 +88,12 @@ class Bitmap extends DisplayObject {
 	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @protected
 	 **/
-	constructor(imageOrUri:string)
-	constructor(imageOrUri:HTMLImageElement)
-	constructor(imageOrUri:any)
+	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri:any, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
 	{
-		super();
+		super(width, height, x, y, regX, regY);
+
 		if (typeof imageOrUri == "string") {
 			this.image = document.createElement("img");
 			this.image.src = imageOrUri;
@@ -106,10 +112,12 @@ class Bitmap extends DisplayObject {
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
 	 **/
-	isVisible() {
-		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+	public isVisible() {
+		return this.visible;
 	}
+//		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
+//		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+//	}
 
 	/**
 	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -124,13 +132,17 @@ class Bitmap extends DisplayObject {
 	 * @return {Boolean}
 	 **/
 	draw(ctx, ignoreCache) {
+
 		if (super.draw(ctx, ignoreCache)) { return true; }
 		var rect = this.sourceRect;
 		if (rect) {
-			ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+			ctx.drawImage(this.image,rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+
 		} else {
 			ctx.drawImage(this.image, 0, 0);
 		}
+
+
 		return true;
 	}
 	
