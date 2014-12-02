@@ -1,10 +1,5 @@
-import Graphics = require('./Graphics');
-import DisplayObject = require('./DisplayObject');
 
 /*
- * Shape
- * Visit http://createjs.com/ for documentation, updates and examples.
- *
  * Copyright (c) 2010 gskinner.com, inc.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -29,8 +24,12 @@ import DisplayObject = require('./DisplayObject');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import Graphics = require('./Graphics');
+import DisplayObject = require('./DisplayObject');
+
 /**
- * @module EaselJS
+ * @module easelts
+ * @submodule display
  */
 /**
  * A Shape allows you to display vector art in the display list. It composites a {{#crossLink "Graphics"}}{{/crossLink}}
@@ -135,6 +134,5 @@ class Shape extends DisplayObject
 		return "[Shape ()]";
 	}
 }
-
 
 export = Shape;
