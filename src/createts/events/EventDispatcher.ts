@@ -145,7 +145,7 @@ class EventDispatcher
 	 * @property _listeners
 	 * @type Object
 	 **/
-	public _listeners = null;
+	public _listeners:any = null;
 
 	/**
 	 * @protected
@@ -300,12 +300,14 @@ class EventDispatcher
 	 * dispatching object. <b>This parameter is deprecated and will be removed.</b>
 	 * @return {Boolean} Returns the value of eventObj.defaultPrevented.
 	 **/
+	public dispatchEvent(eventObj:string, target?:any)
+	public dispatchEvent(eventObj:Event, target?:any)
 	public dispatchEvent(eventObj:any, target?:any)
 	{
 		if(typeof eventObj == "string")
 		{
 			// won't bubble, so skip everything if there's no listeners:
-			var listeners = this._listeners;
+			var listeners:any = this._listeners;
 			if(!listeners || !listeners[eventObj])
 			{
 				return false;
@@ -397,10 +399,10 @@ class EventDispatcher
 	/**
 	 * @method _dispatchEvent
 	 * @param {Object | String | Event} eventObj
-	 * @param {Object} eventPhase
+	 * @param {number} eventPhase
 	 * @protected
 	 **/
-	public _dispatchEvent(eventObj, eventPhase)
+	public _dispatchEvent(eventObj:any, eventPhase:number)
 	{
 		var l, listeners = (eventPhase == 1) ? this._captureListeners : this._listeners;
 		if(eventObj && listeners)

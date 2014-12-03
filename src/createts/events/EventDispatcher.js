@@ -240,26 +240,6 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
                 }
             }
         };
-        /**
-         * Dispatches the specified event to all listeners.
-         *
-         * <h4>Example</h4>
-         *
-         *      // Use a string event
-         *      this.dispatchEvent("complete");
-         *
-         *      // Use an Event instance
-         *      var event = new createjs.Event("progress");
-         *      this.dispatchEvent(event);
-         *
-         * @method dispatchEvent
-         * @param {Object | String | Event} eventObj An object with a "type" property, or a string type.
-         * While a generic object will work, it is recommended to use a CreateJS Event instance. If a string is used,
-         * dispatchEvent will construct an Event instance with the specified type.
-         * @param {Object} [target] The object to use as the target property of the event object. This will default to the
-         * dispatching object. <b>This parameter is deprecated and will be removed.</b>
-         * @return {Boolean} Returns the value of eventObj.defaultPrevented.
-         **/
         EventDispatcher.prototype.dispatchEvent = function (eventObj, target) {
             if (typeof eventObj == "string") {
                 // won't bubble, so skip everything if there's no listeners:
@@ -334,7 +314,7 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
         /**
          * @method _dispatchEvent
          * @param {Object | String | Event} eventObj
-         * @param {Object} eventPhase
+         * @param {number} eventPhase
          * @protected
          **/
         EventDispatcher.prototype._dispatchEvent = function (eventObj, eventPhase) {

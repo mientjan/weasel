@@ -49,7 +49,7 @@ class SignalAbstract
 	private _head:SignalConnection;
 	private _deferredTasks:Task = null;
 
-	constructor(listener:Function)
+	constructor(listener:Function = null)
 	{
 		this._head = (listener != null) ? new SignalConnection(this, listener) : null;
 	}
@@ -89,6 +89,10 @@ class SignalAbstract
 		return conn;
 	}
 
+	/**
+	 *
+	 * @param {SignalConnection} conn
+	 */
 	public disconnect(conn:SignalConnection):void
 	{
 		var _g = this;

@@ -31,9 +31,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/events/EventDispatcher', '../../createts/events/Event', '../utils/UID', '../utils/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, Event, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/events/EventDispatcher', '../utils/UID', '../utils/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
+     * @class DisplayObject
      */
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
@@ -1110,11 +1111,13 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
          **/
         DisplayObject.prototype._tick = function (props) {
             // because tick can be really performance sensitive, we'll inline some of the dispatchEvent work.
-            var ls = this._listeners;
-            if (ls && ls["tick"]) {
-                var evt = new Event("tick").set(props);
-                this._dispatchEvent(evt, this); // 2
-            }
+            //		this.tick
+            //		var ls = this._listeners;
+            //		if(ls && ls["tick"])
+            //		{
+            //			var evt = new Event("tick").set(props);
+            //			this._dispatchEvent(evt, this); // 2
+            //		}
         };
         /**
          * @method _testHit
@@ -1385,13 +1388,13 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../../cr
          * @static
          * @protected
          **/
+        DisplayObject._hitTestCanvas = Methods.createCanvas();
         /**
          * @property _hitTestContext
          * @type {CanvasRenderingContext2D}
          * @static
          * @protected
          **/
-        DisplayObject._hitTestCanvas = Methods.createCanvas();
         DisplayObject._hitTestContext = DisplayObject._hitTestCanvas.getContext('2d');
         /**
          * @property _nextCacheID

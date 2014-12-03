@@ -8,6 +8,7 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
     })();
     var SignalAbstract = (function () {
         function SignalAbstract(listener) {
+            if (listener === void 0) { listener = null; }
             this._deferredTasks = null;
             this._head = (listener != null) ? new SignalConnection(this, listener) : null;
         }
@@ -38,6 +39,10 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
             }
             return conn;
         };
+        /**
+         *
+         * @param {SignalConnection} conn
+         */
         SignalAbstract.prototype.disconnect = function (conn) {
             var _g = this;
             if (this.dispatching()) {

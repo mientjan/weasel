@@ -26,11 +26,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import jQuery = require('jquery');
 import DisplayObject = require('./DisplayObject');
 import Ticker = require('../utils/Ticker');
 import Container = require('./Container');
 import MouseEvent = require('../events/MouseEvent');
+import Signal1 = require('../../createts/events/Signal1');
+import Signal = require('../../createts/events/Signal');
 import TouchInjectProperties = require('../ui/TouchInjectProperties');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
@@ -116,13 +117,14 @@ class Stage extends Container
 	 * @event tickstart
 	 * @since 0.7.0
 	 */
-
+	public tickstartSignal:Signal = new Signal();
 	/**
 	 * Dispatched each update immediately after the tick event is propagated through the display list. Does not fire if
 	 * tickOnUpdate is false. Precedes the "drawstart" event.
 	 * @event tickend
 	 * @since 0.7.0
 	 */
+	public tickendSignal:Signal = new Signal();
 
 	/**
 	 * Dispatched each update immediately before the canvas is cleared and the display list is drawn to it.
@@ -130,17 +132,20 @@ class Stage extends Container
 	 * @event drawstart
 	 * @since 0.7.0
 	 */
+	public drawstartSignal:Signal = new Signal();
 
 	/**
 	 * Dispatched each update immediately after the display list is drawn to the canvas and the canvas context is restored.
 	 * @event drawend
 	 * @since 0.7.0
 	 */
+	public drawendSignal:Signal = new Signal();
 
 	// public properties:
 	public type:DisplayType = DisplayType.STAGE;
+
 	public _isRunning:boolean = false;
-	public _tickEventConnection:SignalConnection = null;
+	public _tickSignalConnection:SignalConnection = null;
 	public _fps:number = 60;
 
 	_eventListeners:any;
@@ -374,7 +379,7 @@ class Stage extends Container
 				this.canvas = element;
 				this.holder = element.parentElement;
 
-				var size = new Size(jQuery(this.canvas).width(), jQuery(this.canvas).height());
+				var size = new Size(this.canvas.width, this.canvas.height);
 
 				this.onResize(size);
 				break;
@@ -388,8 +393,8 @@ class Stage extends Container
 				this.canvas = canvas;
 				this.holder = element;
 
-				var onResize = function(){
-					this.onResize( new Size($(this.holder).width(), $(this.holder).height()) );
+				var onResize = <Function> function(){
+					this.onResize( new Size(this.holder.offsetWidth, this.holder.offsetHeight) );
 				}.bind(this);
 
 				window.addEventListener('resize', <any> onResize );
@@ -463,7 +468,7 @@ class Stage extends Container
 	 * @method update
 	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
 	 **/
-	public update = (params?:any) => {
+	public update(params?:any) {
 
 		if(!this.canvas)
 		{
@@ -475,11 +480,13 @@ class Stage extends Container
 			// update this logic in SpriteStage when necessary
 			this.tick.apply(this, arguments);
 		}
+//
+//		if(this.dispatchEvent("drawstart"))
+//		{
+//			return;
+//		}
 
-		if(this.dispatchEvent("drawstart"))
-		{
-			return;
-		}
+		this.drawstartSignal.emit()
 
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
 
@@ -511,7 +518,9 @@ class Stage extends Container
 		this.updateContext(ctx);
 		this.draw(ctx, false);
 		ctx.restore();
-		this.dispatchEvent("drawend");
+
+		this.drawendSignal.emit()
+//		this.dispatchEvent("drawend");
 	}
 
 	/**
@@ -547,16 +556,18 @@ class Stage extends Container
 	 **/
 	public tick()
 	{
-		if(!this.tickEnabled || this.dispatchEvent("tickstart"))
+		if(!this.tickEnabled)
 		{
 			return;
 		}
+		this.tickstartSignal.emit();
 		var args = arguments.length ? Array.prototype.slice.call(arguments, 0) : null;
 		var evt = args && args[0];
 		var props:any = evt && (evt.delta != null) ? {delta: evt.delta, paused: evt.paused, time: evt.time, runTime: evt.runTime } : {};
 		props.params = args;
 		this._tick(props);
-		this.dispatchEvent("tickend");
+		this.tickendSignal.emit();
+//		this.dispatchEvent("tickend");
 	}
 
 	/**
@@ -564,7 +575,7 @@ class Stage extends Container
 	 * event is received. This allows you to register a Stage instance as a event listener on {{#crossLink "Ticker"}}{{/crossLink}}
 	 * directly, using:
 	 *
-	 *      Ticker.addEventListener("tick", myStage");
+	 *      Ticker.addEventListener("tick", myStage);
 	 *
 	 * Note that if you subscribe to ticks using this pattern, then the tick event object will be passed through to
 	 * display object tick handlers, instead of <code>delta</code> and <code>paused</code> parameters.
@@ -1195,7 +1206,6 @@ class Stage extends Container
 		Ticker.init();
 		this._fps = value;
 		Ticker.setFPS(value);
-		TweenLite.ticker.fps(value);
 	}
 
 	/**
@@ -1219,7 +1229,7 @@ class Stage extends Container
 		if(!this._isRunning)
 		{
 			this.update();
-			this._tickEventConnection = Ticker.ticker.connectImpl( <any> this.update );
+			this._tickSignalConnection = Ticker.ticker.connectImpl( <any> this.update.bind(this) );
 			this._isRunning = true;
 			return true;
 		}
@@ -1238,11 +1248,12 @@ class Stage extends Container
 		if(this._isRunning)
 		{
 			// remove Signal connection
-			this._tickEventConnection.dispose();
+			this._tickSignalConnection.dispose();
+			this._tickSignalConnection = null;
 
 			// update stage for a last tick, solves rendering
 			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
-			setTimeout(this.update, 1000 / this._fps);
+			setTimeout(this.update.bind(this), 1000 / this._fps);
 
 			this._isRunning = false;
 			return true;

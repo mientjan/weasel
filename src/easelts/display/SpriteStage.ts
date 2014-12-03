@@ -1,47 +1,34 @@
 /*
-* SpriteStage
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * SpriteStage
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 /**
  * @module EaselJS
  */
-
-// namespace:
-this.createjs = this.createjs||{};
-
-(function() {
-	"use strict";
-
-// Set which classes are compatible with SpriteStage.
-// The order is important!!! If it's changed/appended, make sure that any logic that 
-// checks _spritestage_compatibility accounts for it!
-[createjs.SpriteContainer, createjs.Sprite, createjs.BitmapText, createjs.Bitmap, createjs.DOMElement].forEach(function(_class, index) {
-	_class.prototype._spritestage_compatibility = index + 1;
-});
 
 /**
  * A sprite stage is the root level {{#crossLink "Container"}}{{/crossLink}} for an aggressively optimized display list. Each time its {{#crossLink "Stage/tick"}}{{/crossLink}}
@@ -77,12 +64,20 @@ this.createjs = this.createjs||{};
  * @param {Boolean} preserveDrawingBuffer If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
  * @param {Boolean} antialias Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
  **/
-var SpriteStage = function(canvas, preserveDrawingBuffer, antialias) {
-  this.initialize(canvas, preserveDrawingBuffer, antialias);
-};
-var p = SpriteStage.prototype = new createjs.Stage();
 
-// static properties:
+// Set which classes are compatible with SpriteStage.
+// The order is important!!! If it's changed/appended, make sure that any logic that
+// checks _spritestage_compatibility accounts for it!
+//[createjs.SpriteContainer, createjs.Sprite, createjs.BitmapText, createjs.Bitmap, createjs.DOMElement].forEach(function(_class, index) {
+//	_class.prototype._spritestage_compatibility = index + 1;
+//});
+
+import Stage = require('./Stage');
+
+class SpriteStage extends Stage
+{
+
+	// static properties:
 
 	/**
 	 * The number of properties defined per vertex in p._verticesBuffer.
@@ -93,7 +88,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.NUM_VERTEX_PROPERTIES = 5;
+	public static NUM_VERTEX_PROPERTIES = 5;
 
 	/**
 	 * The number of points in a box...obviously :)
@@ -103,7 +98,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.POINTS_PER_BOX = 4;
+	public static POINTS_PER_BOX = 4;
 
 	/**
 	 * The number of vertex properties per box.
@@ -113,7 +108,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.NUM_VERTEX_PROPERTIES_PER_BOX = SpriteStage.POINTS_PER_BOX * SpriteStage.NUM_VERTEX_PROPERTIES;
+	public static NUM_VERTEX_PROPERTIES_PER_BOX = SpriteStage.POINTS_PER_BOX * SpriteStage.NUM_VERTEX_PROPERTIES;
 
 	/**
 	 * The number of indices needed to define a box using triangles.
@@ -124,7 +119,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.INDICES_PER_BOX = 6;
+	public static INDICES_PER_BOX = 6;
 
 	/**
 	 * The maximum size WebGL allows for element index numbers: 16 bit unsigned integer
@@ -134,7 +129,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.MAX_INDEX_SIZE = Math.pow(2, 16);
+	public static MAX_INDEX_SIZE = Math.pow(2, 16);
 
 	/**
 	 * The amount used to increment p._maxBoxesPointsPerDraw when the maximum has been reached.
@@ -148,9 +143,9 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @readonly
 	 **/
-	SpriteStage.MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
-		
-// getter / setters:
+	public static MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
+
+	// getter / setters:
 	/**
 	 * Indicates whether WebGL is being used for rendering. For example, this would be false if WebGL is not
 	 * supported in the browser.
@@ -158,17 +153,17 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @property isWebGL
 	 * @type {Boolean}
 	 **/
-	p._get_isWebGL = function() {
+	public _get_isWebGL()
+	{
 		return !!this._webGLContext;
-	};
-	
-	try {
-		Object.defineProperties(p, {
-			isWebGL: { get: p._get_isWebGL }
-		});
-	} catch (e) {} // TODO: use Log
+	}
 
-// private properties:
+	public get isWebGL(){
+		return this._get_isWebGL()
+	}
+
+
+	// private properties:
 
 	/**
 	 * Specifies whether or not the canvas is auto-cleared by WebGL. Spec discourages true.
@@ -179,7 +174,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	p._preserveDrawingBuffer = false;
+	public _preserveDrawingBuffer = false;
 
 	/**
 	 * Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
@@ -188,7 +183,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	p._antialias = false;
+	public _antialias = false;
 
 	/**
 	 * The width of the canvas element.
@@ -197,7 +192,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default 0
 	 **/
-	p._viewportWidth = 0;
+	public _viewportWidth = 0;
 
 	/**
 	 * The height of the canvas element.
@@ -206,7 +201,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default 0
 	 **/
-	p._viewportHeight = 0;
+	public _viewportHeight = 0;
 
 	/**
 	 * A 2D projection matrix used to convert WebGL's clipspace into normal pixels.
@@ -215,7 +210,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Float32Array}
 	 * @default null
 	 **/
-	p._projectionMatrix = null;
+	public _projectionMatrix = null;
 
 	/**
 	 * The current WebGL canvas context.
@@ -224,7 +219,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {WebGLRenderingContext}
 	 * @default null
 	 **/
-	p._webGLContext = null;
+	public _webGLContext = null;
 
 	/**
 	 * Indicates whether or not an error has been detected when dealing with WebGL.
@@ -234,7 +229,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	p._webGLErrorDetected = false;
+	public _webGLErrorDetected = false;
 
 	/**
 	 * The color to use when the WebGL canvas has been cleared.
@@ -243,7 +238,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Object}
 	 * @default null
 	 **/
-	p._clearColor = null;
+	public _clearColor = null;
 
 	/**
 	 * The maximum number of textures WebGL can work with per draw call.
@@ -252,7 +247,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default 1
 	 **/
-	p._maxTexturesPerDraw = 1;
+	public _maxTexturesPerDraw = 1;
 
 	/**
 	 * The maximum total number of boxes points that can be defined per draw call.
@@ -261,7 +256,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default null
 	 **/
-	p._maxBoxesPointsPerDraw = null;
+	public _maxBoxesPointsPerDraw = null;
 
 	/**
 	 * The maximum number of boxes (sprites) that can be drawn in one draw call.
@@ -270,7 +265,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default null
 	 **/
-	p._maxBoxesPerDraw = null;
+	public _maxBoxesPerDraw = null;
 
 	/**
 	 * The maximum number of indices that can be drawn in one draw call.
@@ -279,7 +274,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default null
 	 **/
-	p._maxIndicesPerDraw = null;
+	public _maxIndicesPerDraw = null;
 
 	/**
 	 * The shader program used to draw everything.
@@ -288,7 +283,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {WebGLProgram}
 	 * @default null
 	 **/
-	p._shaderProgram = null;
+	public _shaderProgram = null;
 
 	/**
 	 * The vertices data for the current draw call.
@@ -297,7 +292,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Float32Array}
 	 * @default null
 	 **/
-	p._vertices = null;
+	public _vertices = null;
 
 	/**
 	 * The buffer that contains all the vertices data.
@@ -306,7 +301,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {WebGLBuffer}
 	 * @default null
 	 **/
-	p._verticesBuffer = null;
+	public _verticesBuffer = null;
 
 	/**
 	 * The indices to the vertices defined in p._vertices.
@@ -315,7 +310,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Uint16Array}
 	 * @default null
 	 **/
-	p._indices = null;
+	public _indices = null;
 
 	/**
 	 * The buffer that contains all the indices data.
@@ -324,7 +319,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {WebGLBuffer}
 	 * @default null
 	 **/
-	p._indicesBuffer = null;
+	public _indicesBuffer = null;
 
 	/**
 	 * The current box index being defined for drawing.
@@ -333,7 +328,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {Number}
 	 * @default -1
 	 **/
-	p._currentBoxIndex = -1;
+	public _currentBoxIndex = -1;
 
 	/**
 	 * The current texture that will be used to draw into the GPU.
@@ -342,34 +337,35 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @type {WebGLTexture}
 	 * @default null
 	 **/
-	p._drawTexture = null;
+	public _drawTexture = null;
 
-// constructor:
+	// constructor:
 
 	/**
 	 * @property Stage_initialize
 	 * @type Function
 	 * @private
 	 **/
-	p.Stage_initialize = p.initialize;
+
 
 	/**
 	 * Initialization method.
-	 * @method initialize
+	 * @class SpriteStage
+	 * @constructor
 	 * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
 	 * @param {Boolean} preserveDrawingBuffer              If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
 	 * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
-	 * @protected
 	 **/
-	p.initialize = function(canvas, preserveDrawingBuffer, antialias) {
+	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
+	{
+		super(canvas);
 		this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
 		this._antialias = antialias !== undefined ? antialias : this._antialias;
 
-		this.Stage_initialize(canvas);
 		this._initializeWebGL();
-	};
+	}
 
-// public methods:
+	// public methods:
 
 	/**
 	 * Adds a child to the top of the display list.
@@ -387,21 +383,28 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	p.addChild = function(child) {
-		if (child == null) { return child; }
-		if (arguments.length > 1) {
+	public addChild(child)
+	{
+		if(child == null)
+		{
+			return child;
+		}
+		if(arguments.length > 1)
+		{
 			return this.addChildAt.apply(this, Array.prototype.slice.call(arguments).concat([this.children.length]));
-		} else {
+		}
+		else
+		{
 			return this.addChildAt(child, this.children.length);
 		}
-	};
+	}
 
 	/**
 	 * Adds a child to the display list at the specified index, bumping children at equal or greater indexes up one, and
 	 * setting its parent to this Container.
 	 * Only children of type SpriteContainer, Sprite, Bitmap, BitmapText, or DOMElement are allowed.
 	 * Children also MUST have either an image or spriteSheet defined on them (unless it's a DOMElement).
-	 * 
+	 *
 	 * <h4>Example</h4>
 	 *
 	 *      addChildAt(child1, index);
@@ -422,35 +425,50 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {Number} index The index to add the child at.
 	 * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
 	 **/
-	p.addChildAt = function(child, index) {
+	public addChildAt(child, index)
+	{
 		var l = arguments.length;
-		var indx = arguments[l-1]; // can't use the same name as the index param or it replaces arguments[1]
-		if (indx < 0 || indx > this.children.length) { return arguments[l-2]; }
-		if (l > 2) {
-			for (var i=0; i<l-1; i++) { this.addChildAt(arguments[i], indx+i); }
-			return arguments[l-2];
+		var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
+		if(indx < 0 || indx > this.children.length)
+		{
+			return arguments[l - 2];
 		}
-		if (child._spritestage_compatibility >= 1) {
+		if(l > 2)
+		{
+			for(var i = 0; i < l - 1; i++)
+			{
+				this.addChildAt(arguments[i], indx + i);
+			}
+			return arguments[l - 2];
+		}
+		if(child._spritestage_compatibility >= 1)
+		{
 			// The child is compatible with SpriteStage.
-		} else {
+		}
+		else
+		{
 			console && console.log("Error: You can only add children of type SpriteContainer, Sprite, Bitmap, BitmapText, or DOMElement. [" + child.toString() + "]");
 			return child;
 		}
-		if (!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4) {
+		if(!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4)
+		{
 			console && console.log("Error: You can only add children that have an image or spriteSheet defined on them. [" + child.toString() + "]");
 			return child;
 		}
-		if (child.parent) { child.parent.removeChild(child); }
+		if(child.parent)
+		{
+			child.parent.removeChild(child);
+		}
 		child.parent = this;
 		this.children.splice(index, 0, child);
 		this._setUpKidTexture(this._webGLContext, child);
 		return child;
-	};
+	}
 
 	/**
 	 * Each time the update method is called, the stage will tick all descendants (see: {{#crossLink "DisplayObject/tick"}}{{/crossLink}})
 	 * and then render the display list to the canvas using WebGL. If WebGL is not supported in the browser, it will default to a 2D context.
-	 * 
+	 *
 	 * Any parameters passed to `update()` will be passed on to any
 	 * {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}} event handlers.
 	 *
@@ -466,20 +484,31 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @method update
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	p.update = function(params) {
-		if (!this.canvas) { return; }
-		if (this.tickOnUpdate) {
+	public update(params)
+	{
+		if(!this.canvas)
+		{
+			return;
+		}
+		if(this.tickOnUpdate)
+		{
 			this.dispatchEvent("tickstart");  // TODO: make cancellable?
 			this._tick((arguments.length ? arguments : null));
 			this.dispatchEvent("tickend");
 		}
 		this.dispatchEvent("drawstart"); // TODO: make cancellable?
-		if (this.autoClear) { this.clear(); }
+		if(this.autoClear)
+		{
+			this.clear();
+		}
 		var ctx = this._setWebGLContext();
-		if (ctx) {
+		if(ctx)
+		{
 			// Use WebGL.
 			this.draw(ctx, false);
-		} else {
+		}
+		else
+		{
 			// Use 2D.
 			ctx = this.canvas.getContext("2d");
 			ctx.save();
@@ -488,32 +517,33 @@ var p = SpriteStage.prototype = new createjs.Stage();
 			ctx.restore();
 		}
 		this.dispatchEvent("drawend");
-	};
+	}
 
 	/**
 	 * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
 	 * @method clear
 	 **/
-	p.clear = function() {
-		if (!this.canvas) { return; }
+	public clear()
+	{
+		if(!this.canvas)
+		{
+			return;
+		}
 		var ctx = this._setWebGLContext();
-		if (ctx) {
+		if(ctx)
+		{
 			// Use WebGL.
 			ctx.clear(ctx.COLOR_BUFFER_BIT);
-		} else {
+		}
+		else
+		{
 			// Use 2D.
 			ctx = this.canvas.getContext("2d");
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 		}
-	};
+	}
 
-	/**
-	 * @property Stage_draw
-	 * @type {Function}
-	 * @private
-	 **/
-	p.Stage_draw = p.draw;
 
 	/**
 	 * Draws the stage into the specified context (using WebGL) ignoring its visible, alpha, shadow, and transform.
@@ -527,20 +557,25 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
 	 **/
-	p.draw = function(ctx, ignoreCache) {
-		if (ctx === this._webGLContext || ctx instanceof WebGLRenderingContext) {
+	public draw(ctx, ignoreCache)
+	{
+		if(ctx === this._webGLContext || ctx instanceof WebGLRenderingContext)
+		{
 			this._drawWebGLKids(this.children, ctx);
 
 			// If there is a remaining texture, draw it:
-			if (this._drawTexture) {
+			if(this._drawTexture)
+			{
 				this._drawToGPU(ctx);
 			}
 
 			return true;
-		} else {
-			return this.Stage_draw(ctx, ignoreCache);
 		}
-	};
+		else
+		{
+			return super.draw(ctx, ignoreCache);
+		}
+	}
 
 	/**
 	 * Update the WebGL viewport. Note that this does NOT update the canvas element's width/height.
@@ -548,38 +583,43 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {Number} width
 	 * @param {Number} height
 	 **/
-	p.updateViewport = function (width, height) {
+	public updateViewport(width, height)
+	{
 		this._viewportWidth = width;
 		this._viewportHeight = height;
 
-		if (this._webGLContext) {
+		if(this._webGLContext)
+		{
 			this._webGLContext.viewport(0, 0, this._viewportWidth, this._viewportHeight);
 
-			if (!this._projectionMatrix) {
+			if(!this._projectionMatrix)
+			{
 				this._projectionMatrix = new Float32Array([0, 0, 0, 0, 0, 1, -1, 1, 1]);
 			}
 			this._projectionMatrix[0] = 2 / width;
 			this._projectionMatrix[4] = -2 / height;
 		}
-	};
+	}
 
 	/**
 	 * Clears an image's texture to free it up for garbage collection.
 	 * @method clearImageTexture
 	 * @param  {Image} image
 	 **/
-	p.clearImageTexture = function(image) {
-		image.__easeljs_texture = null;
-	};
+	public clearImageTexture(image)
+	{
+		image['__easeljs_texture'] = null;
+	}
 
 	/**
 	 * Returns a string representation of this object.
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	p.toString = function() {
-		return "[SpriteStage (name="+  this.name +")]";
-	};
+	public toString()
+	{
+		return "[SpriteStage (name=" + this.name + ")]";
+	}
 
 	// private methods:
 
@@ -588,11 +628,12 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @method _initializeWebGL
 	 * @protected
 	 **/
-	p._initializeWebGL = function() {
+	public _initializeWebGL()
+	{
 		this._clearColor = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
 
 		this._setWebGLContext();
-	};
+	}
 
 	/**
 	 * Sets the WebGL context to use for future draws.
@@ -600,25 +641,31 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @return {WebGLRenderingContext}   The newly created context.
 	 * @protected
 	 **/
-	p._setWebGLContext = function() {
-		if (this.canvas) {
-			if (!this._webGLContext || this._webGLContext.canvas !== this.canvas) {
+	public _setWebGLContext()
+	{
+		if(this.canvas)
+		{
+			if(!this._webGLContext || this._webGLContext.canvas !== this.canvas)
+			{
 				// A context hasn't been defined yet,
 				// OR the defined context belongs to a different canvas, so reinitialize.
 				this._initializeWebGLContext();
 			}
-		} else {
+		}
+		else
+		{
 			this._webGLContext = null;
 		}
 		return this._webGLContext;
-	};
+	}
 
 	/**
 	 * Sets up the WebGL context for rendering.
 	 * @method _initializeWebGLContext
 	 * @protected
 	 **/
-	p._initializeWebGLContext = function() {
+	public _initializeWebGLContext()
+	{
 		var options = {
 			depth: false, // Disable the depth buffer as it isn't used.
 			alpha: true, // Make the canvas background transparent.
@@ -628,7 +675,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		};
 		var ctx = this._webGLContext = this.canvas.getContext("webgl", options) || this.canvas.getContext("experimental-webgl", options);
 
-		if (!ctx) {
+		if(!ctx)
+		{
 			// WebGL is not supported in this browser.
 			return;
 		}
@@ -649,7 +697,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		// Create the shader program that will be used for drawing:
 		this._createShaderProgram(ctx);
 
-		if (this._webGLErrorDetected) {
+		if(this._webGLErrorDetected)
+		{
 			// Error detected during this._createShaderProgram().
 			this._webGLContext = null;
 			return;
@@ -660,7 +709,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 
 		// Update the viewport with the initial canvas dimensions:
 		this.updateViewport(this._viewportWidth || this.canvas.width || 0, this._viewportHeight || this.canvas.height || 0);
-	};
+	}
 
 	/**
 	 * Sets the color to use when the WebGL canvas has been cleared.
@@ -671,16 +720,18 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {Number} a A number between 0 and 1.
 	 * @protected
 	 **/
-	p._setClearColor = function (r, g, b, a) {
+	public _setClearColor(r, g, b, a)
+	{
 		this._clearColor.r = r;
 		this._clearColor.g = g;
 		this._clearColor.b = b;
 		this._clearColor.a = a;
 
-		if (this._webGLContext) {
+		if(this._webGLContext)
+		{
 			this._webGLContext.clearColor(r, g, b, a);
 		}
-	};
+	}
 
 	/**
 	 * Creates the shader program that's going to be used to draw everything.
@@ -688,45 +739,50 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {WebGLRenderingContext} ctx
 	 * @protected
 	 **/
-	p._createShaderProgram = function(ctx) {
+	public _createShaderProgram(ctx)
+	{
 
 
 		var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER,
 			"precision mediump float;" +
 
-			"uniform sampler2D uSampler0;" +
+				"uniform sampler2D uSampler0;" +
 
-			"varying vec3 vTextureCoord;" +
+				"varying vec3 vTextureCoord;" +
 
-			"void main(void) {" +
+				"void main(void) {" +
 				"vec4 color = texture2D(uSampler0, vTextureCoord.st);" +
 				"gl_FragColor = vec4(color.rgb, color.a * vTextureCoord.z);" +
-			"}"
+				"}"
 		);
 
 		var vertexShader = this._createShader(ctx, ctx.VERTEX_SHADER,
 			"attribute vec2 aVertexPosition;" +
-			"attribute vec3 aTextureCoord;" +
+				"attribute vec3 aTextureCoord;" +
 
-			"uniform mat3 uPMatrix;" +
+				"uniform mat3 uPMatrix;" +
 
-			"varying vec3 vTextureCoord;" +
+				"varying vec3 vTextureCoord;" +
 
-			"void main(void) {" +
+				"void main(void) {" +
 				"vTextureCoord = aTextureCoord;" +
 
 				"gl_Position = vec4((uPMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);" +
-			"}"
+				"}"
 		);
 
-		if (this._webGLErrorDetected || !fragmentShader || !vertexShader) { return; }
+		if(this._webGLErrorDetected || !fragmentShader || !vertexShader)
+		{
+			return;
+		}
 
 		var program = ctx.createProgram();
 		ctx.attachShader(program, fragmentShader);
 		ctx.attachShader(program, vertexShader);
 		ctx.linkProgram(program);
 
-		if(!ctx.getProgramParameter(program, ctx.LINK_STATUS)) {
+		if(!ctx.getProgramParameter(program, ctx.LINK_STATUS))
+		{
 			// alert("Could not link program. " + ctx.getProgramInfoLog(program));
 			this._webGLErrorDetected = true;
 			return;
@@ -745,7 +801,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		ctx.useProgram(program);
 
 		this._shaderProgram = program;
-	};
+	}
 
 	/**
 	 * Creates a shader from the specified string.
@@ -756,19 +812,21 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @return {WebGLShader}
 	 * @protected
 	 **/
-	p._createShader = function(ctx, type, str) {
+	public _createShader(ctx, type, str)
+	{
 		var shader = ctx.createShader(type);
 		ctx.shaderSource(shader, str);
 		ctx.compileShader(shader);
 
-		if (!ctx.getShaderParameter(shader, ctx.COMPILE_STATUS)) {
+		if(!ctx.getShaderParameter(shader, ctx.COMPILE_STATUS))
+		{
 			// alert("Could not compile shader. " + ctx.getShaderInfoLog(shader));
 			this._webGLErrorDetected = true;
 			return null;
 		}
 
 		return shader;
-	};
+	}
 
 	/**
 	 * Sets up the necessary vertices and indices buffers.
@@ -776,7 +834,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {WebGLRenderingContext} ctx
 	 * @protected
 	 **/
-	p._createBuffers = function(ctx) {
+	public _createBuffers(ctx)
+	{
 		this._verticesBuffer = ctx.createBuffer();
 		ctx.bindBuffer(ctx.ARRAY_BUFFER, this._verticesBuffer);
 
@@ -787,7 +846,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		this._indicesBuffer = ctx.createBuffer();
 
 		this._setMaxBoxesPoints(ctx, SpriteStage.MAX_BOXES_POINTS_INCREMENT);
-	};
+	}
 
 	/**
 	 * Updates the maximum total number of boxes points that can be defined per draw call,
@@ -797,7 +856,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {Number} value              The new this._maxBoxesPointsPerDraw value.
 	 * @protected
 	 **/
-	p._setMaxBoxesPoints = function (ctx, value) {
+	public _setMaxBoxesPoints(ctx, value)
+	{
 		this._maxBoxesPointsPerDraw = value;
 		this._maxBoxesPerDraw = (this._maxBoxesPointsPerDraw / SpriteStage.POINTS_PER_BOX) | 0;
 		this._maxIndicesPerDraw = this._maxBoxesPerDraw * SpriteStage.INDICES_PER_BOX;
@@ -808,11 +868,12 @@ var p = SpriteStage.prototype = new createjs.Stage();
 
 		// Set up indices for multiple boxes:
 		this._indices = new Uint16Array(this._maxIndicesPerDraw); // Indices are set once and reused.
-		for (var i = 0, l = this._indices.length; i < l; i += SpriteStage.INDICES_PER_BOX) {
+		for(var i = 0, l = this._indices.length; i < l; i += SpriteStage.INDICES_PER_BOX)
+		{
 			var j = i * SpriteStage.POINTS_PER_BOX / SpriteStage.INDICES_PER_BOX;
 
 			// Indices for the 2 triangles that make the box:
-			this._indices[i]     = j;
+			this._indices[i] = j;
 			this._indices[i + 1] = j + 1;
 			this._indices[i + 2] = j + 2;
 			this._indices[i + 3] = j;
@@ -821,7 +882,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		}
 		ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, this._indicesBuffer);
 		ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, this._indices, ctx.STATIC_DRAW);
-	};
+	}
 
 	/**
 	 * Sets up a kid's WebGL texture.
@@ -831,22 +892,31 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @return {WebGLTexture}
 	 * @protected
 	 **/
-	p._setUpKidTexture = function (ctx, kid) {
-		if (!ctx) { return null; }
+	public _setUpKidTexture(ctx, kid)
+	{
+		if(!ctx)
+		{
+			return null;
+		}
 
 		var image,
 			texture = null;
 
-		if (kid._spritestage_compatibility === 4) {
+		if(kid._spritestage_compatibility === 4)
+		{
 			image = kid.image;
-		} else if (kid._spritestage_compatibility <= 3 && kid.spriteSheet && kid.spriteSheet._images) {
+		}
+		else if(kid._spritestage_compatibility <= 3 && kid.spriteSheet && kid.spriteSheet._images)
+		{
 			image = kid.spriteSheet._images[0];
 		}
 
-		if (image) {
+		if(image)
+		{
 			// Create and use a new texture for this image if it doesn't already have one:
 			texture = image.__easeljs_texture;
-			if (!texture) {
+			if(!texture)
+			{
 				texture = image.__easeljs_texture = ctx.createTexture();
 				ctx.bindTexture(ctx.TEXTURE_2D, texture);
 				ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);
@@ -858,7 +928,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		}
 
 		return texture;
-	};
+	}
 
 	/**
 	 * Draw all the kids into the WebGL context.
@@ -868,7 +938,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	p._drawWebGLKids = function(kids, ctx, parentMVMatrix) {
+	public _drawWebGLKids(kids, ctx, parentMVMatrix)
+	{
 		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,
 			image = null,
@@ -878,9 +949,13 @@ var p = SpriteStage.prototype = new createjs.Stage();
 			maxIndexSize = SpriteStage.MAX_INDEX_SIZE,
 			maxBoxIndex = this._maxBoxesPerDraw - 1;
 
-		for (var i = 0, l = kids.length; i < l; i++) {
+		for(var i = 0, l = kids.length; i < l; i++)
+		{
 			kid = kids[i];
-			if (!kid.isVisible()) { continue; }
+			if(!kid.isVisible())
+			{
+				continue;
+			}
 			mtx = kid._matrix;
 
 			// Get the kid's global matrix (relative to the stage):
@@ -892,14 +967,17 @@ var p = SpriteStage.prototype = new createjs.Stage();
 				vStart = 0, vEnd = 1;
 
 			// Define the untransformed bounding box sides and get the kid's image to use for textures:
-			if (kid._spritestage_compatibility === 4) {
+			if(kid._spritestage_compatibility === 4)
+			{
 				image = kid.image;
 
 				leftSide = 0;
 				topSide = 0;
 				rightSide = image.width;
 				bottomSide = image.height;
-			} else if (kid._spritestage_compatibility === 2) {
+			}
+			else if(kid._spritestage_compatibility === 2)
+			{
 				var frame = kid.spriteSheet.getFrame(kid.currentFrame),
 					rect = frame.rect;
 
@@ -914,26 +992,32 @@ var p = SpriteStage.prototype = new createjs.Stage();
 				vStart = rect.y / image.height;
 				uEnd = uStart + (rect.width / image.width);
 				vEnd = vStart + (rect.height / image.height);
-			} else {
+			}
+			else
+			{
 				image = null;
 
 				// Update BitmapText instances:
-				if (kid._spritestage_compatibility === 3) {
+				if(kid._spritestage_compatibility === 3)
+				{
 					// TODO: this might change in the future to use a more general approach.
 					kid._updateText();
 				}
 			}
 
 			// Detect if this kid is a new display branch:
-			if (!parentMVMatrix && kid._spritestage_compatibility <= 4) {
+			if(!parentMVMatrix && kid._spritestage_compatibility <= 4)
+			{
 				// Get the texture for this display branch:
 				var texture = (image || kid.spriteSheet._images[0]).__easeljs_texture;
 
 				// Only use a new texture in the current draw call:
-				if (texture !== this._drawTexture) {
+				if(texture !== this._drawTexture)
+				{
 
 					// Draw to the GPU if a texture is already in use:
-					if (this._drawTexture) {
+					if(this._drawTexture)
+					{
 						this._drawToGPU(ctx);
 					}
 
@@ -945,7 +1029,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 				}
 			}
 
-			if (image !== null) {
+			if(image !== null)
+			{
 				// Set vertices' data:
 
 				var offset = ++this._currentBoxIndex * numVertexPropertiesPerBox,
@@ -956,32 +1041,34 @@ var p = SpriteStage.prototype = new createjs.Stage();
 					tx = mtx.tx,
 					ty = mtx.ty;
 
-				if (snapToPixelEnabled && kid.snapToPixel) {
+				if(snapToPixelEnabled && kid.snapToPixel)
+				{
 					tx = tx + (tx < 0 ? -0.5 : 0.5) | 0;
 					ty = ty + (ty < 0 ? -0.5 : 0.5) | 0;
 				}
 
 				// Positions (calculations taken from Matrix2D.transformPoint):
-				vertices[offset]      = leftSide  * a + topSide    * c + tx;
-				vertices[offset + 1]  = leftSide  * b + topSide    * d + ty;
-				vertices[offset + 5]  = leftSide  * a + bottomSide * c + tx;
-				vertices[offset + 6]  = leftSide  * b + bottomSide * d + ty;
+				vertices[offset] = leftSide * a + topSide * c + tx;
+				vertices[offset + 1] = leftSide * b + topSide * d + ty;
+				vertices[offset + 5] = leftSide * a + bottomSide * c + tx;
+				vertices[offset + 6] = leftSide * b + bottomSide * d + ty;
 				vertices[offset + 10] = rightSide * a + bottomSide * c + tx;
 				vertices[offset + 11] = rightSide * b + bottomSide * d + ty;
-				vertices[offset + 15] = rightSide * a + topSide    * c + tx;
-				vertices[offset + 16] = rightSide * b + topSide    * d + ty;
+				vertices[offset + 15] = rightSide * a + topSide * c + tx;
+				vertices[offset + 16] = rightSide * b + topSide * d + ty;
 
 				// Texture coordinates:
-				vertices[offset + 2]  = vertices[offset + 7]  = uStart;
+				vertices[offset + 2] = vertices[offset + 7] = uStart;
 				vertices[offset + 12] = vertices[offset + 17] = uEnd;
-				vertices[offset + 3]  = vertices[offset + 18] = vStart;
-				vertices[offset + 8]  = vertices[offset + 13] = vEnd;
+				vertices[offset + 3] = vertices[offset + 18] = vStart;
+				vertices[offset + 8] = vertices[offset + 13] = vEnd;
 
 				// Alphas:
 				vertices[offset + 4] = vertices[offset + 9] = vertices[offset + 14] = vertices[offset + 19] = kid.alpha;
 
 				// Draw to the GPU if the maximum number of boxes per a draw has been reached:
-				if (this._currentBoxIndex === maxBoxIndex) {
+				if(this._currentBoxIndex === maxBoxIndex)
+				{
 					this._drawToGPU(ctx);
 
 					// Set the draw texture again:
@@ -991,7 +1078,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 					ctx.uniform1i(this._shaderProgram.sampler0uniform, 0);
 
 					// If possible, increase the amount of boxes that can be used per draw call:
-					if (this._maxBoxesPointsPerDraw < maxIndexSize) {
+					if(this._maxBoxesPointsPerDraw < maxIndexSize)
+					{
 						this._setMaxBoxesPoints(ctx, this._maxBoxesPointsPerDraw + SpriteStage.MAX_BOXES_POINTS_INCREMENT);
 						maxBoxIndex = this._maxBoxesPerDraw - 1;
 					}
@@ -999,12 +1087,13 @@ var p = SpriteStage.prototype = new createjs.Stage();
 			}
 
 			// Draw children:
-			if (kid.children) {
+			if(kid.children)
+			{
 				this._drawWebGLKids(kid.children, ctx, mtx);
 				maxBoxIndex = this._maxBoxesPerDraw - 1;
 			}
 		}
-	};
+	}
 
 	/**
 	 * Draws all the currently defined boxes to the GPU.
@@ -1012,7 +1101,8 @@ var p = SpriteStage.prototype = new createjs.Stage();
 	 * @param {WebGLRenderingContext} ctx The canvas WebGL context object to draw into.
 	 * @protected
 	 **/
-	p._drawToGPU = function(ctx) {
+	public _drawToGPU(ctx)
+	{
 		var numBoxes = this._currentBoxIndex + 1;
 
 		ctx.bindBuffer(ctx.ARRAY_BUFFER, this._verticesBuffer);
@@ -1025,7 +1115,7 @@ var p = SpriteStage.prototype = new createjs.Stage();
 		// Reset draw vars:
 		this._currentBoxIndex = -1;
 		this._drawTexture = null;
-	};
+	}
+}
 
-createjs.SpriteStage = SpriteStage;
-}());
+export = SpriteStage;

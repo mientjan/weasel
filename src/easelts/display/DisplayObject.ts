@@ -29,6 +29,7 @@
 // event
 import EventDispatcher = require('../../createts/events/EventDispatcher');
 import Event = require('../../createts/events/Event');
+import TimeEvent = require('../../createts/events/TimeEvent');
 
 // utils
 import UID = require('../utils/UID');
@@ -59,6 +60,7 @@ import AbstractBehaviour = require('../behaviour/AbstractBehaviour');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
+ * @class DisplayObject
  */
 class DisplayObject extends EventDispatcher
 {
@@ -97,6 +99,7 @@ class DisplayObject extends EventDispatcher
 		DisplayObject.EVENT_MOUSE_ROLLOVER,
 		"dblclick" // @todo make depricated
 	];
+
 
 	public static COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';
 	public static COMPOSITE_OPERATION_SOURCE_IN = 'source-in';
@@ -138,16 +141,15 @@ class DisplayObject extends EventDispatcher
 	 * @static
 	 * @protected
 	 **/
+	public static _hitTestCanvas:HTMLCanvasElement = Methods.createCanvas();
+
 	/**
 	 * @property _hitTestContext
 	 * @type {CanvasRenderingContext2D}
 	 * @static
 	 * @protected
 	 **/
-
-	public static _hitTestCanvas:HTMLCanvasElement = Methods.createCanvas();
 	public static _hitTestContext:CanvasRenderingContext2D = <CanvasRenderingContext2D> DisplayObject._hitTestCanvas.getContext('2d');
-
 
 	/**
 	 * @property _nextCacheID
@@ -1439,15 +1441,16 @@ class DisplayObject extends EventDispatcher
 	 * be undefined or contain other values depending on the usage by the application.
 	 * @protected
 	 **/
-	public _tick(props)
+	public _tick(props:TimeEvent)
 	{
 		// because tick can be really performance sensitive, we'll inline some of the dispatchEvent work.
-		var ls = this._listeners;
-		if(ls && ls["tick"])
-		{
-			var evt = new Event("tick").set(props);
-			this._dispatchEvent(evt, this); // 2
-		}
+//		this.tick
+//		var ls = this._listeners;
+//		if(ls && ls["tick"])
+//		{
+//			var evt = new Event("tick").set(props);
+//			this._dispatchEvent(evt, this); // 2
+//		}
 	}
 
 	/**
