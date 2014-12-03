@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easel/ui/Touch', '../../src/easel/display/Stage', '../../src/easel/utils/Ticker', '../../src/easel/display/Shape', '../../src/easel/display/Text', '../../src/easel/geom/Point'], function (require, exports, Touch, Stage, Ticker, Shape, Text, Point) {
+define(["require", "exports", '../../src/easelts/ui/Touch', '../../src/easelts/display/Stage', '../../src/createts/utils/Ticker', '../../src/easelts/display/Shape', '../../src/easelts/display/Text', '../../src/easelts/geom/Point'], function (require, exports, Touch, Stage, Ticker, Shape, Text, Point) {
     var CurveTo = (function () {
         function CurveTo() {
             this.canvas = document.getElementById("canvas");
@@ -13,7 +13,7 @@ define(["require", "exports", '../../src/easel/ui/Touch', '../../src/easel/displ
             this.stage.autoClear = false;
             this.stage.enableDOMEvents(true);
             Touch.enable(this.stage);
-            Ticker.setFPS(24);
+            Ticker.getInstance().setFPS(24);
             this.drawingCanvas = new Shape();
             this.stage.addEventListener("stagemousedown", this.handleMouseDown.bind(this));
             this.stage.addEventListener("stagemouseup", this.handleMouseUp.bind(this));
@@ -24,8 +24,6 @@ define(["require", "exports", '../../src/easel/ui/Touch', '../../src/easel/displ
             this.stage.addChild(this.drawingCanvas);
             this.stage.update();
         }
-        CurveTo.prototype.stop = function () {
-        };
         CurveTo.prototype.handleMouseDown = function (event) {
             if (this.stage.contains(this.title)) {
                 this.stage.clear();

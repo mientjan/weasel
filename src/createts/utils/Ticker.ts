@@ -129,7 +129,7 @@ class Ticker
 
 	private static _instance:Ticker = null;
 
-	public getInstance():Ticker
+	public static getInstance():Ticker
 	{
 		if(!Ticker._instance)
 		{
@@ -316,7 +316,7 @@ class Ticker
 	 * @method init
 	 * @static
 	 **/
-		constructor()
+	constructor()
 	{
 		//		if (Ticker._inited) { return; }
 		//		Ticker._inited = true;
@@ -356,10 +356,9 @@ class Ticker
 	 *
 	 * @returns {SignalConnection}
 	 */
-	//	public static addTickListener(fn:Function):SignalConnection {
-	//		!Ticker._inited && Ticker.init();
-	//		return Ticker.ticker.connectImpl(fn, false);
-	//	}
+	public addTickListener(fn:Function):SignalConnection {
+		return this.tickSignal.connectImpl(fn, false);
+	}
 
 	/**
 	 * Sets the target time (in milliseconds) between ticks. Default is 50 (20 FPS).
@@ -562,10 +561,10 @@ class Ticker
 	 * @static
 	 * @protected
 	 **/
-	public _handleSynch()
+	public _handleSynch = () =>
 	{
 		var time = Ticker._getTime() - this._startTime;
-		this._timerId = null;
+		this._timerId = -1;
 		this._setupTick();
 
 		// run if enough time has elapsed, with a little bit of flexibility to be early:
@@ -580,9 +579,9 @@ class Ticker
 	 * @static
 	 * @protected
 	 **/
-	public _handleRAF()
+	public _handleRAF = () =>
 	{
-		this._timerId = null;
+		this._timerId = -1;
 		this._setupTick();
 		this._tick();
 	}
@@ -592,9 +591,9 @@ class Ticker
 	 * @static
 	 * @protected
 	 **/
-	public _handleTimeout()
+	public _handleTimeout = () =>
 	{
-		this._timerId = null;
+		this._timerId = -1;
 		this._setupTick();
 		this._tick();
 	}
@@ -606,7 +605,7 @@ class Ticker
 	 **/
 	public _setupTick()
 	{
-		if(this._timerId < 0)
+		if(this._timerId > -1)
 		{
 			return;
 		} // avoid duplicates
@@ -634,9 +633,12 @@ class Ticker
 	 **/
 	public _tick()
 	{
+
 		var time = Ticker._getTime() - this._startTime;
 		var elapsedTime = time - this._lastTime;
 		var paused = this._paused;
+
+
 
 		this._ticks++;
 		if(paused)

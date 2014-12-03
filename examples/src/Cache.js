@@ -1,9 +1,10 @@
-define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/utils/Ticker', '../../src/easel/display/Shape', '../../src/easel/display/Text'], function (require, exports, Stage, Ticker, Shape, Text) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/createts/utils/Ticker', '../../src/easelts/display/Shape', '../../src/easelts/display/Text'], function (require, exports, Stage, Ticker, Shape, Text) {
     var Test = (function () {
         function Test() {
             this.circleRadius = 30;
             this.rings = 30;
             this.tickerConnection = null;
+            this.ticker = Ticker.getInstance();
             // create a new stage and point it at our canvas:
             this.canvas = document.getElementById("canvas");
             this.stage = new Stage(this.canvas);
@@ -16,6 +17,7 @@ define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/
                 }
                 shape.x = Math.random() * this.canvas.width;
                 shape.y = Math.random() * this.canvas.height;
+                shape.scaleX = shape.scaleY = Math.random();
                 shape['velX'] = Math.random() * 10 - 5;
                 shape['velY'] = Math.random() * 10 - 5;
                 // turn snapToPixel on for all shapes - it's set to false by default on Shape.
@@ -24,13 +26,13 @@ define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/
                 this.stage.addChild(shape);
             }
             // add a text object to output the current FPS:
-            this.fpsLabel = new Text("-- fps", "bold 18px Arial", "#FFF");
+            this.fpsLabel = new Text("-- fps", "bold 18px Arial", "#000");
             this.stage.addChild(this.fpsLabel);
             this.fpsLabel.x = 10;
             this.fpsLabel.y = 20;
             // start the tick and point it at the window so we can do some work before updating the stage:
-            this.tickerConnection = Ticker.addTickListener(this.tick.bind(this));
-            Ticker.setFPS(50);
+            this.tickerConnection = this.ticker.addTickListener(this.tick.bind(this));
+            Ticker.getInstance().setFPS(50);
             window['toggleCache'] = this.toggleCache.bind(this);
         }
         Test.prototype.tick = function (event) {
@@ -42,7 +44,7 @@ define(["require", "exports", '../../src/easel/display/Stage', '../../src/easel/
                 shape.x = (shape.x + shape.velX + w) % w;
                 shape.y = (shape.y + shape.velY + h) % h;
             }
-            this.fpsLabel.text = Math.round(Ticker.getMeasuredFPS(0)) + " fps";
+            this.fpsLabel.text = Math.round(this.ticker.getMeasuredFPS(10)) + " fps";
             // draw the updates to stage:
             this.stage.update(event);
         };

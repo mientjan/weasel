@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container', '../events/MouseEvent', '../../createts/events/Signal', '../geom/Size', '../enum/DisplayType', '../enum/QualityType'], function (require, exports, DisplayObject, Ticker, Container, MouseEvent, Signal, Size, DisplayType, QualityType) {
+define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', './Container', '../events/MouseEvent', '../../createts/events/Signal', '../geom/Size', '../enum/DisplayType', '../enum/QualityType'], function (require, exports, DisplayObject, Ticker, Container, MouseEvent, Signal, Size, DisplayType, QualityType) {
     /**
      * @module createts
      */
@@ -62,6 +62,7 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
     var Stage = (function (_super) {
         __extends(Stage, _super);
         function Stage(element) {
+            var _this = this;
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
             // events:
             /**
@@ -129,6 +130,7 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
             this._isRunning = false;
             this._tickSignalConnection = null;
             this._fps = 60;
+            this._eventListeners = null;
             /**
              * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
              * to manually control clearing (for generative art, or when pointing multiple stages at the same canvas for
@@ -259,15 +261,62 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
              * @type Stage
              **/
             this._prevStage = null;
+            /**
+             * Each time the update method is called, the stage will call {{#crossLink "Stage/tick"}}{{/crossLink}}
+             * unless {{#crossLink "Stage/tickOnUpdate:property"}}{{/crossLink}} is set to false,
+             * and then render the display list to the canvas.
+             *
+             * @method update
+             * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
+             **/
+            this.update = function (params) {
+                //		console.time('stage:update');
+                if (!_this.canvas) {
+                    return;
+                }
+                if (_this.tickOnUpdate) {
+                    // update this logic in SpriteStage when necessary
+                    _this.tick.apply(_this, arguments);
+                }
+                //
+                //		if(this.dispatchEvent("drawstart"))
+                //		{
+                //			return;
+                //		}
+                _this.drawstartSignal.emit();
+                DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
+                var r = _this.drawRect, ctx = _this.ctx;
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                if (_this.autoClear) {
+                    if (r) {
+                        ctx.clearRect(r.x, r.y, r.width, r.height);
+                    }
+                    else {
+                        ctx.clearRect(0, 0, _this.canvas.width + 1, _this.canvas.height + 1);
+                    }
+                }
+                ctx.save();
+                if (_this.drawRect) {
+                    ctx.beginPath();
+                    ctx.rect(r.x, r.y, r.width, r.height);
+                    ctx.clip();
+                }
+                _this.updateContext(ctx);
+                _this.draw(ctx, false);
+                ctx.restore();
+                _this.drawendSignal.emit();
+                //		this.dispatchEvent("drawend");
+                //		console.timeEnd('stage:update');
+            };
             //
             var onResize = null;
+            var size = null;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
                         this.canvas = element;
                         this.holder = element.parentElement;
-                        var size = new Size(this.canvas.width, this.canvas.height);
-                        this.onResize(size);
+                        size = new Size(this.canvas.width, this.canvas.height);
                         break;
                     }
                 case 'DIV':
@@ -276,10 +325,13 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
                         element.appendChild(canvas);
                         this.canvas = canvas;
                         this.holder = element;
-                        var onResize = function () {
-                            this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-                        }.bind(this);
+                        var onResize = (function () {
+                            return function () {
+                                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+                            }.bind(this);
+                        }.bind(this))();
                         window.addEventListener('resize', onResize);
+                        size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
                         break;
                     }
                 default:
@@ -289,22 +341,13 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
                     }
             }
             this._pointerData = {};
-            this.enableDOMEvents(true);
-            this.setFps(this._fps);
+            //		this.enableDOMEvents(true);
             this.ctx = this.canvas.getContext('2d');
-            this.setQuality(1 /* LOW */);
             if (onResize) {
                 onResize.call(window);
             }
-            //		this.setStage(this);
-            //		createjs.Ticker.timingMode = createjs.Ticker.RAF;
-            //		createjs.Ticker.addEventListener('tick', <any> this.onUpdate);
-            //
-            //		if(Browser.Platform.name == 'android' || Browser.Platform.name == 'ios'){
-            //			createjs.Touch.enable(this.stage);
-            //		}
-            //
-            //		this.stage.addChild(<createjs.Container> this.view);
+            this.setFps(this._fps);
+            this.onResize(size);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
@@ -377,51 +420,6 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
                         break;
                     }
             }
-        };
-        /**
-         * Each time the update method is called, the stage will call {{#crossLink "Stage/tick"}}{{/crossLink}}
-         * unless {{#crossLink "Stage/tickOnUpdate:property"}}{{/crossLink}} is set to false,
-         * and then render the display list to the canvas.
-         *
-         * @method update
-         * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
-         **/
-        Stage.prototype.update = function (params) {
-            if (!this.canvas) {
-                return;
-            }
-            if (this.tickOnUpdate) {
-                // update this logic in SpriteStage when necessary
-                this.tick.apply(this, arguments);
-            }
-            //
-            //		if(this.dispatchEvent("drawstart"))
-            //		{
-            //			return;
-            //		}
-            this.drawstartSignal.emit();
-            DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
-            var r = this.drawRect, ctx = this.ctx;
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            if (this.autoClear) {
-                if (r) {
-                    ctx.clearRect(r.x, r.y, r.width, r.height);
-                }
-                else {
-                    ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
-                }
-            }
-            ctx.save();
-            if (this.drawRect) {
-                ctx.beginPath();
-                ctx.rect(r.x, r.y, r.width, r.height);
-                ctx.clip();
-            }
-            this.updateContext(ctx);
-            this.draw(ctx, false);
-            ctx.restore();
-            this.drawendSignal.emit();
-            //		this.dispatchEvent("drawend");
         };
         /**
          * Propagates a tick event through the display list. This is automatically called by {{#crossLink "Stage/update"}}{{/crossLink}}
@@ -963,9 +961,8 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
          * @param value
          */
         Stage.prototype.setFps = function (value) {
-            Ticker.init();
             this._fps = value;
-            Ticker.setFPS(value);
+            Ticker.getInstance().setFPS(value);
         };
         /**
          * Return the current fps of this stage.
@@ -984,7 +981,7 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
         Stage.prototype.start = function () {
             if (!this._isRunning) {
                 this.update();
-                this._tickSignalConnection = Ticker.ticker.connectImpl(this.update.bind(this));
+                this._tickSignalConnection = Ticker.getInstance().addTickListener(this.update);
                 this._isRunning = true;
                 return true;
             }
@@ -1003,7 +1000,7 @@ define(["require", "exports", './DisplayObject', '../utils/Ticker', './Container
                 this._tickSignalConnection = null;
                 // update stage for a last tick, solves rendering
                 // issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
-                setTimeout(this.update.bind(this), 1000 / this._fps);
+                setTimeout(this.update, 1000 / this._fps);
                 this._isRunning = false;
                 return true;
             }

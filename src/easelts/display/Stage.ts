@@ -27,7 +27,7 @@
  */
 
 import DisplayObject = require('./DisplayObject');
-import Ticker = require('../utils/Ticker');
+import Ticker = require('../../createts/utils/Ticker');
 import Container = require('./Container');
 import MouseEvent = require('../events/MouseEvent');
 import Signal1 = require('../../createts/events/Signal1');
@@ -148,7 +148,7 @@ class Stage extends Container
 	public _tickSignalConnection:SignalConnection = null;
 	public _fps:number = 60;
 
-	_eventListeners:any;
+	public _eventListeners:any = null;
 
 	/**
 	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
@@ -371,6 +371,7 @@ class Stage extends Container
 
 		//
 		var onResize:Function = null
+		var size:Size = null;
 
 		switch(element.tagName)
 		{
@@ -379,9 +380,7 @@ class Stage extends Container
 				this.canvas = element;
 				this.holder = element.parentElement;
 
-				var size = new Size(this.canvas.width, this.canvas.height);
-
-				this.onResize(size);
+				size = new Size(this.canvas.width, this.canvas.height);
 				break;
 			}
 
@@ -393,11 +392,15 @@ class Stage extends Container
 				this.canvas = canvas;
 				this.holder = element;
 
-				var onResize = <Function> function(){
-					this.onResize( new Size(this.holder.offsetWidth, this.holder.offsetHeight) );
-				}.bind(this);
+				var onResize = <Function> (function(){
+					return function(){
+						this.onResize( new Size(this.holder.offsetWidth, this.holder.offsetHeight) );
+					}.bind(this);
+				}.bind(this))();
 
 				window.addEventListener('resize', <any> onResize );
+
+				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
 
 				break;
 			}
@@ -410,26 +413,15 @@ class Stage extends Container
 		}
 
 		this._pointerData = {};
-		this.enableDOMEvents(true);
-		this.setFps(this._fps);
+//		this.enableDOMEvents(true);
 		this.ctx = this.canvas.getContext('2d');
-		this.setQuality(QualityType.LOW);
-
 		if( onResize ){
 			onResize.call(window);
 		}
 
-		//		this.setStage(this);
+		this.setFps(this._fps);
 
-		//		createjs.Ticker.timingMode = createjs.Ticker.RAF;
-		//		createjs.Ticker.addEventListener('tick', <any> this.onUpdate);
-		//
-		//		if(Browser.Platform.name == 'android' || Browser.Platform.name == 'ios'){
-		//			createjs.Touch.enable(this.stage);
-		//		}
-		//
-		//		this.stage.addChild(<createjs.Container> this.view);
-
+		this.onResize(size);
 	}
 
 
@@ -468,8 +460,9 @@ class Stage extends Container
 	 * @method update
 	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
 	 **/
-	public update(params?:any) {
+	public update = (params?:any) => {
 
+//		console.time('stage:update');
 		if(!this.canvas)
 		{
 			return;
@@ -519,8 +512,9 @@ class Stage extends Container
 		this.draw(ctx, false);
 		ctx.restore();
 
-		this.drawendSignal.emit()
+		this.drawendSignal.emit();
 //		this.dispatchEvent("drawend");
+//		console.timeEnd('stage:update');
 	}
 
 	/**
@@ -886,7 +880,7 @@ class Stage extends Container
 	 * @param {Number} pageY
 	 * @param {Stage} owner Indicates that the event has already been captured & handled by the indicated stage.
 	 **/
-	public _handlePointerMove(id, e, pageX, pageY, owner?:Stage)
+	public _handlePointerMove(id:number, e:MouseEvent, pageX:number, pageY:number, owner?:Stage)
 	{
 		if(this._prevStage && owner === undefined)
 		{
@@ -922,7 +916,7 @@ class Stage extends Container
 	 * @param {Number} pageX
 	 * @param {Number} pageY
 	 **/
-	public _updatePointerPosition(id, e, pageX, pageY)
+	public _updatePointerPosition(id:number, e:MouseEvent, pageX:number, pageY:number)
 	{
 		var rect = this._getElementRect(this.canvas);
 		pageX -= rect.left;
@@ -961,7 +955,7 @@ class Stage extends Container
 	 * @protected
 	 * @param {MouseEvent} e
 	 **/
-	public _handleMouseUp(e)
+	public _handleMouseUp(e):void
 	{
 		this._handlePointerUp(-1, e, false);
 	}
@@ -1203,9 +1197,8 @@ class Stage extends Container
 	 */
 	public setFps(value:number):void
 	{
-		Ticker.init();
 		this._fps = value;
-		Ticker.setFPS(value);
+		Ticker.getInstance().setFPS(value);
 	}
 
 	/**
@@ -1229,7 +1222,7 @@ class Stage extends Container
 		if(!this._isRunning)
 		{
 			this.update();
-			this._tickSignalConnection = Ticker.ticker.connectImpl( <any> this.update.bind(this) );
+			this._tickSignalConnection = Ticker.getInstance().addTickListener( <any> this.update );
 			this._isRunning = true;
 			return true;
 		}
@@ -1253,7 +1246,7 @@ class Stage extends Container
 
 			// update stage for a last tick, solves rendering
 			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
-			setTimeout(this.update.bind(this), 1000 / this._fps);
+			setTimeout(this.update, 1000 / this._fps);
 
 			this._isRunning = false;
 			return true;

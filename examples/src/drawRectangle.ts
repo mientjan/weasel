@@ -1,9 +1,9 @@
-import Stage = require('../../src/easel/display/Stage');
-import Shape = require('../../src/easel/display/Shape');
+import Stage = require('../../src/easelts/display/Stage');
+import Shape = require('../../src/easelts/display/Shape');
 
 class Test {
 	constructor(){
-		var stage = new Stage( document.getElementById('canvasElement') );
+		var stage = new Stage( <HTMLDivElement> document.getElementById('canvasElement') );
 
 		var shape = new Shape();
 		shape.graphics.beginFill('#FF0000');

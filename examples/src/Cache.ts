@@ -1,23 +1,24 @@
-import Touch = require('../../src/easel/ui/Touch');
-import Stage = require('../../src/easel/display/Stage');
-import Ticker = require('../../src/easel/utils/Ticker');
+import Touch = require('../../src/easelts/ui/Touch');
+import Stage = require('../../src/easelts/display/Stage');
+import Ticker = require('../../src/createts/utils/Ticker');
 import SignalConnection = require('../../src/createts/events/SignalConnection');
 import TimeEvent = require('../../src/createts/events/TimeEvent');
-import Shape = require('../../src/easel/display/Shape');
-import Text = require('../../src/easel/display/Text');
-import Point = require('../../src/easel/geom/Point');
+import Shape = require('../../src/easelts/display/Shape');
+import Text = require('../../src/easelts/display/Text');
+import Point = require('../../src/easelts/geom/Point');
 
 
 class Test
 {
 
-	canvas;
-	stage;
-	shape;
-	circleRadius = 30;
-	rings = 30;
-	fpsLabel;
-	tickerConnection:SignalConnection = null;
+	public canvas;
+	public stage;
+	public shape;
+	public circleRadius = 30;
+	public rings = 30;
+	public fpsLabel;
+	public tickerConnection:SignalConnection = null;
+	public ticker:Ticker = Ticker.getInstance();
 
 	constructor()
 	{
@@ -40,6 +41,7 @@ class Test
 			}
 			shape.x = Math.random() * this.canvas.width;
 			shape.y = Math.random() * this.canvas.height;
+			shape.scaleX = shape.scaleY = Math.random();
 			shape['velX'] = Math.random() * 10 - 5;
 			shape['velY'] = Math.random() * 10 - 5;
 
@@ -51,14 +53,14 @@ class Test
 		}
 
 		// add a text object to output the current FPS:
-		this.fpsLabel = new Text("-- fps", "bold 18px Arial", "#FFF");
+		this.fpsLabel = new Text("-- fps", "bold 18px Arial", "#000");
 		this.stage.addChild(this.fpsLabel);
 		this.fpsLabel.x = 10;
 		this.fpsLabel.y = 20;
 
 		// start the tick and point it at the window so we can do some work before updating the stage:
-		this.tickerConnection = Ticker.addTickListener( this.tick.bind(this) );
-		Ticker.setFPS(50);
+		this.tickerConnection = this.ticker.addTickListener( this.tick.bind(this) );
+		Ticker.getInstance().setFPS(50);
 
 		window['toggleCache'] = this.toggleCache.bind(this);
 	}
@@ -78,7 +80,7 @@ class Test
 			shape.y = (shape.y + shape.velY + h) % h;
 		}
 
-		this.fpsLabel.text = Math.round(Ticker.getMeasuredFPS(0)) + " fps";
+		this.fpsLabel.text = Math.round(this.ticker.getMeasuredFPS(10)) + " fps";
 
 		// draw the updates to stage:
 		this.stage.update(event);

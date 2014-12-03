@@ -1,9 +1,9 @@
-import Touch = require('../../src/easel/ui/Touch');
-import Stage = require('../../src/easel/display/Stage');
-import Ticker = require('../../src/easel/utils/Ticker');
-import Shape = require('../../src/easel/display/Shape');
-import Text = require('../../src/easel/display/Text');
-import Point = require('../../src/easel/geom/Point');
+import Touch = require('../../src/easelts/ui/Touch');
+import Stage = require('../../src/easelts/display/Stage');
+import Ticker = require('../../src/createts/utils/Ticker');
+import Shape = require('../../src/easelts/display/Shape');
+import Text = require('../../src/easelts/display/Text');
+import Point = require('../../src/easelts/geom/Point');
 
 class CurveTo
 {
@@ -31,7 +31,7 @@ class CurveTo
 		this.stage.enableDOMEvents(true);
 
 		Touch.enable(this.stage);
-		Ticker.setFPS(24);
+		Ticker.getInstance().setFPS(24);
 
 		this.drawingCanvas = new Shape();
 
@@ -47,11 +47,8 @@ class CurveTo
 		this.stage.update();
 	}
 
-	stop()
-	{
-	}
 
-	handleMouseDown(event)
+	public handleMouseDown(event)
 	{
 		if(this.stage.contains(this.title))
 		{
@@ -65,7 +62,7 @@ class CurveTo
 		this.stage.addEventListener("stagemousemove", this.handleMouseMove.bind(this) );
 	}
 
-	handleMouseMove(event)
+	public handleMouseMove(event)
 	{
 		var midPt = new Point(this.oldPt.x + this.stage.mouseX >> 1, this.oldPt.y + this.stage.mouseY >> 1);
 
@@ -83,7 +80,7 @@ class CurveTo
 		this.stage.update();
 	}
 
-	handleMouseUp(event)
+	public handleMouseUp(event)
 	{
 		this.stage.removeAllEventListeners("stagemousemove");
 	}
