@@ -609,7 +609,7 @@ class Stage extends Container
 	 * is passed in, or if the browser does not support the specified MIME type, the default value will be used.
 	 * @return {String} a Base64 encoded image.
 	 **/
-	public toDataURL(backgroundColor, mimeType)
+	public toDataURL(backgroundColor:string, mimeType:string):string
 	{
 		if(!mimeType)
 		{
@@ -693,7 +693,7 @@ class Stage extends Container
 		}
 		else if(frequency <= 0)
 		{
-			return;
+			return void 0;
 		}
 
 		this._mouseOverIntervalID = setInterval(() => {
@@ -1276,8 +1276,8 @@ class Stage extends Container
 	public onResize(e:Size)
 	{
 		// anti-half pixel fix
-		e.width = e.width >> 1 << 1;
-		e.height = e.height >> 1 << 1;
+		e.width = e.width + 1 >> 1 << 1;
+		e.height = e.height + 1 >> 1 << 1;
 
 		if(this.width != e.width || this.height != e.height)
 		{

@@ -49,6 +49,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
          **/
         function SpriteStage(canvas, preserveDrawingBuffer, antialias) {
+            var _this = this;
             _super.call(this, canvas);
             // private properties:
             /**
@@ -206,6 +207,53 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
              * @default null
              **/
             this._drawTexture = null;
+            /**
+             * Each time the update method is called, the stage will tick all descendants (see: {{#crossLink "DisplayObject/tick"}}{{/crossLink}})
+             * and then render the display list to the canvas using WebGL. If WebGL is not supported in the browser, it will default to a 2D context.
+             *
+             * Any parameters passed to `update()` will be passed on to any
+             * {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}} event handlers.
+             *
+             * Some time-based features in EaselJS (for example {{#crossLink "Sprite/framerate"}}{{/crossLink}} require that
+             * a tick event object (or equivalent) be passed as the first parameter to update(). For example:
+             *
+             *      Ticker.addEventListener("tick", handleTick);
+             *      function handleTick(evtObj) {
+             *          // do some work here, then update the stage, passing through the event object:
+             *          myStage.update(evtObj);
+             *      }
+             *
+             * @method update
+             * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
+             **/
+            this.update = function (params) {
+                if (!_this.canvas) {
+                    return;
+                }
+                if (_this.tickOnUpdate) {
+                    _this.dispatchEvent("tickstart"); // TODO: make cancellable?
+                    _this._tick((arguments.length ? arguments : null));
+                    _this.dispatchEvent("tickend");
+                }
+                _this.dispatchEvent("drawstart"); // TODO: make cancellable?
+                if (_this.autoClear) {
+                    _this.clear();
+                }
+                var ctx = _this._setWebGLContext();
+                if (ctx) {
+                    // Use WebGL.
+                    _this.draw(ctx, false);
+                }
+                else {
+                    // Use 2D.
+                    ctx = _this.canvas.getContext("2d");
+                    ctx.save();
+                    _this.updateContext(ctx);
+                    _this.draw(ctx, false);
+                    ctx.restore();
+                }
+                _this.dispatchEvent("drawend");
+            };
             this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
             this._antialias = antialias !== undefined ? antialias : this._antialias;
             this._initializeWebGL();
@@ -311,53 +359,6 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
             this.children.splice(index, 0, child);
             this._setUpKidTexture(this._webGLContext, child);
             return child;
-        };
-        /**
-         * Each time the update method is called, the stage will tick all descendants (see: {{#crossLink "DisplayObject/tick"}}{{/crossLink}})
-         * and then render the display list to the canvas using WebGL. If WebGL is not supported in the browser, it will default to a 2D context.
-         *
-         * Any parameters passed to `update()` will be passed on to any
-         * {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}} event handlers.
-         *
-         * Some time-based features in EaselJS (for example {{#crossLink "Sprite/framerate"}}{{/crossLink}} require that
-         * a tick event object (or equivalent) be passed as the first parameter to update(). For example:
-         *
-         *      Ticker.addEventListener("tick", handleTick);
-         *      function handleTick(evtObj) {
-         *          // do some work here, then update the stage, passing through the event object:
-         *          myStage.update(evtObj);
-         *      }
-         *
-         * @method update
-         * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
-         **/
-        SpriteStage.prototype.update = function (params) {
-            if (!this.canvas) {
-                return;
-            }
-            if (this.tickOnUpdate) {
-                this.dispatchEvent("tickstart"); // TODO: make cancellable?
-                this._tick((arguments.length ? arguments : null));
-                this.dispatchEvent("tickend");
-            }
-            this.dispatchEvent("drawstart"); // TODO: make cancellable?
-            if (this.autoClear) {
-                this.clear();
-            }
-            var ctx = this._setWebGLContext();
-            if (ctx) {
-                // Use WebGL.
-                this.draw(ctx, false);
-            }
-            else {
-                // Use 2D.
-                ctx = this.canvas.getContext("2d");
-                ctx.save();
-                this.updateContext(ctx);
-                this.draw(ctx, false);
-                ctx.restore();
-            }
-            this.dispatchEvent("drawend");
         };
         /**
          * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
@@ -838,7 +839,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @final
          * @type {Number}
          * @readonly
-         **/
+    //	 **/
         SpriteStage.MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
         return SpriteStage;
     })(Stage);

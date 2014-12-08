@@ -638,8 +638,6 @@ class Ticker
 		var elapsedTime = time - this._lastTime;
 		var paused = this._paused;
 
-
-
 		this._ticks++;
 		if(paused)
 		{
@@ -651,8 +649,7 @@ class Ticker
 		if(this.tickSignal.hasListeners())
 		{
 			var maxDelta = Ticker.maxDelta;
-			var event = new TimeEvent(
-				"tick",
+			var event = new TimeEvent('tick',
 				(maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime,
 				paused,
 				time,

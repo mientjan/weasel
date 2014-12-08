@@ -1,5 +1,3 @@
-import EventDispatcher = require('createts/events/EventDispatcher');
-
 /*
  * Tween
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -77,6 +75,10 @@ import EventDispatcher = require('createts/events/EventDispatcher');
 // TODO: possibly add a END actionsMode (only runs actions that == position)?
 // TODO: evaluate a way to decouple paused from tick registration.
 
+import EventDispatcher = require('../createts/events/EventDispatcher');
+import TimeEvent = require('../createts/events/TimeEvent');
+import Ticker = require('../createts/utils/Ticker');
+
 /**
  * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
  *
@@ -124,7 +126,6 @@ import EventDispatcher = require('createts/events/EventDispatcher');
  */
 class Tween extends EventDispatcher
 {
-
 	// static interface:
 	/**
 	 * Constant defining the none actionsMode for use with setPosition.
@@ -178,6 +179,11 @@ class Tween extends EventDispatcher
 	public static _plugins = {};
 
 	/**
+	 *
+	 */
+	public static _inited:boolean = false;
+
+	/**
 	 * Returns a new tween instance. This is functionally identical to using "new Tween(...)", but looks cleaner
 	 * with the chained syntax of TweenJS.
 	 * @example
@@ -202,7 +208,7 @@ class Tween extends EventDispatcher
 	 * applied to the returned tween instance.
 	 * @static
 	 */
-	public static get(target, props, pluginData, override)
+	public static get(target:any, props:any, pluginData:any, override:boolean)
 	{
 		if(override)
 		{
@@ -223,8 +229,7 @@ class Tween extends EventDispatcher
 	 * will ignore this, but all others will pause if this is true.
 	 * @static
 	 */
-	public static tick(delta, paused)
-	{
+	public static tick(delta:number, paused:boolean){
 		var tweens = Tween._tweens.slice(); // to avoid race conditions.
 		for(var i = tweens.length - 1; i >= 0; i--)
 		{
@@ -245,13 +250,11 @@ class Tween extends EventDispatcher
 	 * @private
 	 * @static
 	 * @since 0.4.2
+	 * @deprecated
 	 */
-	public static handleEvent(event)
+	public static handleEvent = (event:TimeEvent) =>
 	{
-		if(event.type == "tick")
-		{
-			this.tick(event.delta, event.paused);
-		}
+		debugger;
 	}
 
 	/**
@@ -271,7 +274,7 @@ class Tween extends EventDispatcher
 		for(var i = tweens.length - 1; i >= 0; i--)
 		{
 			var tween = tweens[i];
-			if(tween._target == target)
+			if(tween.target == target)
 			{
 				tween._paused = true;
 				tweens.splice(i, 1);
@@ -360,10 +363,11 @@ class Tween extends EventDispatcher
 	 * @static
 	 * @protected
 	 */
-	public static _register(tween:Tween, value)
+	public static _register(tween:Tween, value:boolean)
 	{
-		var target = tween._target;
+		var target = tween.target;
 		var tweens = Tween._tweens;
+
 		if(value)
 		{
 			// TODO: this approach might fail if a dev is using sealed objects in ES5
@@ -374,7 +378,7 @@ class Tween extends EventDispatcher
 			tweens.push(tween);
 			if(!Tween._inited && Ticker)
 			{
-				Ticker.addEventListener("tick", Tween);
+				Ticker.getInstance().addTickListener( (e:TimeEvent) => Tween.tick(e.delta, e.paused) );
 				Tween._inited = true;
 			}
 		}
@@ -539,13 +543,6 @@ class Tween extends EventDispatcher
 	public _prevPos = -1;
 
 	/**
-	 * @property _target
-	 * @type {Object}
-	 * @protected
-	 */
-	public _target = null;
-
-	/**
 	 * @property _useTicks
 	 * @type {Boolean}
 	 * @default false
@@ -553,25 +550,23 @@ class Tween extends EventDispatcher
 	 */
 	public _useTicks = false;
 
-	/**
-	 * @property _inited
-	 * @type {boolean}
-	 * @default false
-	 * @protected
-	 */
-	public _inited = false;
+	public _linearEase = null;
 
 	// constructor:
 	/**
-	 * @method initialize
+	 * @class Tween
+	 * @constructor
 	 * @param {Object} target
 	 * @param {Object} props
 	 * @param {Object} pluginData
 	 * @protected
 	 */
-		constructor(target, props, pluginData)
+	constructor(target:any, props:any, pluginData:any)
 	{
-		this.target = this._target = target;
+		super();
+
+		this.target = target;
+
 		if(props)
 		{
 			this._useTicks = props.useTicks;
@@ -589,6 +584,7 @@ class Tween extends EventDispatcher
 		this._initQueueProps = {};
 		this._steps = [];
 		this._actions = [];
+
 		if(props && props.paused)
 		{
 			this._paused = true;
@@ -597,6 +593,7 @@ class Tween extends EventDispatcher
 		{
 			Tween._register(this, true);
 		}
+
 		if(props && props.position != null)
 		{
 			this.setPosition(props.position, Tween.NONE);
@@ -664,7 +661,7 @@ class Tween extends EventDispatcher
 	 */
 	public call(callback, params, scope)
 	{
-		return this._addAction({f: callback, p: params ? params : [this], o: scope ? scope : this._target});
+		return this._addAction({f: callback, p: params ? params : [this], o: scope ? scope : this.target});
 	}
 
 	// TODO: add clarification between this and a 0 duration .to:
@@ -680,7 +677,7 @@ class Tween extends EventDispatcher
 	 */
 	public set(props, target)
 	{
-		return this._addAction({f: this._set, o: this, p: [props, target ? target : this._target]});
+		return this._addAction({f: this._set, o: this, p: [props, target ? target : this.target]});
 	}
 
 	/**
@@ -725,15 +722,11 @@ class Tween extends EventDispatcher
 	 *      position is less than old, run all actions between them in reverse.
 	 * @return {Boolean} Returns true if the tween is complete (ie. the full tween has run & loop is false).
 	 */
-	public setPosition(value, actionsMode)
+	public setPosition(value:number, actionsMode:number = 1)
 	{
 		if(value < 0)
 		{
 			value = 0;
-		}
-		if(actionsMode == null)
-		{
-			actionsMode = 1;
 		}
 
 		// normalize position:
@@ -762,7 +755,7 @@ class Tween extends EventDispatcher
 		this._prevPosition = value;
 
 		// handle tweens:
-		if(this._target)
+		if(this.target)
 		{
 			if(end)
 			{
@@ -848,10 +841,10 @@ class Tween extends EventDispatcher
 	}
 
 	// tiny api (primarily for tool output):
-	w = this.wait;
-	t = this.to;
-	c = this.call;
-	s = this.set;
+	public w = this.wait;
+	public t = this.to;
+	public c = this.call;
+	public s = this.set;
 
 	/**
 	 * Returns a string representation of this object.
@@ -942,7 +935,7 @@ class Tween extends EventDispatcher
 			}
 			if(!ignore)
 			{
-				this._target[n] = v;
+				this.target[n] = v;
 			}
 		}
 	}
@@ -954,12 +947,12 @@ class Tween extends EventDispatcher
 	 * @param {Boolean} includeStart
 	 * @protected
 	 */
-	public _runActions(startPos, endPos, includeStart)
+	public _runActions(startPos:number, endPos:number, includeStart:boolean = false)
 	{
 		var sPos = startPos;
 		var ePos = endPos;
 		var i = -1;
-		var j = this._actions.length;
+		var j = this._actions ? this._actions.length : 0;
 		var k = 1;
 		if(startPos > endPos)
 		{
@@ -992,7 +985,7 @@ class Tween extends EventDispatcher
 		{
 			if(this._initQueueProps[n] === undefined)
 			{
-				oldValue = this._target[n];
+				oldValue = this.target[n];
 
 				// init plugins:
 				if(arr = Tween._plugins[n])
@@ -1027,6 +1020,7 @@ class Tween extends EventDispatcher
 			}
 			this._curQueueProps[n] = o[n];
 		}
+
 		if(injectProps)
 		{
 			this._appendQueueProps(injectProps);

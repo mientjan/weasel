@@ -142,7 +142,7 @@ class SpriteStage extends Stage
 	 * @final
 	 * @type {Number}
 	 * @readonly
-	 **/
+//	 **/
 	public static MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
 
 	// getter / setters:
@@ -484,12 +484,13 @@ class SpriteStage extends Stage
 	 * @method update
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public update(params)
+	public update = (params?:any) =>
 	{
 		if(!this.canvas)
 		{
 			return;
 		}
+
 		if(this.tickOnUpdate)
 		{
 			this.dispatchEvent("tickstart");  // TODO: make cancellable?
@@ -497,6 +498,7 @@ class SpriteStage extends Stage
 			this.dispatchEvent("tickend");
 		}
 		this.dispatchEvent("drawstart"); // TODO: make cancellable?
+
 		if(this.autoClear)
 		{
 			this.clear();
@@ -529,6 +531,7 @@ class SpriteStage extends Stage
 		{
 			return;
 		}
+
 		var ctx = this._setWebGLContext();
 		if(ctx)
 		{
@@ -543,7 +546,6 @@ class SpriteStage extends Stage
 			ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 		}
 	}
-
 
 	/**
 	 * Draws the stage into the specified context (using WebGL) ignoring its visible, alpha, shadow, and transform.
@@ -641,7 +643,7 @@ class SpriteStage extends Stage
 	 * @return {WebGLRenderingContext}   The newly created context.
 	 * @protected
 	 **/
-	public _setWebGLContext()
+	public _setWebGLContext():WebGLRenderingContext
 	{
 		if(this.canvas)
 		{
@@ -938,7 +940,7 @@ class SpriteStage extends Stage
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	public _drawWebGLKids(kids, ctx, parentMVMatrix)
+	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix)
 	{
 		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,

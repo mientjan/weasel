@@ -567,7 +567,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
                 frequency = 20;
             }
             else if (frequency <= 0) {
-                return;
+                return void 0;
             }
             this._mouseOverIntervalID = setInterval(function () {
                 _this._testMouseOver();
@@ -1024,8 +1024,8 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
          */
         Stage.prototype.onResize = function (e) {
             // anti-half pixel fix
-            e.width = e.width >> 1 << 1;
-            e.height = e.height >> 1 << 1;
+            e.width = e.width + 1 >> 1 << 1;
+            e.height = e.height + 1 >> 1 << 1;
             if (this.width != e.width || this.height != e.height) {
                 this.canvas.width = e.width;
                 this.canvas.height = e.height;
