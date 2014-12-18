@@ -23,8 +23,9 @@
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
+import Size = require('./Size')
 
-class Bounds {
+class Bounds extends Size {
 
 		constructor(
 			public x0:number = 0,
@@ -32,7 +33,9 @@ class Bounds {
 			public x1:number = 0,
 			public y1:number = 0,
 			public width:number = 0,
-			public height:number = 0) {
+			public height:number = 0)
+		{
+			super(width,height);
 		}
 	}
 

@@ -1,6 +1,4 @@
-/// <reference path="./Container.ts" />
-import Container = require('easel/display/Container');
-import Timeline = require('tweenjs/Timeline');
+
 /*
  * MovieClip
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -28,6 +26,10 @@ import Timeline = require('tweenjs/Timeline');
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+import Container = require('./Container');
+import Timeline = require('../../tweents/Timeline');
+import Tween = require('../../tweents/Tween');
+import DisplayObject = require('./DisplayObject');
 
 	/**
 	 * The MovieClip class associates a TweenJS Timeline with an EaselJS {{#crossLink "Container"}}{{/crossLink}}. It allows
@@ -229,6 +231,7 @@ import Timeline = require('tweenjs/Timeline');
 		 * @default 0
 		 **/
 		framerate:number = null;
+		_framerate:number = null;
 
 
 		// private properties:
@@ -276,6 +279,8 @@ import Timeline = require('tweenjs/Timeline');
 		 * ???
 		 */
 		_off:boolean;
+
+		parent = null;
 
 		// constructor:
 
@@ -395,7 +400,7 @@ import Timeline = require('tweenjs/Timeline');
 				return;
 			}
 
-			var o = this, fps = o.framerate;
+			var o = <MovieClip> this, fps = o.framerate;
 			while((o = o.parent) && fps == null)
 			{
 				if(o.mode == independent)
@@ -528,11 +533,11 @@ import Timeline = require('tweenjs/Timeline');
 			// update timeline position, ignoring actions if this is a graphic.
 			if(synched)
 			{
-				tl.setPosition(this.startPosition + (this.mode == MovieClip.SINGLE_FRAME ? 0 : this._synchOffset), createts.Tween.NONE);
+				tl.setPosition(this.startPosition + (this.mode == MovieClip.SINGLE_FRAME ? 0 : this._synchOffset), Tween.NONE);
 			}
 			else
 			{
-				tl.setPosition(this._prevPos < 0 ? 0 : this._prevPosition, this.actionsEnabled ? null : createts.Tween.NONE);
+				tl.setPosition(this._prevPos < 0 ? 0 : this._prevPosition, this.actionsEnabled ? null : Tween.NONE);
 			}
 
 			this._prevPosition = tl._prevPosition;
@@ -558,7 +563,7 @@ import Timeline = require('tweenjs/Timeline');
 				} // TODO: this assumes actions tween has this as the target. Valid?
 				var offset = tween._stepPosition;
 
-				if(target instanceof createts.DisplayObject)
+				if(target instanceof DisplayObject)
 				{
 					// motion tween.
 					this._addManagedChild(target, offset);
@@ -698,7 +703,7 @@ import Timeline = require('tweenjs/Timeline');
 		 **/
 		public static install()
 		{
-			createts.Tween.installPlugin(MovieClipPlugin, ["startPosition"]);
+			Tween.installPlugin(MovieClipPlugin, ["startPosition"]);
 		}
 
 		/**

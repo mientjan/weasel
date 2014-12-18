@@ -215,7 +215,7 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             this._regX_procent = .0;
             this._regY_type = 2 /* STATIC */;
             this._regY_procent = .0;
-            this._behaviourList = null;
+            this._behaviorList = null;
             this._parentSizeIsKnown = false;
             this.minimumContainerSize = null;
             this.maximumContainerSize = null;
@@ -467,12 +467,26 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             }
             return this;
         };
-        DisplayObject.prototype.addBehaviour = function (behaviour) {
-            if (!this._behaviourList) {
-                this._behaviourList = [];
+        DisplayObject.prototype.addBehavior = function (behavior) {
+            if (!this._behaviorList) {
+                this._behaviorList = [];
             }
-            this._behaviourList.push(behaviour);
-            behaviour.initialize(this);
+            this._behaviorList.push(behavior);
+            behavior.initialize(this);
+        };
+        DisplayObject.prototype.removeBehavior = function (behavior) {
+            var behaviorList = this._behaviorList;
+            if (behaviorList) {
+                var length = behaviorList.length;
+                for (var i = 0; i < behaviorList.length; i++) {
+                    var behaviorItem = behaviorList[i];
+                    if (behaviorItem === behavior) {
+                        behaviorList.splice(i, 1);
+                        length--;
+                        i--;
+                    }
+                }
+            }
         };
         /**
          * Removes all be behaviors
@@ -481,9 +495,9 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
          * @return void
          */
         DisplayObject.prototype.removeAllBehaviors = function () {
-            if (this._behaviourList) {
-                while (this._behaviourList.length) {
-                    this._behaviourList.pop().destruct();
+            if (this._behaviorList) {
+                while (this._behaviorList.length) {
+                    this._behaviorList.pop().destruct();
                 }
             }
         };

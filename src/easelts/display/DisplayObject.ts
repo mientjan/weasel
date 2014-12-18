@@ -56,7 +56,7 @@ import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
 
-import AbstractBehaviour = require('../behaviour/AbstractBehaviour');
+import AbstractBehavior = require('../behavior/AbstractBehavior');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -363,7 +363,7 @@ class DisplayObject extends EventDispatcher
 	public _regY_procent:number = .0;
 	public _regY_calc:FluidMeasurementsUnit[];
 
-	public _behaviourList:AbstractBehaviour[] = null;
+	public _behaviorList:AbstractBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
 	public minimumContainerSize:Rectangle = null;
@@ -709,13 +709,30 @@ class DisplayObject extends EventDispatcher
 		return this;
 	}
 
-	public addBehaviour(behaviour:AbstractBehaviour):void
+	public addBehavior(behavior:AbstractBehavior):void
 	{
-		if(!this._behaviourList){
-			this._behaviourList = [];
+		if(!this._behaviorList){
+			this._behaviorList = [];
 		}
-		this._behaviourList.push(behaviour);
-		behaviour.initialize(this);
+		this._behaviorList.push(behavior);
+		behavior.initialize(this);
+	}
+
+	public removeBehavior(behavior:AbstractBehavior):void
+	{
+		var behaviorList = this._behaviorList;
+		if(behaviorList){
+			var length = behaviorList.length;
+			for(var i = 0; i < behaviorList.length; i++)
+			{
+				var behaviorItem = behaviorList[i];
+				if(behaviorItem === behavior ){
+					behaviorList.splice(i,1);
+					length--;
+					i--;
+				}
+			}
+		}
 	}
 
 	/**
@@ -726,9 +743,9 @@ class DisplayObject extends EventDispatcher
 	 */
 	public removeAllBehaviors():void
 	{
-		if( this._behaviourList ){
-			while(this._behaviourList.length){
-				this._behaviourList.pop().destruct();
+		if( this._behaviorList ){
+			while(this._behaviorList.length){
+				this._behaviorList.pop().destruct();
 			}
 		}
 	}

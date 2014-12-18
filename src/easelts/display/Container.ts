@@ -100,6 +100,8 @@ class Container extends DisplayObject
 	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
+
+		this.enableMouseInteraction();
 	}
 
 	public initialize()
@@ -750,11 +752,17 @@ class Container extends DisplayObject
 		for(var i = l - 1; i >= 0; i--)
 		{
 			var child = children[i];
-			var hitArea = child.hitArea, mask = child.mask;
+			var hitArea = child.hitArea
+			var mask = child.mask;
+
+
 			if(!child.visible || (!hitArea && !child.isVisible()) || (mouse && !child.mouseEnabled))
 			{
 				continue;
 			}
+
+
+
 			if(!hitArea && mask && mask.graphics && !mask.graphics.isEmpty())
 			{
 				var maskMtx = mask.getMatrix(mask._matrix).prependMatrix(this.getConcatenatedMatrix(mtx));
@@ -766,6 +774,7 @@ class Container extends DisplayObject
 				ctx.fill();
 
 				// if we don't hit the mask, then no need to keep looking at this DO:
+
 				if(!this._testHit(ctx))
 				{
 					continue;
@@ -785,10 +794,13 @@ class Container extends DisplayObject
 			}
 			else
 			{
+
+
 				if(mouse && !activeListener && !child._hasMouseEventListener())
 				{
 					continue;
 				}
+
 
 				child.getConcatenatedMatrix(mtx);
 
@@ -801,6 +813,8 @@ class Container extends DisplayObject
 				ctx.globalAlpha = mtx.alpha;
 				ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx - x, mtx.ty - y);
 				(hitArea || child).draw(ctx);
+
+
 				if(!this._testHit(ctx))
 				{
 					continue;
@@ -808,12 +822,16 @@ class Container extends DisplayObject
 				ctx.setTransform(1, 0, 0, 1, 0, 0);
 				ctx.clearRect(0, 0, 2, 2);
 
+
+				
 				if(arr)
 				{
 					arr.push(child);
 				}
 				else
 				{
+
+
 					return (mouse && !this.mouseChildren) ? this : child;
 				}
 			}

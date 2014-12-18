@@ -1,4 +1,3 @@
-
 /*
  * Text
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -30,6 +29,7 @@
 import DisplayObject = require('./DisplayObject');
 import Rectangle = require('../geom/Rectangle');
 import Methods = require('../utils/Methods');
+import Bounds = require('../geom/Bounds');
 
 /**
  * @module easelts
@@ -112,25 +112,30 @@ class Text extends DisplayObject
 	 * @property text
 	 * @type String
 	 **/
-	public set text(value:string){
+	public set text(value:string)
+	{
 
 		// replace space before and after newlines
-		value = value.replace(/\s+\n|\n\s+/g, "\n" );
+		value = value.replace(/\s+\n|\n\s+/g, "\n");
 
-		if( this._text != value ){
+		if(this._text != value)
+		{
 
 			this._text = value;
 
-			if(this._autoWidth){
+			if(this._autoWidth)
+			{
 				this.setWidth('auto');
 			}
-			if(this._autoHeight){
+			if(this._autoHeight)
+			{
 				this.setHeight('auto');
 			}
 		}
 	}
 
-	public get text(){
+	public get text()
+	{
 		return this._text;
 	}
 
@@ -206,7 +211,6 @@ class Text extends DisplayObject
 	private _autoWidth:boolean = true;
 	private _autoHeight:boolean = true;
 
-
 	/**
 	 * @method constructor
 	 * @param {String} [text] The text to display.
@@ -216,30 +220,44 @@ class Text extends DisplayObject
 	 * "#F00", "red", or "#FF0000").
 	 * @protected
 	 */
-	constructor(text:string, font:string, color:string)
+		constructor(text:string, font:string, color:string)
 	{
 		super(1, 1, 0, 0, 0, 0);
+
+		// positioning is wrong when a text draw call has no text.
+		if(text.length == 0)
+		{
+			text = " ";
+		}
 
 		this.text = text;
 		this.font = font;
 		this.color = color;
 	}
 
-	public setWidth(value:any){
-		if(value == 'auto'){
+	public setWidth(value:any)
+	{
+		if(value == 'auto')
+		{
 			this._autoWidth = true;
-			super.setWidth( this.getBounds().width );
-		} else {
+			super.setWidth(this.getBounds().width);
+		}
+		else
+		{
 			this._autoWidth = false;
 			super.setWidth(value);
 		}
 	}
 
-	public setHeight(value:any){
-		if(value == 'auto'){
+	public setHeight(value:any)
+	{
+		if(value == 'auto')
+		{
 			this._autoHeight = true;
 			super.setHeight(this.getMeasuredHeight());
-		} else {
+		}
+		else
+		{
 			this._autoHeight = false;
 			super.setHeight(value);
 		}
@@ -297,9 +315,68 @@ class Text extends DisplayObject
 	 **/
 	public getMeasuredWidth():number
 	{
-
-
 		return this._getMeasuredWidth(this.text);
+	}
+
+	/**
+	 * Returns the exact size of the text.
+	 * Bewarned this a really heave task and should only be done with extreem caution.
+	 *
+	 * @method getExactSize
+	 * @returns Bounds
+	 */
+	public getExactSize():Bounds
+	{
+		var width = Math.ceil(this.getMeasuredWidth());
+		var height = Math.ceil(this.getMeasuredHeight() * 1.2);
+		var alreadyCached = false;
+
+		var color = this.color;
+		this.color = '#000';
+
+		if(!this.cacheCanvas)
+		{
+			this.cache(0, 0, width, height );
+			alreadyCached = true;
+		}
+
+		var ctx = this.cacheCanvas.getContext('2d');
+		var img = ctx.getImageData(0, 0, width, height);
+
+
+		if(alreadyCached)
+		{
+			this.uncache();
+		}
+
+		var data = img.data,
+			x0 = width,
+			y0 = height,
+			x1 = 0,
+			y1 = 0;
+
+		for(var i = 3, l = data.length, p = 0; i < l; i += 4, ++p)
+		{
+			var x = p % width;
+			var y = Math.floor(p / width);
+
+			if( data[i - 3] > 0 ||
+				data[i - 2] > 0 ||
+				data[i - 1] > 0 ||
+				data[i] > 0 )
+			{
+				x0 = Math.min(x0, x);
+				y0 = Math.min(y0, y);
+				x1 = Math.max(x1, x);
+				y1 = Math.max(y1, y);
+			}
+		}
+
+		this.color = color;
+//		ctx.strokeStyle = '#FF0000';
+//		ctx.strokeRect(x0, y0,  x1 - x0, y1 - y0);
+
+		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
 	}
 
 	/**

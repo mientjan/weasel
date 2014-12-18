@@ -131,7 +131,7 @@ class Bitmap extends DisplayObject {
 	 * into itself).
 	 * @return {Boolean}
 	 **/
-	draw(ctx, ignoreCache) {
+	public draw(ctx, ignoreCache) {
 
 		if (super.draw(ctx, ignoreCache)) { return true; }
 		var rect = this.sourceRect;
@@ -182,7 +182,7 @@ class Bitmap extends DisplayObject {
 	/**
 	 * Docced in superclass.
 	 */
-	getBounds() {
+	public getBounds() {
 		var rect = super.getBounds();
 		if (rect) { return rect; }
 		var o = <{width:number;height:number;}> this.sourceRect || this.image;
@@ -195,7 +195,7 @@ class Bitmap extends DisplayObject {
 	 * @method clone
 	 * @return {Bitmap} a clone of the Bitmap instance.
 	 **/
-	clone() {
+	public clone() {
 		var o = new Bitmap(this.image);
 		if (this.sourceRect) { o.sourceRect = this.sourceRect.clone(); }
 		this.cloneProps(o);

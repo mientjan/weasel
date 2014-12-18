@@ -73,6 +73,9 @@ class Stage extends Container
 {
 	// events:
 
+	public static EVENT_MOUSE_MOUSELEAVE = 'mouseleave';
+	public static EVENT_MOUSE_MOUSEENTER = 'mouseenter';
+
 	/**
 	 * Dispatched when the user moves the mouse over the canvas.
 	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
@@ -118,6 +121,7 @@ class Stage extends Container
 	 * @since 0.7.0
 	 */
 	public tickstartSignal:Signal = new Signal();
+
 	/**
 	 * Dispatched each update immediately after the tick event is propagated through the display list. Does not fire if
 	 * tickOnUpdate is false. Precedes the "drawstart" event.
@@ -186,7 +190,7 @@ class Stage extends Container
 	/**
 	 *
 	 */
-	public holder:HTMLElement = null;
+	public holder:HTMLBlockElement = null;
 
 	/**
 	 * The current mouse X position on the canvas. If the mouse leaves the canvas, this will indicate the most recent
@@ -242,7 +246,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	public tickOnUpdate = true;
+	public tickOnUpdate = true; 
 
 	/**
 	 * If true, mouse move events will continue to be called when the mouse leaves the target canvas. See
@@ -319,7 +323,7 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	public _pointerData:any = null;
+	public _pointerData:any = {};
 
 	/**
 	 * Number of active pointers.
@@ -363,8 +367,10 @@ class Stage extends Container
 	 * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
 	 * @protected
 	 **/
-	constructor(element:HTMLDivElement);
+		constructor(element:HTMLDivElement);
+
 	constructor(element:HTMLCanvasElement);
+
 	constructor(element:any)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
@@ -392,13 +398,15 @@ class Stage extends Container
 				this.canvas = canvas;
 				this.holder = element;
 
-				var onResize = <Function> (function(){
-					return function(){
-						this.onResize( new Size(this.holder.offsetWidth, this.holder.offsetHeight) );
+				var onResize = <Function> (function()
+				{
+					return function()
+					{
+						this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 					}.bind(this);
 				}.bind(this))();
 
-				window.addEventListener('resize', <any> onResize );
+				window.addEventListener('resize', <any> onResize);
 
 				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
 
@@ -411,19 +419,27 @@ class Stage extends Container
 				break;
 			}
 		}
-
-		this._pointerData = {};
-//		this.enableDOMEvents(true);
+		this.enableDOMEvents(true);
+		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
+		this.setQuality(QualityType.NORMAL);
+
 		if( onResize ){
 			onResize.call(window);
 		}
-
-		this.setFps(this._fps);
-
-		this.onResize(size);
+//
+//
+//		this.enableDOMEvents(true);
+//		this.ctx = this.canvas.getContext('2d');
+//		if(onResize)
+//		{
+//			onResize.call(window);
+//		}
+//
+//		this.setFps(this._fps);
+//
+//		this.onResize(size);
 	}
-
 
 
 	/**
@@ -431,10 +447,13 @@ class Stage extends Container
 	 * @param {QualityType} value
 	 * @public
 	 */
-	public setQuality(value:QualityType){
+	public setQuality(value:QualityType)
+	{
 
-		switch(value){
-			case QualityType.LOW:{
+		switch(value)
+		{
+			case QualityType.LOW:
+			{
 				this.ctx['mozImageSmoothingEnabled'] = false;
 				this.ctx['webkitImageSmoothingEnabled'] = false;
 				this.ctx['msImageSmoothingEnabled'] = false;
@@ -442,7 +461,8 @@ class Stage extends Container
 				break;
 			}
 
-			case QualityType.NORMAL:{
+			case QualityType.NORMAL:
+			{
 				this.ctx['mozImageSmoothingEnabled'] = true;
 				this.ctx['webkitImageSmoothingEnabled'] = true;
 				this.ctx['msImageSmoothingEnabled'] = true;
@@ -460,9 +480,9 @@ class Stage extends Container
 	 * @method update
 	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
 	 **/
-	public update = (params?:any) => {
+	public update = (params?:any) =>
+	{
 
-//		console.time('stage:update');
 		if(!this.canvas)
 		{
 			return;
@@ -473,11 +493,11 @@ class Stage extends Container
 			// update this logic in SpriteStage when necessary
 			this.tick.apply(this, arguments);
 		}
-//
-//		if(this.dispatchEvent("drawstart"))
-//		{
-//			return;
-//		}
+		//
+		//		if(this.dispatchEvent("drawstart"))
+		//		{
+		//			return;
+		//		}
 
 		this.drawstartSignal.emit()
 
@@ -513,8 +533,8 @@ class Stage extends Container
 		ctx.restore();
 
 		this.drawendSignal.emit();
-//		this.dispatchEvent("drawend");
-//		console.timeEnd('stage:update');
+		//		this.dispatchEvent("drawend");
+		//		console.timeEnd('stage:update');
 	}
 
 	/**
@@ -561,7 +581,7 @@ class Stage extends Container
 		props.params = args;
 		this._tick(props);
 		this.tickendSignal.emit();
-//		this.dispatchEvent("tickend");
+		//		this.dispatchEvent("tickend");
 	}
 
 	/**
@@ -695,13 +715,14 @@ class Stage extends Container
 		{
 			return void 0;
 		}
+		this.enableMouseInteraction();
 
-		this._mouseOverIntervalID = setInterval(() => {
+		this._mouseOverIntervalID = setInterval(() =>
+		{
 			this._testMouseOver();
 		}, 1000 / Math.min(50, frequency));
 
-		
-		this.enableMouseInteraction();
+
 	}
 
 	/**
@@ -725,50 +746,54 @@ class Stage extends Container
 		{
 			enable = true;
 		}
-		var n, o, ls = this._eventListeners;
+		var name, o, ls = this._eventListeners;
 		if(!enable && ls)
 		{
-			for(n in ls)
+			for(name in ls)
 			{
-				o = ls[n];
-				o.t.removeEventListener(n, o.f, false);
+				o = ls[name];
+				o.t.removeEventListener(name, o.f, false);
 			}
 			this._eventListeners = null;
 		}
 		else if(enable && !ls && this.canvas)
 		{
-			var t = window['addEventListener'] ? <any> window : <any> document;
+			var win = window['addEventListener'] ? <any> window : <any> document;
 			ls = this._eventListeners = {};
 			ls["mouseup"] = {
-				t: t,
-				f: (e) => {
+				window: win,
+				fn: (e) =>
+				{
 					this._handleMouseUp(e)
 				}
 			};
 			ls["mousemove"] = {
-				t: t,
-				f: (e) => {
+				window: win,
+				fn: (e) =>
+				{
 					this._handleMouseMove(e)
 				}
 			};
 			ls["dblclick"] = {
-				t: this.canvas,
-				f: (e) => {
+				window: this.canvas,
+				fn: (e) =>
+				{
 					this._handleDoubleClick(e)
 				}
 			};
 
 			ls["mousedown"] = {
-				t: this.canvas,
-				f: (e) => {
+				window: this.canvas,
+				fn: (e) =>
+				{
 					this._handleMouseDown(e)
 				}
 			};
 
-			for(n in ls)
+			for(name in ls)
 			{
-				o = ls[n];
-				o.t.addEventListener(n, o.f, false);
+				o = ls[name];
+				o.window.addEventListener(name, o.fn, false);
 			}
 		}
 	}
@@ -890,6 +915,7 @@ class Stage extends Container
 		{
 			return;
 		}
+
 		var nextStage = this._nextStage, o = this._getPointerData(id);
 
 		var inBounds = o.inBounds;
@@ -1030,18 +1056,21 @@ class Stage extends Container
 		{
 			this._updatePointerPosition(id, e, pageX, pageY);
 		}
-		var target = null, nextStage = this._nextStage, o = this._getPointerData(id);
+		var target = null;
+		var nextStage = this._nextStage;
+		var pointerData = this._getPointerData(id);
 
-		if(o.inBounds)
+
+
+		if(pointerData.inBounds)
 		{
-			this._dispatchMouseEvent(this, "stagemousedown", false, id, o, e);
+			this._dispatchMouseEvent(this, "stagemousedown", false, id, pointerData, e);
 		}
-
 
 		if(!owner)
 		{
-			target = o.target = this._getObjectsUnderPoint(o.x, o.y, null, true);
-			this._dispatchMouseEvent(o.target, "mousedown", true, id, o, e);
+			target = pointerData.target = this._getObjectsUnderPoint(pointerData.x, pointerData.y, null, true);
+			this._dispatchMouseEvent(pointerData.target, "mousedown", true, id, pointerData, e);
 		}
 
 		nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
@@ -1069,13 +1098,18 @@ class Stage extends Container
 			return;
 		}
 
+
 		// only update if the mouse position has changed. This provides a lot of optimization, but has some trade-offs.
 		if(this._primaryPointerID != -1 || (!clear && this.mouseX == this._mouseOverX && this.mouseY == this._mouseOverY && this.mouseInBounds))
 		{
 			return;
 		}
 
+
 		var o = this._getPointerData(-1), e = o.posEvtObj;
+
+
+
 		var isEventTarget = eventTarget || e && (e.target == this.canvas);
 		var target = null, common = -1, cursor = "", t, i, l;
 
@@ -1085,6 +1119,8 @@ class Stage extends Container
 			this._mouseOverX = this.mouseX;
 			this._mouseOverY = this.mouseY;
 		}
+
+
 
 		var oldList = this._mouseOverTarget || [];
 		var oldTarget = oldList[oldList.length - 1];
@@ -1222,7 +1258,7 @@ class Stage extends Container
 		if(!this._isRunning)
 		{
 			this.update();
-			this._tickSignalConnection = Ticker.getInstance().addTickListener( <any> this.update );
+			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
 			this._isRunning = true;
 			return true;
 		}
@@ -1288,9 +1324,17 @@ class Stage extends Container
 
 			if(!this._isRunning)
 			{
-				this.update(); 
+				this.update();
 			}
 		}
+	}
+
+	public destruct()
+	{
+
+		this.stop();
+
+		super.destruct();
 	}
 }
 

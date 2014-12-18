@@ -102,6 +102,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
              * @default false
              **/
             this.tickChildren = true;
+            this.enableMouseInteraction();
         }
         Container.prototype.initialize = function () {
             this['constructor'].call(this);
@@ -634,7 +635,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             var l = children.length;
             for (var i = l - 1; i >= 0; i--) {
                 var child = children[i];
-                var hitArea = child.hitArea, mask = child.mask;
+                var hitArea = child.hitArea;
+                var mask = child.mask;
                 if (!child.visible || (!hitArea && !child.isVisible()) || (mouse && !child.mouseEnabled)) {
                     continue;
                 }

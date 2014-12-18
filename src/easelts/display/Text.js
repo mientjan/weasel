@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../utils/Methods'], function (require, exports, DisplayObject, Methods) {
+define(["require", "exports", './DisplayObject', '../utils/Methods', '../geom/Bounds'], function (require, exports, DisplayObject, Methods, Bounds) {
     /**
      * @module easelts
      */
@@ -140,6 +140,10 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
             this.lineWidth = null;
             this._autoWidth = true;
             this._autoHeight = true;
+            // positioning is wrong when a text draw call has no text.
+            if (text.length == 0) {
+                text = " ";
+            }
             this.text = text;
             this.font = font;
             this.color = color;
@@ -233,6 +237,44 @@ define(["require", "exports", './DisplayObject', '../utils/Methods'], function (
          **/
         Text.prototype.getMeasuredWidth = function () {
             return this._getMeasuredWidth(this.text);
+        };
+        /**
+         * Returns the exact size of the text.
+         * Bewarned this a really heave task and should only be done with extreem caution.
+         *
+         * @method getExactSize
+         * @returns Bounds
+         */
+        Text.prototype.getExactSize = function () {
+            var width = Math.ceil(this.getMeasuredWidth());
+            var height = Math.ceil(this.getMeasuredHeight() * 1.2);
+            var alreadyCached = false;
+            var color = this.color;
+            this.color = '#000';
+            if (!this.cacheCanvas) {
+                this.cache(0, 0, width, height);
+                alreadyCached = true;
+            }
+            var ctx = this.cacheCanvas.getContext('2d');
+            var img = ctx.getImageData(0, 0, width, height);
+            if (alreadyCached) {
+                this.uncache();
+            }
+            var data = img.data, x0 = width, y0 = height, x1 = 0, y1 = 0;
+            for (var i = 3, l = data.length, p = 0; i < l; i += 4, ++p) {
+                var x = p % width;
+                var y = Math.floor(p / width);
+                if (data[i - 3] > 0 || data[i - 2] > 0 || data[i - 1] > 0 || data[i] > 0) {
+                    x0 = Math.min(x0, x);
+                    y0 = Math.min(y0, y);
+                    x1 = Math.max(x1, x);
+                    y1 = Math.max(y1, y);
+                }
+            }
+            this.color = color;
+            //		ctx.strokeStyle = '#FF0000';
+            //		ctx.strokeRect(x0, y0,  x1 - x0, y1 - y0);
+            return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
         };
         /**
          * Returns an approximate line height of the text, ignoring the lineHeight property. This is based on the measured
