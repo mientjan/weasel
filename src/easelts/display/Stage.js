@@ -283,7 +283,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
                 //		}
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
-                var r = _this.drawRect, ctx = _this.ctx;
+                var r = _this.drawRect, ctx = _this.canvas.getContext('2d');
                 ctx.setTransform(1, 0, 0, 1, 0, 0);
                 if (_this.autoClear) {
                     if (r) {
@@ -340,8 +340,6 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
             }
             this.enableDOMEvents(true);
             this.setFps(this._fps);
-            this.ctx = this.canvas.getContext('2d');
-            this.setQuality(0 /* NORMAL */);
             if (onResize) {
                 onResize.call(window);
             }

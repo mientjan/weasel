@@ -79,6 +79,7 @@ class Bitmap extends DisplayObject {
 	 * @default null
 	 */
 	sourceRect:Rectangle = null;
+	loaded:boolean = false;
 
 	/** 
 	 * Initialization method.
@@ -96,10 +97,20 @@ class Bitmap extends DisplayObject {
 
 		if (typeof imageOrUri == "string") {
 			this.image = document.createElement("img");
+			this.image.onload = this.onLoad.bind(this);
 			this.image.src = imageOrUri;
 		} else {
 			this.image = imageOrUri;
+			if( !this.image.complete ){
+				this.image.onload = this.onLoad.bind(this);
+			} else {
+				this.onLoad();
+			}
 		}
+	}
+
+	private onLoad(){
+		this.loaded = true;
 	}
 	
 // public methods:

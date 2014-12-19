@@ -421,8 +421,6 @@ class Stage extends Container
 		}
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
-		this.ctx = this.canvas.getContext('2d');
-		this.setQuality(QualityType.NORMAL);
 
 		if( onResize ){
 			onResize.call(window);
@@ -504,7 +502,7 @@ class Stage extends Container
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
 
 		var r = this.drawRect,
-			ctx = this.ctx;
+			ctx = this.canvas.getContext('2d');
 
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);

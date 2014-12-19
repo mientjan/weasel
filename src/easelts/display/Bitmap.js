@@ -80,14 +80,25 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
              * @default null
              */
             this.sourceRect = null;
+            this.loaded = false;
             if (typeof imageOrUri == "string") {
                 this.image = document.createElement("img");
+                this.image.onload = this.onLoad.bind(this);
                 this.image.src = imageOrUri;
             }
             else {
                 this.image = imageOrUri;
+                if (!this.image.complete) {
+                    this.image.onload = this.onLoad.bind(this);
+                }
+                else {
+                    this.onLoad();
+                }
             }
         }
+        Bitmap.prototype.onLoad = function () {
+            this.loaded = true;
+        };
         // public methods:
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.

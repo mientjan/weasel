@@ -63,6 +63,8 @@ interface WebGLUniformLocation
 //	preserveDrawingBuffer: boolean;
 //}
 
+
+
 interface WebGLRenderingContext
 {
 	/* ClearBufferMask */
