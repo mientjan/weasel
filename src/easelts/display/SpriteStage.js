@@ -50,6 +50,8 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
          **/
         function SpriteStage(canvas, preserveDrawingBuffer, antialias) {
             var _this = this;
+            if (preserveDrawingBuffer === void 0) { preserveDrawingBuffer = false; }
+            if (antialias === void 0) { antialias = false; }
             _super.call(this, canvas);
             // private properties:
             /**
@@ -226,16 +228,23 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
              * @method update
              * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
              **/
-            this.update = function (params) {
+            this.update = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
                 if (!_this.canvas) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
-                    _this.dispatchEvent("tickstart"); // TODO: make cancellable?
-                    _this._tick((arguments.length ? arguments : null));
-                    _this.dispatchEvent("tickend");
+                    _this.tickstartSignal.emit();
+                    //			this.dispatchEvent("tickstart");  // TODO: make cancellable?
+                    _this._tick((args.length ? args : null));
+                    //			this.dispatchEvent("tickend");
+                    _this.tickendSignal.emit();
                 }
-                _this.dispatchEvent("drawstart"); // TODO: make cancellable?
+                _this.drawstartSignal.emit();
+                //		this.dispatchEvent("drawstart"); // TODO: make cancellable?
                 if (_this.autoClear) {
                     _this.clear();
                 }
@@ -246,16 +255,17 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
                 }
                 else {
                     // Use 2D.
-                    ctx = _this.canvas.getContext("2d");
-                    ctx.save();
-                    _this.updateContext(ctx);
-                    _this.draw(ctx, false);
-                    ctx.restore();
+                    var ctx2d = _this.canvas.getContext("2d");
+                    ctx2d.save();
+                    _this.updateContext(ctx2d);
+                    _this.draw(ctx2d, false);
+                    ctx2d.restore();
                 }
-                _this.dispatchEvent("drawend");
+                _this.drawendSignal.emit();
+                //		this.dispatchEvent("drawend");
             };
-            this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
-            this._antialias = antialias !== undefined ? antialias : this._antialias;
+            this._preserveDrawingBuffer = preserveDrawingBuffer;
+            this._antialias = antialias;
             this._initializeWebGL();
         }
         // getter / setters:
@@ -293,15 +303,19 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
          * @param {DisplayObject} child The display object to add.
          * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
          **/
-        SpriteStage.prototype.addChild = function (child) {
-            if (child == null) {
-                return child;
+        SpriteStage.prototype.addChild = function () {
+            var children = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                children[_i - 0] = arguments[_i];
             }
-            if (arguments.length > 1) {
-                return this.addChildAt.apply(this, Array.prototype.slice.call(arguments).concat([this.children.length]));
+            if (children.length == 0) {
+                return null;
+            }
+            if (children.length > 1) {
+                return this.addChildAt.apply(this, Array.prototype.slice.call(children).concat([this.children.length]));
             }
             else {
-                return this.addChildAt(child, this.children.length);
+                return this.addChildAt(children[0], this.children.length);
             }
         };
         /**
@@ -330,18 +344,24 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
          * @param {Number} index The index to add the child at.
          * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
          **/
-        SpriteStage.prototype.addChildAt = function (child, index) {
-            var l = arguments.length;
-            var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
+        SpriteStage.prototype.addChildAt = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var l = args.length;
+            var indx = args[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
             if (indx < 0 || indx > this.children.length) {
-                return arguments[l - 2];
+                return args[l - 2];
             }
             if (l > 2) {
                 for (var i = 0; i < l - 1; i++) {
-                    this.addChildAt(arguments[i], indx + i);
+                    this.addChildAt(args[i], indx + i);
                 }
-                return arguments[l - 2];
+                return args[l - 2];
             }
+            var child = args[0];
+            var index = args[1];
             if (child._spritestage_compatibility >= 1) {
             }
             else {
@@ -375,9 +395,9 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
             }
             else {
                 // Use 2D.
-                ctx = this.canvas.getContext("2d");
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+                var ctx2d = this.canvas.getContext("2d");
+                ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+                ctx2d.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
             }
         };
         /**
@@ -834,6 +854,7 @@ define(["require", "exports", './Stage', '../data/RGBA'], function (require, exp
          * the array size for p._vertices would equal 1280kb and p._indices 192kb. But since mobile phones
          * with less memory need to be accounted for, the maximum size is somewhat arbitrarily divided by 4,
          * reducing the array sizes to 320kb and 48kb respectively.
+         *
          * @property MAX_BOXES_POINTS_INCREMENT
          * @static
          * @final

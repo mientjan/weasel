@@ -74,6 +74,7 @@
 
 import Stage = require('./Stage');
 import RGBA = require('../data/RGBA');
+import Matrix2D = require('../geom/Matrix2D');
 
 class SpriteStage extends Stage
 {
@@ -138,6 +139,7 @@ class SpriteStage extends Stage
 	 * the array size for p._vertices would equal 1280kb and p._indices 192kb. But since mobile phones
 	 * with less memory need to be accounted for, the maximum size is somewhat arbitrarily divided by 4,
 	 * reducing the array sizes to 320kb and 48kb respectively.
+	 *
 	 * @property MAX_BOXES_POINTS_INCREMENT
 	 * @static
 	 * @final
@@ -357,11 +359,11 @@ class SpriteStage extends Stage
 	 * @param {Boolean} preserveDrawingBuffer              If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
 	 * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
 	 **/
-	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
+	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean = false, antialias:boolean = false)
 	{
 		super(canvas);
-		this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
-		this._antialias = antialias !== undefined ? antialias : this._antialias;
+		this._preserveDrawingBuffer = preserveDrawingBuffer;
+		this._antialias = antialias;
 
 		this._initializeWebGL();
 	}
@@ -384,19 +386,20 @@ class SpriteStage extends Stage
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	public addChild(child)
+	public addChild(...children:any[])
 	{
-		if(child == null)
+		if(children.length == 0)
 		{
-			return child;
+			return null;
 		}
-		if(arguments.length > 1)
+
+		if(children.length > 1)
 		{
-			return this.addChildAt.apply(this, Array.prototype.slice.call(arguments).concat([this.children.length]));
+			return this.addChildAt.apply(this, Array.prototype.slice.call(children).concat([this.children.length]));
 		}
 		else
 		{
-			return this.addChildAt(child, this.children.length);
+			return this.addChildAt(children[0], this.children.length);
 		}
 	}
 
@@ -426,22 +429,28 @@ class SpriteStage extends Stage
 	 * @param {Number} index The index to add the child at.
 	 * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
 	 **/
-	public addChildAt(child, index)
+	public addChildAt(...args:any[])
 	{
-		var l = arguments.length;
-		var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
+
+
+		var l = args.length;
+		var indx = args[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
 		if(indx < 0 || indx > this.children.length)
 		{
-			return arguments[l - 2];
+			return args[l - 2];
 		}
 		if(l > 2)
 		{
 			for(var i = 0; i < l - 1; i++)
 			{
-				this.addChildAt(arguments[i], indx + i);
+				this.addChildAt(args[i], indx + i);
 			}
-			return arguments[l - 2];
+			return args[l - 2];
 		}
+
+		var child = args[0];
+		var index = args[1];
+
 		if(child._spritestage_compatibility >= 1)
 		{
 			// The child is compatible with SpriteStage.
@@ -451,6 +460,7 @@ class SpriteStage extends Stage
 			console && console.log("Error: You can only add children of type SpriteContainer, Sprite, Bitmap, BitmapText, or DOMElement. [" + child.toString() + "]");
 			return child;
 		}
+
 		if(!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4)
 		{
 			console && console.log("Error: You can only add children that have an image or spriteSheet defined on them. [" + child.toString() + "]");
@@ -485,7 +495,7 @@ class SpriteStage extends Stage
 	 * @method update
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public update = (params?:any) =>
+	public update = (...args:any[]) =>
 	{
 		if(!this.canvas)
 		{
@@ -494,16 +504,20 @@ class SpriteStage extends Stage
 
 		if(this.tickOnUpdate)
 		{
-			this.dispatchEvent("tickstart");  // TODO: make cancellable?
-			this._tick((arguments.length ? arguments : null));
-			this.dispatchEvent("tickend");
+			this.tickstartSignal.emit();
+//			this.dispatchEvent("tickstart");  // TODO: make cancellable?
+			this._tick((args.length ? args : null));
+//			this.dispatchEvent("tickend");
+			this.tickendSignal.emit();
 		}
-		this.dispatchEvent("drawstart"); // TODO: make cancellable?
+		this.drawstartSignal.emit();
+//		this.dispatchEvent("drawstart"); // TODO: make cancellable?
 
 		if(this.autoClear)
 		{
 			this.clear();
 		}
+
 		var ctx = this._setWebGLContext();
 		if(ctx)
 		{
@@ -513,13 +527,15 @@ class SpriteStage extends Stage
 		else
 		{
 			// Use 2D.
-			ctx = this.canvas.getContext("2d");
-			ctx.save();
-			this.updateContext(ctx);
-			this.draw(ctx, false);
-			ctx.restore();
+			var ctx2d = this.canvas.getContext("2d");
+			ctx2d.save();
+			this.updateContext(ctx2d);
+			this.draw(ctx2d, false);
+			ctx2d.restore();
 		}
-		this.dispatchEvent("drawend");
+
+		this.drawendSignal.emit();
+//		this.dispatchEvent("drawend");
 	}
 
 	/**
@@ -542,9 +558,9 @@ class SpriteStage extends Stage
 		else
 		{
 			// Use 2D.
-			ctx = this.canvas.getContext("2d");
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
-			ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+			var ctx2d = this.canvas.getContext("2d");
+			ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+			ctx2d.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 		}
 	}
 
@@ -941,7 +957,7 @@ class SpriteStage extends Stage
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix)
+	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix?:Matrix2D)
 	{
 		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,
