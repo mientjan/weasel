@@ -1,4 +1,4 @@
-import AbstractBehaviour = require('./AbstractBehaviour');
+import AbstractBehaviour = require('./AbstractBehavior');
 import DisplayObject = require('../display/DisplayObject');
 import Stage = require('../display/Stage');
 import Container = require('../display/Container');
@@ -11,9 +11,7 @@ class ButtonBehaviour extends AbstractBehaviour {
 		super.initialize(displayObject);
 
 		this.owner.enableMouseInteraction();
-		this.owner.addEventListener('mouseover', this.onMouseOver );
-		this.owner.addEventListener('mouseout', this.onMouseOut );
-
+		this.owner.cursor = 'pointer';
 	}
 
 	private getStage():Stage
@@ -25,21 +23,8 @@ class ButtonBehaviour extends AbstractBehaviour {
 		return this._stage;
 	}
 
-	private onMouseOver = () => {
-		this.getStage();
-		this._stage.holder.style.cursor = 'pointer';
-	}
-
-	private onMouseOut = () => {
-		this.getStage();
-		this._stage.holder.style.cursor = 'auto';
-	}
-
 	destruct(){
 		this._stage = null;
-		this.owner.removeEventListener('mouseover', <Function> this.onMouseOver );
-		this.owner.removeEventListener('mouseout', <Function> this.onMouseOut );
-
 		super.destruct();
 	}
 }

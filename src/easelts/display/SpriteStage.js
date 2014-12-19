@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Stage'], function (require, exports, Stage) {
+define(["require", "exports", './Stage', '../data/RGBA'], function (require, exports, Stage, RGBA) {
     var SpriteStage = (function (_super) {
         __extends(SpriteStage, _super);
         // constructor:
@@ -446,7 +446,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @protected
          **/
         SpriteStage.prototype._initializeWebGL = function () {
-            this._clearColor = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+            this._clearColor = new RGBA();
             this._setWebGLContext();
         };
         /**

@@ -56,7 +56,8 @@ import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
 
-import AbstractBehavior = require('../behavior/AbstractBehavior');
+// behavior
+import AbstractBehavior = require('../behavior/ButtonBehavior');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -64,39 +65,38 @@ import AbstractBehavior = require('../behavior/AbstractBehavior');
  */
 class DisplayObject extends EventDispatcher
 {
-
 	public static EVENT_MOUSE_CLICK = 'click';
-	public static EVENT_MOUSE_MOUSEDOWN = 'mousedown';
-	public static EVENT_MOUSE_MOUSEOUT = 'mouseout';
-	public static EVENT_MOUSE_MOUSEOVER = 'mouseover';
+	public static EVENT_MOUSE_DOWN = 'mousedown';
+	public static EVENT_MOUSE_OUT = 'mouseout';
+	public static EVENT_MOUSE_OVER = 'mouseover';
 
 	/**
 	 *
 	 * @type {string}
 	 */
-	public static EVENT_MOUSE_MOUSEMOVE = 'mousemove';
-
-	public static EVENT_MOUSE_PRESSMOVE = 'pressmove';
-	public static EVENT_MOUSE_PRESSUP = 'pressup';
-	public static EVENT_MOUSE_ROLLOUT = 'rollout';
-	public static EVENT_MOUSE_ROLLOVER = 'rollover';
+	public static EVENT_MOUSE_MOVE = 'mousemove';
+	public static EVENT_PRESS_MOVE = 'pressmove';
+	public static EVENT_PRESS_UP = 'pressup';
+	public static EVENT_ROLL_OUT = 'rollout';
+	public static EVENT_ROLL_OVER = 'rollover';
 
 	/**
 	 * Listing of mouse event names. Used in _hasMouseEventListener.
-	 * @property _MOUSE_EVENTS
+	 *
+	 * @property MOUSE_EVENTS
 	 * @protected
 	 * @static
 	 * @type {string[]}
 	 **/
 	public static _MOUSE_EVENTS = [
 		DisplayObject.EVENT_MOUSE_CLICK,
-		DisplayObject.EVENT_MOUSE_MOUSEDOWN,
-		DisplayObject.EVENT_MOUSE_MOUSEOUT,
-		DisplayObject.EVENT_MOUSE_MOUSEOVER,
-		DisplayObject.EVENT_MOUSE_PRESSMOVE,
-		DisplayObject.EVENT_MOUSE_PRESSUP,
-		DisplayObject.EVENT_MOUSE_ROLLOUT,
-		DisplayObject.EVENT_MOUSE_ROLLOVER,
+		DisplayObject.EVENT_MOUSE_DOWN,
+		DisplayObject.EVENT_MOUSE_OUT,
+		DisplayObject.EVENT_MOUSE_OVER,
+		DisplayObject.EVENT_PRESS_MOVE,
+		DisplayObject.EVENT_PRESS_UP,
+		DisplayObject.EVENT_ROLL_OUT,
+		DisplayObject.EVENT_ROLL_OVER,
 		"dblclick" // @todo make depricated
 	];
 
@@ -505,7 +505,7 @@ class DisplayObject extends EventDispatcher
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:Rectangle =  new Rectangle(0, 0, 0, 0);
+	public _rectangle:Rectangle = new Rectangle(0, 0, 0, 0);
 
 	/**
 	 * @property _bounds
@@ -519,16 +519,20 @@ class DisplayObject extends EventDispatcher
 	{
 		super();
 
-		this.setGeomTransform(width, height, x, y, regX, regY);;
+		this.setGeomTransform(width, height, x, y, regX, regY);
+		;
 	}
 
-	initialize() {
+	initialize()
+	{
 
 
 	}
 
 	public setWidth(width:string):any;
+
 	public setWidth(width:number):any;
+
 	public setWidth(width:any):any
 	{
 		if(typeof(width) == 'string')
@@ -551,14 +555,17 @@ class DisplayObject extends EventDispatcher
 			this._width_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
 	public setHeight(height:string):any;
+
 	public setHeight(height:number):any;
+
 	public setHeight(height:any):any
 	{
 		if(typeof(height) == 'string')
@@ -581,14 +588,17 @@ class DisplayObject extends EventDispatcher
 			this._height_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
 	public setX(x:string):any;
+
 	public setX(x:number):any;
+
 	public setX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -611,7 +621,8 @@ class DisplayObject extends EventDispatcher
 			this._x_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 
@@ -619,7 +630,9 @@ class DisplayObject extends EventDispatcher
 	}
 
 	public setY(y:string):any;
+
 	public setY(y:number):any;
+
 	public setY(y:any):any
 	{
 		if(typeof(y) == 'string')
@@ -642,14 +655,17 @@ class DisplayObject extends EventDispatcher
 			this._y_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
 	public setRegX(x:string):any;
+
 	public setRegX(x:number):any;
+
 	public setRegX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -672,7 +688,8 @@ class DisplayObject extends EventDispatcher
 			this._regX_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 
@@ -680,7 +697,9 @@ class DisplayObject extends EventDispatcher
 	}
 
 	public setRegY(y:string):any;
+
 	public setRegY(y:number):any;
+
 	public setRegY(y:any):any
 	{
 		if(typeof(y) == 'string')
@@ -703,7 +722,8 @@ class DisplayObject extends EventDispatcher
 			this._regY_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
@@ -711,7 +731,8 @@ class DisplayObject extends EventDispatcher
 
 	public addBehavior(behavior:AbstractBehavior):void
 	{
-		if(!this._behaviorList){
+		if(!this._behaviorList)
+		{
 			this._behaviorList = [];
 		}
 		this._behaviorList.push(behavior);
@@ -721,13 +742,15 @@ class DisplayObject extends EventDispatcher
 	public removeBehavior(behavior:AbstractBehavior):void
 	{
 		var behaviorList = this._behaviorList;
-		if(behaviorList){
+		if(behaviorList)
+		{
 			var length = behaviorList.length;
 			for(var i = 0; i < behaviorList.length; i++)
 			{
 				var behaviorItem = behaviorList[i];
-				if(behaviorItem === behavior ){
-					behaviorList.splice(i,1);
+				if(behaviorItem === behavior)
+				{
+					behaviorList.splice(i, 1);
 					length--;
 					i--;
 				}
@@ -743,8 +766,10 @@ class DisplayObject extends EventDispatcher
 	 */
 	public removeAllBehaviors():void
 	{
-		if( this._behaviorList ){
-			while(this._behaviorList.length){
+		if(this._behaviorList)
+		{
+			while(this._behaviorList.length)
+			{
 				this._behaviorList.pop().destruct();
 			}
 		}
@@ -754,7 +779,8 @@ class DisplayObject extends EventDispatcher
 	 * @method enableMouseInteraction
 	 * @return void
 	 */
-	public enableMouseInteraction(){
+	public enableMouseInteraction()
+	{
 		this.mouseEnabled = true;
 	}
 
@@ -762,7 +788,8 @@ class DisplayObject extends EventDispatcher
 	 * @method disableMouseInteraction
 	 * @return void
 	 */
-	public disableMouseInteraction(){
+	public disableMouseInteraction()
+	{
 		this.mouseEnabled = false;
 	}
 
@@ -924,12 +951,21 @@ class DisplayObject extends EventDispatcher
 	 **/
 	public updateCache(compositeOperation?:string):void
 	{
-		var cacheCanvas = this.cacheCanvas, scale = this._cacheScale, offX = this._cacheOffsetX * scale, offY = this._cacheOffsetY * scale;
-		var w = this._cacheWidth, h = this._cacheHeight, fBounds;
+		var cacheCanvas =
+			this.cacheCanvas,
+			scale = this._cacheScale,
+			offX = this._cacheOffsetX * scale,
+			offY = this._cacheOffsetY * scale;
+
+		var w = this._cacheWidth,
+			h = this._cacheHeight,
+			fBounds;
+
 		if(!cacheCanvas)
 		{
 			throw "cache() must be called before updateCache()";
 		}
+
 		var ctx = cacheCanvas.getContext("2d");
 
 		// update bounds based on filters:
@@ -1011,7 +1047,7 @@ class DisplayObject extends EventDispatcher
 		}
 
 		// using dynamic access to avoid circular dependencies;
-		if(o.type == DisplayType.STAGE )
+		if(o.type == DisplayType.STAGE)
 		{
 			return <Stage> o;
 		}
@@ -1126,18 +1162,18 @@ class DisplayObject extends EventDispatcher
 	 */
 	public setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
 	{
-		 this.x = x || 0;
-		 this.y = y || 0;
-		 this.scaleX = scaleX == null ? 1 : scaleX;
-		 this.scaleY = scaleY == null ? 1 : scaleY;
-		 this.rotation = rotation || 0;
-		 this.skewX = skewX || 0;
-		 this.skewY = skewY || 0;
-		 this.regX = regX || 0;
-		 this.regY = regY || 0;
+		this.x = x || 0;
+		this.y = y || 0;
+		this.scaleX = scaleX == null ? 1 : scaleX;
+		this.scaleY = scaleY == null ? 1 : scaleY;
+		this.rotation = rotation || 0;
+		this.skewX = skewX || 0;
+		this.skewY = skewY || 0;
+		this.regX = regX || 0;
+		this.regY = regY || 0;
 
-		 return this;
-	 }
+		return this;
+	}
 
 	/**
 	 *
@@ -1154,21 +1190,41 @@ class DisplayObject extends EventDispatcher
 		var parentIsKnown = this._parentSizeIsKnown;
 		this._parentSizeIsKnown = false;
 
-		if(x!=null) this.setX(x);
-		if(y!=null) this.setY(y);
-		if(w!=null) this.setWidth(w);
-		if(h!=null) this.setHeight(h);
-		if(rx!=null) this.setRegX(rx);
-		if(ry!=null) this.setRegY(ry);
+		if(x != null)
+		{
+			this.setX(x);
+		}
+		if(y != null)
+		{
+			this.setY(y);
+		}
+		if(w != null)
+		{
+			this.setWidth(w);
+		}
+		if(h != null)
+		{
+			this.setHeight(h);
+		}
+		if(rx != null)
+		{
+			this.setRegX(rx);
+		}
+		if(ry != null)
+		{
+			this.setRegY(ry);
+		}
 
 		this._parentSizeIsKnown = parentIsKnown;
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height))
 		}
 
 		return this;
 	}
+
 	/**
 	 * Returns a matrix based on this object's transform.
 	 * @method getMatrix
@@ -1461,13 +1517,13 @@ class DisplayObject extends EventDispatcher
 	public _tick(props:TimeEvent)
 	{
 		// because tick can be really performance sensitive, we'll inline some of the dispatchEvent work.
-//		this.tick
-//		var ls = this._listeners;
-//		if(ls && ls["tick"])
-//		{
-//			var evt = new Event("tick").set(props);
-//			this._dispatchEvent(evt, this); // 2
-//		}
+		//		this.tick
+		//		var ls = this._listeners;
+		//		if(ls && ls["tick"])
+		//		{
+		//			var evt = new Event("tick").set(props);
+		//			this._dispatchEvent(evt, this); // 2
+		//		}
 	}
 
 	/**
@@ -1669,6 +1725,10 @@ class DisplayObject extends EventDispatcher
 		return this.cursor != null;
 	}
 
+	/**
+	 *
+	 * @param {Size} e
+	 */
 	public onResize(e:Size)
 	{
 		this._parentSizeIsKnown = true;
@@ -1711,29 +1771,29 @@ class DisplayObject extends EventDispatcher
 				this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
 			}
 
-			if( this._regY_type == CalculationType.PROCENT)
+			if(this._regY_type == CalculationType.PROCENT)
 			{
 				this.regY = this._regY_procent * this.height;
 			}
-			else if( this._regY_type == CalculationType.CALC)
+			else if(this._regY_type == CalculationType.CALC)
 			{
 				this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
 			}
 
-			if( this._x_type == CalculationType.PROCENT)
+			if(this._x_type == CalculationType.PROCENT)
 			{
 				this.x = Math.round(this._x_procent * e.width);
 			}
-			else if( this._x_type == CalculationType.CALC)
+			else if(this._x_type == CalculationType.CALC)
 			{
 				this.x = Math.round(FluidCalculation.calcUnit(e.width, this._x_calc));
 			}
 
-			if( this._y_type == CalculationType.PROCENT)
+			if(this._y_type == CalculationType.PROCENT)
 			{
 				this.y = Math.round(this._y_procent * e.height);
 			}
-			else if( this._y_type == CalculationType.CALC)
+			else if(this._y_type == CalculationType.CALC)
 			{
 				this.y = Math.round(FluidCalculation.calcUnit(e.height, this._y_calc));
 			}
@@ -1741,7 +1801,8 @@ class DisplayObject extends EventDispatcher
 
 	}
 
-	public destruct(){
+	public destruct()
+	{
 		this.parent = null;
 		this.removeAllBehaviors();
 

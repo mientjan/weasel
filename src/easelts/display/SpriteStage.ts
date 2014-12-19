@@ -73,6 +73,7 @@
 //});
 
 import Stage = require('./Stage');
+import RGBA = require('../data/RGBA');
 
 class SpriteStage extends Stage
 {
@@ -632,7 +633,7 @@ class SpriteStage extends Stage
 	 **/
 	public _initializeWebGL()
 	{
-		this._clearColor = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+		this._clearColor = new RGBA();
 
 		this._setWebGLContext();
 	}

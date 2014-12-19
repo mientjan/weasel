@@ -851,18 +851,24 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             if (ry === void 0) { ry = null; }
             var parentIsKnown = this._parentSizeIsKnown;
             this._parentSizeIsKnown = false;
-            if (x != null)
+            if (x != null) {
                 this.setX(x);
-            if (y != null)
+            }
+            if (y != null) {
                 this.setY(y);
-            if (w != null)
+            }
+            if (w != null) {
                 this.setWidth(w);
-            if (h != null)
+            }
+            if (h != null) {
                 this.setHeight(h);
-            if (rx != null)
+            }
+            if (rx != null) {
                 this.setRegX(rx);
-            if (ry != null)
+            }
+            if (ry != null) {
                 this.setRegY(ry);
+            }
             this._parentSizeIsKnown = parentIsKnown;
             if (this._parentSizeIsKnown) {
                 this.onResize(new Size(this.parent.width, this.parent.height));
@@ -1284,6 +1290,10 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             }
             return this.cursor != null;
         };
+        /**
+         *
+         * @param {Size} e
+         */
         DisplayObject.prototype.onResize = function (e) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
@@ -1337,34 +1347,35 @@ define(["require", "exports", '../../createts/events/EventDispatcher', '../utils
             _super.prototype.destruct.call(this);
         };
         DisplayObject.EVENT_MOUSE_CLICK = 'click';
-        DisplayObject.EVENT_MOUSE_MOUSEDOWN = 'mousedown';
-        DisplayObject.EVENT_MOUSE_MOUSEOUT = 'mouseout';
-        DisplayObject.EVENT_MOUSE_MOUSEOVER = 'mouseover';
+        DisplayObject.EVENT_MOUSE_DOWN = 'mousedown';
+        DisplayObject.EVENT_MOUSE_OUT = 'mouseout';
+        DisplayObject.EVENT_MOUSE_OVER = 'mouseover';
         /**
          *
          * @type {string}
          */
-        DisplayObject.EVENT_MOUSE_MOUSEMOVE = 'mousemove';
-        DisplayObject.EVENT_MOUSE_PRESSMOVE = 'pressmove';
-        DisplayObject.EVENT_MOUSE_PRESSUP = 'pressup';
-        DisplayObject.EVENT_MOUSE_ROLLOUT = 'rollout';
-        DisplayObject.EVENT_MOUSE_ROLLOVER = 'rollover';
+        DisplayObject.EVENT_MOUSE_MOVE = 'mousemove';
+        DisplayObject.EVENT_PRESS_MOVE = 'pressmove';
+        DisplayObject.EVENT_PRESS_UP = 'pressup';
+        DisplayObject.EVENT_ROLL_OUT = 'rollout';
+        DisplayObject.EVENT_ROLL_OVER = 'rollover';
         /**
          * Listing of mouse event names. Used in _hasMouseEventListener.
-         * @property _MOUSE_EVENTS
+         *
+         * @property MOUSE_EVENTS
          * @protected
          * @static
          * @type {string[]}
          **/
         DisplayObject._MOUSE_EVENTS = [
             DisplayObject.EVENT_MOUSE_CLICK,
-            DisplayObject.EVENT_MOUSE_MOUSEDOWN,
-            DisplayObject.EVENT_MOUSE_MOUSEOUT,
-            DisplayObject.EVENT_MOUSE_MOUSEOVER,
-            DisplayObject.EVENT_MOUSE_PRESSMOVE,
-            DisplayObject.EVENT_MOUSE_PRESSUP,
-            DisplayObject.EVENT_MOUSE_ROLLOUT,
-            DisplayObject.EVENT_MOUSE_ROLLOVER,
+            DisplayObject.EVENT_MOUSE_DOWN,
+            DisplayObject.EVENT_MOUSE_OUT,
+            DisplayObject.EVENT_MOUSE_OVER,
+            DisplayObject.EVENT_PRESS_MOVE,
+            DisplayObject.EVENT_PRESS_UP,
+            DisplayObject.EVENT_ROLL_OUT,
+            DisplayObject.EVENT_ROLL_OVER,
             "dblclick"
         ];
         DisplayObject.COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';
