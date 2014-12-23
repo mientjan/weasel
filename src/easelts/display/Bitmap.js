@@ -1,37 +1,37 @@
 /*
-* Bitmap
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Bitmap
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType'], function (require, exports, DisplayObject, DisplayType) {
+define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, Size) {
     /**
      * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
      * HTML element, or a string.
@@ -67,6 +67,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
             this.type = 7 /* BITMAP */;
+            this.loaded = false;
             /**
              * The image to render. This can be an Image, a Canvas, or a Video.
              * @property image
@@ -80,15 +81,15 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
              * @default null
              */
             this.sourceRect = null;
-            this.loaded = false;
             if (typeof imageOrUri == "string") {
                 this.image = document.createElement("img");
-                this.image.onload = this.onLoad.bind(this);
                 this.image.src = imageOrUri;
             }
             else {
                 this.image = imageOrUri;
-                if (!this.image.complete) {
+            }
+            if (!width && !height) {
+                if (this.image.complete) {
                     this.image.onload = this.onLoad.bind(this);
                 }
                 else {
@@ -98,6 +99,11 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
         }
         Bitmap.prototype.onLoad = function () {
             this.loaded = true;
+            this.width = this.image.width;
+            this.height = this.image.height;
+            this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+            if (this._parentSizeIsKnown)
+                this.onResize(new Size(this.parent.width, this.parent.height));
         };
         // public methods:
         /**
@@ -201,6 +207,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
         Bitmap.prototype.toString = function () {
             return "[Bitmap (name=" + this.name + ")]";
         };
+        Bitmap.EVENT_ONLOAD = 'onload';
         return Bitmap;
     })(DisplayObject);
     return Bitmap;

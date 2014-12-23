@@ -27,10 +27,10 @@
  */
 
 //import EventDispatcher = require('../../createts/events/EventDispatcher');
-import Event = require('../../createts/events/Event');
-import TimeEvent = require('../../createts/events/TimeEvent');
-import Signal1 = require('../../createts/events/Signal1');
-import SignalConnection = require('../../createts/events/SignalConnection');
+import Event = require('../../createts/event/Event');
+import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal1 = require('../../createts/event/Signal1');
+import SignalConnection = require('../../createts/event/SignalConnection');
 
 /**
  * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick

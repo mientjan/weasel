@@ -27,7 +27,7 @@
  */
 
 /**
- * @module easelts
+ * @module EaselJS
  */
 
 /**
@@ -72,12 +72,7 @@
 //	_class.prototype._spritestage_compatibility = index + 1;
 //});
 
-
 import Stage = require('./Stage');
-import RGBA = require('../data/RGBA');
-import Matrix2D = require('../geom/Matrix2D');
-import DisplayType = require('../enum/DisplayType');
-import Bitmap = require('./Bitmap');
 
 class SpriteStage extends Stage
 {
@@ -142,7 +137,6 @@ class SpriteStage extends Stage
 	 * the array size for p._vertices would equal 1280kb and p._indices 192kb. But since mobile phones
 	 * with less memory need to be accounted for, the maximum size is somewhat arbitrarily divided by 4,
 	 * reducing the array sizes to 320kb and 48kb respectively.
-	 *
 	 * @property MAX_BOXES_POINTS_INCREMENT
 	 * @static
 	 * @final
@@ -244,7 +238,7 @@ class SpriteStage extends Stage
 	 * @type {Object}
 	 * @default null
 	 **/
-	public _clearColor:RGBA = new RGBA;
+	public _clearColor = null;
 
 	/**
 	 * The maximum number of textures WebGL can work with per draw call.
@@ -345,8 +339,14 @@ class SpriteStage extends Stage
 	 **/
 	public _drawTexture = null;
 
+	// constructor:
 
-	public canvas:HTMLCanvasElement;
+	/**
+	 * @property Stage_initialize
+	 * @type Function
+	 * @private
+	 **/
+
 
 	/**
 	 * Initialization method.
@@ -356,16 +356,13 @@ class SpriteStage extends Stage
 	 * @param {Boolean} preserveDrawingBuffer              If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
 	 * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
 	 **/
-	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean = false, antialias:boolean = false)
+	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
 	{
 		super(canvas);
-
-		this._preserveDrawingBuffer = preserveDrawingBuffer;
-		this._antialias = antialias;
+		this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
+		this._antialias = antialias !== undefined ? antialias : this._antialias;
 
 		this._initializeWebGL();
-
-		this.updateViewport(canvas.width, canvas.height);
 	}
 
 	// public methods:
@@ -386,20 +383,19 @@ class SpriteStage extends Stage
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	public addChild(...children:any[])
+	public addChild(child)
 	{
-		if(children.length == 0)
+		if(child == null)
 		{
-			return null;
+			return child;
 		}
-
-		if(children.length > 1)
+		if(arguments.length > 1)
 		{
-			return this.addChildAt.apply(this, Array.prototype.slice.call(children).concat([this.children.length]));
+			return this.addChildAt.apply(this, Array.prototype.slice.call(arguments).concat([this.children.length]));
 		}
 		else
 		{
-			return this.addChildAt(children[0], this.children.length);
+			return this.addChildAt(child, this.children.length);
 		}
 	}
 
@@ -429,29 +425,23 @@ class SpriteStage extends Stage
 	 * @param {Number} index The index to add the child at.
 	 * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
 	 **/
-	public addChildAt(...args:any[])
+	public addChildAt(child, index)
 	{
-
-
-		var l = args.length;
-		var indx = args[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
+		var l = arguments.length;
+		var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
 		if(indx < 0 || indx > this.children.length)
 		{
-			return args[l - 2];
+			return arguments[l - 2];
 		}
 		if(l > 2)
 		{
 			for(var i = 0; i < l - 1; i++)
 			{
-				this.addChildAt(args[i], indx + i);
+				this.addChildAt(arguments[i], indx + i);
 			}
-			return args[l - 2];
+			return arguments[l - 2];
 		}
-
-		var child = args[0];
-		var index = args[1];
-
-		if(child.type == DisplayType.BITMAP)
+		if(child._spritestage_compatibility >= 1)
 		{
 			// The child is compatible with SpriteStage.
 		}
@@ -460,7 +450,6 @@ class SpriteStage extends Stage
 			console && console.log("Error: You can only add children of type SpriteContainer, Sprite, Bitmap, BitmapText, or DOMElement. [" + child.toString() + "]");
 			return child;
 		}
-/*
 		if(!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4)
 		{
 			console && console.log("Error: You can only add children that have an image or spriteSheet defined on them. [" + child.toString() + "]");
@@ -469,8 +458,7 @@ class SpriteStage extends Stage
 		if(child.parent)
 		{
 			child.parent.removeChild(child);
-		}*/
-
+		}
 		child.parent = this;
 		this.children.splice(index, 0, child);
 		this._setUpKidTexture(this._webGLContext, child);
@@ -496,29 +484,25 @@ class SpriteStage extends Stage
 	 * @method update
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public update = (...args:any[]) =>
+	public update = (params?:any) =>
 	{
 		if(!this.canvas)
 		{
 			return;
 		}
 
-//		if(this.tickOnUpdate)
-//		{
-//			this.tickstartSignal.emit();
-//			this.dispatchEvent("tickstart");  // TODO: make cancellable?
-			this._tick((args.length ? args : null));
-//			this.dispatchEvent("tickend");
-//			this.tickendSignal.emit();
-//		}
-//		this.drawstartSignal.emit();
-//		this.dispatchEvent("drawstart"); // TODO: make cancellable?
+		if(this.tickOnUpdate)
+		{
+			this.dispatchEvent("tickstart");  // TODO: make cancellable?
+			this._tick((arguments.length ? arguments : null));
+			this.dispatchEvent("tickend");
+		}
+		this.dispatchEvent("drawstart"); // TODO: make cancellable?
 
 		if(this.autoClear)
 		{
 			this.clear();
 		}
-
 		var ctx = this._setWebGLContext();
 		if(ctx)
 		{
@@ -528,15 +512,13 @@ class SpriteStage extends Stage
 		else
 		{
 			// Use 2D.
-			var ctx2d = this.canvas.getContext("2d");
-			ctx2d.save();
-			this.updateContext(ctx2d);
-			this.draw(ctx2d, false);
-			ctx2d.restore();
+			ctx = this.canvas.getContext("2d");
+			ctx.save();
+			this.updateContext(ctx);
+			this.draw(ctx, false);
+			ctx.restore();
 		}
-
-//		this.drawendSignal.emit();
-//		this.dispatchEvent("drawend");
+		this.dispatchEvent("drawend");
 	}
 
 	/**
@@ -559,9 +541,9 @@ class SpriteStage extends Stage
 		else
 		{
 			// Use 2D.
-			var ctx2d = this.canvas.getContext("2d");
-			ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-			ctx2d.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+			ctx = this.canvas.getContext("2d");
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 		}
 	}
 
@@ -577,9 +559,7 @@ class SpriteStage extends Stage
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
 	 **/
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean);
-	public draw(ctx:WebGLRenderingContext, ignoreCache?:boolean);
-	public draw(ctx:any, ignoreCache = false)
+	public draw(ctx, ignoreCache)
 	{
 		if(ctx === this._webGLContext || ctx instanceof WebGLRenderingContext)
 		{
@@ -595,9 +575,6 @@ class SpriteStage extends Stage
 		}
 		else
 		{
-
-
-			
 			return super.draw(ctx, ignoreCache);
 		}
 	}
@@ -655,7 +632,8 @@ class SpriteStage extends Stage
 	 **/
 	public _initializeWebGL()
 	{
-		this._clearColor = new RGBA();
+		this._clearColor = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+
 		this._setWebGLContext();
 	}
 
@@ -667,16 +645,13 @@ class SpriteStage extends Stage
 	 **/
 	public _setWebGLContext():WebGLRenderingContext
 	{
-
 		if(this.canvas)
 		{
-
 			if(!this._webGLContext || this._webGLContext.canvas !== this.canvas)
 			{
 				// A context hasn't been defined yet,
 				// OR the defined context belongs to a different canvas, so reinitialize.
 				this._initializeWebGLContext();
-
 			}
 		}
 		else
@@ -700,10 +675,9 @@ class SpriteStage extends Stage
 			antialias: this._antialias,
 			premultipliedAlpha: true // Assume the drawing buffer contains colors with premultiplied alpha.
 		};
-		var gl:WebGLRenderingContext = this._webGLContext = this.canvas.getContext("webgl", options)
-			|| this.canvas.getContext("experimental-webgl", options);
+		var ctx = this._webGLContext = this.canvas.getContext("webgl", options) || this.canvas.getContext("experimental-webgl", options);
 
-		if(!gl)
+		if(!ctx)
 		{
 			// WebGL is not supported in this browser.
 			return;
@@ -716,14 +690,14 @@ class SpriteStage extends Stage
 		this._setClearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearColor.a);
 
 		// Enable blending and set the blending functions that work with the premultiplied alpha settings:
-		gl.enable(gl.BLEND);
-		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+		ctx.enable(ctx.BLEND);
+		ctx.blendFuncSeparate(ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA, ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA);
 
 		// Do not premultiply textures' alpha channels when loading them in:
-		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
+		ctx.pixelStorei(ctx.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
 
 		// Create the shader program that will be used for drawing:
-		this._createShaderProgram(gl);
+		this._createShaderProgram(ctx);
 
 		if(this._webGLErrorDetected)
 		{
@@ -733,7 +707,7 @@ class SpriteStage extends Stage
 		}
 
 		// Create the vertices and indices buffers.
-		this._createBuffers(gl);
+		this._createBuffers(ctx);
 
 		// Update the viewport with the initial canvas dimensions:
 		this.updateViewport(this._viewportWidth || this.canvas.width || 0, this._viewportHeight || this.canvas.height || 0);
@@ -769,6 +743,7 @@ class SpriteStage extends Stage
 	 **/
 	public _createShaderProgram(ctx)
 	{
+
 
 		var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER,
 			"precision mediump float;" +
@@ -915,13 +890,12 @@ class SpriteStage extends Stage
 	 * Sets up a kid's WebGL texture.
 	 * @method _setUpKidTexture
 	 * @param {WebGLRenderingContext} ctx The canvas WebGL context object to draw into.
-	 * @param {Object} child                The list of kids to draw.
+	 * @param {Object} kid                The list of kids to draw.
 	 * @return {WebGLTexture}
 	 * @protected
 	 **/
-	public _setUpKidTexture(ctx:WebGLRenderingContext, child:Bitmap)
+	public _setUpKidTexture(ctx, kid)
 	{
-
 		if(!ctx)
 		{
 			return null;
@@ -930,31 +904,22 @@ class SpriteStage extends Stage
 		var image,
 			texture = null;
 
-		if(child.type == DisplayType.BITMAP )
+		if(kid._spritestage_compatibility === 4)
 		{
-			if( !child.loaded ){
-				return;
-			}
-			
-			image = child.image;
+			image = kid.image;
 		}
-//		else if(child._spritestage_compatibility <= 3 && child.spriteSheet && child.spriteSheet._images)
-//		{
-//			image = child.spriteSheet._images[0];
-//		}
-
-//		console.log(ctx, child);
+		else if(kid._spritestage_compatibility <= 3 && kid.spriteSheet && kid.spriteSheet._images)
+		{
+			image = kid.spriteSheet._images[0];
+		}
 
 		if(image)
 		{
 			// Create and use a new texture for this image if it doesn't already have one:
 			texture = image.__easeljs_texture;
-			
 			if(!texture)
 			{
 				texture = image.__easeljs_texture = ctx.createTexture();
-
-				
 				ctx.bindTexture(ctx.TEXTURE_2D, texture);
 				ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);
 				ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.NEAREST);
@@ -970,14 +935,14 @@ class SpriteStage extends Stage
 	/**
 	 * Draw all the kids into the WebGL context.
 	 * @method _drawWebGLKids
-	 * @param {Array} children                The list of kids to draw.
+	 * @param {Array} kids                The list of kids to draw.
 	 * @param {WebGLRenderingContext} ctx The canvas WebGL context object to draw into.
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	public _drawWebGLKids(children:any[], ctx:any, parentMVMatrix?:Matrix2D)
+	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix)
 	{
-		var child, mtx,
+		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,
 			image = null,
 			leftSide = 0, topSide = 0, rightSide = 0, bottomSide = 0,
@@ -986,36 +951,36 @@ class SpriteStage extends Stage
 			maxIndexSize = SpriteStage.MAX_INDEX_SIZE,
 			maxBoxIndex = this._maxBoxesPerDraw - 1;
 
-		for(var i = 0, l = children.length; i < l; i++)
+		for(var i = 0, l = kids.length; i < l; i++)
 		{
-			child = children[i];
-			if(!child.isVisible())
+			kid = kids[i];
+			if(!kid.isVisible())
 			{
 				continue;
 			}
-			mtx = child._matrix;
+			mtx = kid._matrix;
 
 			// Get the kid's global matrix (relative to the stage):
 			mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity())
-				.appendTransform(child.x, child.y, child.scaleX, child.scaleY, child.rotation, child.skewX, child.skewY, child.regX, child.regY);
+				.appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
 
 			// Set default texture coordinates:
 			var uStart = 0, uEnd = 1,
 				vStart = 0, vEnd = 1;
 
 			// Define the untransformed bounding box sides and get the kid's image to use for textures:
-			if(child.type == DisplayType.BITMAP)
+			if(kid._spritestage_compatibility === 4)
 			{
-				image = child.image;
+				image = kid.image;
 
 				leftSide = 0;
 				topSide = 0;
 				rightSide = image.width;
 				bottomSide = image.height;
 			}
-			else if(child._spritestage_compatibility === 2)
+			else if(kid._spritestage_compatibility === 2)
 			{
-				var frame = child.spriteSheet.getFrame(child.currentFrame),
+				var frame = kid.spriteSheet.getFrame(kid.currentFrame),
 					rect = frame.rect;
 
 				image = frame.image;
@@ -1035,19 +1000,18 @@ class SpriteStage extends Stage
 				image = null;
 
 				// Update BitmapText instances:
-				if(child._spritestage_compatibility === 3)
+				if(kid._spritestage_compatibility === 3)
 				{
 					// TODO: this might change in the future to use a more general approach.
-					child._updateText();
+					kid._updateText();
 				}
 			}
 
 			// Detect if this kid is a new display branch:
-//			if(!parentMVMatrix && kid._spritestage_compatibility <= 4)
-			if(!parentMVMatrix && child.type == DisplayType.BITMAP)
+			if(!parentMVMatrix && kid._spritestage_compatibility <= 4)
 			{
 				// Get the texture for this display branch:
-				var texture = (image || child.spriteSheet._images[0]).__easeljs_texture;
+				var texture = (image || kid.spriteSheet._images[0]).__easeljs_texture;
 
 				// Only use a new texture in the current draw call:
 				if(texture !== this._drawTexture)
@@ -1079,7 +1043,7 @@ class SpriteStage extends Stage
 					tx = mtx.tx,
 					ty = mtx.ty;
 
-				if(snapToPixelEnabled && child.snapToPixel)
+				if(snapToPixelEnabled && kid.snapToPixel)
 				{
 					tx = tx + (tx < 0 ? -0.5 : 0.5) | 0;
 					ty = ty + (ty < 0 ? -0.5 : 0.5) | 0;
@@ -1102,7 +1066,7 @@ class SpriteStage extends Stage
 				vertices[offset + 8] = vertices[offset + 13] = vEnd;
 
 				// Alphas:
-				vertices[offset + 4] = vertices[offset + 9] = vertices[offset + 14] = vertices[offset + 19] = child.alpha;
+				vertices[offset + 4] = vertices[offset + 9] = vertices[offset + 14] = vertices[offset + 19] = kid.alpha;
 
 				// Draw to the GPU if the maximum number of boxes per a draw has been reached:
 				if(this._currentBoxIndex === maxBoxIndex)
@@ -1125,9 +1089,9 @@ class SpriteStage extends Stage
 			}
 
 			// Draw children:
-			if(child.children)
+			if(kid.children)
 			{
-				this._drawWebGLKids(child.children, ctx, mtx);
+				this._drawWebGLKids(kid.children, ctx, mtx);
 				maxBoxIndex = this._maxBoxesPerDraw - 1;
 			}
 		}

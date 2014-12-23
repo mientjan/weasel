@@ -26,19 +26,31 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
 import Ticker = require('../../createts/utils/Ticker');
-import Container = require('./Container');
-import MouseEvent = require('../events/MouseEvent');
-import Signal1 = require('../../createts/events/Signal1');
-import Signal = require('../../createts/events/Signal');
 import TouchInjectProperties = require('../ui/TouchInjectProperties');
+
+// display
+import DisplayObject = require('./DisplayObject');
+import Container = require('./Container');
+
+// interfaces
+import IPoint = require('../interface/IPoint');
+
+// geom
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
-import DisplayType = require('../enum/DisplayType');
-import SignalConnection = require('../../createts/events/SignalConnection');
+import PointerData = require('../geom/PointerData');
 
+// enum
 import QualityType = require('../enum/QualityType');
+import DisplayType = require('../enum/DisplayType');
+
+// event / signal
+import PointerEvent = require('../event/PointerEvent');
+import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal1 = require('../../createts/event/Signal1');
+import Signal = require('../../createts/event/Signal');
+import SignalConnection = require('../../createts/event/SignalConnection');
 
 /**
  * @module createts
@@ -152,7 +164,12 @@ class Stage extends Container
 	public _tickSignalConnection:SignalConnection = null;
 	public _fps:number = 60;
 
-	public _eventListeners:any = null;
+	public _eventListeners:{
+		[name:string]: {
+			window: any;
+			fn: (e) => void;
+		}
+	} = null;
 
 	/**
 	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
@@ -246,7 +263,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	public tickOnUpdate = true; 
+	public tickOnUpdate = true;
 
 	/**
 	 * If true, mouse move events will continue to be called when the mouse leaves the target canvas. See
@@ -421,22 +438,25 @@ class Stage extends Container
 		}
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
+		this.ctx = this.canvas.getContext('2d');
+		this.setQuality(QualityType.NORMAL);
 
-		if( onResize ){
+		if(onResize)
+		{
 			onResize.call(window);
 		}
-//
-//
-//		this.enableDOMEvents(true);
-//		this.ctx = this.canvas.getContext('2d');
-//		if(onResize)
-//		{
-//			onResize.call(window);
-//		}
-//
-//		this.setFps(this._fps);
-//
-//		this.onResize(size);
+		//
+		//
+		//		this.enableDOMEvents(true);
+		//		this.ctx = this.canvas.getContext('2d');
+		//		if(onResize)
+		//		{
+		//			onResize.call(window);
+		//		}
+		//
+		//		this.setFps(this._fps);
+		//
+		//		this.onResize(size);
 	}
 
 
@@ -478,9 +498,8 @@ class Stage extends Container
 	 * @method update
 	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
 	 **/
-	public update = (params?:any) =>
+	public update = (...args:any[]) =>
 	{
-
 		if(!this.canvas)
 		{
 			return;
@@ -489,7 +508,7 @@ class Stage extends Container
 		if(this.tickOnUpdate)
 		{
 			// update this logic in SpriteStage when necessary
-			this.tick.apply(this, arguments);
+			this.onTick.apply(this, args);
 		}
 		//
 		//		if(this.dispatchEvent("drawstart"))
@@ -502,7 +521,7 @@ class Stage extends Container
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
 
 		var r = this.drawRect,
-			ctx = this.canvas.getContext('2d');
+			ctx = this.ctx;
 
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -563,23 +582,19 @@ class Stage extends Container
 	 * 	    	console.log(evt.params[1], evt.params[2]); // "hello 2014"
 	 * 	    }
 	 *
-	 * @method tick
+	 * @method onTick
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public tick()
+	public tick(e:TimeEvent)
 	{
 		if(!this.tickEnabled)
 		{
 			return;
 		}
+
 		this.tickstartSignal.emit();
-		var args = arguments.length ? Array.prototype.slice.call(arguments, 0) : null;
-		var evt = args && args[0];
-		var props:any = evt && (evt.delta != null) ? {delta: evt.delta, paused: evt.paused, time: evt.time, runTime: evt.runTime } : {};
-		props.params = args;
-		this._tick(props);
+		this.onTick(e);
 		this.tickendSignal.emit();
-		//		this.dispatchEvent("tickend");
 	}
 
 	/**
@@ -738,59 +753,48 @@ class Stage extends Container
 	 * @method enableDOMEvents
 	 * @param {Boolean} [enable=true] Indicates whether to enable or disable the events. Default is true.
 	 **/
-	public enableDOMEvents(enable)
+	public enableDOMEvents(enable:boolean = true)
 	{
-		if(enable == null)
+		var name, o, eventListeners = this._eventListeners;
+		if(!enable && eventListeners)
 		{
-			enable = true;
-		}
-		var name, o, ls = this._eventListeners;
-		if(!enable && ls)
-		{
-			for(name in ls)
+			for(name in eventListeners)
 			{
-				o = ls[name];
+				o = eventListeners[name];
 				o.t.removeEventListener(name, o.f, false);
 			}
 			this._eventListeners = null;
 		}
-		else if(enable && !ls && this.canvas)
+		else if(enable && !eventListeners && this.canvas)
 		{
-			var win = window['addEventListener'] ? <any> window : <any> document;
-			ls = this._eventListeners = {};
-			ls["mouseup"] = {
-				window: win,
-				fn: (e) =>
-				{
-					this._handleMouseUp(e)
-				}
-			};
-			ls["mousemove"] = {
-				window: win,
-				fn: (e) =>
-				{
-					this._handleMouseMove(e)
-				}
-			};
-			ls["dblclick"] = {
-				window: this.canvas,
-				fn: (e) =>
-				{
-					this._handleDoubleClick(e)
-				}
+			var windowsObject = window['addEventListener'] ? <any> window : <any> document;
+			eventListeners = this._eventListeners = {};
+			eventListeners["mouseup"] = {
+				window: windowsObject,
+				fn: e => this._handleMouseUp(e)
 			};
 
-			ls["mousedown"] = {
-				window: this.canvas,
-				fn: (e) =>
-				{
-					this._handleMouseDown(e)
-				}
+			eventListeners["mousemove"] = {
+				window: windowsObject,
+				fn: e => this._handleMouseMove(e)
 			};
 
-			for(name in ls)
+			eventListeners["mousedown"] = {
+				window: this.canvas,
+				fn: e => this._handleMouseDown(e)
+			};
+
+			//			eventListeners["dblclick"] = {
+			//				window: this.canvas,
+			//				fn: (e) =>
+			//				{
+			//					this._handleDoubleClick(e)
+			//				}
+			//			};
+
+			for(name in eventListeners)
 			{
-				o = ls[name];
+				o = eventListeners[name];
 				o.window.addEventListener(name, o.fn, false);
 			}
 		}
@@ -860,17 +864,19 @@ class Stage extends Container
 	 * @protected
 	 * @param {Number} id
 	 **/
-	public _getPointerData(id)
+	public _getPointerData(id):PointerData
 	{
 		var data = this._pointerData[id];
 		if(!data)
 		{
-			data = this._pointerData[id] = {x: 0, y: 0};
+			data = this._pointerData[id] = new PointerData(0, 0);
+
 			// if it's the first new touch, then make it the primary pointer id:
 			if(this._primaryPointerID == null)
 			{
 				this._primaryPointerID = id;
 			}
+
 			// if it's the mouse (id == -1) or the first new touch, then make it the primary pointer id:
 			if(this._primaryPointerID == null || this._primaryPointerID == -1)
 			{
@@ -885,12 +891,12 @@ class Stage extends Container
 	 * @protected
 	 * @param {MouseEvent} e
 	 **/
-	public _handleMouseMove(e)
+	public _handleMouseMove(e:MouseEvent = <any> window['event'])
 	{
-		if(!e)
-		{
-			e = window.event;
-		}
+		//		if(!e){
+		//			var b = <MouseEvent> window['event'];
+		//		}
+
 		this._handlePointerMove(-1, e, e.pageX, e.pageY);
 	}
 
@@ -908,25 +914,28 @@ class Stage extends Container
 		if(this._prevStage && owner === undefined)
 		{
 			return;
-		} // redundant listener.
+		}
+
+		// redundant listener.
 		if(!this.canvas)
 		{
 			return;
 		}
 
-		var nextStage = this._nextStage, o = this._getPointerData(id);
+		var nextStage = this._nextStage;
+		var pointerData = this._getPointerData(id);
 
-		var inBounds = o.inBounds;
+		var inBounds = pointerData.inBounds;
 		this._updatePointerPosition(id, e, pageX, pageY);
-		if(inBounds || o.inBounds || this.mouseMoveOutside)
+		if(inBounds || pointerData.inBounds || this.mouseMoveOutside)
 		{
-			if(id == -1 && o.inBounds == !inBounds)
+			if(id == -1 && pointerData.inBounds == !inBounds)
 			{
-				this._dispatchMouseEvent(this, (inBounds ? "mouseleave" : "mouseenter"), false, id, o, e);
+				this._dispatchMouseEvent(this, (inBounds ? "mouseleave" : "mouseenter"), false, id, pointerData, e);
 			}
 
-			this._dispatchMouseEvent(this, "stagemousemove", false, id, o, e);
-			this._dispatchMouseEvent(o.target, "pressmove", true, id, o, e);
+			this._dispatchMouseEvent(this, "stagemousemove", false, id, pointerData, e);
+			this._dispatchMouseEvent(pointerData.target, "pressmove", true, id, pointerData, e);
 		}
 
 		nextStage && nextStage._handlePointerMove(id, e, pageX, pageY, null);
@@ -950,27 +959,27 @@ class Stage extends Container
 		var h = this.canvas.height;
 		pageX /= (rect.right - rect.left) / w;
 		pageY /= (rect.bottom - rect.top) / h;
-		var o = this._getPointerData(id);
-		if(o.inBounds = (pageX >= 0 && pageY >= 0 && pageX <= w - 1 && pageY <= h - 1))
+		var pointerData = this._getPointerData(id);
+		if(pointerData.inBounds = (pageX >= 0 && pageY >= 0 && pageX <= w - 1 && pageY <= h - 1))
 		{
-			o.x = pageX;
-			o.y = pageY;
+			pointerData.x = pageX;
+			pointerData.y = pageY;
 		}
 		else if(this.mouseMoveOutside)
 		{
-			o.x = pageX < 0 ? 0 : (pageX > w - 1 ? w - 1 : pageX);
-			o.y = pageY < 0 ? 0 : (pageY > h - 1 ? h - 1 : pageY);
+			pointerData.x = pageX < 0 ? 0 : (pageX > w - 1 ? w - 1 : pageX);
+			pointerData.y = pageY < 0 ? 0 : (pageY > h - 1 ? h - 1 : pageY);
 		}
 
-		o.posEvtObj = e;
-		o.rawX = pageX;
-		o.rawY = pageY;
+		pointerData.posEvtObj = e;
+		pointerData.rawX = pageX;
+		pointerData.rawY = pageY;
 
 		if(id == this._primaryPointerID)
 		{
-			this.mouseX = o.x;
-			this.mouseY = o.y;
-			this.mouseInBounds = o.inBounds;
+			this.mouseX = pointerData.x;
+			this.mouseY = pointerData.y;
+			this.mouseInBounds = pointerData.inBounds;
 		}
 	}
 
@@ -1059,7 +1068,6 @@ class Stage extends Container
 		var pointerData = this._getPointerData(id);
 
 
-
 		if(pointerData.inBounds)
 		{
 			this._dispatchMouseEvent(this, "stagemousedown", false, id, pointerData, e);
@@ -1074,6 +1082,13 @@ class Stage extends Container
 		nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
 	}
 
+	public _testMouseOver(clear?:boolean, owner?:Stage, eventTarget?:Stage)
+	{
+
+
+	}
+
+
 	/**
 	 * @method _testMouseOver
 	 * @param {Boolean} clear If true, clears the mouseover / rollover (ie. no target)
@@ -1081,7 +1096,7 @@ class Stage extends Container
 	 * @param {Stage} eventTarget The stage that the cursor is actively over.
 	 * @protected
 	 **/
-	public _testMouseOver(clear?:boolean, owner?:Stage, eventTarget?:Stage)
+	public _testMouseOver_old(clear?:boolean, owner?:Stage, eventTarget?:Stage)
 	{
 		if(this._prevStage && owner === undefined)
 		{
@@ -1107,7 +1122,6 @@ class Stage extends Container
 		var o = this._getPointerData(-1), e = o.posEvtObj;
 
 
-
 		var isEventTarget = eventTarget || e && (e.target == this.canvas);
 		var target = null, common = -1, cursor = "", t, i, l;
 
@@ -1117,7 +1131,6 @@ class Stage extends Container
 			this._mouseOverX = this.mouseX;
 			this._mouseOverY = this.mouseY;
 		}
-
 
 
 		var oldList = this._mouseOverTarget || [];
@@ -1217,7 +1230,7 @@ class Stage extends Container
 		 var pt = this._mtx.transformPoint(o.x, o.y);
 		 var evt = new createts.MouseEvent(type, bubbles, false, pt.x, pt.y, nativeEvent, pointerId, pointerId==this._primaryPointerID, o.rawX, o.rawY);
 		 */
-		var evt = new MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
+		var evt = new PointerEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
 		target.dispatchEvent(evt);
 	}
 

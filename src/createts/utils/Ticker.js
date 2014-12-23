@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", '../../createts/events/TimeEvent', '../../createts/events/Signal1'], function (require, exports, TimeEvent, Signal1) {
+define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/event/Signal1'], function (require, exports, TimeEvent, Signal1) {
     /**
      * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick
      * event to be notified when a set time interval has elapsed.

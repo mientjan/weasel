@@ -8,14 +8,18 @@ class AbstractBehaviour {
 	public owner:DisplayObject = null;
 
 	constructor(){}
-	initialize(owner:DisplayObject){
+
+	public initialize(owner:DisplayObject):any
+	{
 		if(this.owner){
 			throw new Error('behavior already has a owner')
 		}
+
 		this.owner = owner;
 	}
 
-	destruct(){
+	public destruct():any
+	{
 		this.owner = null;
 	}
 }

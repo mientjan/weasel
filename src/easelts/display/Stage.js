@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', './Container', '../events/MouseEvent', '../../createts/events/Signal', '../geom/Size', '../enum/DisplayType', '../enum/QualityType'], function (require, exports, DisplayObject, Ticker, Container, MouseEvent, Signal, Size, DisplayType, QualityType) {
+define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, Signal) {
     /**
      * @module createts
      */
@@ -268,13 +268,17 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
              * @method update
              * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
              **/
-            this.update = function (params) {
+            this.update = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
                 if (!_this.canvas) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
                     // update this logic in SpriteStage when necessary
-                    _this.tick.apply(_this, arguments);
+                    _this.onTick.apply(_this, args);
                 }
                 //
                 //		if(this.dispatchEvent("drawstart"))
@@ -283,7 +287,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
                 //		}
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
-                var r = _this.drawRect, ctx = _this.canvas.getContext('2d');
+                var r = _this.drawRect, ctx = _this.ctx;
                 ctx.setTransform(1, 0, 0, 1, 0, 0);
                 if (_this.autoClear) {
                     if (r) {
@@ -340,6 +344,8 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
             }
             this.enableDOMEvents(true);
             this.setFps(this._fps);
+            this.ctx = this.canvas.getContext('2d');
+            this.setQuality(0 /* NORMAL */);
             if (onResize) {
                 onResize.call(window);
             }
@@ -456,21 +462,16 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
          * 	    	console.log(evt.params[1], evt.params[2]); // "hello 2014"
          * 	    }
          *
-         * @method tick
+         * @method onTick
          * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
          **/
-        Stage.prototype.tick = function () {
+        Stage.prototype.tick = function (e) {
             if (!this.tickEnabled) {
                 return;
             }
             this.tickstartSignal.emit();
-            var args = arguments.length ? Array.prototype.slice.call(arguments, 0) : null;
-            var evt = args && args[0];
-            var props = evt && (evt.delta != null) ? { delta: evt.delta, paused: evt.paused, time: evt.time, runTime: evt.runTime } : {};
-            props.params = args;
-            this._tick(props);
+            this.onTick(e);
             this.tickendSignal.emit();
-            //		this.dispatchEvent("tickend");
         };
         /**
          * Default event handler that calls the Stage {{#crossLink "Stage/update"}}{{/crossLink}} method when a {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}}
@@ -598,46 +599,32 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
          **/
         Stage.prototype.enableDOMEvents = function (enable) {
             var _this = this;
-            if (enable == null) {
-                enable = true;
-            }
-            var name, o, ls = this._eventListeners;
-            if (!enable && ls) {
-                for (name in ls) {
-                    o = ls[name];
+            if (enable === void 0) { enable = true; }
+            var name, o, eventListeners = this._eventListeners;
+            if (!enable && eventListeners) {
+                for (name in eventListeners) {
+                    o = eventListeners[name];
                     o.t.removeEventListener(name, o.f, false);
                 }
                 this._eventListeners = null;
             }
-            else if (enable && !ls && this.canvas) {
-                var win = window['addEventListener'] ? window : document;
-                ls = this._eventListeners = {};
-                ls["mouseup"] = {
-                    window: win,
-                    fn: function (e) {
-                        _this._handleMouseUp(e);
-                    }
+            else if (enable && !eventListeners && this.canvas) {
+                var windowsObject = window['addEventListener'] ? window : document;
+                eventListeners = this._eventListeners = {};
+                eventListeners["mouseup"] = {
+                    window: windowsObject,
+                    fn: function (e) { return _this._handleMouseUp(e); }
                 };
-                ls["mousemove"] = {
-                    window: win,
-                    fn: function (e) {
-                        _this._handleMouseMove(e);
-                    }
+                eventListeners["mousemove"] = {
+                    window: windowsObject,
+                    fn: function (e) { return _this._handleMouseMove(e); }
                 };
-                ls["dblclick"] = {
+                eventListeners["mousedown"] = {
                     window: this.canvas,
-                    fn: function (e) {
-                        _this._handleDoubleClick(e);
-                    }
+                    fn: function (e) { return _this._handleMouseDown(e); }
                 };
-                ls["mousedown"] = {
-                    window: this.canvas,
-                    fn: function (e) {
-                        _this._handleMouseDown(e);
-                    }
-                };
-                for (name in ls) {
-                    o = ls[name];
+                for (name in eventListeners) {
+                    o = eventListeners[name];
                     o.window.addEventListener(name, o.fn, false);
                 }
             }
@@ -697,7 +684,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
         Stage.prototype._getPointerData = function (id) {
             var data = this._pointerData[id];
             if (!data) {
-                data = this._pointerData[id] = { x: 0, y: 0 };
+                data = this._pointerData[id] = new PointerData(0, 0);
                 // if it's the first new touch, then make it the primary pointer id:
                 if (this._primaryPointerID == null) {
                     this._primaryPointerID = id;
@@ -715,9 +702,10 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
          * @param {MouseEvent} e
          **/
         Stage.prototype._handleMouseMove = function (e) {
-            if (!e) {
-                e = window.event;
-            }
+            //		if(!e){
+            //			var b = <MouseEvent> window['event'];
+            //		}
+            if (e === void 0) { e = window['event']; }
             this._handlePointerMove(-1, e, e.pageX, e.pageY);
         };
         /**
@@ -732,19 +720,21 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
         Stage.prototype._handlePointerMove = function (id, e, pageX, pageY, owner) {
             if (this._prevStage && owner === undefined) {
                 return;
-            } // redundant listener.
+            }
+            // redundant listener.
             if (!this.canvas) {
                 return;
             }
-            var nextStage = this._nextStage, o = this._getPointerData(id);
-            var inBounds = o.inBounds;
+            var nextStage = this._nextStage;
+            var pointerData = this._getPointerData(id);
+            var inBounds = pointerData.inBounds;
             this._updatePointerPosition(id, e, pageX, pageY);
-            if (inBounds || o.inBounds || this.mouseMoveOutside) {
-                if (id == -1 && o.inBounds == !inBounds) {
-                    this._dispatchMouseEvent(this, (inBounds ? "mouseleave" : "mouseenter"), false, id, o, e);
+            if (inBounds || pointerData.inBounds || this.mouseMoveOutside) {
+                if (id == -1 && pointerData.inBounds == !inBounds) {
+                    this._dispatchMouseEvent(this, (inBounds ? "mouseleave" : "mouseenter"), false, id, pointerData, e);
                 }
-                this._dispatchMouseEvent(this, "stagemousemove", false, id, o, e);
-                this._dispatchMouseEvent(o.target, "pressmove", true, id, o, e);
+                this._dispatchMouseEvent(this, "stagemousemove", false, id, pointerData, e);
+                this._dispatchMouseEvent(pointerData.target, "pressmove", true, id, pointerData, e);
             }
             nextStage && nextStage._handlePointerMove(id, e, pageX, pageY, null);
         };
@@ -764,22 +754,22 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
             var h = this.canvas.height;
             pageX /= (rect.right - rect.left) / w;
             pageY /= (rect.bottom - rect.top) / h;
-            var o = this._getPointerData(id);
-            if (o.inBounds = (pageX >= 0 && pageY >= 0 && pageX <= w - 1 && pageY <= h - 1)) {
-                o.x = pageX;
-                o.y = pageY;
+            var pointerData = this._getPointerData(id);
+            if (pointerData.inBounds = (pageX >= 0 && pageY >= 0 && pageX <= w - 1 && pageY <= h - 1)) {
+                pointerData.x = pageX;
+                pointerData.y = pageY;
             }
             else if (this.mouseMoveOutside) {
-                o.x = pageX < 0 ? 0 : (pageX > w - 1 ? w - 1 : pageX);
-                o.y = pageY < 0 ? 0 : (pageY > h - 1 ? h - 1 : pageY);
+                pointerData.x = pageX < 0 ? 0 : (pageX > w - 1 ? w - 1 : pageX);
+                pointerData.y = pageY < 0 ? 0 : (pageY > h - 1 ? h - 1 : pageY);
             }
-            o.posEvtObj = e;
-            o.rawX = pageX;
-            o.rawY = pageY;
+            pointerData.posEvtObj = e;
+            pointerData.rawX = pageX;
+            pointerData.rawY = pageY;
             if (id == this._primaryPointerID) {
-                this.mouseX = o.x;
-                this.mouseY = o.y;
-                this.mouseInBounds = o.inBounds;
+                this.mouseX = pointerData.x;
+                this.mouseY = pointerData.y;
+                this.mouseInBounds = pointerData.inBounds;
             }
         };
         /**
@@ -856,6 +846,8 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
             }
             nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
         };
+        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
+        };
         /**
          * @method _testMouseOver
          * @param {Boolean} clear If true, clears the mouseover / rollover (ie. no target)
@@ -863,7 +855,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
          * @param {Stage} eventTarget The stage that the cursor is actively over.
          * @protected
          **/
-        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
+        Stage.prototype._testMouseOver_old = function (clear, owner, eventTarget) {
             if (this._prevStage && owner === undefined) {
                 return;
             } // redundant listener.
@@ -959,7 +951,7 @@ define(["require", "exports", './DisplayObject', '../../createts/utils/Ticker', 
              var pt = this._mtx.transformPoint(o.x, o.y);
              var evt = new createts.MouseEvent(type, bubbles, false, pt.x, pt.y, nativeEvent, pointerId, pointerId==this._primaryPointerID, o.rawX, o.rawY);
              */
-            var evt = new MouseEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
+            var evt = new PointerEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
             target.dispatchEvent(evt);
         };
         /**

@@ -1,34 +1,35 @@
 /*
-* Bitmap
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-* 
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-* 
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Bitmap
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Rectangle = require('../geom/Rectangle');
+import Size = require('../geom/Size');
 
 /**
  * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
@@ -59,11 +60,14 @@ import Rectangle = require('../geom/Rectangle');
  * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
  * If it is a URI, a new Image object will be constructed and assigned to the .image property.
  **/
-class Bitmap extends DisplayObject {
+class Bitmap extends DisplayObject
+{
 
-// public properties:
+	public static EVENT_ONLOAD = 'onload';
+	// public properties:
 
 	public type:DisplayType = DisplayType.BITMAP;
+	public loaded:boolean = false;
 
 	/**
 	 * The image to render. This can be an Image, a Canvas, or a Video.
@@ -79,9 +83,8 @@ class Bitmap extends DisplayObject {
 	 * @default null
 	 */
 	sourceRect:Rectangle = null;
-	loaded:boolean = false;
 
-	/** 
+	/**
 	 * Initialization method.
 	 * @method initialize
 	 * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to
@@ -89,31 +92,47 @@ class Bitmap extends DisplayObject {
 	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @protected
 	 **/
-	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
-	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
 	constructor(imageOrUri:any, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
-		if (typeof imageOrUri == "string") {
+		if(typeof imageOrUri == "string")
+		{
 			this.image = document.createElement("img");
-			this.image.onload = this.onLoad.bind(this);
 			this.image.src = imageOrUri;
-		} else {
+		}
+		else
+		{
 			this.image = imageOrUri;
-			if( !this.image.complete ){
-				this.image.onload = this.onLoad.bind(this);
-			} else {
-				this.onLoad();
+		}
+
+		if(!width && !height)
+		{
+			if(this.image.complete)
+			{
+				this.image.onload = <any> this.onLoad.bind(this);
+			}
+			else
+			{
+				this.onLoad()
 			}
 		}
 	}
 
-	private onLoad(){
+	public onLoad()
+	{
 		this.loaded = true;
+
+		this.width = this.image.width;
+		this.height = this.image.height;
+		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+
+		if(this._parentSizeIsKnown) this.onResize(new Size(this.parent.width, this.parent.height));
 	}
-	
-// public methods:
+
+	// public methods:
 
 	/**
 	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
@@ -123,12 +142,14 @@ class Bitmap extends DisplayObject {
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
 	 **/
-	public isVisible() {
+	public isVisible()
+	{
 		return this.visible;
 	}
-//		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-//		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
-//	}
+
+	//		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
+	//		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
+	//	}
 
 	/**
 	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -142,24 +163,31 @@ class Bitmap extends DisplayObject {
 	 * into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx, ignoreCache) {
+	public draw(ctx, ignoreCache)
+	{
 
-		if (super.draw(ctx, ignoreCache)) { return true; }
+		if(super.draw(ctx, ignoreCache))
+		{
+			return true;
+		}
 		var rect = this.sourceRect;
-		if (rect) {
-			ctx.drawImage(this.image,rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+		if(rect)
+		{
+			ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
 
-		} else {
+		}
+		else
+		{
 			ctx.drawImage(this.image, 0, 0);
 		}
 
 
 		return true;
 	}
-	
+
 	//Note, the doc sections below document using the specified APIs (from DisplayObject)  from
 	//Bitmap. This is why they have no method implementations.
-	
+
 	/**
 	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
 	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
@@ -169,7 +197,7 @@ class Bitmap extends DisplayObject {
 	 * method.
 	 * @method cache
 	 **/
-	
+
 	/**
 	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
 	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
@@ -179,7 +207,7 @@ class Bitmap extends DisplayObject {
 	 * method.
 	 * @method updateCache
 	 **/
-	
+
 	/**
 	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
 	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
@@ -193,33 +221,43 @@ class Bitmap extends DisplayObject {
 	/**
 	 * Docced in superclass.
 	 */
-	public getBounds() {
+	public getBounds()
+	{
 		var rect = super.getBounds();
-		if (rect) { return rect; }
-		var o = <{width:number;height:number;}> this.sourceRect || this.image;
+		if(rect)
+		{
+			return rect;
+		}
+		var o = <{width:number;height:number;
+		}> this.sourceRect || this.image;
 		var hasContent = (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
 		return hasContent ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
 	}
-	
+
 	/**
 	 * Returns a clone of the Bitmap instance.
 	 * @method clone
 	 * @return {Bitmap} a clone of the Bitmap instance.
 	 **/
-	public clone() {
+	public clone()
+	{
 		var o = new Bitmap(this.image);
-		if (this.sourceRect) { o.sourceRect = this.sourceRect.clone(); }
+		if(this.sourceRect)
+		{
+			o.sourceRect = this.sourceRect.clone();
+		}
 		this.cloneProps(o);
 		return o;
 	}
-	
+
 	/**
 	 * Returns a string representation of this object.
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	toString() {
-		return "[Bitmap (name="+  this.name +")]";
+	public toString()
+	{
+		return "[Bitmap (name=" + this.name + ")]";
 	}
 
 }

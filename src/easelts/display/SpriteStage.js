@@ -31,9 +31,15 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'], function (require, exports, Stage, RGBA, DisplayType) {
+define(["require", "exports", './Stage'], function (require, exports, Stage) {
     var SpriteStage = (function (_super) {
         __extends(SpriteStage, _super);
+        // constructor:
+        /**
+         * @property Stage_initialize
+         * @type Function
+         * @private
+         **/
         /**
          * Initialization method.
          * @class SpriteStage
@@ -44,8 +50,6 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          **/
         function SpriteStage(canvas, preserveDrawingBuffer, antialias) {
             var _this = this;
-            if (preserveDrawingBuffer === void 0) { preserveDrawingBuffer = false; }
-            if (antialias === void 0) { antialias = false; }
             _super.call(this, canvas);
             // private properties:
             /**
@@ -114,7 +118,7 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
              * @type {Object}
              * @default null
              **/
-            this._clearColor = new RGBA;
+            this._clearColor = null;
             /**
              * The maximum number of textures WebGL can work with per draw call.
              * @property _maxTexturesPerDraw
@@ -222,24 +226,16 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
              * @method update
              * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
              **/
-            this.update = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
+            this.update = function (params) {
                 if (!_this.canvas) {
                     return;
                 }
-                //		if(this.tickOnUpdate)
-                //		{
-                //			this.tickstartSignal.emit();
-                //			this.dispatchEvent("tickstart");  // TODO: make cancellable?
-                _this._tick((args.length ? args : null));
-                //			this.dispatchEvent("tickend");
-                //			this.tickendSignal.emit();
-                //		}
-                //		this.drawstartSignal.emit();
-                //		this.dispatchEvent("drawstart"); // TODO: make cancellable?
+                if (_this.tickOnUpdate) {
+                    _this.dispatchEvent("tickstart"); // TODO: make cancellable?
+                    _this._tick((arguments.length ? arguments : null));
+                    _this.dispatchEvent("tickend");
+                }
+                _this.dispatchEvent("drawstart"); // TODO: make cancellable?
                 if (_this.autoClear) {
                     _this.clear();
                 }
@@ -250,19 +246,17 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                 }
                 else {
                     // Use 2D.
-                    var ctx2d = _this.canvas.getContext("2d");
-                    ctx2d.save();
-                    _this.updateContext(ctx2d);
-                    _this.draw(ctx2d, false);
-                    ctx2d.restore();
+                    ctx = _this.canvas.getContext("2d");
+                    ctx.save();
+                    _this.updateContext(ctx);
+                    _this.draw(ctx, false);
+                    ctx.restore();
                 }
-                //		this.drawendSignal.emit();
-                //		this.dispatchEvent("drawend");
+                _this.dispatchEvent("drawend");
             };
-            this._preserveDrawingBuffer = preserveDrawingBuffer;
-            this._antialias = antialias;
+            this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
+            this._antialias = antialias !== undefined ? antialias : this._antialias;
             this._initializeWebGL();
-            this.updateViewport(canvas.width, canvas.height);
         }
         // getter / setters:
         /**
@@ -299,19 +293,15 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          * @param {DisplayObject} child The display object to add.
          * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
          **/
-        SpriteStage.prototype.addChild = function () {
-            var children = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                children[_i - 0] = arguments[_i];
+        SpriteStage.prototype.addChild = function (child) {
+            if (child == null) {
+                return child;
             }
-            if (children.length == 0) {
-                return null;
-            }
-            if (children.length > 1) {
-                return this.addChildAt.apply(this, Array.prototype.slice.call(children).concat([this.children.length]));
+            if (arguments.length > 1) {
+                return this.addChildAt.apply(this, Array.prototype.slice.call(arguments).concat([this.children.length]));
             }
             else {
-                return this.addChildAt(children[0], this.children.length);
+                return this.addChildAt(child, this.children.length);
             }
         };
         /**
@@ -340,40 +330,31 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          * @param {Number} index The index to add the child at.
          * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
          **/
-        SpriteStage.prototype.addChildAt = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var l = args.length;
-            var indx = args[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
+        SpriteStage.prototype.addChildAt = function (child, index) {
+            var l = arguments.length;
+            var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
             if (indx < 0 || indx > this.children.length) {
-                return args[l - 2];
+                return arguments[l - 2];
             }
             if (l > 2) {
                 for (var i = 0; i < l - 1; i++) {
-                    this.addChildAt(args[i], indx + i);
+                    this.addChildAt(arguments[i], indx + i);
                 }
-                return args[l - 2];
+                return arguments[l - 2];
             }
-            var child = args[0];
-            var index = args[1];
-            if (child.type == 7 /* BITMAP */) {
+            if (child._spritestage_compatibility >= 1) {
             }
             else {
                 console && console.log("Error: You can only add children of type SpriteContainer, Sprite, Bitmap, BitmapText, or DOMElement. [" + child.toString() + "]");
                 return child;
             }
-            /*
-                    if(!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4)
-                    {
-                        console && console.log("Error: You can only add children that have an image or spriteSheet defined on them. [" + child.toString() + "]");
-                        return child;
-                    }
-                    if(child.parent)
-                    {
-                        child.parent.removeChild(child);
-                    }*/
+            if (!child.image && !child.spriteSheet && child._spritestage_compatibility <= 4) {
+                console && console.log("Error: You can only add children that have an image or spriteSheet defined on them. [" + child.toString() + "]");
+                return child;
+            }
+            if (child.parent) {
+                child.parent.removeChild(child);
+            }
             child.parent = this;
             this.children.splice(index, 0, child);
             this._setUpKidTexture(this._webGLContext, child);
@@ -394,13 +375,24 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
             }
             else {
                 // Use 2D.
-                var ctx2d = this.canvas.getContext("2d");
-                ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-                ctx2d.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+                ctx = this.canvas.getContext("2d");
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
             }
         };
+        /**
+         * Draws the stage into the specified context (using WebGL) ignoring its visible, alpha, shadow, and transform.
+         * If WebGL is not supported in the browser, it will default to a 2D context.
+         * Returns true if the draw was handled (useful for overriding functionality).
+         *
+         * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+         * @method draw
+         * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
+         * @param {Boolean} [ignoreCache=false] Indicates whether the draw operation should ignore any current cache.
+         * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
+         * into itself).
+         **/
         SpriteStage.prototype.draw = function (ctx, ignoreCache) {
-            if (ignoreCache === void 0) { ignoreCache = false; }
             if (ctx === this._webGLContext || ctx instanceof WebGLRenderingContext) {
                 this._drawWebGLKids(this.children, ctx);
                 // If there is a remaining texture, draw it:
@@ -454,7 +446,7 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          * @protected
          **/
         SpriteStage.prototype._initializeWebGL = function () {
-            this._clearColor = new RGBA();
+            this._clearColor = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
             this._setWebGLContext();
         };
         /**
@@ -489,8 +481,8 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                 antialias: this._antialias,
                 premultipliedAlpha: true // Assume the drawing buffer contains colors with premultiplied alpha.
             };
-            var gl = this._webGLContext = this.canvas.getContext("webgl", options) || this.canvas.getContext("experimental-webgl", options);
-            if (!gl) {
+            var ctx = this._webGLContext = this.canvas.getContext("webgl", options) || this.canvas.getContext("experimental-webgl", options);
+            if (!ctx) {
                 // WebGL is not supported in this browser.
                 return;
             }
@@ -499,19 +491,19 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
             // Set the default color the canvas should render when clearing:
             this._setClearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearColor.a);
             // Enable blending and set the blending functions that work with the premultiplied alpha settings:
-            gl.enable(gl.BLEND);
-            gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            ctx.enable(ctx.BLEND);
+            ctx.blendFuncSeparate(ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA, ctx.ONE, ctx.ONE_MINUS_SRC_ALPHA);
             // Do not premultiply textures' alpha channels when loading them in:
-            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
+            ctx.pixelStorei(ctx.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
             // Create the shader program that will be used for drawing:
-            this._createShaderProgram(gl);
+            this._createShaderProgram(ctx);
             if (this._webGLErrorDetected) {
                 // Error detected during this._createShaderProgram().
                 this._webGLContext = null;
                 return;
             }
             // Create the vertices and indices buffers.
-            this._createBuffers(gl);
+            this._createBuffers(ctx);
             // Update the viewport with the initial canvas dimensions:
             this.updateViewport(this._viewportWidth || this.canvas.width || 0, this._viewportHeight || this.canvas.height || 0);
         };
@@ -632,26 +624,21 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          * Sets up a kid's WebGL texture.
          * @method _setUpKidTexture
          * @param {WebGLRenderingContext} ctx The canvas WebGL context object to draw into.
-         * @param {Object} child                The list of kids to draw.
+         * @param {Object} kid                The list of kids to draw.
          * @return {WebGLTexture}
          * @protected
          **/
-        SpriteStage.prototype._setUpKidTexture = function (ctx, child) {
+        SpriteStage.prototype._setUpKidTexture = function (ctx, kid) {
             if (!ctx) {
                 return null;
             }
             var image, texture = null;
-            if (child.type == 7 /* BITMAP */) {
-                if (!child.loaded) {
-                    return;
-                }
-                image = child.image;
+            if (kid._spritestage_compatibility === 4) {
+                image = kid.image;
             }
-            //		else if(child._spritestage_compatibility <= 3 && child.spriteSheet && child.spriteSheet._images)
-            //		{
-            //			image = child.spriteSheet._images[0];
-            //		}
-            //		console.log(ctx, child);
+            else if (kid._spritestage_compatibility <= 3 && kid.spriteSheet && kid.spriteSheet._images) {
+                image = kid.spriteSheet._images[0];
+            }
             if (image) {
                 // Create and use a new texture for this image if it doesn't already have one:
                 texture = image.__easeljs_texture;
@@ -670,33 +657,33 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
         /**
          * Draw all the kids into the WebGL context.
          * @method _drawWebGLKids
-         * @param {Array} children                The list of kids to draw.
+         * @param {Array} kids                The list of kids to draw.
          * @param {WebGLRenderingContext} ctx The canvas WebGL context object to draw into.
          * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
          * @protected
          **/
-        SpriteStage.prototype._drawWebGLKids = function (children, ctx, parentMVMatrix) {
-            var child, mtx, snapToPixelEnabled = this.snapToPixelEnabled, image = null, leftSide = 0, topSide = 0, rightSide = 0, bottomSide = 0, vertices = this._vertices, numVertexPropertiesPerBox = SpriteStage.NUM_VERTEX_PROPERTIES_PER_BOX, maxIndexSize = SpriteStage.MAX_INDEX_SIZE, maxBoxIndex = this._maxBoxesPerDraw - 1;
-            for (var i = 0, l = children.length; i < l; i++) {
-                child = children[i];
-                if (!child.isVisible()) {
+        SpriteStage.prototype._drawWebGLKids = function (kids, ctx, parentMVMatrix) {
+            var kid, mtx, snapToPixelEnabled = this.snapToPixelEnabled, image = null, leftSide = 0, topSide = 0, rightSide = 0, bottomSide = 0, vertices = this._vertices, numVertexPropertiesPerBox = SpriteStage.NUM_VERTEX_PROPERTIES_PER_BOX, maxIndexSize = SpriteStage.MAX_INDEX_SIZE, maxBoxIndex = this._maxBoxesPerDraw - 1;
+            for (var i = 0, l = kids.length; i < l; i++) {
+                kid = kids[i];
+                if (!kid.isVisible()) {
                     continue;
                 }
-                mtx = child._matrix;
+                mtx = kid._matrix;
                 // Get the kid's global matrix (relative to the stage):
-                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity()).appendTransform(child.x, child.y, child.scaleX, child.scaleY, child.rotation, child.skewX, child.skewY, child.regX, child.regY);
+                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity()).appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
                 // Set default texture coordinates:
                 var uStart = 0, uEnd = 1, vStart = 0, vEnd = 1;
                 // Define the untransformed bounding box sides and get the kid's image to use for textures:
-                if (child.type == 7 /* BITMAP */) {
-                    image = child.image;
+                if (kid._spritestage_compatibility === 4) {
+                    image = kid.image;
                     leftSide = 0;
                     topSide = 0;
                     rightSide = image.width;
                     bottomSide = image.height;
                 }
-                else if (child._spritestage_compatibility === 2) {
-                    var frame = child.spriteSheet.getFrame(child.currentFrame), rect = frame.rect;
+                else if (kid._spritestage_compatibility === 2) {
+                    var frame = kid.spriteSheet.getFrame(kid.currentFrame), rect = frame.rect;
                     image = frame.image;
                     leftSide = -frame.regX;
                     topSide = -frame.regY;
@@ -710,16 +697,15 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                 else {
                     image = null;
                     // Update BitmapText instances:
-                    if (child._spritestage_compatibility === 3) {
+                    if (kid._spritestage_compatibility === 3) {
                         // TODO: this might change in the future to use a more general approach.
-                        child._updateText();
+                        kid._updateText();
                     }
                 }
                 // Detect if this kid is a new display branch:
-                //			if(!parentMVMatrix && kid._spritestage_compatibility <= 4)
-                if (!parentMVMatrix && child.type == 7 /* BITMAP */) {
+                if (!parentMVMatrix && kid._spritestage_compatibility <= 4) {
                     // Get the texture for this display branch:
-                    var texture = (image || child.spriteSheet._images[0]).__easeljs_texture;
+                    var texture = (image || kid.spriteSheet._images[0]).__easeljs_texture;
                     // Only use a new texture in the current draw call:
                     if (texture !== this._drawTexture) {
                         // Draw to the GPU if a texture is already in use:
@@ -735,7 +721,7 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                 if (image !== null) {
                     // Set vertices' data:
                     var offset = ++this._currentBoxIndex * numVertexPropertiesPerBox, a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
-                    if (snapToPixelEnabled && child.snapToPixel) {
+                    if (snapToPixelEnabled && kid.snapToPixel) {
                         tx = tx + (tx < 0 ? -0.5 : 0.5) | 0;
                         ty = ty + (ty < 0 ? -0.5 : 0.5) | 0;
                     }
@@ -754,7 +740,7 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                     vertices[offset + 3] = vertices[offset + 18] = vStart;
                     vertices[offset + 8] = vertices[offset + 13] = vEnd;
                     // Alphas:
-                    vertices[offset + 4] = vertices[offset + 9] = vertices[offset + 14] = vertices[offset + 19] = child.alpha;
+                    vertices[offset + 4] = vertices[offset + 9] = vertices[offset + 14] = vertices[offset + 19] = kid.alpha;
                     // Draw to the GPU if the maximum number of boxes per a draw has been reached:
                     if (this._currentBoxIndex === maxBoxIndex) {
                         this._drawToGPU(ctx);
@@ -771,8 +757,8 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
                     }
                 }
                 // Draw children:
-                if (child.children) {
-                    this._drawWebGLKids(child.children, ctx, mtx);
+                if (kid.children) {
+                    this._drawWebGLKids(kid.children, ctx, mtx);
                     maxBoxIndex = this._maxBoxesPerDraw - 1;
                 }
             }
@@ -848,7 +834,6 @@ define(["require", "exports", './Stage', '../data/RGBA', '../enum/DisplayType'],
          * the array size for p._vertices would equal 1280kb and p._indices 192kb. But since mobile phones
          * with less memory need to be accounted for, the maximum size is somewhat arbitrarily divided by 4,
          * reducing the array sizes to 320kb and 48kb respectively.
-         *
          * @property MAX_BOXES_POINTS_INCREMENT
          * @static
          * @final

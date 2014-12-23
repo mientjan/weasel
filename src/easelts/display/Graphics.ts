@@ -1,5 +1,4 @@
-import Methods = require('../utils/Methods');
-import Matrix2D = require('../geom/Matrix2D');
+
 
 /*
  * Graphics
@@ -29,8 +28,11 @@ import Matrix2D = require('../geom/Matrix2D');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import Methods = require('../util/Methods');
+import Matrix2D = require('../geom/Matrix2D');
+
 /**
- * @module EaselJS
+ * @module easelts
  */
 
 /**

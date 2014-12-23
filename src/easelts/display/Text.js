@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../utils/Methods', '../geom/Bounds'], function (require, exports, DisplayObject, Methods, Bounds) {
+define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bounds'], function (require, exports, DisplayObject, Methods, Bounds) {
     /**
      * @module easelts
      */

@@ -31,6 +31,8 @@ import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
 import Matrix2D = require('../geom/Matrix2D');
 
+import TimeEvent = require('../../createts/event/TimeEvent');
+
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
  * group arm, leg, torso and head {{#crossLink "Bitmap"}}{{/crossLink}} instances together into a Person Container, and
@@ -713,21 +715,23 @@ class Container extends DisplayObject
 	 * function.
 	 * @protected
 	 **/
-	public _tick(props)
+	public onTick(e:TimeEvent)
 	{
 		if(this.tickChildren)
 		{
-			for(var i = this.children.length - 1; i >= 0; i--)
+			var children = this.children;
+			for(var i = children.length - 1; i >= 0; i--)
 			{
-				var child = this.children[i];
-				if(child.tickEnabled && child._tick)
+				var child = children[i];
+				if(child.tickEnabled)
 				{
-					child._tick(props);
+					child.onTick(e);
 				}
 			}
 
 		}
-		super._tick(props);
+
+		super.onTick(e);
 	}
 
 	/**

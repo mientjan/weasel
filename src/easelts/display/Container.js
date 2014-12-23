@@ -605,16 +605,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * function.
          * @protected
          **/
-        Container.prototype._tick = function (props) {
+        Container.prototype.onTick = function (e) {
             if (this.tickChildren) {
-                for (var i = this.children.length - 1; i >= 0; i--) {
-                    var child = this.children[i];
-                    if (child.tickEnabled && child._tick) {
-                        child._tick(props);
+                var children = this.children;
+                for (var i = children.length - 1; i >= 0; i--) {
+                    var child = children[i];
+                    if (child.tickEnabled) {
+                        child.onTick(e);
                     }
                 }
             }
-            _super.prototype._tick.call(this, props);
+            _super.prototype.onTick.call(this, e);
         };
         /**
          * @method _getObjectsUnderPoint

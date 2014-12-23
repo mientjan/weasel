@@ -28,7 +28,7 @@
 
 import DisplayObject = require('./DisplayObject');
 import Rectangle = require('../geom/Rectangle');
-import Methods = require('../utils/Methods');
+import Methods = require('../util/Methods');
 import Bounds = require('../geom/Bounds');
 
 /**
