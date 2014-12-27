@@ -184,12 +184,11 @@ class MotionGuidePlugin {
 		temp = data.orient;
 		data.orient = true;
 
-		var o = {};
-		o = MotionGuidePlugin.calc(data, data.start, o);
+		var targetData = MotionGuidePlugin.calc(data, data.start, {});
 
-		tween.__rotPathS = Number(o.rotation.toFixed(5));
-		MotionGuidePlugin.calc(data, data.end, o);
-		tween.__rotPathE = Number(o.rotation.toFixed(5));
+		tween.__rotPathS = Number(targetData.rotation.toFixed(5));
+		MotionGuidePlugin.calc(data, data.end, targetData);
+		tween.__rotPathE = Number(targetData.rotation.toFixed(5));
 		data.orient = false;	//here and now we don't know if we need to
 		MotionGuidePlugin.calc(data, data.end, injectProps);
 		data.orient = temp;
