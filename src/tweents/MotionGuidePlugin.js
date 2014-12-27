@@ -39,9 +39,9 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
      * <h4>Example</h4>
      *
      *      // Using a Motion Guide
-     *	    createjs.Tween.get(target).to({guide:{ path:[0,0, 0,200,200,200, 200,0,0,0] }},7000);
-     *	    // Visualizing the line
-     *	    graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
+     *        createjs.Tween.get(target).to({guide:{ path:[0,0, 0,200,200,200, 200,0,0,0] }},7000);
+     *        // Visualizing the line
+     *        graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
      *
      * Each path needs pre-computation to ensure there's fast performance. Because of the pre-computation there's no
      * built in support for path changes mid tween. These are the Guide Object's properties:<UL>
@@ -49,10 +49,10 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
      *      <LI> start: Optional, 0-1 : Initial position, default 0 except for when continuing along the same path.</LI>
      *      <LI> end: Optional, 0-1 : Final position, default 1 if not specified.</LI>
      *      <LI> orient: Optional, string : "fixed"/"auto"/"cw"/"ccw"<UL>
-     *				<LI>"fixed" forces the object to face down the path all movement (relative to start rotation),</LI>
-     *      		<LI>"auto" rotates the object along the path relative to the line.</LI>
-     *      		<LI>"cw"/"ccw" force clockwise or counter clockwise rotations including flash like behaviour</LI>
-     * 		</UL></LI>
+     *                <LI>"fixed" forces the object to face down the path all movement (relative to start rotation),</LI>
+     *            <LI>"auto" rotates the object along the path relative to the line.</LI>
+     *            <LI>"cw"/"ccw" force clockwise or counter clockwise rotations including flash like behaviour</LI>
+     *        </UL></LI>
      * </UL>
      * Guide objects should not be shared between tweens even if all properties are identical, the library stores
      * information on these objects in the background and sharing them can cause unexpected behaviour. Values
@@ -91,7 +91,7 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
                 target.rotation = 0;
             }
             if (prop == "rotation") {
-                tween.__needsRot = true;
+                tween['__needsRot'] = true;
             }
             return prop == "guide" ? null : value;
         };
@@ -103,8 +103,8 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
         MotionGuidePlugin.step = function (tween, prop, startValue, endValue, injectProps) {
             // other props
             if (prop == "rotation") {
-                tween.__rotGlobalS = startValue;
-                tween.__rotGlobalE = endValue;
+                tween['__rotGlobalS'] = startValue;
+                tween['__rotGlobalE'] = endValue;
                 MotionGuidePlugin.testRotData(tween, injectProps);
             }
             if (prop != "guide") {
@@ -159,9 +159,9 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             temp = data.orient;
             data.orient = true;
             var targetData = MotionGuidePlugin.calc(data, data.start, {});
-            tween.__rotPathS = Number(targetData.rotation.toFixed(5));
+            tween['__rotPathS'] = Number(targetData.rotation.toFixed(5));
             MotionGuidePlugin.calc(data, data.end, targetData);
-            tween.__rotPathE = Number(targetData.rotation.toFixed(5));
+            tween['__rotPathE'] = Number(targetData.rotation.toFixed(5));
             data.orient = false; //here and now we don't know if we need to
             MotionGuidePlugin.calc(data, data.end, injectProps);
             data.orient = temp;
@@ -169,35 +169,41 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             if (!data.orient) {
                 return endValue;
             }
-            tween.__guideData = data;
+            tween['__guideData'] = data;
             MotionGuidePlugin.testRotData(tween, injectProps);
             return endValue;
         };
         /**
-         * @method testRotData
+         *
+    
+         **/
+        /**
          * @protected
          * @static
-         **/
+         * @method testRotData
+         * @param tween
+         * @param injectProps
+         */
         MotionGuidePlugin.testRotData = function (tween, injectProps) {
             // no rotation informat? if we need it come back, if we don't use 0 & ensure we have guide data
-            if (tween.__rotGlobalS === undefined || tween.__rotGlobalE === undefined) {
-                if (tween.__needsRot) {
+            if (tween['__rotGlobalS'] === void 0 || tween['__rotGlobalE'] === void 0) {
+                if (tween['__needsRot']) {
                     return;
                 }
-                if (tween._curQueueProps.rotation !== undefined) {
-                    tween.__rotGlobalS = tween.__rotGlobalE = tween._curQueueProps.rotation;
+                if (tween._curQueueProps.rotation !== void 0) {
+                    tween['__rotGlobalS'] = tween['__rotGlobalE'] = tween._curQueueProps.rotation;
                 }
                 else {
-                    tween.__rotGlobalS = tween.__rotGlobalE = injectProps.rotation = tween.target.rotation || 0;
+                    tween['__rotGlobalS'] = tween['__rotGlobalE'] = injectProps.rotation = tween.target.rotation || 0;
                 }
             }
-            if (tween.__guideData === undefined) {
+            if (tween['__guideData'] === void 0) {
                 return;
             }
             // Process rotation properties
-            var data = tween.__guideData;
-            var rotGlobalD = tween.__rotGlobalE - tween.__rotGlobalS;
-            var rotPathD = tween.__rotPathE - tween.__rotPathS;
+            var data = tween['__guideData'];
+            var rotGlobalD = tween['__rotGlobalE'] - tween['__rotGlobalS'];
+            var rotPathD = tween['__rotPathE'] - tween['__rotPathS'];
             var rot = rotGlobalD - rotPathD;
             if (data.orient == "auto") {
                 if (rot > 180) {
@@ -225,18 +231,30 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
                 }
             }
             data.rotDelta = rot;
-            data.rotOffS = tween.__rotGlobalS - tween.__rotPathS;
+            data.rotOffS = tween['__rotGlobalS'] - tween['__rotPathS'];
             // reset
-            tween.__rotGlobalS = tween.__rotGlobalE = tween.__guideData = tween.__needsRot = undefined;
+            tween['__rotGlobalS'] = tween['__rotGlobalE'] = tween['__guideData'] = tween['__needsRot'] = undefined;
         };
+        /**
+    
+         **/
         /**
          * @method tween
          * @protected
          * @static
-         **/
+         * @param tween
+         * @param prop
+         * @param value
+         * @param startValues
+         * @param endValues
+         * @param ratio
+         * @param wait
+         * @param end
+         * @returns {*}
+         */
         MotionGuidePlugin.tween = function (tween, prop, value, startValues, endValues, ratio, wait, end) {
             var data = endValues.guide;
-            if (data == undefined || data === startValues.guide) {
+            if (data == void 0 || data === startValues.guide) {
                 return value;
             }
             if (data.lastRatio != ratio) {

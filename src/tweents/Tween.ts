@@ -78,6 +78,7 @@
 import EventDispatcher = require('../createts/event/EventDispatcher');
 import TimeEvent = require('../createts/event/TimeEvent');
 import Ticker = require('../createts/utils/Ticker');
+import Ticker = require('../easelts/interface/');
 
 /**
  * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
@@ -563,7 +564,7 @@ class Tween extends EventDispatcher
 	 * @param {Object} pluginData
 	 * @protected
 	 */
-	constructor(target:any, props:any, pluginData:any)
+	constructor(target:I, props:any, pluginData:any)
 	{
 		super();
 
