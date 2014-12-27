@@ -25,57 +25,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
-import IPoint = require('./../interface/IVector2');
-import NumberUtil = require('./../util/NumberUtil');
-
-/**
- * @module easelts
- */
-
-/**
- * Represents a point on a 2 dimensional x / y coordinate system.
- *
- * <h4>Example</h4>
- *
- *      var point = new createjs.Point(0, 100);
- *
- * @class Point
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-class PointerData implements IPoint
-{
-	/**
-	 * X position.
-	 * @property x
-	 * @type Number
-	 **/
-	public x:number;
-
-	/**
-	 * Y position.
-	 * @property y
-	 * @type number
-	 **/
-	public y:number;
-
-	/**
-	 * @property inBounds
-	 * @type boolean
-	 */
-	public inBounds:boolean = false;
-	public target:any = null;
-	posEvtObj:any = null;
-	rawX = 0;
-	rawY = 0;
-
-	constructor(x:number, y:number)
-	{
-		this.x = x;
-		this.y = y;
-	}
-}
-
-export = PointerData;
+define(["require", "exports"], function (require, exports) {
+    /**
+     * @module easelts
+     */
+    var Vector2 = (function () {
+        /**
+         * X position.
+         * @property x
+         * @type Number
+         **/
+        /**
+         * Y position.
+         * @property y
+         * @type Number
+         **/
+        function Vector2(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        return Vector2;
+    })();
+    return Vector2;
+});

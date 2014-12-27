@@ -33,49 +33,21 @@ import NumberUtil = require('./../util/NumberUtil');
  * @module easelts
  */
 
-/**
- * Represents a point on a 2 dimensional x / y coordinate system.
- *
- * <h4>Example</h4>
- *
- *      var point = new createjs.Point(0, 100);
- *
- * @class Point
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-class PointerData implements IPoint
+class Vector2
 {
 	/**
 	 * X position.
 	 * @property x
 	 * @type Number
 	 **/
-	public x:number;
 
 	/**
 	 * Y position.
 	 * @property y
-	 * @type number
+	 * @type Number
 	 **/
-	public y:number;
 
-	/**
-	 * @property inBounds
-	 * @type boolean
-	 */
-	public inBounds:boolean = false;
-	public target:any = null;
-	posEvtObj:any = null;
-	rawX = 0;
-	rawY = 0;
-
-	constructor(x:number, y:number)
-	{
-		this.x = x;
-		this.y = y;
-	}
+	constructor(public x:number, public y:number){}
 }
 
-export = PointerData;
+export = Vector2;

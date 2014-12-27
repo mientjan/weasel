@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import IPoint = require('./../interface/IPoint');
+import IPoint = require('./../interface/IVector2');
 import NumberUtil = require('./../util/NumberUtil');
 
 /**

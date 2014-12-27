@@ -1,5 +1,5 @@
 /*
-* IPoint
+* IVector3
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -33,10 +33,10 @@ define(["require", "exports"], function (require, exports) {
      * @param {Number} [y=0] Y position.
      * @constructor
      **/
-    var IPoint = (function () {
-        function IPoint() {
+    var IVector3 = (function () {
+        function IVector3() {
         }
-        return IPoint;
+        return IVector3;
     })();
-    return IPoint;
+    return IVector3;
 });

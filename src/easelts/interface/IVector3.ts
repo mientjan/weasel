@@ -1,5 +1,5 @@
 /*
-* IPoint
+* IVector3
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -34,7 +34,7 @@
  * @param {Number} [y=0] Y position.
  * @constructor
  **/
-class IPoint {
+class IVector3 {
 	/**
 	 * X position.
 	 * @property x
@@ -49,6 +49,12 @@ class IPoint {
 	 **/
 	public y:number;
 
+	/**
+	 * z position.
+	 * @property z
+	 * @type Number
+	 **/
+	public z:number;
 }
 
-export = IPoint;
+export = IVector3;
