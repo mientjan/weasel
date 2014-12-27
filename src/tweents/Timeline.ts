@@ -27,7 +27,7 @@
  */
 
 import Tween = require('./Tween');
-import EventDispatcher = require('../createts/events/EventDispatcher');
+import EventDispatcher = require('../createts/event/EventDispatcher');
 
 /**
  * @module TweenJS
@@ -160,8 +160,9 @@ class Timeline extends Tween
 	_useTicks = false;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 *
+	 * @class Timeline
+	 * @constructor
 	 * @protected
 	 **/
 	constructor(tweens, labels, props)

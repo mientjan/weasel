@@ -58,8 +58,9 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
     var Timeline = (function (_super) {
         __extends(Timeline, _super);
         /**
-         * Initialization method.
-         * @method initialize
+         *
+         * @class Timeline
+         * @constructor
          * @protected
          **/
         function Timeline(tweens, labels, props) {

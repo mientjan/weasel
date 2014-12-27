@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/events/EventDispatcher', '../createts/utils/Ticker'], function (require, exports, EventDispatcher, Ticker) {
+define(["require", "exports", '../createts/event/EventDispatcher', '../createts/utils/Ticker'], function (require, exports, EventDispatcher, Ticker) {
     /**
      * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
      *
@@ -296,7 +296,7 @@ define(["require", "exports", '../createts/events/EventDispatcher', '../createts
          * @static
          */
         Tween.tick = function (delta, paused) {
-            var tweens = Tween._tweens.slice(); // to avoid race conditions.
+            var tweens = Tween._tweens.slice(0); // to avoid race conditions.
             for (var i = tweens.length - 1; i >= 0; i--) {
                 var tween = tweens[i];
                 if ((paused && !tween.ignoreGlobalPause) || tween._paused) {
@@ -305,6 +305,20 @@ define(["require", "exports", '../createts/events/EventDispatcher', '../createts
                 tween.tick(tween._useTicks ? 1 : delta);
             }
         };
+        /**
+         * Handle events that result from Tween being used as an event handler. This is included to allow Tween to handle
+         * tick events from <code>Ticker</code>. No other events are handled in Tween.
+         * @method handleEvent
+         * @param {Object} event An event object passed in by the EventDispatcher. Will usually be of type "tick".
+         * @private
+         * @static
+         * @since 0.4.2
+         * @deprecated
+         */
+        //	public static handleEvent(event:TimeEvent) =>
+        //	{
+        //		debugger;
+        //	}
         /**
          * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code>
          * property is <code>true</code>.
@@ -849,19 +863,6 @@ define(["require", "exports", '../createts/events/EventDispatcher', '../createts
          *
          */
         Tween._inited = false;
-        /**
-         * Handle events that result from Tween being used as an event handler. This is included to allow Tween to handle
-         * tick events from <code>createjs.Ticker</code>. No other events are handled in Tween.
-         * @method handleEvent
-         * @param {Object} event An event object passed in by the EventDispatcher. Will usually be of type "tick".
-         * @private
-         * @static
-         * @since 0.4.2
-         * @deprecated
-         */
-        Tween.handleEvent = function (event) {
-            debugger;
-        };
         return Tween;
     })(EventDispatcher);
     return Tween;

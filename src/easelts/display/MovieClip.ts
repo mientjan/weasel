@@ -29,6 +29,7 @@
 import Container = require('./Container');
 import Timeline = require('../../tweents/Timeline');
 import Tween = require('../../tweents/Tween');
+import TimeEvent = require('../../createts/event/TimeEvent');
 import DisplayObject = require('./DisplayObject');
 
 	/**
@@ -308,19 +309,7 @@ import DisplayObject = require('./DisplayObject');
 			this._managed = {};
 		}
 
-		// public methods:
-		/**
-		 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
-		 * This does not account for whether it would be visible within the boundaries of the stage.
-		 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-		 * @method isVisible
-		 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
-		 **/
-			isVisible()
-		{
-			// children are placed in draw, so we can't determine if we have content.
-			return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
-		}
+
 
 		/**
 		 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -332,13 +321,14 @@ import DisplayObject = require('./DisplayObject');
 		 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 		 * into itself).
 		 **/
-		public draw(ctx, ignoreCache)
+		public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean)
 		{
 			// draw to cache first:
 			if(this.DisplayObject_draw(ctx, ignoreCache))
 			{
 				return true;
 			}
+
 			this._updateTimeline();
 			super.draw(ctx, ignoreCache);
 			return true;
@@ -349,7 +339,7 @@ import DisplayObject = require('./DisplayObject');
 		 * Sets paused to false.
 		 * @method play
 		 **/
-			play()
+		public play()
 		{
 			this.paused = false;
 		}
@@ -358,7 +348,7 @@ import DisplayObject = require('./DisplayObject');
 		 * Sets paused to true.
 		 * @method stop
 		 **/
-			stop()
+		public stop()
 		{
 			this.paused = true;
 		}
@@ -481,10 +471,10 @@ import DisplayObject = require('./DisplayObject');
 		 * function.
 		 * @protected
 		 **/
-			_tick(props)
+		onTick(e:TimeEvent)
 		{
-			this.advance(props && props.delta);
-			super._tick(props);
+			this.advance(e && e.delta);
+			super.onTick(e);
 		}
 
 		/**

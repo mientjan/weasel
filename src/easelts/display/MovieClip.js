@@ -206,18 +206,6 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
             this.timeline = new Timeline(null, labels, props);
             this._managed = {};
         }
-        // public methods:
-        /**
-         * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
-         * This does not account for whether it would be visible within the boundaries of the stage.
-         * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-         * @method isVisible
-         * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
-         **/
-        MovieClip.prototype.isVisible = function () {
-            // children are placed in draw, so we can't determine if we have content.
-            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
-        };
         /**
          * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
          * Returns true if the draw was handled (useful for overriding functionality).
@@ -343,9 +331,9 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
          * function.
          * @protected
          **/
-        MovieClip.prototype._tick = function (props) {
-            this.advance(props && props.delta);
-            _super.prototype._tick.call(this, props);
+        MovieClip.prototype.onTick = function (e) {
+            this.advance(e && e.delta);
+            _super.prototype.onTick.call(this, e);
         };
         /**
          * @method _goto

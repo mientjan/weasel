@@ -75,8 +75,8 @@
 // TODO: possibly add a END actionsMode (only runs actions that == position)?
 // TODO: evaluate a way to decouple paused from tick registration.
 
-import EventDispatcher = require('../createts/events/EventDispatcher');
-import TimeEvent = require('../createts/events/TimeEvent');
+import EventDispatcher = require('../createts/event/EventDispatcher');
+import TimeEvent = require('../createts/event/TimeEvent');
 import Ticker = require('../createts/utils/Ticker');
 
 /**
@@ -214,6 +214,7 @@ class Tween extends EventDispatcher
 		{
 			Tween.removeTweens(target);
 		}
+
 		return new Tween(target, props, pluginData);
 	}
 
@@ -230,7 +231,7 @@ class Tween extends EventDispatcher
 	 * @static
 	 */
 	public static tick(delta:number, paused:boolean){
-		var tweens = Tween._tweens.slice(); // to avoid race conditions.
+		var tweens = Tween._tweens.slice(0); // to avoid race conditions.
 		for(var i = tweens.length - 1; i >= 0; i--)
 		{
 			var tween = tweens[i];
@@ -244,7 +245,7 @@ class Tween extends EventDispatcher
 
 	/**
 	 * Handle events that result from Tween being used as an event handler. This is included to allow Tween to handle
-	 * tick events from <code>createjs.Ticker</code>. No other events are handled in Tween.
+	 * tick events from <code>Ticker</code>. No other events are handled in Tween.
 	 * @method handleEvent
 	 * @param {Object} event An event object passed in by the EventDispatcher. Will usually be of type "tick".
 	 * @private
@@ -252,10 +253,10 @@ class Tween extends EventDispatcher
 	 * @since 0.4.2
 	 * @deprecated
 	 */
-	public static handleEvent = (event:TimeEvent) =>
-	{
-		debugger;
-	}
+//	public static handleEvent(event:TimeEvent) =>
+//	{
+//		debugger;
+//	}
 
 	/**
 	 * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code>
@@ -315,6 +316,7 @@ class Tween extends EventDispatcher
 		{
 			return target.tweenjs_count;
 		}
+
 		return Tween._tweens && !!Tween._tweens.length;
 	}
 
