@@ -30,7 +30,7 @@ class ImageSequence extends Bitmap
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(images:string[], fps:number = 1, width:any = 'auto', height:any = 'auto', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(images:string[], fps:number, width:any, height:any, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(images[0], width, height, x, y, regX, regY);
 
