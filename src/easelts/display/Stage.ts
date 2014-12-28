@@ -673,21 +673,16 @@ class Stage extends Container
 	}
 
 	/**
-	 * Enables or disables (by passing a frequency of 0) mouse over ({{#crossLink "DisplayObject/mouseover:event"}}{{/crossLink}}
-	 * and {{#crossLink "DisplayObject/mouseout:event"}}{{/crossLink}}) and roll over events ({{#crossLink "DisplayObject/rollover:event"}}{{/crossLink}}
-	 * and {{#crossLink "DisplayObject/rollout:event"}}{{/crossLink}}) for this stage's display list. These events can
-	 * be expensive to generate, so they are disabled by default. The frequency of the events can be controlled
-	 * independently of mouse move events via the optional `frequency` parameter.
-	 *
 	 * <h4>Example</h4>
 	 *
-	 *      var stage = new createts.Stage("canvasId");
+	 *      var stage = new Stage("canvasId");
 	 *      stage.enableMouseOver(10); // 10 updates per second
 	 *
 	 * @method enableMouseOver
 	 * @param {Number} [frequency=20] Optional param specifying the maximum number of times per second to broadcast
 	 * mouse over/out events. Set to 0 to disable mouse over events completely. Maximum is 50. A lower frequency is less
 	 * responsive, but uses less CPU.
+	 * @todo remove setInterval
 	 **/
 	public enableMouseOver(frequency:number = null)
 	{
@@ -709,6 +704,7 @@ class Stage extends Container
 			return void 0;
 		}
 		this.enableMouseInteraction();
+
 
 		this._mouseOverIntervalID = setInterval(() =>
 		{
@@ -741,7 +737,7 @@ class Stage extends Container
 			for(name in eventListeners)
 			{
 				o = eventListeners[name];
-				o.t.removeEventListener(name, o.f, false);
+				o.window.removeEventListener(name, o.fn, false);
 			}
 			this._eventListeners = null;
 		}
@@ -749,6 +745,8 @@ class Stage extends Container
 		{
 			var windowsObject = window['addEventListener'] ? <any> window : <any> document;
 			eventListeners = this._eventListeners = {};
+
+//			Stage.EVENT_MOUSE
 			eventListeners["mouseup"] = {
 				window: windowsObject,
 				fn: e => this._handleMouseUp(e)
