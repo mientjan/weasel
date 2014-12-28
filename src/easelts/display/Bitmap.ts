@@ -92,10 +92,20 @@ class Bitmap extends DisplayObject
 	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @protected
 	 **/
-		constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
 
+	/**
+	 * @class Bitmap
+	 * @constructor
+	 * @param {string|HTMLImageElement} imageOrUri
+	 * @param {string|number} width
+	 * @param {string|number} height
+	 * @param {string|number} x
+	 * @param {string|number} y
+	 * @param {string|number} regX
+	 * @param {string|number} regY
+	 */
+	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
 	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-
 	constructor(imageOrUri:any, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
