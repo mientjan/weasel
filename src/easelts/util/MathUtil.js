@@ -1,122 +1,64 @@
-define(["require", "exports", "../geom/Bounds", "../geom/Point"], function (require, exports, Bounds, Point) {
+define(["require", "exports"], function (require, exports) {
     var MathUtil = (function () {
         function MathUtil() {
         }
-        MathUtil.getBounds = function (list) {
-            var bounds = new Bounds();
-            if (list.length > 0) {
-                bounds.x0 = list[0].x;
-                bounds.y0 = list[1].y;
-            }
-            for (var i = 0; i < list.length; i++) {
-                bounds.x0 = Math.min(list[i].x, bounds.x0);
-                bounds.y0 = Math.min(list[i].y, bounds.y0);
-                bounds.x1 = Math.max(list[i].x, bounds.x1);
-                bounds.y1 = Math.max(list[i].y, bounds.y1);
-            }
-            bounds.width = bounds.x1 - bounds.x0;
-            bounds.height = bounds.y1 - bounds.y0;
-            return bounds;
+        // Clamp value to range <a, b>
+        MathUtil.clamp = function (x, a, b) {
+            return (x < a) ? a : ((x > b) ? b : x);
         };
-        MathUtil.random = function (list) {
-            var currentIndex = list.length, temporaryValue, randomIndex;
-            while (0 !== currentIndex) {
-                // Pick a remaining element...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-                // And swap it with the current element.
-                temporaryValue = list[currentIndex];
-                list[currentIndex] = list[randomIndex];
-                list[randomIndex] = temporaryValue;
-            }
+        // Clamp value to range <a, inf)
+        MathUtil.clampBottom = function (x, a) {
+            return x < a ? a : x;
         };
-        MathUtil.centerOut = function (list) {
-            var bounds = this.getBounds(list);
-            var point = new Point(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
-            list.sort(function (a, b) {
-                var x0 = (a.x - point.x);
-                var y0 = (a.y - point.y);
-                var x1 = (b.x - point.x);
-                var y1 = (b.y - point.y);
-                return (x0 * x0 + y0 * y0) - (x1 * x1 + y1 * y1);
-            });
-            return point;
+        // Linear mapping from range <a1, a2> to range <b1, b2>
+        MathUtil.mapLinear = function (x, a1, a2, b1, b2) {
+            return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
         };
-        MathUtil.centerIn = function (list) {
-            var bounds = this.getBounds(list);
-            var point = new Point(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
-            list.sort(function (a, b) {
-                var x0 = (a.x - point.x);
-                var y0 = (a.y - point.y);
-                var x1 = (b.x - point.x);
-                var y1 = (b.y - point.y);
-                return (x1 * x1 + y1 * y1) - (x0 * x0 + y0 * y0);
-            });
-            return point;
+        // http://en.wikipedia.org/wiki/Smoothstep
+        MathUtil.smoothstep = function (x, min, max) {
+            if (x <= min)
+                return 0;
+            if (x >= max)
+                return 1;
+            x = (x - min) / (max - min);
+            return x * x * (3 - 2 * x);
         };
-        /*
-        public static outerPoints(list:IVector[]):IVector[]
-        {
-            var arr = [];
-    
-            return arr;
-        }*/
-        MathUtil.topDown = function (list) {
-            var abs = [2000, 2000, 0, 0];
-            for (var i = 0; i < list.length; i++) {
-                abs[0] = Math.min(list[i].x, abs[0]);
-                abs[1] = Math.min(list[i].y, abs[1]);
-                abs[2] = Math.max(list[i].x, abs[2]);
-                abs[3] = Math.max(list[i].y, abs[3]);
-            }
-            var point = new Point((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
-            list.sort(function (a, b) {
-                return a.y - b.y;
-            });
-            return point;
+        MathUtil.smootherstep = function (x, min, max) {
+            if (x <= min)
+                return 0;
+            if (x >= max)
+                return 1;
+            x = (x - min) / (max - min);
+            return x * x * x * (x * (x * 6 - 15) + 10);
         };
-        MathUtil.downTop = function (list) {
-            var abs = [2000, 2000, 0, 0];
-            for (var i = 0; i < list.length; i++) {
-                abs[0] = Math.min(list[i].x, abs[0]);
-                abs[1] = Math.min(list[i].y, abs[1]);
-                abs[2] = Math.max(list[i].x, abs[2]);
-                abs[3] = Math.max(list[i].y, abs[3]);
-            }
-            var point = new Point((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
-            list.sort(function (a, b) {
-                return b.y - a.y;
-            });
-            return point;
+        // Random float from <0, 1> with 16 bits of randomness
+        // (standard Math.random() creates repetitive patterns when applied over larger space)
+        MathUtil.random16 = function () {
+            return (65280 * Math.random() + 255 * Math.random()) / 65535;
         };
-        MathUtil.rightLeft = function (list) {
-            var abs = [2000, 2000, 0, 0];
-            for (var i = 0; i < list.length; i++) {
-                abs[0] = Math.min(list[i].x, abs[0]);
-                abs[1] = Math.min(list[i].y, abs[1]);
-                abs[2] = Math.max(list[i].x, abs[2]);
-                abs[3] = Math.max(list[i].y, abs[3]);
-            }
-            var point = new Point((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
-            list.sort(function (a, b) {
-                return a.x - b.x;
-            });
-            return point;
+        // Random integer from <low, high> interval
+        MathUtil.randInt = function (low, high) {
+            return low + Math.floor(Math.random() * (high - low + 1));
         };
-        MathUtil.leftRight = function (list) {
-            var abs = [2000, 2000, 0, 0];
-            for (var i = 0; i < list.length; i++) {
-                abs[0] = Math.min(list[i].x, abs[0]);
-                abs[1] = Math.min(list[i].y, abs[1]);
-                abs[2] = Math.max(list[i].x, abs[2]);
-                abs[3] = Math.max(list[i].y, abs[3]);
-            }
-            var point = new Point((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
-            list.sort(function (a, b) {
-                return b.x - a.x;
-            });
-            return point;
+        // Random float from <low, high> interval
+        MathUtil.randFloat = function (low, high) {
+            return low + Math.random() * (high - low);
         };
+        // Random float from <-range/2, range/2> interval
+        MathUtil.randFloatSpread = function (range) {
+            return range * (0.5 - Math.random());
+        };
+        MathUtil.degToRad = function (degrees) {
+            return degrees * MathUtil.degreeToRadiansFactor;
+        };
+        MathUtil.radToDeg = function (radians) {
+            return radians * MathUtil.radianToDegreesFactor;
+        };
+        MathUtil.isPowerOfTwo = function (value) {
+            return (value & (value - 1)) === 0 && value !== 0;
+        };
+        MathUtil.degreeToRadiansFactor = Math.PI / 180;
+        MathUtil.radianToDegreesFactor = 180 / Math.PI;
         return MathUtil;
     })();
     return MathUtil;

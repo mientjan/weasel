@@ -1,197 +1,103 @@
-import ref = require("lib/ReferenceDefinitions");
-import DisplayObject = require("../display/DisplayObject");
-import Bounds = require("../geom/Bounds");
-import Point = require("../geom/Point");
-
 class MathUtil
 {
-	public static getBounds(list:DisplayObject[]):Bounds
-	{
-		var bounds = new Bounds();
 
-		if( list.length > 0 ){
-			bounds.x0 = list[0].x;
-			bounds.y0 = list[1].y;
+	private static degreeToRadiansFactor = Math.PI / 180;
+	private static radianToDegreesFactor = 180 / Math.PI;
+
+	// Clamp value to range <a, b>
+	public static clamp ( x:number, a:number, b:number ) {
+
+		return ( x < a ) ? a : ( ( x > b ) ? b : x );
+
+	}
+
+	// Clamp value to range <a, inf)
+	public static clampBottom ( x:number, a:number ):number{
+
+		return x < a ? a : x;
+
+	}
+
+	// Linear mapping from range <a1, a2> to range <b1, b2>
+	public static mapLinear ( x:number, a1:number, a2:number, b1:number, b2:number ):number {
+
+		return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );
+
+	}
+
+	// http://en.wikipedia.org/wiki/Smoothstep
+	public static smoothstep ( x:number, min:number, max :number):number {
+
+		if ( x <= min ) return 0;
+		if ( x >= max ) return 1;
+
+		x = ( x - min ) / ( max - min );
+
+		return x * x * ( 3 - 2 * x );
+
+	}
+
+	public static smootherstep ( x:number, min:number, max:number ):number {
+
+		if ( x <= min ) return 0;
+		if ( x >= max ) return 1;
+
+		x = ( x - min ) / ( max - min );
+
+		return x * x * x * ( x * ( x * 6 - 15 ) + 10 );
+
+	}
+
+	// Random float from <0, 1> with 16 bits of randomness
+	// (standard Math.random() creates repetitive patterns when applied over larger space)
+
+	public static random16 ():number {
+
+		return ( 65280 * Math.random() + 255 * Math.random() ) / 65535;
+
+	}
+
+	// Random integer from <low, high> interval
+
+	public static randInt ( low:number, high:number ):number {
+
+		return low + Math.floor( Math.random() * ( high - low + 1 ) );
+
+	}
+
+	// Random float from <low, high> interval
+
+	public static randFloat ( low:number, high:number ) {
+
+		return low + Math.random() * ( high - low );
+
+	}
+
+	// Random float from <-range/2, range/2> interval
+
+	public static randFloatSpread ( range:number ) {
+
+		return range * ( 0.5 - Math.random() );
+
+	}
+
+	public static degToRad ( degrees ) {
+
+			return degrees * MathUtil.degreeToRadiansFactor;
+
 		}
 
-		for(var i = 0; i < list.length; i++)
-		{
-			bounds.x0 = Math.min(list[i].x, bounds.x0);
-			bounds.y0 = Math.min(list[i].y, bounds.y0);
-			bounds.x1 = Math.max(list[i].x, bounds.x1);
-			bounds.y1 = Math.max(list[i].y, bounds.y1);
+	public static radToDeg ( radians ) {
+
+			return radians * MathUtil.radianToDegreesFactor;
+
 		}
 
-		bounds.width = bounds.x1 - bounds.x0;
-		bounds.height = bounds.y1 - bounds.y0;
+	public static isPowerOfTwo ( value ) {
 
-		return bounds;
+		return ( value & ( value - 1 ) ) === 0 && value !== 0;
 	}
 
-	public static random(list:DisplayObject[])
-	{
-		var currentIndex = list.length
-			, temporaryValue
-			, randomIndex
-			;
-
-		// While there remain elements to shuffle...
-		while (0 !== currentIndex) {
-
-			// Pick a remaining element...
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex -= 1;
-
-			// And swap it with the current element.
-			temporaryValue = list[currentIndex];
-			list[currentIndex] = list[randomIndex];
-			list[randomIndex] = temporaryValue;
-		}
-	}
-
-
-	public static centerOut(list:DisplayObject[]):Point
-	{
-		var bounds = this.getBounds(list);
-
-		var point = new Point(
-			bounds.width / 2 + bounds.x0,
-			bounds.height / 2 + bounds.y0
-		);
-
-		list.sort((a,b) => {
-			var x0 = (a.x-point.x);
-			var y0 = (a.y-point.y);
-			var x1 = (b.x-point.x);
-			var y1 = (b.y-point.y);
-
-			return (x0*x0+y0*y0) - (x1*x1+y1*y1);
-		});
-
-		return point;
-	}
-
-	public static centerIn(list:DisplayObject[]):Point
-	{
-		var bounds = this.getBounds(list);
-
-		var point = new Point(
-			bounds.width / 2 + bounds.x0,
-			bounds.height / 2 + bounds.y0
-		);
-
-		list.sort((a,b) => {
-			var x0 = (a.x-point.x);
-			var y0 = (a.y-point.y);
-			var x1 = (b.x-point.x);
-			var y1 = (b.y-point.y);
-
-			return (x1*x1+y1*y1) - (x0*x0+y0*y0);
-		});
-
-		return point;
-	}
-	/*
-	public static outerPoints(list:IVector[]):IVector[]
-	{
-		var arr = [];
-
-		return arr;
-	}*/
-
-
-
-	public static topDown(list:DisplayObject[]):Point
-	{
-		var abs = [2000, 2000, 0, 0];
-		for(var i = 0; i < list.length; i++)
-		{
-			abs[0] = Math.min(list[i].x, abs[0]);
-			abs[1] = Math.min(list[i].y, abs[1]);
-			abs[2] = Math.max(list[i].x, abs[2]);
-			abs[3] = Math.max(list[i].y, abs[3]);
-		}
-
-		var point = new Point(
-			(abs[2] - abs[0]) / 2 + abs[0],
-			(abs[3] - abs[1]) / 2 + abs[1]
-	);
-
-		list.sort((a,b) => {
-			return a.y - b.y;
-		});
-
-		return point;
-	}
-
-	public static downTop(list:DisplayObject[]):Point
-	{
-		var abs = [2000, 2000, 0, 0];
-		for(var i = 0; i < list.length; i++)
-		{
-			abs[0] = Math.min(list[i].x, abs[0]);
-			abs[1] = Math.min(list[i].y, abs[1]);
-			abs[2] = Math.max(list[i].x, abs[2]);
-			abs[3] = Math.max(list[i].y, abs[3]);
-		}
-
-		var point = new Point(
-			(abs[2] - abs[0]) / 2 + abs[0],
-			(abs[3] - abs[1]) / 2 + abs[1]
-	);
-
-		list.sort((a,b) => {
-			return b.y - a.y;
-		});
-
-		return point;
-	}
-
-	public static rightLeft(list:DisplayObject[]):Point
-	{
-		var abs = [2000, 2000, 0, 0];
-		for(var i = 0; i < list.length; i++)
-		{
-			abs[0] = Math.min(list[i].x, abs[0]);
-			abs[1] = Math.min(list[i].y, abs[1]);
-			abs[2] = Math.max(list[i].x, abs[2]);
-			abs[3] = Math.max(list[i].y, abs[3]);
-		}
-
-		var point = new Point(
-			(abs[2] - abs[0]) / 2 + abs[0],
-			(abs[3] - abs[1]) / 2 + abs[1]
-		);
-
-		list.sort((a,b) => {
-			return a.x - b.x;
-		});
-
-		return point;
-	}
-
-	public static leftRight(list:DisplayObject[]):Point
-	{
-		var abs = [2000, 2000, 0, 0];
-		for(var i = 0; i < list.length; i++)
-		{
-			abs[0] = Math.min(list[i].x, abs[0]);
-			abs[1] = Math.min(list[i].y, abs[1]);
-			abs[2] = Math.max(list[i].x, abs[2]);
-			abs[3] = Math.max(list[i].y, abs[3]);
-		}
-
-		var point = new Point(
-			(abs[2] - abs[0]) / 2 + abs[0],
-			(abs[3] - abs[1]) / 2 + abs[1]
-		);
-
-		list.sort((a,b) => {
-			return b.x - a.x;
-		});
-
-		return point;
-	}
 }
 
 export = MathUtil;
