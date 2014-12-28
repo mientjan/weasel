@@ -127,6 +127,7 @@ class Text extends DisplayObject
 			{
 				this.setWidth('auto');
 			}
+
 			if(this._autoHeight)
 			{
 				this.setHeight('auto');
@@ -220,7 +221,7 @@ class Text extends DisplayObject
 	 * "#F00", "red", or "#FF0000").
 	 * @protected
 	 */
-		constructor(text:string, font:string, color:string)
+	constructor(text:string, font:string, color:string)
 	{
 		super(1, 1, 0, 0, 0, 0);
 
@@ -328,7 +329,7 @@ class Text extends DisplayObject
 	public getExactSize():Bounds
 	{
 		var width = Math.ceil(this.getMeasuredWidth());
-		var height = Math.ceil(this.getMeasuredHeight() * 1.2);
+		var height = Math.ceil(width * 1.6);
 		var alreadyCached = false;
 
 		var color = this.color;
