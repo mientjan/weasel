@@ -66,40 +66,40 @@ class Shadow
 	 * @type String
 	 * @default null
 	 */
-	color:string = null;
+	public color:string = null;
 
 	/** The x offset of the shadow.
 	 * property offsetX
 	 * @type Number
 	 * @default 0
 	 */
-	offsetX:number = 0;
+	public offsetX:number = 0;
 
 	/** The y offset of the shadow.
 	 * property offsetY
 	 * @type Number
 	 * @default 0
 	 */
-	offsetY:number = 0;
+	public offsetY:number = 0;
 
 	/** The blur of the shadow.
 	 * property blur
 	 * @type Number
 	 * @default 0
 	 */
-	blur:number = 0;
+	public blur:number = 0;
 
 	// constructor:
 	/**
-	 * Initialization method.
-	 * @method initialize
+	 * @class Shadow
+	 * @constructor
 	 * @protected
 	 * @param {String} color The color of the shadow.
 	 * @param {Number} offsetX The x offset of the shadow.
 	 * @param {Number} offsetY The y offset of the shadow.
 	 * @param {Number} blur The size of the blurring effect.
 	 **/
-		constructor(color:string, offsetX:number, offsetY:number, blur:number)
+	constructor(color:string, offsetX:number, offsetY:number, blur:number)
 	{
 		this.color = color;
 		this.offsetX = offsetX;

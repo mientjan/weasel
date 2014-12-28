@@ -47,8 +47,8 @@ define(["require", "exports"], function (require, exports) {
     var Shadow = (function () {
         // constructor:
         /**
-         * Initialization method.
-         * @method initialize
+         * @class Shadow
+         * @constructor
          * @protected
          * @param {String} color The color of the shadow.
          * @param {Number} offsetX The x offset of the shadow.
