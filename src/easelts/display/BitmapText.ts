@@ -29,7 +29,8 @@ import Container = require('./Container');
 import SpriteSheet = require('./SpriteSheet');
 import Sprite = require('./Sprite');
 
-class BitmapTextProperties {
+class BitmapTextProperties
+{
 	text:string = '';
 	spriteSheet:string = null;
 	lineHeight:number = 0;
@@ -137,7 +138,7 @@ class BitmapText extends Container
 	 * @param {String} [text=""] The text to display.
 	 * @param {SpriteSheet} [spriteSheet=null] The spritesheet that defines the character glyphs.
 	 **/
-	constructor(text:string, spriteSheet:SpriteSheet)
+		constructor(text:string, spriteSheet:SpriteSheet)
 	{
 		super();
 
@@ -151,10 +152,10 @@ class BitmapText extends Container
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
 		// throws maximumiteration
-//		if(this.DisplayObject_draw(ctx, ignoreCache))
-//		{
-//			return true;
-//		}
+		//		if(this.DisplayObject_draw(ctx, ignoreCache))
+		//		{
+		//			return true;
+		//		}
 
 		this._updateText();
 		super.draw(ctx, ignoreCache);
@@ -319,7 +320,7 @@ class BitmapText extends Container
 			}
 			else
 			{
-				sprite = <any> this.addChild( pool.length ? pool.pop() : new Sprite(ss) );
+				sprite = <any> this.addChild(pool.length ? pool.pop() : new Sprite(ss));
 				numKids++;
 			}
 

@@ -52,14 +52,16 @@ class Vector2
 	 * @type Number
 	 **/
 
-	constructor(public x:number, public y:number)
+		constructor(public x:number, public y:number)
 	{
 	}
 
-	public pair():number {
-		var value =  this.x << 16 & 0xffff0000 | this.y & 0x0000ffff;
+	public pair():number
+	{
+		var value = this.x << 16 & 0xffff0000 | this.y & 0x0000ffff;
 
-		if( Number.MAX_VALUE < value ){
+		if(Number.MAX_VALUE < value)
+		{
 			throw 'pair created greater than allowed max uint value';
 		}
 

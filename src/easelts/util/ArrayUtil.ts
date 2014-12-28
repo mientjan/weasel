@@ -3,10 +3,12 @@ import Bounds = require("../geom/Bounds");
 import Size = require("../geom/Size");
 import Point = require("../geom/Point");
 
-class ArrayUtil {
-	public static getMaxSize(arr:{width:number;height:number;}[]):Size
+class ArrayUtil
+{
+	public static getMaxSize(arr:{width:number;height:number;
+	}[]):Size
 	{
-		var size = new Size(0,0);
+		var size = new Size(0, 0);
 		for(var i = 0; i < arr.length; i++)
 		{
 			size.width = Math.max(arr[i].width, size.width);
@@ -16,9 +18,10 @@ class ArrayUtil {
 		return size;
 	}
 
-	public static getSize(arr:{width:number;height:number;}[]):Size
+	public static getSize(arr:{width:number;height:number;
+	}[]):Size
 	{
-		var size = new Size(0,0);
+		var size = new Size(0, 0);
 		for(var i = 0; i < arr.length; i++)
 		{
 			size.width += arr[i].width;

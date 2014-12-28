@@ -6,41 +6,52 @@ import ButtonBehavior = require('../behavior/ButtonBehavior');
 /**
  * @class BasicButton
  */
-class BasicButton extends Container {
+class BasicButton extends Container
+{
 
-	public set backgroundColor(value:string){
+	public set backgroundColor(value:string)
+	{
 		this._backgroundColor = value;
 	}
 
-	public get backgroundColor(){
+	public get backgroundColor()
+	{
 		return this._backgroundColor;
 	}
 
-	public set text(value:string){
+	public set text(value:string)
+	{
 		this._text = value;
 	}
 
-	public get text(){
+	public get text()
+	{
 		return this._text;
 	}
 
-	public set margin(value:string){
+	public set margin(value:string)
+	{
 
-		var marginArray = value.split(' ').map((value) => {
+		var marginArray = value.split(' ').map((value) =>
+		{
 			return parseInt(value);
 		});
 
-		switch( marginArray.length ){
-			case 1:{
+		switch(marginArray.length)
+		{
+			case 1:
+			{
 				marginArray.push(marginArray[0], marginArray[0], marginArray[0]);
 			}
 
-			case 2:{
+			case 2:
+			{
 				marginArray.push(marginArray[0], marginArray[1]);
 			}
 
-			case 3:{
-				marginArray.push( marginArray[1]);
+			case 3:
+			{
+				marginArray.push(marginArray[1]);
 			}
 		}
 
@@ -48,7 +59,8 @@ class BasicButton extends Container {
 		this._margin = marginArray;
 	}
 
-	public get margin(){
+	public get margin()
+	{
 		return this._margin.join(' ');
 	}
 
@@ -76,7 +88,8 @@ class BasicButton extends Container {
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(text:string, font:string, color:string, backgroundColor:string = null, border:string = null, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0){
+		constructor(text:string, font:string, color:string, backgroundColor:string = null, border:string = null, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	{
 		super(100, 100, x, y, regX, regY);
 
 		this.addBehavior(new ButtonBehavior);
@@ -91,14 +104,16 @@ class BasicButton extends Container {
 		this.addChild(this._textElement);
 	}
 
-	public onResize(e){
+	public onResize(e)
+	{
 		super.onResize(e);
 
-		this._shape.graphics.clear().beginFill(this._backgroundColor).drawRect(0,0,this.width,this.height);
-		if(this._border){
-			this._shape.graphics.clear().beginStroke(this._border).drawRect(0,0,this.width,this.height);
+		this._shape.graphics.clear().beginFill(this._backgroundColor).drawRect(0, 0, this.width, this.height);
+		if(this._border)
+		{
+			this._shape.graphics.clear().beginStroke(this._border).drawRect(0, 0, this.width, this.height);
 		}
-		this.hitArea.graphics.clear().beginFill(this._backgroundColor).drawRect(0,0,this.width,this.height);
+		this.hitArea.graphics.clear().beginFill(this._backgroundColor).drawRect(0, 0, this.width, this.height);
 	}
 }
 

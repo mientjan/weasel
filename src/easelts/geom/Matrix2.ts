@@ -152,7 +152,7 @@ class Matrix2D
 	 * @param {Number} [tx=0] Specifies the tx property for the new matrix.
 	 * @param {Number} [ty=0] Specifies the ty property for the new matrix.
 	 */
-	constructor(a:number, b:number, c:number, d:number, tx:number, ty:number)
+		constructor(a:number, b:number, c:number, d:number, tx:number, ty:number)
 	{
 		this._initialize(a, b, c, d, tx, ty);
 	}

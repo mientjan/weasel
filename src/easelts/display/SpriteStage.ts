@@ -142,7 +142,7 @@ class SpriteStage extends Stage
 	 * @final
 	 * @type {Number}
 	 * @readonly
-//	 **/
+	 //     **/
 	public static MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
 
 	// getter / setters:
@@ -158,7 +158,8 @@ class SpriteStage extends Stage
 		return !!this._webGLContext;
 	}
 
-	public get isWebGL(){
+	public get isWebGL()
+	{
 		return this._get_isWebGL()
 	}
 
@@ -356,7 +357,7 @@ class SpriteStage extends Stage
 	 * @param {Boolean} preserveDrawingBuffer              If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
 	 * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
 	 **/
-	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
+		constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
 	{
 		super(canvas);
 		this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;

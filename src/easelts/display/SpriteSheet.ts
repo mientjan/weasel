@@ -244,7 +244,7 @@ class SpriteSheet extends EventDispatcher
 	 * @param {Object} data An object describing the SpriteSheet data.
 	 * @protected
 	 **/
-	constructor(data?)
+		constructor(data?)
 	{
 		super();
 

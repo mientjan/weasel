@@ -1,5 +1,3 @@
-
-
 /*
  * Graphics
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -617,7 +615,7 @@ class Fill
 	{
 		var o = this.style = Graphics._ctx.createPattern(image, ""); //repetition || "");
 
-		
+
 		o['props'] = {image: image, repetition: repetition, type: "bitmap"};
 		return this;
 	}
@@ -1259,7 +1257,7 @@ class Graphics
 	/**
 	 * @constructor
 	 **/
-	constructor()
+		constructor()
 	{
 		this.clear();
 
@@ -1540,7 +1538,7 @@ class Graphics
 	 **/
 	public beginBitmapFill(image:HTMLImageElement, repetition:string = 'repeat', matrix?:Matrix2D)
 	{
-		return this._setFill( new Graphics.Fill(null, matrix).bitmap(image, repetition));
+		return this._setFill(new Graphics.Fill(null, matrix).bitmap(image, repetition));
 	}
 
 	/**

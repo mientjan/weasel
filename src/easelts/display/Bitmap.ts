@@ -92,8 +92,10 @@ class Bitmap extends DisplayObject
 	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @protected
 	 **/
-	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+		constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+
 	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+
 	constructor(imageOrUri:any, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
@@ -129,7 +131,10 @@ class Bitmap extends DisplayObject
 		this.height = this.image.height;
 		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
 
-		if(this._parentSizeIsKnown) this.onResize(new Size(this.parent.width, this.parent.height));
+		if(this._parentSizeIsKnown)
+		{
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
 	}
 
 	// public methods:

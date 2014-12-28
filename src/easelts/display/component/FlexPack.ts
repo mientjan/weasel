@@ -1,7 +1,7 @@
 import Container = require('../Container');
 
 /**
- * 
+ *
  */
 class FlexPack extends Container
 {
@@ -18,16 +18,19 @@ class FlexPack extends Container
 	}
 
 
-	public onResize(e){
-//		super.onResize(e);
+	public onResize(e)
+	{
+		//		super.onResize(e);
 
 		var height = 0;
 		var width = 0;
-		if( this.children.length > 0 )
+		if(this.children.length > 0)
 		{
 
-			switch(this.axis){
-				case 'y':{
+			switch(this.axis)
+			{
+				case 'y':
+				{
 
 					var children = this.children;
 					var y = children[0].y;

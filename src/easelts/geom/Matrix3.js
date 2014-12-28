@@ -44,10 +44,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
         };
         Matrix3.prototype.applyToVector3Array = function (array, offset, length) {
             var v1 = this.__v0;
-            if (offset === undefined)
+            if (offset === undefined) {
                 offset = 0;
-            if (length === undefined)
+            }
+            if (length === undefined) {
                 length = array.length;
+            }
             for (var i = 0, j = offset, il; i < length; i += 3, j += 3) {
                 v1.x = array[j];
                 v1.y = array[j + 1];

@@ -71,7 +71,7 @@ class SpriteContainer extends Container
 	 * @constructor
 	 * @param {SpriteSheet} spriteSheet Optional. The spriteSheet to use for this SpriteContainer and its children.
 	 */
-	constructor(spriteSheet:SpriteSheet)
+		constructor(spriteSheet:SpriteSheet)
 	{
 		super();
 		this.spriteSheet = spriteSheet;

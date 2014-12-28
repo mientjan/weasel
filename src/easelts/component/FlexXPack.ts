@@ -11,19 +11,25 @@ class FlexXPack extends Container
 	public autoWidth:boolean = false;
 	public autoHeight:boolean = false;
 
-	constructor(margin = 0, width:any = 'auto', height:any = 'auto',x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(margin = 0, width:any = 'auto', height:any = 'auto', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(1, 1, x, y, regX, regY);
 
-		if(width == 'auto'){
+		if(width == 'auto')
+		{
 			this.autoWidth = true;
-		} else {
+		}
+		else
+		{
 			this.setWidth(width);
 		}
 
-		if(height == 'auto'){
+		if(height == 'auto')
+		{
 			this.autoHeight = true;
-		} else {
+		}
+		else
+		{
 			this.setHeight(height);
 		}
 
@@ -32,9 +38,10 @@ class FlexXPack extends Container
 
 	public addChild(...children:DisplayObject[]):DisplayObject
 	{
-		var data =  super.addChild.apply(this, children);
+		var data = super.addChild.apply(this, children);
 
-		if( this._parentSizeIsKnown ) {
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.getWidth(), this.parent.getHeight()));
 		}
 		return data;
@@ -42,9 +49,10 @@ class FlexXPack extends Container
 
 	public removeChild(...children:DisplayObject[]):boolean
 	{
-		var data =  super.removeChild.apply(this, children);
+		var data = super.removeChild.apply(this, children);
 
-		if( this._parentSizeIsKnown ) {
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.getWidth(), this.parent.getHeight()));
 		}
 		return data;
@@ -58,7 +66,7 @@ class FlexXPack extends Container
 		if(this.children.length > 0)
 		{
 			var children = this.children;
-			var x =0;
+			var x = 0;
 			var margin = this.margin;
 
 			for(var i = 0; i < children.length; i++)
@@ -71,8 +79,14 @@ class FlexXPack extends Container
 				height = Math.max(height, child.height);
 			}
 
-			if(this.autoWidth) this.width = width + ( margin * (this.children.length - 1));
-			if(this.autoHeight) this.height = height;
+			if(this.autoWidth)
+			{
+				this.width = width + ( margin * (this.children.length - 1));
+			}
+			if(this.autoHeight)
+			{
+				this.height = height;
+			}
 
 		}
 

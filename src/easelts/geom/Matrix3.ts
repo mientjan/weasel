@@ -7,33 +7,43 @@ import Matrix4 = require('./Matrix4');
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://exocortex.com
  */
-class Matrix3 {
+class Matrix3
+{
 
 	elements:Float32Array;
 
-	constructor (){
-		this.elements = new Float32Array( [
+	constructor()
+	{
+		this.elements = new Float32Array([
 
 			1, 0, 0,
 			0, 1, 0,
 			0, 0, 1
 
-		] );
+		]);
 	}
 
 
-	public set ( n11:number, n12:number, n13:number, n21:number, n22:number, n23:number, n31:number, n32:number, n33:number):Matrix3 {
+	public set(n11:number, n12:number, n13:number, n21:number, n22:number, n23:number, n31:number, n32:number, n33:number):Matrix3
+	{
 
 		var te = this.elements;
 
-		te[ 0 ] = n11; te[ 3 ] = n12; te[ 6 ] = n13;
-		te[ 1 ] = n21; te[ 4 ] = n22; te[ 7 ] = n23;
-		te[ 2 ] = n31; te[ 5 ] = n32; te[ 8 ] = n33;
+		te[ 0 ] = n11;
+		te[ 3 ] = n12;
+		te[ 6 ] = n13;
+		te[ 1 ] = n21;
+		te[ 4 ] = n22;
+		te[ 7 ] = n23;
+		te[ 2 ] = n31;
+		te[ 5 ] = n32;
+		te[ 8 ] = n33;
 
 		return this;
 	}
 
-	public identity ():Matrix3 {
+	public identity():Matrix3
+	{
 
 		this.set(
 
@@ -47,7 +57,8 @@ class Matrix3 {
 
 	}
 
-	public copy ( m:Matrix3 ):Matrix3 {
+	public copy(m:Matrix3):Matrix3
+	{
 
 		var me = m.elements;
 
@@ -63,44 +74,61 @@ class Matrix3 {
 
 	}
 
-	private __v0:Vector3 = new Vector3(0,0,0);
-	public applyToVector3Array ( array:number[], offset:number, length:number ):number[] {
+	private __v0:Vector3 = new Vector3(0, 0, 0);
+
+	public applyToVector3Array(array:number[], offset:number, length:number):number[]
+	{
 
 		var v1 = this.__v0;
 
-			if ( offset === undefined ) offset = 0;
-			if ( length === undefined ) length = array.length;
+		if(offset === undefined)
+		{
+			offset = 0;
+		}
+		if(length === undefined)
+		{
+			length = array.length;
+		}
 
-			for ( var i = 0, j = offset, il; i < length; i += 3, j += 3 ) {
+		for(var i = 0, j = offset, il; i < length; i += 3, j += 3)
+		{
 
-				v1.x = array[ j ];
-				v1.y = array[ j + 1 ];
-				v1.z = array[ j + 2 ];
+			v1.x = array[ j ];
+			v1.y = array[ j + 1 ];
+			v1.z = array[ j + 2 ];
 
-				v1.applyMatrix3( this );
+			v1.applyMatrix3(this);
 
-				array[ j ]     = v1.x;
-				array[ j + 1 ] = v1.y;
-				array[ j + 2 ] = v1.z;
-
-			}
-
-			return array;
+			array[ j ] = v1.x;
+			array[ j + 1 ] = v1.y;
+			array[ j + 2 ] = v1.z;
 
 		}
 
-	public multiplyScalar ( s:number ):Matrix3 {
+		return array;
+
+	}
+
+	public multiplyScalar(s:number):Matrix3
+	{
 
 		var te = this.elements;
 
-		te[ 0 ] *= s; te[ 3 ] *= s; te[ 6 ] *= s;
-		te[ 1 ] *= s; te[ 4 ] *= s; te[ 7 ] *= s;
-		te[ 2 ] *= s; te[ 5 ] *= s; te[ 8 ] *= s;
+		te[ 0 ] *= s;
+		te[ 3 ] *= s;
+		te[ 6 ] *= s;
+		te[ 1 ] *= s;
+		te[ 4 ] *= s;
+		te[ 7 ] *= s;
+		te[ 2 ] *= s;
+		te[ 5 ] *= s;
+		te[ 8 ] *= s;
 
 		return this;
 	}
 
-	public determinant ():number {
+	public determinant():number
+	{
 
 		var te = this.elements;
 
@@ -112,7 +140,8 @@ class Matrix3 {
 
 	}
 
-	public getInverse ( matrix:Matrix4, throwOnInvertible:boolean = false ) {
+	public getInverse(matrix:Matrix4, throwOnInvertible:boolean = false)
+	{
 
 		// input: THREE.Matrix4
 		// ( based on http://code.google.com/p/webgl-mjs/ )
@@ -120,31 +149,35 @@ class Matrix3 {
 		var me = matrix.elements;
 		var te = this.elements;
 
-		te[ 0 ] =   me[ 10 ] * me[ 5 ] - me[ 6 ] * me[ 9 ];
-		te[ 1 ] = - me[ 10 ] * me[ 1 ] + me[ 2 ] * me[ 9 ];
-		te[ 2 ] =   me[ 6 ] * me[ 1 ] - me[ 2 ] * me[ 5 ];
-		te[ 3 ] = - me[ 10 ] * me[ 4 ] + me[ 6 ] * me[ 8 ];
-		te[ 4 ] =   me[ 10 ] * me[ 0 ] - me[ 2 ] * me[ 8 ];
-		te[ 5 ] = - me[ 6 ] * me[ 0 ] + me[ 2 ] * me[ 4 ];
-		te[ 6 ] =   me[ 9 ] * me[ 4 ] - me[ 5 ] * me[ 8 ];
-		te[ 7 ] = - me[ 9 ] * me[ 0 ] + me[ 1 ] * me[ 8 ];
-		te[ 8 ] =   me[ 5 ] * me[ 0 ] - me[ 1 ] * me[ 4 ];
+		te[ 0 ] = me[ 10 ] * me[ 5 ] - me[ 6 ] * me[ 9 ];
+		te[ 1 ] = -me[ 10 ] * me[ 1 ] + me[ 2 ] * me[ 9 ];
+		te[ 2 ] = me[ 6 ] * me[ 1 ] - me[ 2 ] * me[ 5 ];
+		te[ 3 ] = -me[ 10 ] * me[ 4 ] + me[ 6 ] * me[ 8 ];
+		te[ 4 ] = me[ 10 ] * me[ 0 ] - me[ 2 ] * me[ 8 ];
+		te[ 5 ] = -me[ 6 ] * me[ 0 ] + me[ 2 ] * me[ 4 ];
+		te[ 6 ] = me[ 9 ] * me[ 4 ] - me[ 5 ] * me[ 8 ];
+		te[ 7 ] = -me[ 9 ] * me[ 0 ] + me[ 1 ] * me[ 8 ];
+		te[ 8 ] = me[ 5 ] * me[ 0 ] - me[ 1 ] * me[ 4 ];
 
 		var det = me[ 0 ] * te[ 0 ] + me[ 1 ] * te[ 3 ] + me[ 2 ] * te[ 6 ];
 
 		// no inverse
 
-		if ( det === 0 ) {
+		if(det === 0)
+		{
 
 			var msg = "Matrix3.getInverse(): can't invert matrix, determinant is 0";
 
-			if ( throwOnInvertible || false ) {
+			if(throwOnInvertible || false)
+			{
 
-				throw new Error( msg );
+				throw new Error(msg);
 
-			} else {
+			}
+			else
+			{
 
-				console.warn( msg );
+				console.warn(msg);
 
 			}
 
@@ -154,25 +187,33 @@ class Matrix3 {
 
 		}
 
-		this.multiplyScalar( 1.0 / det );
+		this.multiplyScalar(1.0 / det);
 
 		return this;
 
 	}
 
-	public transpose ():Matrix3 {
+	public transpose():Matrix3
+	{
 
 		var tmp, m = this.elements;
 
-		tmp = m[ 1 ]; m[ 1 ] = m[ 3 ]; m[ 3 ] = tmp;
-		tmp = m[ 2 ]; m[ 2 ] = m[ 6 ]; m[ 6 ] = tmp;
-		tmp = m[ 5 ]; m[ 5 ] = m[ 7 ]; m[ 7 ] = tmp;
+		tmp = m[ 1 ];
+		m[ 1 ] = m[ 3 ];
+		m[ 3 ] = tmp;
+		tmp = m[ 2 ];
+		m[ 2 ] = m[ 6 ];
+		m[ 6 ] = tmp;
+		tmp = m[ 5 ];
+		m[ 5 ] = m[ 7 ];
+		m[ 7 ] = tmp;
 
 		return this;
 
 	}
 
-	public flattenToArrayOffset ( array, offset ) {
+	public flattenToArrayOffset(array, offset)
+	{
 
 		var te = this.elements;
 
@@ -186,23 +227,25 @@ class Matrix3 {
 
 		array[ offset + 6 ] = te[ 6 ];
 		array[ offset + 7 ] = te[ 7 ];
-		array[ offset + 8 ]  = te[ 8 ];
+		array[ offset + 8 ] = te[ 8 ];
 
 		return array;
 
 	}
 
-	public getNormalMatrix ( m:Matrix4 ) {
+	public getNormalMatrix(m:Matrix4)
+	{
 
 		// input: THREE.Matrix4
 
-		this.getInverse( m ).transpose();
+		this.getInverse(m).transpose();
 
 		return this;
 
 	}
 
-	public transposeIntoArray ( r ) {
+	public transposeIntoArray(r)
+	{
 
 		var m = this.elements;
 
@@ -220,16 +263,17 @@ class Matrix3 {
 
 	}
 
-	public fromArray ( array:Float32Array ):Matrix3
+	public fromArray(array:Float32Array):Matrix3
 	{
 
-		this.elements.set( array );
+		this.elements.set(array);
 
 		return this;
 
 	}
 
-	public toArray () {
+	public toArray()
+	{
 
 		var te = this.elements;
 
@@ -241,8 +285,9 @@ class Matrix3 {
 
 	}
 
-	public clone ():number[] {
-		return new Matrix3().fromArray( this.elements );
+	public clone():number[]
+	{
+		return new Matrix3().fromArray(this.elements);
 	}
 
 }

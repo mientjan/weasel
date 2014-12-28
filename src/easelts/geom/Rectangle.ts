@@ -88,7 +88,7 @@ class Rectangle
 	 * @param {Number} [height=0] The height of the Rectangle.
 	 * @return {Rectangle} This instance. Useful for chaining method calls.
 	 */
-	constructor(x:number, y:number, width:number, height:number)
+		constructor(x:number, y:number, width:number, height:number)
 	{
 		this.initialize(x, y, width, height);
 	}

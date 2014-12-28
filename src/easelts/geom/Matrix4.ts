@@ -123,263 +123,265 @@ class Matrix4
 	}
 
 	private __extractRotation_v1:Vector3 = new Vector3(0, 0, 0);
+
 	public extractRotation(m:Matrix4):Matrix4
+	{
+		var v1 = this.__extractRotation_v1;
+		var te = this.elements;
+		var me = m.elements;
+
+		var scaleX = 1 / v1.set(me[ 0 ], me[ 1 ], me[ 2 ]).length();
+		var scaleY = 1 / v1.set(me[ 4 ], me[ 5 ], me[ 6 ]).length();
+		var scaleZ = 1 / v1.set(me[ 8 ], me[ 9 ], me[ 10 ]).length();
+
+		te[ 0 ] = me[ 0 ] * scaleX;
+		te[ 1 ] = me[ 1 ] * scaleX;
+		te[ 2 ] = me[ 2 ] * scaleX;
+
+		te[ 4 ] = me[ 4 ] * scaleY;
+		te[ 5 ] = me[ 5 ] * scaleY;
+		te[ 6 ] = me[ 6 ] * scaleY;
+
+		te[ 8 ] = me[ 8 ] * scaleZ;
+		te[ 9 ] = me[ 9 ] * scaleZ;
+		te[ 10 ] = me[ 10 ] * scaleZ;
+
+		return this;
+
+	}
+
+
+	/*	public makeRotationFromEuler(euler)
+	 {
+
+	 if(euler instanceof THREE.Euler === false)
+	 {
+
+	 console.error('THREE.Matrix: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
+
+	 }
+
+	 var te = this.elements;
+
+	 var x = euler.x, y = euler.y, z = euler.z;
+	 var a = Math.cos(x), b = Math.sin(x);
+	 var c = Math.cos(y), d = Math.sin(y);
+	 var e = Math.cos(z), f = Math.sin(z);
+
+	 if(euler.order === 'XYZ')
+	 {
+
+	 var ae = a * e, af = a * f, be = b * e, bf = b * f;
+
+	 te[ 0 ] = c * e;
+	 te[ 4 ] = -c * f;
+	 te[ 8 ] = d;
+
+	 te[ 1 ] = af + be * d;
+	 te[ 5 ] = ae - bf * d;
+	 te[ 9 ] = -b * c;
+
+	 te[ 2 ] = bf - ae * d;
+	 te[ 6 ] = be + af * d;
+	 te[ 10 ] = a * c;
+
+	 }
+	 else if(euler.order === 'YXZ')
+	 {
+
+	 var ce = c * e, cf = c * f, de = d * e, df = d * f;
+
+	 te[ 0 ] = ce + df * b;
+	 te[ 4 ] = de * b - cf;
+	 te[ 8 ] = a * d;
+
+	 te[ 1 ] = a * f;
+	 te[ 5 ] = a * e;
+	 te[ 9 ] = -b;
+
+	 te[ 2 ] = cf * b - de;
+	 te[ 6 ] = df + ce * b;
+	 te[ 10 ] = a * c;
+
+	 }
+	 else if(euler.order === 'ZXY')
+	 {
+
+	 var ce = c * e, cf = c * f, de = d * e, df = d * f;
+
+	 te[ 0 ] = ce - df * b;
+	 te[ 4 ] = -a * f;
+	 te[ 8 ] = de + cf * b;
+
+	 te[ 1 ] = cf + de * b;
+	 te[ 5 ] = a * e;
+	 te[ 9 ] = df - ce * b;
+
+	 te[ 2 ] = -a * d;
+	 te[ 6 ] = b;
+	 te[ 10 ] = a * c;
+
+	 }
+	 else if(euler.order === 'ZYX')
+	 {
+
+	 var ae = a * e, af = a * f, be = b * e, bf = b * f;
+
+	 te[ 0 ] = c * e;
+	 te[ 4 ] = be * d - af;
+	 te[ 8 ] = ae * d + bf;
+
+	 te[ 1 ] = c * f;
+	 te[ 5 ] = bf * d + ae;
+	 te[ 9 ] = af * d - be;
+
+	 te[ 2 ] = -d;
+	 te[ 6 ] = b * c;
+	 te[ 10 ] = a * c;
+
+	 }
+	 else if(euler.order === 'YZX')
+	 {
+
+	 var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+
+	 te[ 0 ] = c * e;
+	 te[ 4 ] = bd - ac * f;
+	 te[ 8 ] = bc * f + ad;
+
+	 te[ 1 ] = f;
+	 te[ 5 ] = a * e;
+	 te[ 9 ] = -b * e;
+
+	 te[ 2 ] = -d * e;
+	 te[ 6 ] = ad * f + bc;
+	 te[ 10 ] = ac - bd * f;
+
+	 }
+	 else if(euler.order === 'XZY')
+	 {
+
+	 var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+
+	 te[ 0 ] = c * e;
+	 te[ 4 ] = -f;
+	 te[ 8 ] = d * e;
+
+	 te[ 1 ] = ac * f + bd;
+	 te[ 5 ] = a * e;
+	 te[ 9 ] = ad * f - bc;
+
+	 te[ 2 ] = bc * f - ad;
+	 te[ 6 ] = b * e;
+	 te[ 10 ] = bd * f + ac;
+
+	 }
+
+	 // last column
+	 te[ 3 ] = 0;
+	 te[ 7 ] = 0;
+	 te[ 11 ] = 0;
+
+	 // bottom row
+	 te[ 12 ] = 0;
+	 te[ 13 ] = 0;
+	 te[ 14 ] = 0;
+	 te[ 15 ] = 1;
+
+	 return this;
+
+	 }
+
+	 public setRotationFromQuaternion(q)
+	 {
+	 console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
+	 return this.makeRotationFromQuaternion(q);
+	 }
+
+	 public makeRotationFromQuaternion(q)
+	 {
+
+	 var te = this.elements;
+
+	 var x = q.x, y = q.y, z = q.z, w = q.w;
+	 var x2 = x + x, y2 = y + y, z2 = z + z;
+	 var xx = x * x2, xy = x * y2, xz = x * z2;
+	 var yy = y * y2, yz = y * z2, zz = z * z2;
+	 var wx = w * x2, wy = w * y2, wz = w * z2;
+
+	 te[ 0 ] = 1 - ( yy + zz );
+	 te[ 4 ] = xy - wz;
+	 te[ 8 ] = xz + wy;
+
+	 te[ 1 ] = xy + wz;
+	 te[ 5 ] = 1 - ( xx + zz );
+	 te[ 9 ] = yz - wx;
+
+	 te[ 2 ] = xz - wy;
+	 te[ 6 ] = yz + wx;
+	 te[ 10 ] = 1 - ( xx + yy );
+
+	 // last column
+	 te[ 3 ] = 0;
+	 te[ 7 ] = 0;
+	 te[ 11 ] = 0;
+
+	 // bottom row
+	 te[ 12 ] = 0;
+	 te[ 13 ] = 0;
+	 te[ 14 ] = 0;
+	 te[ 15 ] = 1;
+
+	 return this;
+
+	 }*/
+
+	private __lookAt_x:Vector3 = new Vector3(0, 0, 0);
+	private __lookAt_y:Vector3 = new Vector3(0, 0, 0);
+	private __lookAt_z:Vector3 = new Vector3(0, 0, 0);
+
+	public lookAt(eye, target, up)
+	{
+		var x = this.__lookAt_x;
+		var y = this.__lookAt_y;
+		var z = this.__lookAt_z;
+		var te = this.elements;
+
+		z.subVectors(eye, target).normalize();
+
+		if(z.length() === 0)
 		{
-			var v1 = this.__extractRotation_v1;
-			var te = this.elements;
-			var me = m.elements;
 
-			var scaleX = 1 / v1.set(me[ 0 ], me[ 1 ], me[ 2 ]).length();
-			var scaleY = 1 / v1.set(me[ 4 ], me[ 5 ], me[ 6 ]).length();
-			var scaleZ = 1 / v1.set(me[ 8 ], me[ 9 ], me[ 10 ]).length();
-
-			te[ 0 ] = me[ 0 ] * scaleX;
-			te[ 1 ] = me[ 1 ] * scaleX;
-			te[ 2 ] = me[ 2 ] * scaleX;
-
-			te[ 4 ] = me[ 4 ] * scaleY;
-			te[ 5 ] = me[ 5 ] * scaleY;
-			te[ 6 ] = me[ 6 ] * scaleY;
-
-			te[ 8 ] = me[ 8 ] * scaleZ;
-			te[ 9 ] = me[ 9 ] * scaleZ;
-			te[ 10 ] = me[ 10 ] * scaleZ;
-
-			return this;
+			z.z = 1;
 
 		}
 
+		x.crossVectors(up, z).normalize();
 
-/*	public makeRotationFromEuler(euler)
- {
-
- if(euler instanceof THREE.Euler === false)
- {
-
- console.error('THREE.Matrix: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
-
- }
-
- var te = this.elements;
-
- var x = euler.x, y = euler.y, z = euler.z;
- var a = Math.cos(x), b = Math.sin(x);
- var c = Math.cos(y), d = Math.sin(y);
- var e = Math.cos(z), f = Math.sin(z);
-
- if(euler.order === 'XYZ')
- {
-
- var ae = a * e, af = a * f, be = b * e, bf = b * f;
-
- te[ 0 ] = c * e;
- te[ 4 ] = -c * f;
- te[ 8 ] = d;
-
- te[ 1 ] = af + be * d;
- te[ 5 ] = ae - bf * d;
- te[ 9 ] = -b * c;
-
- te[ 2 ] = bf - ae * d;
- te[ 6 ] = be + af * d;
- te[ 10 ] = a * c;
-
- }
- else if(euler.order === 'YXZ')
- {
-
- var ce = c * e, cf = c * f, de = d * e, df = d * f;
-
- te[ 0 ] = ce + df * b;
- te[ 4 ] = de * b - cf;
- te[ 8 ] = a * d;
-
- te[ 1 ] = a * f;
- te[ 5 ] = a * e;
- te[ 9 ] = -b;
-
- te[ 2 ] = cf * b - de;
- te[ 6 ] = df + ce * b;
- te[ 10 ] = a * c;
-
- }
- else if(euler.order === 'ZXY')
- {
-
- var ce = c * e, cf = c * f, de = d * e, df = d * f;
-
- te[ 0 ] = ce - df * b;
- te[ 4 ] = -a * f;
- te[ 8 ] = de + cf * b;
-
- te[ 1 ] = cf + de * b;
- te[ 5 ] = a * e;
- te[ 9 ] = df - ce * b;
-
- te[ 2 ] = -a * d;
- te[ 6 ] = b;
- te[ 10 ] = a * c;
-
- }
- else if(euler.order === 'ZYX')
- {
-
- var ae = a * e, af = a * f, be = b * e, bf = b * f;
-
- te[ 0 ] = c * e;
- te[ 4 ] = be * d - af;
- te[ 8 ] = ae * d + bf;
-
- te[ 1 ] = c * f;
- te[ 5 ] = bf * d + ae;
- te[ 9 ] = af * d - be;
-
- te[ 2 ] = -d;
- te[ 6 ] = b * c;
- te[ 10 ] = a * c;
-
- }
- else if(euler.order === 'YZX')
- {
-
- var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
- te[ 0 ] = c * e;
- te[ 4 ] = bd - ac * f;
- te[ 8 ] = bc * f + ad;
-
- te[ 1 ] = f;
- te[ 5 ] = a * e;
- te[ 9 ] = -b * e;
-
- te[ 2 ] = -d * e;
- te[ 6 ] = ad * f + bc;
- te[ 10 ] = ac - bd * f;
-
- }
- else if(euler.order === 'XZY')
- {
-
- var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
- te[ 0 ] = c * e;
- te[ 4 ] = -f;
- te[ 8 ] = d * e;
-
- te[ 1 ] = ac * f + bd;
- te[ 5 ] = a * e;
- te[ 9 ] = ad * f - bc;
-
- te[ 2 ] = bc * f - ad;
- te[ 6 ] = b * e;
- te[ 10 ] = bd * f + ac;
-
- }
-
- // last column
- te[ 3 ] = 0;
- te[ 7 ] = 0;
- te[ 11 ] = 0;
-
- // bottom row
- te[ 12 ] = 0;
- te[ 13 ] = 0;
- te[ 14 ] = 0;
- te[ 15 ] = 1;
-
- return this;
-
- }
-
- public setRotationFromQuaternion(q)
- {
- console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
- return this.makeRotationFromQuaternion(q);
- }
-
- public makeRotationFromQuaternion(q)
- {
-
- var te = this.elements;
-
- var x = q.x, y = q.y, z = q.z, w = q.w;
- var x2 = x + x, y2 = y + y, z2 = z + z;
- var xx = x * x2, xy = x * y2, xz = x * z2;
- var yy = y * y2, yz = y * z2, zz = z * z2;
- var wx = w * x2, wy = w * y2, wz = w * z2;
-
- te[ 0 ] = 1 - ( yy + zz );
- te[ 4 ] = xy - wz;
- te[ 8 ] = xz + wy;
-
- te[ 1 ] = xy + wz;
- te[ 5 ] = 1 - ( xx + zz );
- te[ 9 ] = yz - wx;
-
- te[ 2 ] = xz - wy;
- te[ 6 ] = yz + wx;
- te[ 10 ] = 1 - ( xx + yy );
-
- // last column
- te[ 3 ] = 0;
- te[ 7 ] = 0;
- te[ 11 ] = 0;
-
- // bottom row
- te[ 12 ] = 0;
- te[ 13 ] = 0;
- te[ 14 ] = 0;
- te[ 15 ] = 1;
-
- return this;
-
- }*/
-
-	private __lookAt_x:Vector3 = new Vector3(0,0,0);
-	private __lookAt_y:Vector3 = new Vector3(0,0,0);
-	private __lookAt_z:Vector3 = new Vector3(0,0,0);
-	public lookAt(eye, target, up)
+		if(x.length() === 0)
 		{
-			var x = this.__lookAt_x;
-			var y = this.__lookAt_y;
-			var z = this.__lookAt_z;
-			var te = this.elements;
 
-			z.subVectors(eye, target).normalize();
-
-			if(z.length() === 0)
-			{
-
-				z.z = 1;
-
-			}
-
+			z.x += 0.0001;
 			x.crossVectors(up, z).normalize();
 
-			if(x.length() === 0)
-			{
-
-				z.x += 0.0001;
-				x.crossVectors(up, z).normalize();
-
-			}
-
-			y.crossVectors(z, x);
-
-
-			te[ 0 ] = x.x;
-			te[ 4 ] = y.x;
-			te[ 8 ] = z.x;
-			te[ 1 ] = x.y;
-			te[ 5 ] = y.y;
-			te[ 9 ] = z.y;
-			te[ 2 ] = x.z;
-			te[ 6 ] = y.z;
-			te[ 10 ] = z.z;
-
-			return this;
-
 		}
+
+		y.crossVectors(z, x);
+
+
+		te[ 0 ] = x.x;
+		te[ 4 ] = y.x;
+		te[ 8 ] = z.x;
+		te[ 1 ] = x.y;
+		te[ 5 ] = y.y;
+		te[ 9 ] = z.y;
+		te[ 2 ] = x.z;
+		te[ 6 ] = y.z;
+		te[ 10 ] = z.z;
+
+		return this;
+
+	}
 
 	public multiply(m:Matrix4):Matrix4
 	{
@@ -476,78 +478,79 @@ class Matrix4
 		return this;
 	}
 
-//	public multiplyVector3(vector)
-//	{
-//
-//		console.warn('THREE.Matrix4: .multiplyVector3() has been removed. Use vector.applyMatrix4( matrix ) or vector.applyProjection( matrix ) instead.');
-//		return vector.applyProjection(this);
-//
-//	}
-//
-//	public multiplyVector4(vector)
-//	{
-//
-//		console.warn('THREE.Matrix4: .multiplyVector4() has been removed. Use vector.applyMatrix4( matrix ) instead.');
-//		return vector.applyMatrix4(this);
-//
-//	}
-//
-//	public multiplyVector3Array(a)
-//	{
-//
-//		console.warn('THREE.Matrix4: .multiplyVector3Array() has been renamed. Use matrix.applyToVector3Array( array ) instead.');
-//		return this.applyToVector3Array(a);
-//
-//	}
+	//	public multiplyVector3(vector)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .multiplyVector3() has been removed. Use vector.applyMatrix4( matrix ) or vector.applyProjection( matrix ) instead.');
+	//		return vector.applyProjection(this);
+	//
+	//	}
+	//
+	//	public multiplyVector4(vector)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .multiplyVector4() has been removed. Use vector.applyMatrix4( matrix ) instead.');
+	//		return vector.applyMatrix4(this);
+	//
+	//	}
+	//
+	//	public multiplyVector3Array(a)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .multiplyVector3Array() has been renamed. Use matrix.applyToVector3Array( array ) instead.');
+	//		return this.applyToVector3Array(a);
+	//
+	//	}
 
-	private __applyToVector3Array_v1 = new Vector3(0,0,0);
+	private __applyToVector3Array_v1 = new Vector3(0, 0, 0);
+
 	public applyToVector3Array(array, offset, length)
+	{
+		var v1 = this.__applyToVector3Array_v1;
+		if(offset === undefined)
 		{
-			var v1 = this.__applyToVector3Array_v1;
-			if(offset === undefined)
-			{
-				offset = 0;
-			}
-			if(length === undefined)
-			{
-				length = array.length;
-			}
+			offset = 0;
+		}
+		if(length === undefined)
+		{
+			length = array.length;
+		}
 
-			for(var i = 0, j = offset, il; i < length; i += 3, j += 3)
-			{
+		for(var i = 0, j = offset, il; i < length; i += 3, j += 3)
+		{
 
-				v1.x = array[ j ];
-				v1.y = array[ j + 1 ];
-				v1.z = array[ j + 2 ];
+			v1.x = array[ j ];
+			v1.y = array[ j + 1 ];
+			v1.z = array[ j + 2 ];
 
-				v1.applyMatrix4(this);
+			v1.applyMatrix4(this);
 
-				array[ j ] = v1.x;
-				array[ j + 1 ] = v1.y;
-				array[ j + 2 ] = v1.z;
-
-			}
-
-			return array;
+			array[ j ] = v1.x;
+			array[ j + 1 ] = v1.y;
+			array[ j + 2 ] = v1.z;
 
 		}
 
-//	public rotateAxis(v)
-//	{
-//
-//		console.warn('THREE.Matrix4: .rotateAxis() has been removed. Use Vector3.transformDirection( matrix ) instead.');
-//
-//		v.transformDirection(this);
-//
-//	}
-//
-//	public crossVector(vector)
-//	{
-//
-//		console.warn('THREE.Matrix4: .crossVector() has been removed. Use vector.applyMatrix4( matrix ) instead.');
-//		return vector.applyMatrix4(this);
-//
-//	}
+		return array;
+
+	}
+
+	//	public rotateAxis(v)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .rotateAxis() has been removed. Use Vector3.transformDirection( matrix ) instead.');
+	//
+	//		v.transformDirection(this);
+	//
+	//	}
+	//
+	//	public crossVector(vector)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .crossVector() has been removed. Use vector.applyMatrix4( matrix ) instead.');
+	//		return vector.applyMatrix4(this);
+	//
+	//	}
 
 	public determinant():number
 	{
@@ -658,21 +661,21 @@ class Matrix4
 
 	}
 
-//	public getPosition()
-//	{
-//
-//		var v1 = new THREE.Vector3();
-//
-//		return function()
-//		{
-//
-//			console.warn('THREE.Matrix4: .getPosition() has been removed. Use Vector3.setFromMatrixPosition( matrix ) instead.');
-//
-//			var te = this.elements;
-//			return v1.set(te[ 12 ], te[ 13 ], te[ 14 ]);
-//
-//		};
-//	}
+	//	public getPosition()
+	//	{
+	//
+	//		var v1 = new THREE.Vector3();
+	//
+	//		return function()
+	//		{
+	//
+	//			console.warn('THREE.Matrix4: .getPosition() has been removed. Use Vector3.setFromMatrixPosition( matrix ) instead.');
+	//
+	//			var te = this.elements;
+	//			return v1.set(te[ 12 ], te[ 13 ], te[ 14 ]);
+	//
+	//		};
+	//	}
 
 	public setPosition(v:Vector3):Matrix4
 	{
@@ -746,41 +749,42 @@ class Matrix4
 		return this;
 
 	}
-//
-//	public translate(v)
-//	{
-//
-//		console.warn('THREE.Matrix4: .translate() has been removed.');
-//
-//	}
-//
-//	public rotateX(angle)
-//	{
-//
-//		console.warn('THREE.Matrix4: .rotateX() has been removed.');
-//
-//	}
-//
-//	public rotateY(angle)
-//	{
-//
-//		console.warn('THREE.Matrix4: .rotateY() has been removed.');
-//
-//	}
-//
-//	public rotateZ(angle)
-//	{
-//
-//		console.warn('THREE.Matrix4: .rotateZ() has been removed.');
-//
-//	}
-//
-//	public rotateByAxis(axis, angle)
-//	{
-//
-//		console.warn('THREE.Matrix4: .rotateByAxis() has been removed.');
-//
-//	}
+
+	//
+	//	public translate(v)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .translate() has been removed.');
+	//
+	//	}
+	//
+	//	public rotateX(angle)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .rotateX() has been removed.');
+	//
+	//	}
+	//
+	//	public rotateY(angle)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .rotateY() has been removed.');
+	//
+	//	}
+	//
+	//	public rotateZ(angle)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .rotateZ() has been removed.');
+	//
+	//	}
+	//
+	//	public rotateByAxis(axis, angle)
+	//	{
+	//
+	//		console.warn('THREE.Matrix4: .rotateByAxis() has been removed.');
+	//
+	//	}
 
 	public scale(v)
 	{
@@ -937,59 +941,60 @@ class Matrix4
 		return this;
 	}
 
-	private __decompose_vector = new Vector3(0,0,0);
+	private __decompose_vector = new Vector3(0, 0, 0);
 	private __decompose_matrix = new Matrix4();
+
 	public decompose(position, quaternion, scale)
+	{
+		var vector = this.__decompose_vector;
+		var matrix = this.__decompose_matrix;
+
+		var te = this.elements;
+
+		var sx = vector.set(te[ 0 ], te[ 1 ], te[ 2 ]).length();
+		var sy = vector.set(te[ 4 ], te[ 5 ], te[ 6 ]).length();
+		var sz = vector.set(te[ 8 ], te[ 9 ], te[ 10 ]).length();
+
+		// if determine is negative, we need to invert one scale
+		var det = this.determinant();
+		if(det < 0)
 		{
-			var vector = this.__decompose_vector;
-			var matrix = this.__decompose_matrix;
-
-			var te = this.elements;
-
-			var sx = vector.set(te[ 0 ], te[ 1 ], te[ 2 ]).length();
-			var sy = vector.set(te[ 4 ], te[ 5 ], te[ 6 ]).length();
-			var sz = vector.set(te[ 8 ], te[ 9 ], te[ 10 ]).length();
-
-			// if determine is negative, we need to invert one scale
-			var det = this.determinant();
-			if(det < 0)
-			{
-				sx = -sx;
-			}
-
-			position.x = te[ 12 ];
-			position.y = te[ 13 ];
-			position.z = te[ 14 ];
-
-			// scale the rotation part
-
-			matrix.elements.set(this.elements); // at this point matrix is incomplete so we can't use .copy()
-
-			var invSX = 1 / sx;
-			var invSY = 1 / sy;
-			var invSZ = 1 / sz;
-
-			matrix.elements[ 0 ] *= invSX;
-			matrix.elements[ 1 ] *= invSX;
-			matrix.elements[ 2 ] *= invSX;
-
-			matrix.elements[ 4 ] *= invSY;
-			matrix.elements[ 5 ] *= invSY;
-			matrix.elements[ 6 ] *= invSY;
-
-			matrix.elements[ 8 ] *= invSZ;
-			matrix.elements[ 9 ] *= invSZ;
-			matrix.elements[ 10 ] *= invSZ;
-
-			quaternion.setFromRotationMatrix(matrix);
-
-			scale.x = sx;
-			scale.y = sy;
-			scale.z = sz;
-
-			return this;
-
+			sx = -sx;
 		}
+
+		position.x = te[ 12 ];
+		position.y = te[ 13 ];
+		position.z = te[ 14 ];
+
+		// scale the rotation part
+
+		matrix.elements.set(this.elements); // at this point matrix is incomplete so we can't use .copy()
+
+		var invSX = 1 / sx;
+		var invSY = 1 / sy;
+		var invSZ = 1 / sz;
+
+		matrix.elements[ 0 ] *= invSX;
+		matrix.elements[ 1 ] *= invSX;
+		matrix.elements[ 2 ] *= invSX;
+
+		matrix.elements[ 4 ] *= invSY;
+		matrix.elements[ 5 ] *= invSY;
+		matrix.elements[ 6 ] *= invSY;
+
+		matrix.elements[ 8 ] *= invSZ;
+		matrix.elements[ 9 ] *= invSZ;
+		matrix.elements[ 10 ] *= invSZ;
+
+		quaternion.setFromRotationMatrix(matrix);
+
+		scale.x = sx;
+		scale.y = sy;
+		scale.z = sz;
+
+		return this;
+
+	}
 
 	/**
 	 *

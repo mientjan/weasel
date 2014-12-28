@@ -1,31 +1,30 @@
-
 /*
-* Ticker
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Ticker
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 //import EventDispatcher = require('../../createts/events/EventDispatcher');
 import Event = require('../../createts/events/Event');
@@ -60,7 +59,8 @@ import SignalConnection = require('../../createts/events/SignalConnection');
  * @uses EventDispatcher
  * @static
  **/
-class Ticker {
+class Ticker
+{
 
 	/**
 	 * In this mode, Ticker uses the requestAnimationFrame API, but attempts to synch the ticks to target framerate. It
@@ -128,7 +128,7 @@ class Ticker {
 	 * @param {Number} delta The time elapsed in ms since the last tick.
 	 * @param {Number} time The total time in ms since Ticker was initialized.
 	 * @param {Number} runTime The total time in ms that Ticker was not paused since it was initialized. For example,
-	 * 	you could determine the amount of time that the Ticker has been paused since initialization with time-runTime.
+	 *    you could determine the amount of time that the Ticker has been paused since initialization with time-runTime.
 	 * @since 0.6.0
 	 */
 
@@ -174,17 +174,17 @@ class Ticker {
 
 	// mix-ins:
 	// EventDispatcher methods:
-//	public static removeEventListener = null;
-//	public static removeAllEventListeners = null;
-//	public static dispatchEvent = null;
-//	public static hasEventListener = null;
-//	public static _listeners = null;
+	//	public static removeEventListener = null;
+	//	public static removeAllEventListeners = null;
+	//	public static dispatchEvent = null;
+	//	public static hasEventListener = null;
+	//	public static _listeners = null;
 
-//	public static _addEventListener = Ticker.addEventListener;
-//	public static addEventListener() {
-//		!Ticker._inited && Ticker.init();
-//		return Ticker._addEventListener.apply(Ticker, arguments);
-//	};
+	//	public static _addEventListener = Ticker.addEventListener;
+	//	public static addEventListener() {
+	//		!Ticker._inited && Ticker.init();
+	//		return Ticker._addEventListener.apply(Ticker, arguments);
+	//	};
 
 	// private static properties:
 
@@ -283,8 +283,12 @@ class Ticker {
 	 * @method init
 	 * @static
 	 **/
-	public static init() {
-		if (Ticker._inited) { return; }
+	public static init()
+	{
+		if(Ticker._inited)
+		{
+			return;
+		}
 		Ticker._inited = true;
 		Ticker._times = [];
 		Ticker._tickTimes = [];
@@ -298,11 +302,15 @@ class Ticker {
 	 * @method reset
 	 * @static
 	 **/
-	public static reset() {
-		if (Ticker._raf) {
+	public static reset()
+	{
+		if(Ticker._raf)
+		{
 			var f = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || window['oCancelAnimationFrame'] || window['msCancelAnimationFrame'];
 			f && f(Ticker._timerId);
-		} else {
+		}
+		else
+		{
 			clearTimeout(Ticker._timerId);
 		}
 
@@ -314,7 +322,8 @@ class Ticker {
 	 *
 	 * @returns {SignalConnection}
 	 */
-	public static addTickListener(fn:Function):SignalConnection {
+	public static addTickListener(fn:Function):SignalConnection
+	{
 		!Ticker._inited && Ticker.init();
 		return Ticker.ticker.connectImpl(fn, false);
 	}
@@ -327,9 +336,13 @@ class Ticker {
 	 * @static
 	 * @param {Number} interval Time in milliseconds between ticks. Default value is 50.
 	 **/
-	public static setInterval(interval) {
+	public static setInterval(interval)
+	{
 		Ticker._interval = interval;
-		if (!Ticker._inited) { return; }
+		if(!Ticker._inited)
+		{
+			return;
+		}
 		Ticker._setupTick();
 	}
 
@@ -339,7 +352,8 @@ class Ticker {
 	 * @static
 	 * @return {Number} The current target interval in milliseconds between tick events.
 	 **/
-	public static getInterval():number {
+	public static getInterval():number
+	{
 		return Ticker._interval;
 	}
 
@@ -350,8 +364,9 @@ class Ticker {
 	 * @static
 	 * @param {Number} value Target number of ticks broadcast per second.
 	 **/
-	public static setFPS(value) {
-		Ticker.setInterval(1000/value);
+	public static setFPS(value)
+	{
+		Ticker.setInterval(1000 / value);
 	}
 
 	/**
@@ -361,8 +376,9 @@ class Ticker {
 	 * @static
 	 * @return {Number} The current target number of frames / ticks broadcast per second.
 	 **/
-	public static getFPS() {
-		return 1000/Ticker._interval;
+	public static getFPS()
+	{
+		return 1000 / Ticker._interval;
 	}
 
 	/**
@@ -382,14 +398,21 @@ class Ticker {
 	 * Defaults to the number of ticks per second. To get only the last tick's time, pass in 1.
 	 * @return {Number} The average time spent in a tick in milliseconds.
 	 **/
-	public static getMeasuredTickTime(ticks) {
-		var ttl=0, times=Ticker._tickTimes;
-		if (times.length < 1) { return -1; }
+	public static getMeasuredTickTime(ticks)
+	{
+		var ttl = 0, times = Ticker._tickTimes;
+		if(times.length < 1)
+		{
+			return -1;
+		}
 
 		// by default, calculate average for the past ~1 second:
-		ticks = Math.min(times.length, ticks||(Ticker.getFPS()|0));
-		for (var i=0; i<ticks; i++) { ttl += times[i]; }
-		return ttl/ticks;
+		ticks = Math.min(times.length, ticks || (Ticker.getFPS() | 0));
+		for(var i = 0; i < ticks; i++)
+		{
+			ttl += times[i];
+		}
+		return ttl / ticks;
 	}
 
 	/**
@@ -401,13 +424,17 @@ class Ticker {
 	 * @return {Number} The actual frames / ticks per second. Depending on performance, this may differ
 	 * from the target frames per second.
 	 **/
-	public static getMeasuredFPS(ticks) {
+	public static getMeasuredFPS(ticks)
+	{
 		var times = Ticker._times;
-		if (times.length < 2) { return -1; }
+		if(times.length < 2)
+		{
+			return -1;
+		}
 
 		// by default, calculate fps for the past ~1 second:
-		ticks = Math.min(times.length-1, ticks||(Ticker.getFPS()|0));
-		return 1000/((times[0]-times[ticks])/ticks);
+		ticks = Math.min(times.length - 1, ticks || (Ticker.getFPS() | 0));
+		return 1000 / ((times[0] - times[ticks]) / ticks);
 	}
 
 	/**
@@ -430,7 +457,8 @@ class Ticker {
 	 * @static
 	 * @param {Boolean} value Indicates whether to pause (true) or unpause (false) Ticker.
 	 **/
-	public static setPaused = function(value) {
+	public static setPaused = function(value)
+	{
 		Ticker._paused = value;
 	};
 
@@ -453,7 +481,8 @@ class Ticker {
 	 * @static
 	 * @return {Boolean} Whether the Ticker is currently paused.
 	 **/
-	public static getPaused() {
+	public static getPaused()
+	{
 		return Ticker._paused;
 	}
 
@@ -467,7 +496,8 @@ class Ticker {
 	 * If false, the value returned will be total time elapsed since the first tick event listener was added.
 	 * @return {Number} Number of milliseconds that have elapsed since Ticker was initialized or -1.
 	 **/
-	public static getTime(runTime) {
+	public static getTime(runTime)
+	{
 		return Ticker._startTime ? Ticker._getTime() - Ticker._startTime - (runTime ? Ticker._pausedTime : 0) : -1;
 	}
 
@@ -477,7 +507,8 @@ class Ticker {
 	 * @param runTime {Boolean} [runTime=false] If true, the runTime property will be returned instead of time.
 	 * @returns {number} The time or runTime property from the most recent tick event or -1.
 	 */
-	public static getEventTime(runTime) {
+	public static getEventTime(runTime)
+	{
 		return Ticker._startTime ? (Ticker._lastTime || Ticker._startTime) - (runTime ? Ticker._pausedTime : 0) : -1;
 	}
 
@@ -491,8 +522,9 @@ class Ticker {
 	 * value. The default value is false.
 	 * @return {Number} of ticks that have been broadcast.
 	 **/
-	public static getTicks(pauseable) {
-		return Ticker._ticks - (pauseable ?Ticker._pausedTicks : 0);
+	public static getTicks(pauseable)
+	{
+		return Ticker._ticks - (pauseable ? Ticker._pausedTicks : 0);
 	}
 
 	// private static methods:
@@ -501,13 +533,15 @@ class Ticker {
 	 * @static
 	 * @protected
 	 **/
-	public static _handleSynch() {
+	public static _handleSynch()
+	{
 		var time = Ticker._getTime() - Ticker._startTime;
 		Ticker._timerId = null;
 		Ticker._setupTick();
 
 		// run if enough time has elapsed, with a little bit of flexibility to be early:
-		if (time - Ticker._lastTime >= (Ticker._interval-1)*0.97) {
+		if(time - Ticker._lastTime >= (Ticker._interval - 1) * 0.97)
+		{
 			Ticker._tick();
 		}
 	}
@@ -517,7 +551,8 @@ class Ticker {
 	 * @static
 	 * @protected
 	 **/
-	public static _handleRAF() {
+	public static _handleRAF()
+	{
 		Ticker._timerId = null;
 		Ticker._setupTick();
 		Ticker._tick();
@@ -528,7 +563,8 @@ class Ticker {
 	 * @static
 	 * @protected
 	 **/
-	public static _handleTimeout() {
+	public static _handleTimeout()
+	{
 		Ticker._timerId = null;
 		Ticker._setupTick();
 		Ticker._tick();
@@ -539,13 +575,19 @@ class Ticker {
 	 * @static
 	 * @protected
 	 **/
-	public static _setupTick() {
-		if (Ticker._timerId != null) { return; } // avoid duplicates
+	public static _setupTick()
+	{
+		if(Ticker._timerId != null)
+		{
+			return;
+		} // avoid duplicates
 
-		var mode = Ticker.timingMode||(Ticker.useRAF&&Ticker.RAF_SYNCHED);
-		if (mode == Ticker.RAF_SYNCHED || mode == Ticker.RAF) {
+		var mode = Ticker.timingMode || (Ticker.useRAF && Ticker.RAF_SYNCHED);
+		if(mode == Ticker.RAF_SYNCHED || mode == Ticker.RAF)
+		{
 			var f = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFrame'] || window['oRequestAnimationFrame'] || window['msRequestAnimationFrame'];
-			if (f) {
+			if(f)
+			{
 				Ticker._timerId = f(mode == Ticker.RAF ? Ticker._handleRAF : Ticker._handleSynch);
 				Ticker._raf = true;
 				return;
@@ -560,19 +602,22 @@ class Ticker {
 	 * @static
 	 * @protected
 	 **/
-	public static _tick() {
-		var time = Ticker._getTime()-Ticker._startTime;
-		var elapsedTime = time-Ticker._lastTime;
+	public static _tick()
+	{
+		var time = Ticker._getTime() - Ticker._startTime;
+		var elapsedTime = time - Ticker._lastTime;
 		var paused = Ticker._paused;
 
 		Ticker._ticks++;
-		if (paused) {
+		if(paused)
+		{
 			Ticker._pausedTicks++;
 			Ticker._pausedTime += elapsedTime;
 		}
 		Ticker._lastTime = time;
 
-		if (Ticker.ticker.hasListeners()) {
+		if(Ticker.ticker.hasListeners())
+		{
 			var event = new TimeEvent("tick");
 			var maxDelta = Ticker.maxDelta;
 
@@ -586,11 +631,17 @@ class Ticker {
 			Ticker.ticker.emit(event);
 		}
 
-		Ticker._tickTimes.unshift( Ticker._getTime() - time );
-		while (Ticker._tickTimes.length > 100) { Ticker._tickTimes.pop(); }
+		Ticker._tickTimes.unshift(Ticker._getTime() - time);
+		while(Ticker._tickTimes.length > 100)
+		{
+			Ticker._tickTimes.pop();
+		}
 
 		Ticker._times.unshift(time);
-		while (Ticker._times.length > 100) { Ticker._times.pop(); }
+		while(Ticker._times.length > 100)
+		{
+			Ticker._times.pop();
+		}
 	}
 
 	/**
@@ -599,8 +650,9 @@ class Ticker {
 	 * @protected
 	 **/
 	public static now = window.performance && (performance.now || performance['mozNow'] || performance['msNow'] || performance['oNow'] || performance['webkitNow']);
-	public static _getTime = function() {
-		return (Ticker.now&&Ticker.now.call(performance))||(new Date().getTime());
+	public static _getTime = function()
+	{
+		return (Ticker.now && Ticker.now.call(performance)) || (new Date().getTime());
 	}
 }
 

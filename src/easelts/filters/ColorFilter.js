@@ -6,37 +6,37 @@ var __extends = this.__extends || function (d, b) {
 };
 define(["require", "exports", './Filter'], function (require, exports, Filter) {
     /**
-         * Applies a color transform to DisplayObjects.
-         *
-         * <h4>Example</h4>
-         * This example draws a red circle, and then transforms it to Blue. This is accomplished by multiplying all the channels
-         * to 0 (except alpha, which is set to 1), and then adding 255 to the blue channel.
-         *
-         *      var shape = new createjs.Shape().set({x:100,y:100});
-         *      shape.graphics.beginFill("#ff0000").drawCircle(0,0,50);
-         *
-         *      shape.filters = [
-         *          new createjs.ColorFilter(0,0,0,1, 0,0,255,0)
-         *      ];
-         *      shape.cache(-50, -50, 100, 100);
-         *
-         * See {{#crossLink "Filter"}}{{/crossLink}} for an more information on applying filters.
-         * @class ColorFilter
-         * @param {Number} [redMultiplier=1] The amount to multiply against the red channel. This is a range between 0 and 1.
-         * @param {Number} [greenMultiplier=1] The amount to multiply against the green channel. This is a range between 0 and 1.
-         * @param {Number} [blueMultiplier=1] The amount to multiply against the blue channel. This is a range between 0 and 1.
-         * @param {Number} [alphaMultiplier=1] The amount to multiply against the alpha channel. This is a range between 0 and 1.
-         * @param {Number} [redOffset=0] The amount to add to the red channel after it has been multiplied. This is a range
-         * between -255 and 255.
-         * @param {Number} [greenOffset=0] The amount to add to the green channel after it has been multiplied. This is a range
-         * between -255 and 255.
-         * @param {Number} [blueOffset=0] The amount to add to the blue channel after it has been multiplied. This is a range
-         * between -255 and 255.
-         * @param {Number} [alphaOffset=0] The amount to add to the alpha channel after it has been multiplied. This is a range
-         * between -255 and 255.
-         * @constructor
-         * @extends Filter
-         **/
+     * Applies a color transform to DisplayObjects.
+     *
+     * <h4>Example</h4>
+     * This example draws a red circle, and then transforms it to Blue. This is accomplished by multiplying all the channels
+     * to 0 (except alpha, which is set to 1), and then adding 255 to the blue channel.
+     *
+     *      var shape = new createjs.Shape().set({x:100,y:100});
+     *      shape.graphics.beginFill("#ff0000").drawCircle(0,0,50);
+     *
+     *      shape.filters = [
+     *          new createjs.ColorFilter(0,0,0,1, 0,0,255,0)
+     *      ];
+     *      shape.cache(-50, -50, 100, 100);
+     *
+     * See {{#crossLink "Filter"}}{{/crossLink}} for an more information on applying filters.
+     * @class ColorFilter
+     * @param {Number} [redMultiplier=1] The amount to multiply against the red channel. This is a range between 0 and 1.
+     * @param {Number} [greenMultiplier=1] The amount to multiply against the green channel. This is a range between 0 and 1.
+     * @param {Number} [blueMultiplier=1] The amount to multiply against the blue channel. This is a range between 0 and 1.
+     * @param {Number} [alphaMultiplier=1] The amount to multiply against the alpha channel. This is a range between 0 and 1.
+     * @param {Number} [redOffset=0] The amount to add to the red channel after it has been multiplied. This is a range
+     * between -255 and 255.
+     * @param {Number} [greenOffset=0] The amount to add to the green channel after it has been multiplied. This is a range
+     * between -255 and 255.
+     * @param {Number} [blueOffset=0] The amount to add to the blue channel after it has been multiplied. This is a range
+     * between -255 and 255.
+     * @param {Number} [alphaOffset=0] The amount to add to the alpha channel after it has been multiplied. This is a range
+     * between -255 and 255.
+     * @constructor
+     * @extends Filter
+     **/
     var ColorFilter = (function (_super) {
         __extends(ColorFilter, _super);
         // constructor:

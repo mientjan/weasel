@@ -73,10 +73,12 @@ define(["require", "exports", '../display/Container', '../geom/Size'], function 
                     width += child.width;
                     height = Math.max(height, child.height);
                 }
-                if (this.autoWidth)
+                if (this.autoWidth) {
                     this.width = width + (margin * (this.children.length - 1));
-                if (this.autoHeight)
+                }
+                if (this.autoHeight) {
                     this.height = height;
+                }
             }
             _super.prototype.onResize.call(this, e);
         };

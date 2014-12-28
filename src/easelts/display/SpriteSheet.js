@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/events/EventDispatcher', '../geom/Rectangle'], function (require, exports, EventDispatcher, Rectangle) {
+define(["require", "exports", '../geom/Rectangle'], function (require, exports, Rectangle) {
     /*
      * SpriteSheet
      * Visit http://createjs.com/ for documentation, updates and examples.

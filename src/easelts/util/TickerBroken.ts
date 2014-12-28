@@ -76,7 +76,7 @@ class Ticker
 	 **/
 	public setFPS(value):void
 	{
-		this._interval = 1000/value;
+		this._interval = 1000 / value;
 		this._setupTick();
 	}
 
@@ -180,7 +180,7 @@ class Ticker
 
 			if(requestAnimationFrame)
 			{
-				this._timerId = requestAnimationFrame( mode == TimingMode.RAF ? this._handleRAF : this._handleSynch );
+				this._timerId = requestAnimationFrame(mode == TimingMode.RAF ? this._handleRAF : this._handleSynch);
 				//				Ticker._raf = true;
 				return;
 			}

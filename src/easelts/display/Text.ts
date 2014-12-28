@@ -336,7 +336,7 @@ class Text extends DisplayObject
 
 		if(!this.cacheCanvas)
 		{
-			this.cache(0, 0, width, height );
+			this.cache(0, 0, width, height);
 			alreadyCached = true;
 		}
 
@@ -360,10 +360,10 @@ class Text extends DisplayObject
 			var x = p % width;
 			var y = Math.floor(p / width);
 
-			if( data[i - 3] > 0 ||
+			if(data[i - 3] > 0 ||
 				data[i - 2] > 0 ||
 				data[i - 1] > 0 ||
-				data[i] > 0 )
+				data[i] > 0)
 			{
 				x0 = Math.min(x0, x);
 				y0 = Math.min(y0, y);
@@ -373,8 +373,8 @@ class Text extends DisplayObject
 		}
 
 		this.color = color;
-//		ctx.strokeStyle = '#FF0000';
-//		ctx.strokeRect(x0, y0,  x1 - x0, y1 - y0);
+		//		ctx.strokeStyle = '#FF0000';
+		//		ctx.strokeRect(x0, y0,  x1 - x0, y1 - y0);
 
 		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
 	}

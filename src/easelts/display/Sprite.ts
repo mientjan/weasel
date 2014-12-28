@@ -185,7 +185,7 @@ class Sprite extends DisplayObject
 	 * @method initialize
 	 * @protected
 	 */
-	constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
+		constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
 	{
 		super();
 
@@ -347,7 +347,7 @@ class Sprite extends DisplayObject
 	public getBounds()
 	{
 		// TODO: should this normalizeFrame?
-//		console.log( super.getBounds(), this.spriteSheet.getFrameBounds(this.currentFrame, this._rectangle) );
+		//		console.log( super.getBounds(), this.spriteSheet.getFrameBounds(this.currentFrame, this._rectangle) );
 
 		return super.getBounds() || this.spriteSheet.getFrameBounds(this.currentFrame);
 	}

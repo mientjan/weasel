@@ -1,74 +1,76 @@
 /*
-* SpriteSheetUtils
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * SpriteSheetUtils
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 /**
  * @module EaselJS
  */
 
 // namespace:
-this.createjs = this.createjs||{};
+this.createjs = this.createjs || {};
 
-(function() {
+(function()
+{
 	"use strict";
 // constructor:
-/**
- * The SpriteSheetUtils class is a collection of static methods for working with {{#crossLink "SpriteSheet"}}{{/crossLink}}s.
- * A sprite sheet is a series of images (usually animation frames) combined into a single image on a regular grid. For
- * example, an animation consisting of 8 100x100 images could be combined into a 400x200 sprite sheet (4 frames across
- * by 2 high). The SpriteSheetUtils class uses a static interface and should not be instantiated.
- * @class SpriteSheetUtils
- * @static
- **/
-var SpriteSheetUtils = function() {
-	throw "SpriteSheetUtils cannot be instantiated";
-};
+	/**
+	 * The SpriteSheetUtils class is a collection of static methods for working with {{#crossLink "SpriteSheet"}}{{/crossLink}}s.
+	 * A sprite sheet is a series of images (usually animation frames) combined into a single image on a regular grid. For
+	 * example, an animation consisting of 8 100x100 images could be combined into a 400x200 sprite sheet (4 frames across
+	 * by 2 high). The SpriteSheetUtils class uses a static interface and should not be instantiated.
+	 * @class SpriteSheetUtils
+	 * @static
+	 **/
+	var SpriteSheetUtils = function()
+	{
+		throw "SpriteSheetUtils cannot be instantiated";
+	};
 
 	/**
 	 * @property _workingCanvas
 	 * @static
 	 * @type HTMLCanvasElement | Object
 	 * @protected
-	*/
-	
+	 */
+
 	/**
 	 * @property _workingContext
 	 * @static
 	 * @type CanvasRenderingContext2D
 	 * @protected
-	*/
-	var canvas = (createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"));
-	if (canvas.getContext) {
+	 */
+	var canvas = (createjs.createCanvas ? createjs.createCanvas() : document.createElement("canvas"));
+	if(canvas.getContext)
+	{
 		SpriteSheetUtils._workingCanvas = canvas;
 		SpriteSheetUtils._workingContext = canvas.getContext("2d");
 		canvas.width = canvas.height = 1;
 	}
 
-	
 
 // public static methods:
 	/**
@@ -92,13 +94,18 @@ var SpriteSheetUtils = function() {
 	 * @param {Boolean} both If true, frames that are flipped both horizontally and vertically will be added.
 	 * @deprecated Modern browsers perform better when flipping via a transform (ex. scaleX=-1) rendering this obsolete.
 	 **/
-	SpriteSheetUtils.addFlippedFrames = function(spriteSheet, horizontal, vertical, both) {
-		if (!horizontal && !vertical && !both) { return; }
+	SpriteSheetUtils.addFlippedFrames = function(spriteSheet, horizontal, vertical, both)
+	{
+		if(!horizontal && !vertical && !both)
+		{ return; }
 
 		var count = 0;
-		if (horizontal) { SpriteSheetUtils._flip(spriteSheet,++count,true,false); }
-		if (vertical) { SpriteSheetUtils._flip(spriteSheet,++count,false,true); }
-		if (both) { SpriteSheetUtils._flip(spriteSheet,++count,true,true); }
+		if(horizontal)
+		{ SpriteSheetUtils._flip(spriteSheet, ++count, true, false); }
+		if(vertical)
+		{ SpriteSheetUtils._flip(spriteSheet, ++count, false, true); }
+		if(both)
+		{ SpriteSheetUtils._flip(spriteSheet, ++count, true, true); }
 	};
 
 	/**
@@ -117,13 +124,16 @@ var SpriteSheetUtils = function() {
 	 * @param {Number|String} frameOrAnimation The frame number or animation name to extract. If an animation
 	 * name is specified, only the first frame of the animation will be extracted.
 	 * @return {Image} a single frame of the specified sprite sheet as a new PNG image.
-	*/
-	SpriteSheetUtils.extractFrame = function(spriteSheet, frameOrAnimation) {
-		if (isNaN(frameOrAnimation)) {
+	 */
+	SpriteSheetUtils.extractFrame = function(spriteSheet, frameOrAnimation)
+	{
+		if(isNaN(frameOrAnimation))
+		{
 			frameOrAnimation = spriteSheet.getAnimation(frameOrAnimation).frames[0];
 		}
 		var data = spriteSheet.getFrame(frameOrAnimation);
-		if (!data) { return null; }
+		if(!data)
+		{ return null; }
 		var r = data.rect;
 		var canvas = SpriteSheetUtils._workingCanvas;
 		canvas.width = r.width;
@@ -146,36 +156,40 @@ var SpriteSheetUtils = function() {
 	 * @param {Canvas} canvas Optional. If specified, this canvas will be used and returned. If not, a new canvas will be created.
 	 * @return {Canvas} A canvas with the combined image data. This can be used as a source for Bitmap or SpriteSheet.
 	 * @deprecated Tools such as ImageAlpha generally provide better results. This will be moved to sandbox in the future.
-	*/
-	SpriteSheetUtils.mergeAlpha = function(rgbImage, alphaImage, canvas) {
-		if (!canvas) { canvas = createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"); }
+	 */
+	SpriteSheetUtils.mergeAlpha = function(rgbImage, alphaImage, canvas)
+	{
+		if(!canvas)
+		{ canvas = createjs.createCanvas ? createjs.createCanvas() : document.createElement("canvas"); }
 		canvas.width = Math.max(alphaImage.width, rgbImage.width);
 		canvas.height = Math.max(alphaImage.height, rgbImage.height);
 		var ctx = canvas.getContext("2d");
 		ctx.save();
-		ctx.drawImage(rgbImage,0,0);
+		ctx.drawImage(rgbImage, 0, 0);
 		ctx.globalCompositeOperation = "destination-in";
-		ctx.drawImage(alphaImage,0,0);
+		ctx.drawImage(alphaImage, 0, 0);
 		ctx.restore();
 		return canvas;
 	};
 
 
 // private static methods:
-	SpriteSheetUtils._flip = function(spriteSheet, count, h, v) {
+	SpriteSheetUtils._flip = function(spriteSheet, count, h, v)
+	{
 		var imgs = spriteSheet._images;
 		var canvas = SpriteSheetUtils._workingCanvas;
 		var ctx = SpriteSheetUtils._workingContext;
-		var il = imgs.length/count;
-		for (var i=0;i<il;i++) {
+		var il = imgs.length / count;
+		for(var i = 0; i < il; i++)
+		{
 			var src = imgs[i];
 			src.__tmp = i; // a bit hacky, but faster than doing indexOf below.
-			ctx.setTransform(1,0,0,1,0,0);
-			ctx.clearRect(0,0,canvas.width+1,canvas.height+1);
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.clearRect(0, 0, canvas.width + 1, canvas.height + 1);
 			canvas.width = src.width;
 			canvas.height = src.height;
-			ctx.setTransform(h?-1:1, 0, 0, v?-1:1, h?src.width:0, v?src.height:0);
-			ctx.drawImage(src,0,0);
+			ctx.setTransform(h ? -1 : 1, 0, 0, v ? -1 : 1, h ? src.width : 0, v ? src.height : 0);
+			ctx.drawImage(src, 0, 0);
 			var img = document.createElement("img");
 			img.src = canvas.toDataURL("image/png");
 			// work around a strange bug in Safari:
@@ -185,36 +199,42 @@ var SpriteSheetUtils = function() {
 		}
 
 		var frames = spriteSheet._frames;
-		var fl = frames.length/count;
-		for (i=0;i<fl;i++) {
+		var fl = frames.length / count;
+		for(i = 0; i < fl; i++)
+		{
 			src = frames[i];
 			var rect = src.rect.clone();
-			img = imgs[src.image.__tmp+il*count];
+			img = imgs[src.image.__tmp + il * count];
 
-			var frame = {image:img,rect:rect,regX:src.regX,regY:src.regY};
-			if (h) {
-				rect.x = img.width-rect.x-rect.width; // update rect
-				frame.regX = rect.width-src.regX; // update registration point
+			var frame = {image: img, rect: rect, regX: src.regX, regY: src.regY};
+			if(h)
+			{
+				rect.x = img.width - rect.x - rect.width; // update rect
+				frame.regX = rect.width - src.regX; // update registration point
 			}
-			if (v) {
-				rect.y = img.height-rect.y-rect.height;  // update rect
-				frame.regY = rect.height-src.regY; // update registration point
+			if(v)
+			{
+				rect.y = img.height - rect.y - rect.height;  // update rect
+				frame.regY = rect.height - src.regY; // update registration point
 			}
 			frames.push(frame);
 		}
 
-		var sfx = "_"+(h?"h":"")+(v?"v":"");
+		var sfx = "_" + (h ? "h" : "") + (v ? "v" : "");
 		var names = spriteSheet._animations;
 		var data = spriteSheet._data;
-		var al = names.length/count;
-		for (i=0;i<al;i++) {
+		var al = names.length / count;
+		for(i = 0; i < al; i++)
+		{
 			var name = names[i];
 			src = data[name];
-			var anim = {name:name+sfx,speed:src.speed,next:src.next,frames:[]};
-			if (src.next) { anim.next += sfx; }
+			var anim = {name: name + sfx, speed: src.speed, next: src.next, frames: []};
+			if(src.next)
+			{ anim.next += sfx; }
 			frames = src.frames;
-			for (var j=0,l=frames.length;j<l;j++) {
-				anim.frames.push(frames[j]+fl*count);
+			for(var j = 0, l = frames.length; j < l; j++)
+			{
+				anim.frames.push(frames[j] + fl * count);
 			}
 			data[anim.name] = anim;
 			names.push(anim.name);
@@ -222,5 +242,5 @@ var SpriteSheetUtils = function() {
 	};
 
 
-createjs.SpriteSheetUtils = SpriteSheetUtils;
+	createjs.SpriteSheetUtils = SpriteSheetUtils;
 }());

@@ -1,4 +1,5 @@
-class TouchInjectProperties {
+class TouchInjectProperties
+{
 	pointers = {};
 	multitouch:boolean = false;
 	preventDefault:boolean = false;

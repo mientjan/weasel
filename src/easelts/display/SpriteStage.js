@@ -839,7 +839,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @final
          * @type {Number}
          * @readonly
-    //	 **/
+         //     **/
         SpriteStage.MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
         return SpriteStage;
     })(Stage);

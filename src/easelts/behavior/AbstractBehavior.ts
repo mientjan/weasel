@@ -3,15 +3,19 @@ import DisplayObject = require('../display/DisplayObject');
 /**
  * @method AbstractBehavior
  */
-class AbstractBehaviour {
+class AbstractBehaviour
+{
 
 	public owner:DisplayObject = null;
 
-	constructor(){}
+	constructor()
+	{
+	}
 
 	public initialize(owner:DisplayObject):any
 	{
-		if(this.owner){
+		if(this.owner)
+		{
 			throw new Error('behavior already has a owner')
 		}
 

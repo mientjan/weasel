@@ -108,7 +108,7 @@ module createts
 		 * @param {Number} hue
 		 * @protected
 		 */
-		constructor(brightness:number, contrast:number, saturation:number, hue:number)
+			constructor(brightness:number, contrast:number, saturation:number, hue:number)
 		{
 			this.reset();
 			this.adjustColor(brightness, contrast, saturation, hue);

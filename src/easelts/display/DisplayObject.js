@@ -871,18 +871,24 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             if (ry === void 0) { ry = null; }
             var parentIsKnown = this._parentSizeIsKnown;
             this._parentSizeIsKnown = false;
-            if (x != null)
+            if (x != null) {
                 this.setX(x);
-            if (y != null)
+            }
+            if (y != null) {
                 this.setY(y);
-            if (w != null)
+            }
+            if (w != null) {
                 this.setWidth(w);
-            if (h != null)
+            }
+            if (h != null) {
                 this.setHeight(h);
-            if (rx != null)
+            }
+            if (rx != null) {
                 this.setRegX(rx);
-            if (ry != null)
+            }
+            if (ry != null) {
                 this.setRegY(ry);
+            }
             this._parentSizeIsKnown = parentIsKnown;
             if (this._parentSizeIsKnown) {
                 this.onResize(new Size(this.parent.width, this.parent.height));
