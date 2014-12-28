@@ -29,7 +29,7 @@
  */
 
 import Methods = require('../util/Methods');
-import Matrix2D = require('../geom/Matrix2D');
+import Matrix2D = require('../geom/Matrix2');
 
 /**
  * @module easelts

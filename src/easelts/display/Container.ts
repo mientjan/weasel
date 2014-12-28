@@ -29,7 +29,7 @@
 import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
-import Matrix2D = require('../geom/Matrix2D');
+import Matrix2D = require('../geom/Matrix2');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
 

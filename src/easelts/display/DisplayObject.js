@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject

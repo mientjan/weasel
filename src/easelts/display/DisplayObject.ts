@@ -51,7 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import Matrix2D = require('../geom/Matrix2D');
+import Matrix2D = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
