@@ -30,12 +30,12 @@ interface IDisplayObjectGeometry extends Vector2 {
 
 	x:number;
 	y:number;
-	// @todo implement when having woring webgl
+	// @todo implement when having working webgl
 	// public z:number;
 
 	rotation:number;
 
-	// @todo implement when having woring webgl
+	// @todo implement when having workings webgl
 //	rotation:IVector3;
 
 }
