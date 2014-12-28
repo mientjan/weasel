@@ -1,15 +1,18 @@
-import ref = require("lib/ReferenceDefinitions");
-import DisplayObject = require("../display/DisplayObject");
+//import ref = require("lib/ReferenceDefinitions");
+//import DisplayObject = require("../display/DisplayObject");
+//import Point = require("../geom/Point");
 import Bounds = require("../geom/Bounds");
-import Point = require("../geom/Point");
+import IVector2 = require("../interface/IVector2");
+import Vector2 = require("../geom/Vector2");
 
-class MathUtil
+class SortUtil
 {
-	public static getBounds(list:DisplayObject[]):Bounds
+	public static getBounds(list:IVector2[]):Bounds
 	{
 		var bounds = new Bounds();
 
-		if( list.length > 0 ){
+		if(list.length > 0)
+		{
 			bounds.x0 = list[0].x;
 			bounds.y0 = list[1].y;
 		}
@@ -28,7 +31,7 @@ class MathUtil
 		return bounds;
 	}
 
-	public static random(list:DisplayObject[])
+	public static random(list:any[])
 	{
 		var currentIndex = list.length
 			, temporaryValue
@@ -36,7 +39,8 @@ class MathUtil
 			;
 
 		// While there remain elements to shuffle...
-		while (0 !== currentIndex) {
+		while(0 !== currentIndex)
+		{
 
 			// Pick a remaining element...
 			randomIndex = Math.floor(Math.random() * currentIndex);
@@ -50,58 +54,51 @@ class MathUtil
 	}
 
 
-	public static centerOut(list:DisplayObject[]):Point
+	public static centerOut(list:IVector2[]):Vector2
 	{
 		var bounds = this.getBounds(list);
 
-		var point = new Point(
+		var point = new Vector2(
 			bounds.width / 2 + bounds.x0,
 			bounds.height / 2 + bounds.y0
 		);
 
-		list.sort((a,b) => {
-			var x0 = (a.x-point.x);
-			var y0 = (a.y-point.y);
-			var x1 = (b.x-point.x);
-			var y1 = (b.y-point.y);
+		list.sort((a, b) =>
+		{
+			var x0 = (a.x - point.x);
+			var y0 = (a.y - point.y);
+			var x1 = (b.x - point.x);
+			var y1 = (b.y - point.y);
 
-			return (x0*x0+y0*y0) - (x1*x1+y1*y1);
+			return (x0 * x0 + y0 * y0) - (x1 * x1 + y1 * y1);
 		});
 
 		return point;
 	}
 
-	public static centerIn(list:DisplayObject[]):Point
+	public static centerIn(list:IVector2[]):Vector2
 	{
 		var bounds = this.getBounds(list);
 
-		var point = new Point(
+		var point = new Vector2(
 			bounds.width / 2 + bounds.x0,
 			bounds.height / 2 + bounds.y0
 		);
 
-		list.sort((a,b) => {
-			var x0 = (a.x-point.x);
-			var y0 = (a.y-point.y);
-			var x1 = (b.x-point.x);
-			var y1 = (b.y-point.y);
+		list.sort((a, b) =>
+		{
+			var x0 = (a.x - point.x);
+			var y0 = (a.y - point.y);
+			var x1 = (b.x - point.x);
+			var y1 = (b.y - point.y);
 
-			return (x1*x1+y1*y1) - (x0*x0+y0*y0);
+			return (x1 * x1 + y1 * y1) - (x0 * x0 + y0 * y0);
 		});
 
 		return point;
 	}
-	/*
-	public static outerPoints(list:IVector[]):IVector[]
-	{
-		var arr = [];
 
-		return arr;
-	}*/
-
-
-
-	public static topDown(list:DisplayObject[]):Point
+	public static topDown(list:IVector2[]):Vector2
 	{
 		var abs = [2000, 2000, 0, 0];
 		for(var i = 0; i < list.length; i++)
@@ -112,19 +109,20 @@ class MathUtil
 			abs[3] = Math.max(list[i].y, abs[3]);
 		}
 
-		var point = new Point(
+		var point = new Vector2(
 			(abs[2] - abs[0]) / 2 + abs[0],
 			(abs[3] - abs[1]) / 2 + abs[1]
-	);
+		);
 
-		list.sort((a,b) => {
+		list.sort((a, b) =>
+		{
 			return a.y - b.y;
 		});
 
 		return point;
 	}
 
-	public static downTop(list:DisplayObject[]):Point
+	public static downTop(list:IVector2[]):Vector2
 	{
 		var abs = [2000, 2000, 0, 0];
 		for(var i = 0; i < list.length; i++)
@@ -135,19 +133,20 @@ class MathUtil
 			abs[3] = Math.max(list[i].y, abs[3]);
 		}
 
-		var point = new Point(
+		var point = new Vector2(
 			(abs[2] - abs[0]) / 2 + abs[0],
 			(abs[3] - abs[1]) / 2 + abs[1]
-	);
+		);
 
-		list.sort((a,b) => {
+		list.sort((a, b) =>
+		{
 			return b.y - a.y;
 		});
 
 		return point;
 	}
 
-	public static rightLeft(list:DisplayObject[]):Point
+	public static rightLeft(list:IVector2[]):Vector2
 	{
 		var abs = [2000, 2000, 0, 0];
 		for(var i = 0; i < list.length; i++)
@@ -158,19 +157,20 @@ class MathUtil
 			abs[3] = Math.max(list[i].y, abs[3]);
 		}
 
-		var point = new Point(
+		var point = new Vector2(
 			(abs[2] - abs[0]) / 2 + abs[0],
 			(abs[3] - abs[1]) / 2 + abs[1]
 		);
 
-		list.sort((a,b) => {
+		list.sort((a, b) =>
+		{
 			return a.x - b.x;
 		});
 
 		return point;
 	}
 
-	public static leftRight(list:DisplayObject[]):Point
+	public static leftRight(list:IVector2[]):Vector2
 	{
 		var abs = [2000, 2000, 0, 0];
 		for(var i = 0; i < list.length; i++)
@@ -181,12 +181,13 @@ class MathUtil
 			abs[3] = Math.max(list[i].y, abs[3]);
 		}
 
-		var point = new Point(
+		var point = new Vector2(
 			(abs[2] - abs[0]) / 2 + abs[0],
 			(abs[3] - abs[1]) / 2 + abs[1]
 		);
 
-		list.sort((a,b) => {
+		list.sort((a, b) =>
+		{
 			return b.x - a.x;
 		});
 
@@ -194,4 +195,4 @@ class MathUtil
 	}
 }
 
-export = MathUtil;
+export = SortUtil;

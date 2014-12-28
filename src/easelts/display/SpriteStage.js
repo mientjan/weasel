@@ -231,28 +231,28 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
-                    _this.dispatchEvent("tickstart"); // TODO: make cancellable?
-                    _this._tick((arguments.length ? arguments : null));
-                    _this.dispatchEvent("tickend");
+                    _this.tickstartSignal.emit();
+                    _this.onTick(params);
+                    _this.tickendSignal.emit();
                 }
-                _this.dispatchEvent("drawstart"); // TODO: make cancellable?
+                _this.drawstartSignal.emit();
                 if (_this.autoClear) {
                     _this.clear();
                 }
-                var ctx = _this._setWebGLContext();
-                if (ctx) {
+                var gl = _this._setWebGLContext();
+                if (gl) {
                     // Use WebGL.
-                    _this.draw(ctx, false);
+                    _this.draw(gl, false);
                 }
                 else {
                     // Use 2D.
-                    ctx = _this.canvas.getContext("2d");
+                    var ctx = _this.canvas.getContext("2d");
                     ctx.save();
                     _this.updateContext(ctx);
                     _this.draw(ctx, false);
                     ctx.restore();
                 }
-                _this.dispatchEvent("drawend");
+                _this.drawendSignal.emit();
             };
             this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
             this._antialias = antialias !== undefined ? antialias : this._antialias;
@@ -368,14 +368,14 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
             if (!this.canvas) {
                 return;
             }
-            var ctx = this._setWebGLContext();
-            if (ctx) {
+            var gl = this._setWebGLContext();
+            if (gl) {
                 // Use WebGL.
-                ctx.clear(ctx.COLOR_BUFFER_BIT);
+                gl.clear(gl.COLOR_BUFFER_BIT);
             }
             else {
                 // Use 2D.
-                ctx = this.canvas.getContext("2d");
+                var ctx = this.canvas.getContext("2d");
                 ctx.setTransform(1, 0, 0, 1, 0, 0);
                 ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
             }
@@ -392,17 +392,17 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
          * into itself).
          **/
-        SpriteStage.prototype.draw = function (ctx, ignoreCache) {
-            if (ctx === this._webGLContext || ctx instanceof WebGLRenderingContext) {
-                this._drawWebGLKids(this.children, ctx);
+        SpriteStage.prototype.draw = function (ctxOrGl, ignoreCache) {
+            if (ctxOrGl === this._webGLContext || ctxOrGl instanceof WebGLRenderingContext) {
+                this._drawWebGLKids(this.children, ctxOrGl);
                 // If there is a remaining texture, draw it:
                 if (this._drawTexture) {
-                    this._drawToGPU(ctx);
+                    this._drawToGPU(ctxOrGl);
                 }
                 return true;
             }
             else {
-                return _super.prototype.draw.call(this, ctx, ignoreCache);
+                return _super.prototype.draw.call(this, ctxOrGl, ignoreCache);
             }
         };
         /**
@@ -839,7 +839,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @final
          * @type {Number}
          * @readonly
-    //	 **/
+         //     **/
         SpriteStage.MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
         return SpriteStage;
     })(Stage);

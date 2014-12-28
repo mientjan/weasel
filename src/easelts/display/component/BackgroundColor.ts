@@ -3,14 +3,17 @@ import Shape = require('../Shape')
 /**
  * @class BackgroundColor
  */
-class BackgroundColor extends Shape {
+class BackgroundColor extends Shape
+{
 
-	public set color(value:string){
+	public set color(value:string)
+	{
 		this._color = value;
 		this.setBackground()
 	}
 
-	public get color(){
+	public get color()
+	{
 		return this._color;
 	}
 
@@ -26,17 +29,20 @@ class BackgroundColor extends Shape {
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(color:string, width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0){
+		constructor(color:string, width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	{
 		super(undefined, width, height, x, y, regX, regY);
 
 		this._color = color;
 	}
 
-	private setBackground(){
-		this.graphics.clear().beginFill(this._color).drawRect(0,0,this.width,this.height);
+	private setBackground()
+	{
+		this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
 	}
 
-	public onResize(e){
+	public onResize(e)
+	{
 		super.onResize(e);
 		this.setBackground();
 	}

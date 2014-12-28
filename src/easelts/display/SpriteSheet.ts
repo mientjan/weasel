@@ -1,6 +1,3 @@
-import EventDispatcher = require('../../createts/events/EventDispatcher');
-import Rectangle = require('../geom/Rectangle');
-
 /*
  * SpriteSheet
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -131,6 +128,10 @@ import Rectangle = require('../geom/Rectangle');
  * @param {Object} data An object describing the SpriteSheet data.
  * @extends EventDispatcher
  **/
+
+import EventDispatcher = require('../../createts/event/EventDispatcher');
+import Rectangle = require('../geom/Rectangle');
+
 class SpriteSheet extends EventDispatcher
 {
 	// events:
@@ -188,13 +189,13 @@ class SpriteSheet extends EventDispatcher
 	 * @property _frames
 	 * @protected
 	 **/
-	public _frames = null;
+	public _frames:any[] = [];
 
 	/**
 	 * @property _images
 	 * @protected
 	 **/
-	public _images = null;
+	public _images:any[] = [];
 
 	/**
 	 * @property _data
@@ -244,7 +245,7 @@ class SpriteSheet extends EventDispatcher
 	 * @param {Object} data An object describing the SpriteSheet data.
 	 * @protected
 	 **/
-	constructor(data?)
+	constructor(data?:any)
 	{
 		super();
 

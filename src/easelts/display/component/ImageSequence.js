@@ -22,9 +22,6 @@ define(["require", "exports", '../Bitmap'], function (require, exports, Bitmap) 
          * @param {string|number} regY
          */
         function ImageSequence(images, fps, width, height, x, y, regX, regY) {
-            if (fps === void 0) { fps = 1; }
-            if (width === void 0) { width = 'auto'; }
-            if (height === void 0) { height = 'auto'; }
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (regX === void 0) { regX = 0; }

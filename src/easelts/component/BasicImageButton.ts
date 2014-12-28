@@ -7,7 +7,8 @@ import ButtonBehavior = require('../behavior/ButtonBehavior');
 /**
  * @class BasicImageButton
  */
-class BasicImageButton extends Container {
+class BasicImageButton extends Container
+{
 
 	public hitArea:Shape = new Shape();
 	public image:Bitmap;
@@ -22,12 +23,14 @@ class BasicImageButton extends Container {
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(image:Bitmap, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0){
+		constructor(image:Bitmap, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	{
 		super(100, 100, x, y, regX, regY);
 
-		image.addEventListener(Bitmap.EVENT_ONLOAD, this.onLoad.bind(this) );
+		image.addEventListener(Bitmap.EVENT_ONLOAD, this.onLoad.bind(this));
 
-		if( image.loaded ){
+		if(image.loaded)
+		{
 			this.onLoad();
 		}
 
@@ -37,16 +40,18 @@ class BasicImageButton extends Container {
 		this.addChild(this.image);
 	}
 
-	public onLoad(){
+	public onLoad()
+	{
 		this.setWidth(this.image.width);
 		this.setHeight(this.image.height);
 	}
 
-	public onResize(e){
+	public onResize(e)
+	{
 
 		this.width = this.image.width;
 		this.height = this.image.height;
-		this.hitArea.graphics.clear().beginFill('#FFF').drawRect(0,0,this.width,this.height);
+		this.hitArea.graphics.clear().beginFill('#FFF').drawRect(0, 0, this.width, this.height);
 		super.onResize(e);
 	}
 }

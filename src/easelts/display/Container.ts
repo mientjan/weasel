@@ -29,7 +29,7 @@
 import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
-import Matrix2D = require('../geom/Matrix2D');
+import Matrix2D = require('../geom/Matrix2');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
 
@@ -99,7 +99,7 @@ class Container extends DisplayObject
 	 * @param regX
 	 * @param regY
 	 */
-	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+		constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
 
@@ -766,7 +766,6 @@ class Container extends DisplayObject
 			}
 
 
-
 			if(!hitArea && mask && mask.graphics && !mask.graphics.isEmpty())
 			{
 				var maskMtx = mask.getMatrix(mask._matrix).prependMatrix(this.getConcatenatedMatrix(mtx));
@@ -827,7 +826,6 @@ class Container extends DisplayObject
 				ctx.clearRect(0, 0, 2, 2);
 
 
-				
 				if(arr)
 				{
 					arr.push(child);

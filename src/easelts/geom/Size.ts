@@ -60,7 +60,7 @@ class Size
 	 * @param {Number} [height=0] height.
 	 * @return {Point} This instance. Useful for chaining method calls.
 	 */
-	constructor(width:number, height:number)
+		constructor(width:number, height:number)
 	{
 		this.width = width;
 		this.height = height;

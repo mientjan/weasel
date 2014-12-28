@@ -1,4 +1,3 @@
-
 /*
  * MouseEvent
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -142,7 +141,7 @@ class MouseEvent extends Event
 	 * @property pointerID
 	 * @type {Number}
 	 */
-	pointerID = 0;
+	public pointerID = 0;
 
 	/**
 	 * Indicates whether this is the primary pointer in a multitouch environment. This will always be true for the mouse.
@@ -150,7 +149,7 @@ class MouseEvent extends Event
 	 * @property primary
 	 * @type {Boolean}
 	 */
-	primary = false;
+	public primary = false;
 
 	// getter / setters:
 	/**

@@ -62,7 +62,9 @@ class FluidCalculation
 	 * @static
 	 */
 	public static dissolveElement(val:string):FluidMeasurementsUnit
+
 	public static dissolveElement(val:string):CalculationUnitType
+
 	public static dissolveElement(val:string):any
 	{
 		var index = FluidCalculation._calculationUnitypeString.indexOf(val);

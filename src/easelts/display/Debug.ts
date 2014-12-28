@@ -37,7 +37,8 @@ class Debug extends Container
 			this._text.x = this.width / 2;
 			this._text.y = this.height / 2;
 
-			if( this.width < 100 || this.height < 100){
+			if(this.width < 100 || this.height < 100)
+			{
 				this._text.visible = false;
 			}
 
@@ -52,13 +53,14 @@ class Debug extends Container
 				.moveTo(this.width - 10, 10)
 				.lineTo(10, this.height - 10);
 
-			if(this.width>150&&this.height>150){
+			if(this.width > 150 && this.height > 150)
+			{
 
 				var w = this._text.getMeasuredWidth();
 				var h = this._text.getMeasuredHeight();
 
 				this._shape.graphics.beginFill(Graphics.getRGB(0, 0, 0))
-					.drawRect(this.width - w >> 1 , this.height - h >> 1, w, h);
+					.drawRect(this.width - w >> 1, this.height - h >> 1, w, h);
 			}
 		}
 	}

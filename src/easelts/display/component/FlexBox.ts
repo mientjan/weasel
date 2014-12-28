@@ -3,6 +3,7 @@ import Container = require('../Container');
 /**
  *
  */
-class FlexBox extends Container {
+class FlexBox extends Container
+{
 
 }

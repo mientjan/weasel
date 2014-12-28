@@ -51,12 +51,12 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import Matrix2D = require('../geom/Matrix2D');
+import Matrix2D = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
 
-import IPoint = require('../interface/IVector2');
+import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 
@@ -66,36 +66,36 @@ import AbstractBehavior = require('../behavior/AbstractBehavior');
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  * @class DisplayObject
  */
-class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayType
+class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplayType
 {
 	public static EVENT_MOUSE_CLICK = 'click';
-	public static EVENT_MOUSE_MOUSEDOWN = 'mousedown';
-	public static EVENT_MOUSE_MOUSEOUT = 'mouseout';
-	public static EVENT_MOUSE_MOUSEOVER = 'mouseover';
+	public static EVENT_MOUSE_DOWN = 'mousedown';
+	public static EVENT_MOUSE_OUT = 'mouseout';
+	public static EVENT_MOUSE_OVER = 'mouseover';
 
 	/**
 	 *
 	 * @type {string}
 	 */
-	public static EVENT_MOUSE_MOUSEMOVE = 'mousemove';
+	public static EVENT_MOUSE_MOVE = 'mousemove';
 
-	public static EVENT_MOUSE_PRESSMOVE = 'pressmove';
-	public static EVENT_MOUSE_PRESSUP = 'pressup';
-	public static EVENT_MOUSE_ROLLOUT = 'rollout';
-	public static EVENT_MOUSE_ROLLOVER = 'rollover';
+	public static EVENT_PRESS_MOVE = 'pressmove';
+	public static EVENT_PRESS_UP = 'pressup';
+	public static EVENT_ROLL_OUT = 'rollout';
+	public static EVENT_ROLL_OVER = 'rollover';
 
 	/**
 	 * @todo replace mouse events with pointer events
 	 */
 	public static EVENT_POINTER_CLICK = 'click';
 	public static EVENT_POINTER_DOWN = 'mousedown';
-	public static EVENT_POINTER_MOVE = 'mousedown';
-	public static EVENT_POINTER_UP = 'mousedown';
+	public static EVENT_POINTER_MOVE = 'mousemove';
+	public static EVENT_POINTER_UP = 'pressup';
 	public static EVENT_POINTER_CANCEL = 'mousedown';
-	public static EVENT_POINTER_ENTER = 'mousedown';
-	public static EVENT_POINTER_LEAVE = 'mousedown';
-	public static EVENT_POINTER_OUT = 'mousedown';
-	public static EVENT_POINTER_OVER = 'mousedown';
+	public static EVENT_POINTER_ENTER = 'mouseover';
+	public static EVENT_POINTER_LEAVE = 'mouseout';
+	public static EVENT_POINTER_OUT = 'mouseout';
+	public static EVENT_POINTER_OVER = 'mouseover';
 
 	/**
 	 * Listing of mouse event names. Used in _hasMouseEventListener.
@@ -106,13 +106,13 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 **/
 	public static _MOUSE_EVENTS = [
 		DisplayObject.EVENT_MOUSE_CLICK,
-		DisplayObject.EVENT_MOUSE_MOUSEDOWN,
-		DisplayObject.EVENT_MOUSE_MOUSEOUT,
-		DisplayObject.EVENT_MOUSE_MOUSEOVER,
-		DisplayObject.EVENT_MOUSE_PRESSMOVE,
-		DisplayObject.EVENT_MOUSE_PRESSUP,
-		DisplayObject.EVENT_MOUSE_ROLLOUT,
-		DisplayObject.EVENT_MOUSE_ROLLOVER,
+		DisplayObject.EVENT_MOUSE_DOWN,
+		DisplayObject.EVENT_MOUSE_OUT,
+		DisplayObject.EVENT_MOUSE_OVER,
+		DisplayObject.EVENT_PRESS_MOVE,
+		DisplayObject.EVENT_PRESS_UP,
+		DisplayObject.EVENT_ROLL_OUT,
+		DisplayObject.EVENT_ROLL_OVER,
 		"dblclick" // @todo make depricated
 	];
 
@@ -520,7 +520,7 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:Rectangle =  new Rectangle(0, 0, 0, 0);
+	public _rectangle:Rectangle = new Rectangle(0, 0, 0, 0);
 
 	/**
 	 * @property _bounds
@@ -534,16 +534,20 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	{
 		super();
 
-		this.setGeomTransform(width, height, x, y, regX, regY);;
+		this.setGeomTransform(width, height, x, y, regX, regY);
+		;
 	}
 
-	initialize() {
+	initialize()
+	{
 
 
 	}
 
 	public setWidth(width:string):any;
+
 	public setWidth(width:number):any;
+
 	public setWidth(width:any):any
 	{
 		if(typeof(width) == 'string')
@@ -566,18 +570,22 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._width_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
-	public getWidth(){
+	public getWidth()
+	{
 		return this.width;
 	}
 
 	public setHeight(height:string):any;
+
 	public setHeight(height:number):any;
+
 	public setHeight(height:any):any
 	{
 		if(typeof(height) == 'string')
@@ -600,18 +608,22 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._height_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
-	public getHeight(){
+	public getHeight()
+	{
 		return this.height;
 	}
 
 	public setX(x:string):any;
+
 	public setX(x:number):any;
+
 	public setX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -634,19 +646,23 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._x_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 
 		return this;
 	}
 
-	public getX(){
+	public getX()
+	{
 		return this.x;
 	}
 
 	public setY(y:string):any;
+
 	public setY(y:number):any;
+
 	public setY(y:any):any
 	{
 		if(typeof(y) == 'string')
@@ -669,19 +685,23 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._y_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
 
-	public getY(){
+	public getY()
+	{
 		return this.y;
 	}
 
 	public setRegX(x:string):any;
+
 	public setRegX(x:number):any;
+
 	public setRegX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -704,19 +724,23 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._regX_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 
 		return this;
 	}
 
-	public getRegX(){
+	public getRegX()
+	{
 		return this.regX;
 	}
 
 	public setRegY(y:string):any;
+
 	public setRegY(y:number):any;
+
 	public setRegY(y:any):any
 	{
 		if(typeof(y) == 'string')
@@ -739,19 +763,22 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 			this._regY_type = CalculationType.STATIC;
 		}
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
 		return this;
 	}
 
-	public getRegY(){
+	public getRegY()
+	{
 		return this.regY;
 	}
 
 	public addBehavior(behavior:AbstractBehavior):DisplayObject
 	{
-		if(!this._behaviorList){
+		if(!this._behaviorList)
+		{
 			this._behaviorList = [];
 		}
 		this._behaviorList.push(behavior);
@@ -762,13 +789,15 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	public removeBehavior(behavior:AbstractBehavior):DisplayObject
 	{
 		var behaviorList = this._behaviorList;
-		if(behaviorList){
+		if(behaviorList)
+		{
 			var length = behaviorList.length;
 			for(var i = 0; i < behaviorList.length; i++)
 			{
 				var behaviorItem = behaviorList[i];
-				if(behaviorItem === behavior ){
-					behaviorList.splice(i,1);
+				if(behaviorItem === behavior)
+				{
+					behaviorList.splice(i, 1);
 					length--;
 					i--;
 				}
@@ -785,8 +814,10 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 */
 	public removeAllBehaviors():void
 	{
-		if( this._behaviorList ){
-			while(this._behaviorList.length){
+		if(this._behaviorList)
+		{
+			while(this._behaviorList.length)
+			{
 				this._behaviorList.pop().destruct();
 			}
 		}
@@ -796,7 +827,8 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 * @method enableMouseInteraction
 	 * @return void
 	 */
-	public enableMouseInteraction(){
+	public enableMouseInteraction()
+	{
 		this.mouseEnabled = true;
 	}
 
@@ -804,7 +836,8 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 * @method disableMouseInteraction
 	 * @return void
 	 */
-	public disableMouseInteraction(){
+	public disableMouseInteraction()
+	{
 		this.mouseEnabled = false;
 	}
 
@@ -1053,7 +1086,7 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 		}
 
 		// using dynamic access to avoid circular dependencies;
-		if(o.type == DisplayType.STAGE )
+		if(o.type == DisplayType.STAGE)
 		{
 			return <Stage> o;
 		}
@@ -1168,18 +1201,18 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 */
 	public setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
 	{
-		 this.x = x || 0;
-		 this.y = y || 0;
-		 this.scaleX = scaleX == null ? 1 : scaleX;
-		 this.scaleY = scaleY == null ? 1 : scaleY;
-		 this.rotation = rotation || 0;
-		 this.skewX = skewX || 0;
-		 this.skewY = skewY || 0;
-		 this.regX = regX || 0;
-		 this.regY = regY || 0;
+		this.x = x || 0;
+		this.y = y || 0;
+		this.scaleX = scaleX == null ? 1 : scaleX;
+		this.scaleY = scaleY == null ? 1 : scaleY;
+		this.rotation = rotation || 0;
+		this.skewX = skewX || 0;
+		this.skewY = skewY || 0;
+		this.regX = regX || 0;
+		this.regY = regY || 0;
 
-		 return this;
-	 }
+		return this;
+	}
 
 	/**
 	 *
@@ -1196,21 +1229,41 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 		var parentIsKnown = this._parentSizeIsKnown;
 		this._parentSizeIsKnown = false;
 
-		if(x!=null) this.setX(x);
-		if(y!=null) this.setY(y);
-		if(w!=null) this.setWidth(w);
-		if(h!=null) this.setHeight(h);
-		if(rx!=null) this.setRegX(rx);
-		if(ry!=null) this.setRegY(ry);
+		if(x != null)
+		{
+			this.setX(x);
+		}
+		if(y != null)
+		{
+			this.setY(y);
+		}
+		if(w != null)
+		{
+			this.setWidth(w);
+		}
+		if(h != null)
+		{
+			this.setHeight(h);
+		}
+		if(rx != null)
+		{
+			this.setRegX(rx);
+		}
+		if(ry != null)
+		{
+			this.setRegY(ry);
+		}
 
 		this._parentSizeIsKnown = parentIsKnown;
 
-		if(this._parentSizeIsKnown){
+		if(this._parentSizeIsKnown)
+		{
 			this.onResize(new Size(this.parent.width, this.parent.height))
 		}
 
 		return this;
 	}
+
 	/**
 	 * Returns a matrix based on this object's transform.
 	 * @method getMatrix
@@ -1500,7 +1553,9 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 	 * be undefined or contain other values depending on the usage by the application.
 	 * @protected
 	 **/
-	public onTick(e:TimeEvent){}
+	public onTick(e:TimeEvent)
+	{
+	}
 
 	/**
 	 * @method _testHit
@@ -1744,29 +1799,29 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 				this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
 			}
 
-			if( this._regY_type == CalculationType.PROCENT)
+			if(this._regY_type == CalculationType.PROCENT)
 			{
 				this.regY = this._regY_procent * this.height;
 			}
-			else if( this._regY_type == CalculationType.CALC)
+			else if(this._regY_type == CalculationType.CALC)
 			{
 				this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
 			}
 
-			if( this._x_type == CalculationType.PROCENT)
+			if(this._x_type == CalculationType.PROCENT)
 			{
 				this.x = Math.round(this._x_procent * e.width);
 			}
-			else if( this._x_type == CalculationType.CALC)
+			else if(this._x_type == CalculationType.CALC)
 			{
 				this.x = Math.round(FluidCalculation.calcUnit(e.width, this._x_calc));
 			}
 
-			if( this._y_type == CalculationType.PROCENT)
+			if(this._y_type == CalculationType.PROCENT)
 			{
 				this.y = Math.round(this._y_procent * e.height);
 			}
-			else if( this._y_type == CalculationType.CALC)
+			else if(this._y_type == CalculationType.CALC)
 			{
 				this.y = Math.round(FluidCalculation.calcUnit(e.height, this._y_calc));
 			}
@@ -1774,7 +1829,8 @@ class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayTy
 
 	}
 
-	public destruct(){
+	public destruct()
+	{
 		this.parent = null;
 		this.removeAllBehaviors();
 

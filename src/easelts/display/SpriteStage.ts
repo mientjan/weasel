@@ -27,7 +27,7 @@
  */
 
 /**
- * @module EaselJS
+ * @module easelts
  */
 
 /**
@@ -73,10 +73,10 @@
 //});
 
 import Stage = require('./Stage');
+import Matrix2 = require('../geom/Matrix2');
 
 class SpriteStage extends Stage
 {
-
 	// static properties:
 
 	/**
@@ -142,7 +142,7 @@ class SpriteStage extends Stage
 	 * @final
 	 * @type {Number}
 	 * @readonly
-//	 **/
+	 //     **/
 	public static MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
 
 	// getter / setters:
@@ -158,7 +158,8 @@ class SpriteStage extends Stage
 		return !!this._webGLContext;
 	}
 
-	public get isWebGL(){
+	public get isWebGL()
+	{
 		return this._get_isWebGL()
 	}
 
@@ -356,7 +357,7 @@ class SpriteStage extends Stage
 	 * @param {Boolean} preserveDrawingBuffer              If true, the canvas is NOT auto-cleared by WebGL (spec discourages true). Useful if you want to use p.autoClear = false.
 	 * @param {Boolean} antialias                          Specifies whether or not the browser's WebGL implementation should try to perform antialiasing.
 	 **/
-	constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
+		constructor(canvas:HTMLCanvasElement, preserveDrawingBuffer:boolean, antialias:boolean)
 	{
 		super(canvas);
 		this._preserveDrawingBuffer = preserveDrawingBuffer !== undefined ? preserveDrawingBuffer : this._preserveDrawingBuffer;
@@ -493,32 +494,32 @@ class SpriteStage extends Stage
 
 		if(this.tickOnUpdate)
 		{
-			this.dispatchEvent("tickstart");  // TODO: make cancellable?
-			this._tick((arguments.length ? arguments : null));
-			this.dispatchEvent("tickend");
+			this.tickstartSignal.emit();
+			this.onTick(params);
+			this.tickendSignal.emit();
 		}
-		this.dispatchEvent("drawstart"); // TODO: make cancellable?
+		this.drawstartSignal.emit();
 
 		if(this.autoClear)
 		{
 			this.clear();
 		}
-		var ctx = this._setWebGLContext();
-		if(ctx)
+		var gl = this._setWebGLContext();
+		if(gl)
 		{
 			// Use WebGL.
-			this.draw(ctx, false);
+			this.draw(gl, false);
 		}
 		else
 		{
 			// Use 2D.
-			ctx = this.canvas.getContext("2d");
+			var ctx = this.canvas.getContext("2d");
 			ctx.save();
 			this.updateContext(ctx);
 			this.draw(ctx, false);
 			ctx.restore();
 		}
-		this.dispatchEvent("drawend");
+		this.drawendSignal.emit();
 	}
 
 	/**
@@ -532,16 +533,16 @@ class SpriteStage extends Stage
 			return;
 		}
 
-		var ctx = this._setWebGLContext();
-		if(ctx)
+		var gl = this._setWebGLContext();
+		if(gl)
 		{
 			// Use WebGL.
-			ctx.clear(ctx.COLOR_BUFFER_BIT);
+			gl.clear(gl.COLOR_BUFFER_BIT);
 		}
 		else
 		{
 			// Use 2D.
-			ctx = this.canvas.getContext("2d");
+			var ctx = this.canvas.getContext("2d");
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
 		}
@@ -559,23 +560,23 @@ class SpriteStage extends Stage
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
 	 **/
-	public draw(ctx, ignoreCache)
+	public draw(ctxOrGl:any, ignoreCache)
 	{
-		if(ctx === this._webGLContext || ctx instanceof WebGLRenderingContext)
+		if(ctxOrGl === this._webGLContext || ctxOrGl instanceof WebGLRenderingContext)
 		{
-			this._drawWebGLKids(this.children, ctx);
+			this._drawWebGLKids(this.children, ctxOrGl);
 
 			// If there is a remaining texture, draw it:
 			if(this._drawTexture)
 			{
-				this._drawToGPU(ctx);
+				this._drawToGPU(ctxOrGl);
 			}
 
 			return true;
 		}
 		else
 		{
-			return super.draw(ctx, ignoreCache);
+			return super.draw(ctxOrGl, ignoreCache);
 		}
 	}
 
@@ -940,7 +941,7 @@ class SpriteStage extends Stage
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix)
+	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix?:Matrix2)
 	{
 		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,

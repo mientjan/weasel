@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010 gskinner.com, inc.
  *
@@ -73,7 +72,7 @@ class Shape extends DisplayObject
 	 * @constructor
 	 * @param {Graphics} graphics
 	 **/
-	constructor(graphics?:Graphics, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+		constructor(graphics?:Graphics, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
 

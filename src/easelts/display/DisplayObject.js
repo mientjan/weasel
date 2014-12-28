@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2D', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject
@@ -871,18 +871,24 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             if (ry === void 0) { ry = null; }
             var parentIsKnown = this._parentSizeIsKnown;
             this._parentSizeIsKnown = false;
-            if (x != null)
+            if (x != null) {
                 this.setX(x);
-            if (y != null)
+            }
+            if (y != null) {
                 this.setY(y);
-            if (w != null)
+            }
+            if (w != null) {
                 this.setWidth(w);
-            if (h != null)
+            }
+            if (h != null) {
                 this.setHeight(h);
-            if (rx != null)
+            }
+            if (rx != null) {
                 this.setRegX(rx);
-            if (ry != null)
+            }
+            if (ry != null) {
                 this.setRegY(ry);
+            }
             this._parentSizeIsKnown = parentIsKnown;
             if (this._parentSizeIsKnown) {
                 this.onResize(new Size(this.parent.width, this.parent.height));
@@ -1349,30 +1355,30 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             _super.prototype.destruct.call(this);
         };
         DisplayObject.EVENT_MOUSE_CLICK = 'click';
-        DisplayObject.EVENT_MOUSE_MOUSEDOWN = 'mousedown';
-        DisplayObject.EVENT_MOUSE_MOUSEOUT = 'mouseout';
-        DisplayObject.EVENT_MOUSE_MOUSEOVER = 'mouseover';
+        DisplayObject.EVENT_MOUSE_DOWN = 'mousedown';
+        DisplayObject.EVENT_MOUSE_OUT = 'mouseout';
+        DisplayObject.EVENT_MOUSE_OVER = 'mouseover';
         /**
          *
          * @type {string}
          */
-        DisplayObject.EVENT_MOUSE_MOUSEMOVE = 'mousemove';
-        DisplayObject.EVENT_MOUSE_PRESSMOVE = 'pressmove';
-        DisplayObject.EVENT_MOUSE_PRESSUP = 'pressup';
-        DisplayObject.EVENT_MOUSE_ROLLOUT = 'rollout';
-        DisplayObject.EVENT_MOUSE_ROLLOVER = 'rollover';
+        DisplayObject.EVENT_MOUSE_MOVE = 'mousemove';
+        DisplayObject.EVENT_PRESS_MOVE = 'pressmove';
+        DisplayObject.EVENT_PRESS_UP = 'pressup';
+        DisplayObject.EVENT_ROLL_OUT = 'rollout';
+        DisplayObject.EVENT_ROLL_OVER = 'rollover';
         /**
          * @todo replace mouse events with pointer events
          */
         DisplayObject.EVENT_POINTER_CLICK = 'click';
         DisplayObject.EVENT_POINTER_DOWN = 'mousedown';
-        DisplayObject.EVENT_POINTER_MOVE = 'mousedown';
-        DisplayObject.EVENT_POINTER_UP = 'mousedown';
+        DisplayObject.EVENT_POINTER_MOVE = 'mousemove';
+        DisplayObject.EVENT_POINTER_UP = 'pressup';
         DisplayObject.EVENT_POINTER_CANCEL = 'mousedown';
-        DisplayObject.EVENT_POINTER_ENTER = 'mousedown';
-        DisplayObject.EVENT_POINTER_LEAVE = 'mousedown';
-        DisplayObject.EVENT_POINTER_OUT = 'mousedown';
-        DisplayObject.EVENT_POINTER_OVER = 'mousedown';
+        DisplayObject.EVENT_POINTER_ENTER = 'mouseover';
+        DisplayObject.EVENT_POINTER_LEAVE = 'mouseout';
+        DisplayObject.EVENT_POINTER_OUT = 'mouseout';
+        DisplayObject.EVENT_POINTER_OVER = 'mouseover';
         /**
          * Listing of mouse event names. Used in _hasMouseEventListener.
          * @property _MOUSE_EVENTS
@@ -1382,13 +1388,13 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          **/
         DisplayObject._MOUSE_EVENTS = [
             DisplayObject.EVENT_MOUSE_CLICK,
-            DisplayObject.EVENT_MOUSE_MOUSEDOWN,
-            DisplayObject.EVENT_MOUSE_MOUSEOUT,
-            DisplayObject.EVENT_MOUSE_MOUSEOVER,
-            DisplayObject.EVENT_MOUSE_PRESSMOVE,
-            DisplayObject.EVENT_MOUSE_PRESSUP,
-            DisplayObject.EVENT_MOUSE_ROLLOUT,
-            DisplayObject.EVENT_MOUSE_ROLLOVER,
+            DisplayObject.EVENT_MOUSE_DOWN,
+            DisplayObject.EVENT_MOUSE_OUT,
+            DisplayObject.EVENT_MOUSE_OVER,
+            DisplayObject.EVENT_PRESS_MOVE,
+            DisplayObject.EVENT_PRESS_UP,
+            DisplayObject.EVENT_ROLL_OUT,
+            DisplayObject.EVENT_ROLL_OVER,
             "dblclick"
         ];
         DisplayObject.COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';

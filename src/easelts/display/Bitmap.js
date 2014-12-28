@@ -102,8 +102,9 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             this.width = this.image.width;
             this.height = this.image.height;
             this.dispatchEvent(Bitmap.EVENT_ONLOAD);
-            if (this._parentSizeIsKnown)
+            if (this._parentSizeIsKnown) {
                 this.onResize(new Size(this.parent.width, this.parent.height));
+            }
         };
         // public methods:
         /**

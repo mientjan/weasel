@@ -247,7 +247,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
          */
         Text.prototype.getExactSize = function () {
             var width = Math.ceil(this.getMeasuredWidth());
-            var height = Math.ceil(this.getMeasuredHeight() * 1.2);
+            var height = Math.ceil(width * 1.6);
             var alreadyCached = false;
             var color = this.color;
             this.color = '#000';

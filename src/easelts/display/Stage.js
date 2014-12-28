@@ -474,23 +474,6 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             this.tickendSignal.emit();
         };
         /**
-         * Default event handler that calls the Stage {{#crossLink "Stage/update"}}{{/crossLink}} method when a {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}}
-         * event is received. This allows you to register a Stage instance as a event listener on {{#crossLink "Ticker"}}{{/crossLink}}
-         * directly, using:
-         *
-         *      Ticker.addEventListener("tick", myStage);
-         *
-         * Note that if you subscribe to ticks using this pattern, then the tick event object will be passed through to
-         * display object tick handlers, instead of <code>delta</code> and <code>paused</code> parameters.
-         * @property handleEvent
-         * @type Function
-         **/
-        Stage.prototype.handleEvent = function (evt) {
-            if (evt.type == "tick") {
-                this.update(evt);
-            }
-        };
-        /**
          * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
          * @method clear
          **/
@@ -545,21 +528,16 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             return dataURL;
         };
         /**
-         * Enables or disables (by passing a frequency of 0) mouse over ({{#crossLink "DisplayObject/mouseover:event"}}{{/crossLink}}
-         * and {{#crossLink "DisplayObject/mouseout:event"}}{{/crossLink}}) and roll over events ({{#crossLink "DisplayObject/rollover:event"}}{{/crossLink}}
-         * and {{#crossLink "DisplayObject/rollout:event"}}{{/crossLink}}) for this stage's display list. These events can
-         * be expensive to generate, so they are disabled by default. The frequency of the events can be controlled
-         * independently of mouse move events via the optional `frequency` parameter.
-         *
          * <h4>Example</h4>
          *
-         *      var stage = new createts.Stage("canvasId");
+         *      var stage = new Stage("canvasId");
          *      stage.enableMouseOver(10); // 10 updates per second
          *
          * @method enableMouseOver
          * @param {Number} [frequency=20] Optional param specifying the maximum number of times per second to broadcast
          * mouse over/out events. Set to 0 to disable mouse over events completely. Maximum is 50. A lower frequency is less
          * responsive, but uses less CPU.
+         * @todo remove setInterval
          **/
         Stage.prototype.enableMouseOver = function (frequency) {
             var _this = this;
@@ -604,13 +582,14 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             if (!enable && eventListeners) {
                 for (name in eventListeners) {
                     o = eventListeners[name];
-                    o.t.removeEventListener(name, o.f, false);
+                    o.window.removeEventListener(name, o.fn, false);
                 }
                 this._eventListeners = null;
             }
             else if (enable && !eventListeners && this.canvas) {
                 var windowsObject = window['addEventListener'] ? window : document;
                 eventListeners = this._eventListeners = {};
+                //			Stage.EVENT_MOUSE
                 eventListeners["mouseup"] = {
                     window: windowsObject,
                     fn: function (e) { return _this._handleMouseUp(e); }
