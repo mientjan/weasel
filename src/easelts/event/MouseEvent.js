@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/events/Event'], function (require, exports, Event) {
+define(["require", "exports"], function (require, exports) {
     /*
      * MouseEvent
      * Visit http://createjs.com/ for documentation, updates and examples.
