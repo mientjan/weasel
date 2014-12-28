@@ -56,7 +56,7 @@ import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
 
-import IPoint = require('../interface/IVector2');
+import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 
@@ -66,7 +66,7 @@ import AbstractBehavior = require('../behavior/AbstractBehavior');
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  * @class DisplayObject
  */
-class DisplayObject extends EventDispatcher implements IPoint, ISize, IDisplayType
+class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplayType
 {
 	public static EVENT_MOUSE_CLICK = 'click';
 	public static EVENT_MOUSE_MOUSEDOWN = 'mousedown';
