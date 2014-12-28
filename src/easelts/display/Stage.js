@@ -474,23 +474,6 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             this.tickendSignal.emit();
         };
         /**
-         * Default event handler that calls the Stage {{#crossLink "Stage/update"}}{{/crossLink}} method when a {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}}
-         * event is received. This allows you to register a Stage instance as a event listener on {{#crossLink "Ticker"}}{{/crossLink}}
-         * directly, using:
-         *
-         *      Ticker.addEventListener("tick", myStage);
-         *
-         * Note that if you subscribe to ticks using this pattern, then the tick event object will be passed through to
-         * display object tick handlers, instead of <code>delta</code> and <code>paused</code> parameters.
-         * @property handleEvent
-         * @type Function
-         **/
-        Stage.prototype.handleEvent = function (evt) {
-            if (evt.type == "tick") {
-                this.update(evt);
-            }
-        };
-        /**
          * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
          * @method clear
          **/
