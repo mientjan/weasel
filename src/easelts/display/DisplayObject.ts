@@ -69,33 +69,33 @@ import AbstractBehavior = require('../behavior/AbstractBehavior');
 class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplayType
 {
 	public static EVENT_MOUSE_CLICK = 'click';
-	public static EVENT_MOUSE_MOUSEDOWN = 'mousedown';
-	public static EVENT_MOUSE_MOUSEOUT = 'mouseout';
-	public static EVENT_MOUSE_MOUSEOVER = 'mouseover';
+	public static EVENT_MOUSE_DOWN = 'mousedown';
+	public static EVENT_MOUSE_OUT = 'mouseout';
+	public static EVENT_MOUSE_OVER = 'mouseover';
 
 	/**
 	 *
 	 * @type {string}
 	 */
-	public static EVENT_MOUSE_MOUSEMOVE = 'mousemove';
+	public static EVENT_MOUSE_MOVE = 'mousemove';
 
-	public static EVENT_MOUSE_PRESSMOVE = 'pressmove';
-	public static EVENT_MOUSE_PRESSUP = 'pressup';
-	public static EVENT_MOUSE_ROLLOUT = 'rollout';
-	public static EVENT_MOUSE_ROLLOVER = 'rollover';
+	public static EVENT_PRESS_MOVE = 'pressmove';
+	public static EVENT_PRESS_UP = 'pressup';
+	public static EVENT_ROLL_OUT = 'rollout';
+	public static EVENT_ROLL_OVER = 'rollover';
 
 	/**
 	 * @todo replace mouse events with pointer events
 	 */
 	public static EVENT_POINTER_CLICK = 'click';
 	public static EVENT_POINTER_DOWN = 'mousedown';
-	public static EVENT_POINTER_MOVE = 'mousedown';
-	public static EVENT_POINTER_UP = 'mousedown';
+	public static EVENT_POINTER_MOVE = 'mousemove';
+	public static EVENT_POINTER_UP = 'pressup';
 	public static EVENT_POINTER_CANCEL = 'mousedown';
-	public static EVENT_POINTER_ENTER = 'mousedown';
-	public static EVENT_POINTER_LEAVE = 'mousedown';
-	public static EVENT_POINTER_OUT = 'mousedown';
-	public static EVENT_POINTER_OVER = 'mousedown';
+	public static EVENT_POINTER_ENTER = 'mouseover';
+	public static EVENT_POINTER_LEAVE = 'mouseout';
+	public static EVENT_POINTER_OUT = 'mouseout';
+	public static EVENT_POINTER_OVER = 'mouseover';
 
 	/**
 	 * Listing of mouse event names. Used in _hasMouseEventListener.
@@ -106,13 +106,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public static _MOUSE_EVENTS = [
 		DisplayObject.EVENT_MOUSE_CLICK,
-		DisplayObject.EVENT_MOUSE_MOUSEDOWN,
-		DisplayObject.EVENT_MOUSE_MOUSEOUT,
-		DisplayObject.EVENT_MOUSE_MOUSEOVER,
-		DisplayObject.EVENT_MOUSE_PRESSMOVE,
-		DisplayObject.EVENT_MOUSE_PRESSUP,
-		DisplayObject.EVENT_MOUSE_ROLLOUT,
-		DisplayObject.EVENT_MOUSE_ROLLOVER,
+		DisplayObject.EVENT_MOUSE_DOWN,
+		DisplayObject.EVENT_MOUSE_OUT,
+		DisplayObject.EVENT_MOUSE_OVER,
+		DisplayObject.EVENT_PRESS_MOVE,
+		DisplayObject.EVENT_PRESS_UP,
+		DisplayObject.EVENT_ROLL_OUT,
+		DisplayObject.EVENT_ROLL_OVER,
 		"dblclick" // @todo make depricated
 	];
 
