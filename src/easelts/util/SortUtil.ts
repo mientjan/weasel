@@ -2,7 +2,7 @@
 //import DisplayObject = require("../display/DisplayObject");
 //import Point = require("../geom/Point");
 import Bounds = require("../geom/Bounds");
-import IVector2 = require("../interface/IVector2");
+import IVector2 = require("../interface/IVertex2");
 import Vector2 = require("../geom/Vector2");
 
 class SortUtil

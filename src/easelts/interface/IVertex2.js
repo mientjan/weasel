@@ -22,33 +22,5 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
-/**
- * @module easelts
- */
-
-/**
- *
- * @interface IPoint
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-class IVector2
-{
-	/**
-	 * X position.
-	 * @property x
-	 * @type Number
-	 **/
-	public x:number;
-
-	/**
-	 * Y position.
-	 * @property y
-	 * @type Number
-	 **/
-	public y:number;
-}
-
-export = IVector2;
+define(["require", "exports"], function (require, exports) {
+});

@@ -26,6 +26,9 @@
 import Matrix4 = require('./Matrix4');
 import Matrix3 = require('./Matrix3');
 
+// interface
+import IVertex3 = require('../interface/IVertex3');
+
 /**
  * @module easelts
  */
@@ -41,7 +44,7 @@ import Matrix3 = require('./Matrix3');
  *
  * @class Vector3
  */
-class Vector3
+class Vector3 implements IVertex3
 {
 	/**
 	 * X position.

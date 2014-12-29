@@ -22,21 +22,33 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports"], function (require, exports) {
-    /**
-     * @module easelts
-     */
-    /**
-     *
-     * @interface IPoint
-     * @param {Number} [x=0] X position.
-     * @param {Number} [y=0] Y position.
-     * @constructor
-     **/
-    var IVector2 = (function () {
-        function IVector2() {
-        }
-        return IVector2;
-    })();
-    return IVector2;
-});
+
+/**
+ * @module easelts
+ */
+
+/**
+ *
+ * @interface IVertex2
+ * @param {Number} [x=0] X position.
+ * @param {Number} [y=0] Y position.
+ * @constructor
+ **/
+interface IVertex2
+{
+	/**
+	 * X position.
+	 * @property x
+	 * @type Number
+	 **/
+	x:number;
+
+	/**
+	 * Y position.
+	 * @property y
+	 * @type Number
+	 **/
+	y:number;
+}
+
+export = IVertex2;

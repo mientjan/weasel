@@ -56,7 +56,7 @@ import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
 
-import IVector2 = require('../interface/IVector2');
+import IVector2 = require('../interface/IVertex2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 

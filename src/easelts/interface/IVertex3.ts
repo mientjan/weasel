@@ -29,33 +29,31 @@
 
 /**
  *
- * @interface IPoint
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
+ * @interface IVertex2
  * @constructor
  **/
-class IVector3
+interface IVertex3
 {
 	/**
 	 * X position.
 	 * @property x
 	 * @type Number
 	 **/
-	public x:number;
+	x:number;
 
 	/**
 	 * Y position.
 	 * @property y
 	 * @type Number
 	 **/
-	public y:number;
+	y:number;
 
 	/**
 	 * z position.
 	 * @property z
 	 * @type Number
 	 **/
-	public z:number;
+	z:number;
 }
 
-export = IVector3;
+export = IVertex3;

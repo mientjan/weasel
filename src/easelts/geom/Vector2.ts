@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-import IVector2 = require('./../interface/IVector2');
+import IVertex2 = require('./../interface/IVertex2');
 import NumberUtil = require('./../util/NumberUtil');
 
 /**
@@ -38,7 +38,7 @@ import NumberUtil = require('./../util/NumberUtil');
  * @author zz85 / http://www.lab4games.net/zz85/blog
  * @author mient-jan stelling
  */
-class Vector2
+class Vector2 implements IVertex2
 {
 	/**
 	 * X position.
