@@ -285,7 +285,7 @@ class Matrix3
 
 	}
 
-	public clone():number[]
+	public clone():Matrix3
 	{
 		return new Matrix3().fromArray(this.elements);
 	}
