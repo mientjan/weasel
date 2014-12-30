@@ -1,4 +1,4 @@
-define(["require", "exports", './Vector3', './Euler'], function (require, exports, Vector3, Euler) {
+define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], function (require, exports, Vector3, Euler, MathUtil) {
     /**
      * @author mrdoob / http://mrdoob.com/
      * @author supereggbert / http://www.paulbrunt.co.uk/
@@ -683,7 +683,7 @@ define(["require", "exports", './Vector3', './Euler'], function (require, export
             return this;
         };
         Matrix4.prototype.makePerspective = function (fov, aspect, near, far) {
-            var ymax = near * Math.tan(THREE.Math.degToRad(fov * 0.5));
+            var ymax = near * Math.tan(MathUtil.degToRad(fov * 0.5));
             var ymin = -ymax;
             var xmin = ymin * aspect;
             var xmax = ymax * aspect;

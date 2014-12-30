@@ -1,6 +1,7 @@
 import Vector3 = require('./Vector3');
 import Quaternion = require('./Quaternion');
 import Euler = require('./Euler');
+import MathUtil = require('../util/MathUtil');
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -1044,7 +1045,7 @@ class Matrix4
 	public makePerspective(fov:number, aspect:number, near:number, far:number)
 	{
 
-		var ymax = near * Math.tan(THREE.Math.degToRad(fov * 0.5));
+		var ymax = near * Math.tan(MathUtil.degToRad(fov * 0.5));
 		var ymin = -ymax;
 		var xmin = ymin * aspect;
 		var xmax = ymax * aspect;
