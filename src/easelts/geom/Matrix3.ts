@@ -9,24 +9,19 @@ import Matrix4 = require('./Matrix4');
  */
 class Matrix3
 {
-
-	elements:Float32Array;
+	public elements:Float32Array;
 
 	constructor()
 	{
 		this.elements = new Float32Array([
-
 			1, 0, 0,
 			0, 1, 0,
 			0, 0, 1
-
 		]);
 	}
 
-
 	public set(n11:number, n12:number, n13:number, n21:number, n22:number, n23:number, n31:number, n32:number, n33:number):Matrix3
 	{
-
 		var te = this.elements;
 
 		te[ 0 ] = n11;
@@ -291,3 +286,5 @@ class Matrix3
 	}
 
 }
+
+export = Matrix3;

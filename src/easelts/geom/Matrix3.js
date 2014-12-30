@@ -177,4 +177,5 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
         };
         return Matrix3;
     })();
+    return Matrix3;
 });
