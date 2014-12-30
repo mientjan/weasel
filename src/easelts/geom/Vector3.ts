@@ -41,7 +41,7 @@ import IVertex3 = require('../interface/IVertex3');
  * @author mikael emtinger / http://gomo.se/
  * @author egraether / http://egraether.com/
  * @author WestLangley / http://github.com/WestLangley
- * @author Mient-jan stelling
+ * @author Mient-jan Stelling
  *
  * @class Vector3
  */

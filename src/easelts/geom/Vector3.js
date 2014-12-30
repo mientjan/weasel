@@ -33,7 +33,7 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
      * @author mikael emtinger / http://gomo.se/
      * @author egraether / http://egraether.com/
      * @author WestLangley / http://github.com/WestLangley
-     * @author Mient-jan stelling
+     * @author Mient-jan Stelling
      *
      * @class Vector3
      */
