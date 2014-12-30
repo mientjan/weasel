@@ -1,11 +1,13 @@
+
 /**
  * @author supereggbert / http://www.paulbrunt.co.uk/
  * @author philogb / http://blog.thejit.org/
  * @author mikael emtinger / http://gomo.se/
  * @author egraether / http://egraether.com/
  * @author WestLangley / http://github.com/WestLangley
+ * @author Mient-jan Stelling
+ * @class Vector4
  */
-
 class Vector4
 {
 
