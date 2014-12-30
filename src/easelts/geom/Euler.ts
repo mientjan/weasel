@@ -33,7 +33,7 @@ class Euler {
 
 	}
 
-	set x ( value ) {
+	set x ( value:number ) {
 
 		this._x = value;
 		this.onChangeCallback();
@@ -46,7 +46,7 @@ class Euler {
 
 	}
 
-	set y ( value ) {
+	set y ( value:number ) {
 
 		this._y = value;
 		this.onChangeCallback();
@@ -59,7 +59,7 @@ class Euler {
 
 	}
 
-	set z ( value ) {
+	set z ( value:number ) {
 
 		this._z = value;
 		this.onChangeCallback();
@@ -72,7 +72,7 @@ class Euler {
 
 	}
 
-	set order ( value ) {
+	set order ( value:string ) {
 
 		this._order = value;
 		this.onChangeCallback();
