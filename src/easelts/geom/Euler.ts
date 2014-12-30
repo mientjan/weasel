@@ -5,6 +5,7 @@
  */
 
 import Quaternion = require('./Quaternion');
+import MathUtil = require('../util/MathUtil');
 
 class Euler {
 
@@ -106,7 +107,7 @@ class Euler {
 
 	public setFromRotationMatrix( m, order ) {
 
-		var clamp = THREE.Math.clamp;
+		var clamp = MathUtil.clamp;
 
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -227,9 +228,9 @@ class Euler {
 
 	}
 
-	public setFromQuaternion( q, order, update ) {
+	public setFromQuaternion( q:Quaternion, order:string = this._order, update:boolean = false ) {
 
-		var clamp = Math.clamp;
+		var clamp = MathUtil.clamp;
 
 		// q is assumed to be normalized
 
@@ -239,8 +240,6 @@ class Euler {
 		var sqy = q.y * q.y;
 		var sqz = q.z * q.z;
 		var sqw = q.w * q.w;
-
-		order = order || this._order;
 
 		if ( order === 'XYZ' ) {
 
@@ -293,7 +292,7 @@ class Euler {
 	}
 
 	private _reorder_q:Quaternion = new Quaternion(0,0,0);
-	public reorder( newOrder ) {
+	public reorder( newOrder:string ) {
 		// WARNING: this discards revolution information -bhouston
 			var q = this._reorder_q;
 			q.setFromEuler( this );
@@ -301,13 +300,13 @@ class Euler {
 
 		}
 
-	public equals( euler ) {
+	public equals( euler:Euler ) {
 
 		return ( euler._x === this._x ) && ( euler._y === this._y ) && ( euler._z === this._z ) && ( euler._order === this._order );
 
 	}
 
-	public fromArray( array ) {
+	public fromArray( array:any[] ) {
 
 		this._x = array[ 0 ];
 		this._y = array[ 1 ];
@@ -343,3 +342,5 @@ class Euler {
 	}
 
 }
+
+export = Euler;

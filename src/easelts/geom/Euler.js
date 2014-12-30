@@ -3,7 +3,7 @@
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://exocortex.com
  */
-define(["require", "exports", './Quaternion'], function (require, exports, Quaternion) {
+define(["require", "exports", './Quaternion', '../util/MathUtil'], function (require, exports, Quaternion, MathUtil) {
     var Euler = (function () {
         function Euler(x, y, z, order) {
             this._x = 0;
@@ -77,7 +77,7 @@ define(["require", "exports", './Quaternion'], function (require, exports, Quate
             return this;
         };
         Euler.prototype.setFromRotationMatrix = function (m, order) {
-            var clamp = THREE.Math.clamp;
+            var clamp = MathUtil.clamp;
             // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
             var te = m.elements;
             var m11 = te[0], m12 = te[4], m13 = te[8];
@@ -158,14 +158,15 @@ define(["require", "exports", './Quaternion'], function (require, exports, Quate
             return this;
         };
         Euler.prototype.setFromQuaternion = function (q, order, update) {
-            var clamp = Math.clamp;
+            if (order === void 0) { order = this._order; }
+            if (update === void 0) { update = false; }
+            var clamp = MathUtil.clamp;
             // q is assumed to be normalized
             // http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/content/SpinCalc.m
             var sqx = q.x * q.x;
             var sqy = q.y * q.y;
             var sqz = q.z * q.z;
             var sqw = q.w * q.w;
-            order = order || this._order;
             if (order === 'XYZ') {
                 this._x = Math.atan2(2 * (q.x * q.w - q.y * q.z), (sqw - sqx - sqy + sqz));
                 this._y = Math.asin(clamp(2 * (q.x * q.z + q.y * q.w), -1, 1));
@@ -238,4 +239,5 @@ define(["require", "exports", './Quaternion'], function (require, exports, Quate
         Euler.DefaultOrder = 'XYZ';
         return Euler;
     })();
+    return Euler;
 });
