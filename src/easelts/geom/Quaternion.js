@@ -82,12 +82,10 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromEuler = function (euler, update) {
-            if (euler instanceof Euler === false) {
-                throw new Error('THREE.Quaternion: .setFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
-            }
             // http://www.mathworks.com/matlabcentral/fileexchange/
             // 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
             //	content/SpinCalc.m
+            if (update === void 0) { update = false; }
             var c1 = Math.cos(euler._x / 2);
             var c2 = Math.cos(euler._y / 2);
             var c3 = Math.cos(euler._z / 2);

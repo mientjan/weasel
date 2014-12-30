@@ -7,6 +7,8 @@
 
 import Matrix3 = require('./Matrix3');
 import Vector3 = require('./Vector3');
+import Vector4 = require('./Vector4');
+import Euler = require('./Euler');
 
 class Quaternion {
 
@@ -101,12 +103,7 @@ class Quaternion {
 
 	}
 
-	public setFromEuler ( euler, update ) {
-
-		if ( euler instanceof Euler === false ) {
-
-			throw new Error( 'THREE.Quaternion: .setFromEuler() now expects a Euler rotation rather than a Vector3 and order.' );
-		}
+	public setFromEuler ( euler:Euler, update:boolean = false) {
 
 		// http://www.mathworks.com/matlabcentral/fileexchange/
 		// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
@@ -169,7 +166,7 @@ class Quaternion {
 
 	}
 
-	public setFromAxisAngle ( axis:Matrix3, angle ) {
+	public setFromAxisAngle ( axis:Vector4, angle:number ) {
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
 
