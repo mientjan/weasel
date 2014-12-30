@@ -25,6 +25,7 @@
 
 import Matrix4 = require('./Matrix4');
 import Matrix3 = require('./Matrix3');
+import MathUtil = require('../util/MathUtil');
 
 // interface
 import IVertex3 = require('../interface/IVertex3');
@@ -616,7 +617,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public dot(v):Vector3
+	public dot(v):number
 	{
 
 		return this.x * v.x + this.y * v.y + this.z * v.z;
@@ -757,7 +758,7 @@ class Vector3 implements IVertex3
 
 		// clamp, to handle numerical problems
 
-		return Math.acos(THREE.Math.clamp(theta, -1, 1));
+		return Math.acos(MathUtil.clamp(theta, -1, 1));
 
 	}
 

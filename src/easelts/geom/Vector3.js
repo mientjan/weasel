@@ -22,7 +22,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", './Matrix4'], function (require, exports, Matrix4) {
+define(["require", "exports", './Matrix4', '../util/MathUtil'], function (require, exports, Matrix4, MathUtil) {
     /**
      * @module easelts
      */
@@ -441,7 +441,7 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
         Vector3.prototype.angleTo = function (v) {
             var theta = this.dot(v) / (this.length() * v.length());
             // clamp, to handle numerical problems
-            return Math.acos(THREE.Math.clamp(theta, -1, 1));
+            return Math.acos(MathUtil.clamp(theta, -1, 1));
         };
         Vector3.prototype.distanceTo = function (v) {
             return Math.sqrt(this.distanceToSquared(v));
