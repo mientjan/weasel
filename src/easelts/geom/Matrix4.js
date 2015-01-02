@@ -13,10 +13,10 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
      */
     var Matrix4 = (function () {
         function Matrix4() {
-            this.__extractRotation_v1 = new Vector3(0, 0, 0);
-            this.__lookAt_x = new Vector3(0, 0, 0);
-            this.__lookAt_y = new Vector3(0, 0, 0);
-            this.__lookAt_z = new Vector3(0, 0, 0);
+            this.__extractRotation_v1 = null;
+            this.__lookAt_x = null;
+            this.__lookAt_y = null;
+            this.__lookAt_z = null;
             //	public multiplyVector3(vector)
             //	{
             //
@@ -40,9 +40,9 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             //		return this.applyToVector3Array(a);
             //
             //	}
-            this.__applyToVector3Array_v1 = new Vector3(0, 0, 0);
-            this.__decompose_vector = new Vector3(0, 0, 0);
-            this.__decompose_matrix = new Matrix4();
+            this.__applyToVector3Array_v1 = null;
+            this.__decompose_vector = null;
+            this.__decompose_matrix = null;
             this.elements = new Float32Array([
                 1,
                 0,
@@ -123,6 +123,9 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.extractRotation = function (m) {
+            if (!this.__extractRotation_v1) {
+                this.__extractRotation_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__extractRotation_v1;
             var te = this.elements;
             var me = m.elements;
@@ -264,6 +267,15 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.lookAt = function (eye, target, up) {
+            if (!this.__lookAt_x) {
+                this.__lookAt_x = new Vector3(0, 0, 0);
+            }
+            if (!this.__lookAt_y) {
+                this.__lookAt_y = new Vector3(0, 0, 0);
+            }
+            if (!this.__lookAt_z) {
+                this.__lookAt_z = new Vector3(0, 0, 0);
+            }
             var x = this.__lookAt_x;
             var y = this.__lookAt_y;
             var z = this.__lookAt_z;
@@ -364,6 +376,9 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.applyToVector3Array = function (array, offset, length) {
+            if (!this.__applyToVector3Array_v1) {
+                this.__applyToVector3Array_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__applyToVector3Array_v1;
             if (offset === undefined) {
                 offset = 0;
@@ -612,6 +627,12 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.decompose = function (position, quaternion, scale) {
+            if (!this.__decompose_vector) {
+                this.__decompose_vector = new Vector3(0, 0, 0);
+            }
+            if (!this.__decompose_matrix) {
+                this.__decompose_matrix = new Matrix4();
+            }
             var vector = this.__decompose_vector;
             var matrix = this.__decompose_matrix;
             var te = this.elements;
@@ -745,5 +766,5 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
         };
         return Matrix4;
     })();
-    return Matrix4;
+    exports.Matrix4 = Matrix4;
 });

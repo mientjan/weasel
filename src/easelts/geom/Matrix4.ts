@@ -16,7 +16,7 @@ import MathUtil = require('../util/MathUtil');
  * @author WestLangley / http://github.com/WestLangley
  */
 
-class Matrix4
+export class Matrix4
 {
 
 	public elements:Float32Array;
@@ -125,10 +125,15 @@ class Matrix4
 
 	}
 
-	private __extractRotation_v1:Vector3 = new Vector3(0, 0, 0);
+	private __extractRotation_v1:Vector3 = null;
 
 	public extractRotation(m:Matrix4):Matrix4
 	{
+		if(!this.__extractRotation_v1){
+			this.__extractRotation_v1 = new Vector3(0, 0, 0);
+		}
+
+
 		var v1 = this.__extractRotation_v1;
 		var te = this.elements;
 		var me = m.elements;
@@ -339,12 +344,24 @@ class Matrix4
 
 	}
 
-	private __lookAt_x:Vector3 = new Vector3(0, 0, 0);
-	private __lookAt_y:Vector3 = new Vector3(0, 0, 0);
-	private __lookAt_z:Vector3 = new Vector3(0, 0, 0);
+	private __lookAt_x:Vector3 = null;
+	private __lookAt_y:Vector3 = null;
+	private __lookAt_z:Vector3 = null;
 
 	public lookAt(eye, target, up)
 	{
+		if(!this.__lookAt_x){
+			this.__lookAt_x = new Vector3(0, 0, 0);
+		}
+
+		if(!this.__lookAt_y){
+			this.__lookAt_y = new Vector3(0, 0, 0);
+		}
+
+		if(!this.__lookAt_z){
+			this.__lookAt_z = new Vector3(0, 0, 0);
+		}
+
 		var x = this.__lookAt_x;
 		var y = this.__lookAt_y;
 		var z = this.__lookAt_z;
@@ -505,10 +522,13 @@ class Matrix4
 	//
 	//	}
 
-	private __applyToVector3Array_v1 = new Vector3(0, 0, 0);
+	private __applyToVector3Array_v1:Vector3 = null;
 
 	public applyToVector3Array(array, offset, length)
 	{
+		if(!this.__applyToVector3Array_v1){
+			this.__applyToVector3Array_v1 = new Vector3(0,0,0);
+		}
 		var v1 = this.__applyToVector3Array_v1;
 		if(offset === undefined)
 		{
@@ -944,11 +964,19 @@ class Matrix4
 		return this;
 	}
 
-	private __decompose_vector = new Vector3(0, 0, 0);
-	private __decompose_matrix = new Matrix4();
+	private __decompose_vector = null;
+	private __decompose_matrix = null;
 
-	public decompose(position, quaternion, scale)
+	public decompose(position, quaternion:Quaternion, scale)
 	{
+		if(!this.__decompose_vector){
+			this.__decompose_vector = new Vector3(0, 0, 0);
+		}
+
+		if(!this.__decompose_matrix){
+			this.__decompose_matrix = new Matrix4();
+		}
+
 		var vector = this.__decompose_vector;
 		var matrix = this.__decompose_matrix;
 
@@ -1117,4 +1145,3 @@ class Matrix4
 
 }
 
-export = Matrix4;

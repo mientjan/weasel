@@ -23,8 +23,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Matrix4 = require('./Matrix4');
-import Matrix3 = require('./Matrix3');
+import m4 = require('./Matrix4');
+import m3 = require('./Matrix3');
 import MathUtil = require('../util/MathUtil');
 
 // interface
@@ -71,7 +71,7 @@ class Vector3 implements IVertex3
 	 * @param {number} y
 	 * @param {number} z
 	 */
-		constructor(public x:number, public y:number, public z:number)
+	constructor(public x:number, public y:number, public z:number)
 	{
 	}
 
@@ -303,7 +303,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public applyMatrix4(m):Vector3
+	public applyMatrix4(m:m4.Matrix4):Vector3
 	{
 
 		// input: THREE.Matrix4 affine matrix
@@ -320,7 +320,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public applyProjection(m):Vector3
+	public applyProjection(m:m4.Matrix4):Vector3
 	{
 
 		// input: THREE.Matrix4 projection matrix
@@ -367,26 +367,33 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __projectMatrix:Matrix4 = new Matrix4();
+	private __projectMatrix:m4.Matrix4 = null;
 
 	public project(camera)
 	{
+		if(!this.__projectMatrix){
+			this.__projectMatrix = new m4.Matrix4();
+		}
+
 		var matrix = this.__projectMatrix;
 		matrix.multiplyMatrices(camera.projectionMatrix, matrix.getInverse(camera.matrixWorld));
 		return this.applyProjection(matrix);
 
 	}
 
-	private __unprojectMatrix:Matrix4 = new Matrix4();
+	private __unprojectMatrix:m4.Matrix4 = null;
 
 	public unproject(camera)
 	{
+		if(!this.__unprojectMatrix){
+			this.__unprojectMatrix = new m4.Matrix4();
+		}
 		var matrix = this.__unprojectMatrix;
 		matrix.multiplyMatrices(camera.matrixWorld, matrix.getInverse(camera.projectionMatrix));
 		return this.applyProjection(matrix);
 	}
 
-	public transformDirection(m:Matrix4):Vector3
+	public transformDirection(m:m4.Matrix4):Vector3
 	{
 
 		// input: THREE.Matrix4 affine matrix
@@ -547,11 +554,18 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __clampScalarMin = new Vector3(0, 0, 0);
-	private __clampScalarMax = new Vector3(0, 0, 0);
+	private __clampScalarMin:Vector3 = null;
+	private __clampScalarMax:Vector3 = null;
 
 	public clampScalar(minVal:number, maxVal:number)
 	{
+		if(!this.__clampScalarMin){
+			this.__clampScalarMin = new Vector3(0, 0, 0);
+		}
+
+		if(!this.__clampScalarMax){
+			this.__clampScalarMax = new Vector3(0, 0, 0);
+		}
 
 		var min = this.__clampScalarMin;
 		var max = this.__clampScalarMax;
@@ -705,11 +719,18 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __projectOnVector_v1:Vector3 = new Vector3(0, 0, 0);
-	private __projectOnVector_dot:Vector3 = new Vector3(0, 0, 0);
+	private __projectOnVector_v1:Vector3 = null;
+	private __projectOnVector_dot:Vector3 = null;
 
 	public projectOnVector(vector:Vector3)
 	{
+		if(!this.__projectOnVector_v1){
+			this.__projectOnVector_v1 = new Vector3(0, 0, 0);
+		}
+
+		if(!this.__projectOnVector_dot){
+			this.__projectOnVector_dot = new Vector3(0, 0, 0);
+		}
 
 		var v1 = this.__projectOnVector_v1;
 
@@ -721,10 +742,13 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __projectOnPlane_v1:Vector3 = new Vector3(0, 0, 0);
+	private __projectOnPlane_v1:Vector3 = null;
 
 	projectOnPlane(planeNormal:Vector3)
 	{
+		if(!this.__projectOnPlane_v1){
+			this.__projectOnPlane_v1 = new Vector3(0, 0, 0);
+		}
 		var v1 = this.__projectOnPlane_v1;
 
 
@@ -742,10 +766,13 @@ class Vector3 implements IVertex3
 	 * @param {Vector3} normal
 	 * @returns {Vector3}
 	 */
-	private __reflect_v1:Vector3 = new Vector3(0, 0, 0);
+	private __reflect_v1:Vector3 = null;
 
 	public reflect(normal:Vector3)
 	{
+		if(!this.__reflect_v1){
+			this.__reflect_v1 = new Vector3(0, 0, 0);
+		}
 		var v1 = this.__reflect_v1;
 		return this.sub(v1.copy(normal).multiplyScalar(2 * this.dot(normal)));
 	}

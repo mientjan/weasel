@@ -5,10 +5,11 @@
  * @author bhouston / http://exocortex.com
  */
 
-import Matrix3 = require('./Matrix3');
 import Vector3 = require('./Vector3');
 import Vector4 = require('./Vector4');
 import Euler = require('./Euler');
+import m3 = require('./Matrix3');
+import m4 = require('./Matrix4');
 
 class Quaternion {
 
@@ -185,7 +186,7 @@ class Quaternion {
 
 	}
 
-	public setFromRotationMatrix ( m:Matrix3 ) {
+	public setFromRotationMatrix ( m:m4.Matrix4 ) {
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 

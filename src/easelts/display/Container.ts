@@ -29,7 +29,7 @@
 import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
-import Matrix2D = require('../geom/Matrix2');
+import m2 = require('../geom/Matrix2');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
 
@@ -849,7 +849,7 @@ class Container extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix:Matrix2D, ignoreTransform:boolean)
+	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean)
 	{
 		var bounds = super.getBounds();
 		if(bounds)

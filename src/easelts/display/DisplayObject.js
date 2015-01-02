@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, Matrix2D, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject
@@ -324,7 +324,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @type {Matrix2D}
              * @default null
              **/
-            this._matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+            this._matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
             /**
              * @property _rectangle
              * @protected
@@ -904,7 +904,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          **/
         DisplayObject.prototype.getMatrix = function (matrix) {
             var o = this;
-            return (matrix ? matrix.identity() : new Matrix2D(0, 0, 0, 0, 0, 0)).appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
+            return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0)).appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
         };
         /**
          * Generates a concatenated Matrix2D object representing the combined transform of the display object and all of its
@@ -922,7 +922,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
                 matrix.identity();
             }
             else {
-                matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+                matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
             }
             var o = this;
             while (o != null) {

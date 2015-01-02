@@ -41,7 +41,7 @@ define(["require", "exports"], function (require, exports) {
      * @param {Number} [ty=0] Specifies the ty property for the new matrix.
      * @constructor
      **/
-    var Matrix2D = (function () {
+    var Matrix2 = (function () {
         // constructor:
         /**
          * @constructor
@@ -52,7 +52,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} [tx=0] Specifies the tx property for the new matrix.
          * @param {Number} [ty=0] Specifies the ty property for the new matrix.
          */
-        function Matrix2D(a, b, c, d, tx, ty) {
+        function Matrix2(a, b, c, d, tx, ty) {
             // public properties:
             /**
              * Position (0, 0) in a 3x3 affine transformation matrix.
@@ -122,7 +122,7 @@ define(["require", "exports"], function (require, exports) {
             this.visible = true;
             this._initialize(a, b, c, d, tx, ty);
         }
-        Matrix2D.prototype._initialize = function (a, b, c, d, tx, ty) {
+        Matrix2.prototype._initialize = function (a, b, c, d, tx, ty) {
             this.a = a;
             this.b = b;
             this.c = c;
@@ -141,7 +141,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} ty
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.prepend = function (a, b, c, d, tx, ty) {
+        Matrix2.prototype.prepend = function (a, b, c, d, tx, ty) {
             var tx1 = this.tx;
             if (a != 1 || b != 0 || c != 0 || d != 1) {
                 var a1 = this.a;
@@ -166,7 +166,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} ty
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.append = function (a, b, c, d, tx, ty) {
+        Matrix2.prototype.append = function (a, b, c, d, tx, ty) {
             var a1 = this.a;
             var b1 = this.b;
             var c1 = this.c;
@@ -185,7 +185,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Matrix2D} matrix
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.prependMatrix = function (matrix) {
+        Matrix2.prototype.prependMatrix = function (matrix) {
             this.prepend(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
             this.prependProperties(matrix.alpha, matrix.shadow, matrix.compositeOperation, matrix.visible);
             return this;
@@ -196,7 +196,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Matrix2D} matrix
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.appendMatrix = function (matrix) {
+        Matrix2.prototype.appendMatrix = function (matrix) {
             this.append(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
             this.appendProperties(matrix.alpha, matrix.shadow, matrix.compositeOperation, matrix.visible);
             return this;
@@ -217,9 +217,9 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} regY Optional.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.prependTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
+        Matrix2.prototype.prependTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
             if (rotation % 360) {
-                var r = rotation * Matrix2D.DEG_TO_RAD;
+                var r = rotation * Matrix2.DEG_TO_RAD;
                 var cos = Math.cos(r);
                 var sin = Math.sin(r);
             }
@@ -234,8 +234,8 @@ define(["require", "exports"], function (require, exports) {
             }
             if (skewX || skewY) {
                 // TODO: can this be combined into a single prepend operation?
-                skewX *= Matrix2D.DEG_TO_RAD;
-                skewY *= Matrix2D.DEG_TO_RAD;
+                skewX *= Matrix2.DEG_TO_RAD;
+                skewY *= Matrix2.DEG_TO_RAD;
                 this.prepend(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
                 this.prepend(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
             }
@@ -260,9 +260,9 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} regY Optional.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.appendTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
+        Matrix2.prototype.appendTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
             if (rotation % 360) {
-                var r = rotation * Matrix2D.DEG_TO_RAD;
+                var r = rotation * Matrix2.DEG_TO_RAD;
                 var cos = Math.cos(r);
                 var sin = Math.sin(r);
             }
@@ -272,8 +272,8 @@ define(["require", "exports"], function (require, exports) {
             }
             if (skewX || skewY) {
                 // TODO: can this be combined into a single append?
-                skewX *= Matrix2D.DEG_TO_RAD;
-                skewY *= Matrix2D.DEG_TO_RAD;
+                skewX *= Matrix2.DEG_TO_RAD;
+                skewY *= Matrix2.DEG_TO_RAD;
                 this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
                 this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
             }
@@ -293,7 +293,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} angle The angle in radians. To use degrees, multiply by <code>Math.PI/180</code>.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.rotate = function (angle) {
+        Matrix2.prototype.rotate = function (angle) {
             var cos = Math.cos(angle);
             var sin = Math.sin(angle);
             var a1 = this.a;
@@ -314,9 +314,9 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} skewY The amount to skew vertically in degrees.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.skew = function (skewX, skewY) {
-            skewX = skewX * Matrix2D.DEG_TO_RAD;
-            skewY = skewY * Matrix2D.DEG_TO_RAD;
+        Matrix2.prototype.skew = function (skewX, skewY) {
+            skewX = skewX * Matrix2.DEG_TO_RAD;
+            skewY = skewY * Matrix2.DEG_TO_RAD;
             this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), 0, 0);
             return this;
         };
@@ -327,7 +327,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} y The amount to scale vertically
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.scale = function (x, y) {
+        Matrix2.prototype.scale = function (x, y) {
             this.a *= x;
             this.d *= y;
             this.c *= x;
@@ -343,7 +343,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Number} y
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.translate = function (x, y) {
+        Matrix2.prototype.translate = function (x, y) {
             this.tx += x;
             this.ty += y;
             return this;
@@ -353,7 +353,7 @@ define(["require", "exports"], function (require, exports) {
          * @method identity
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.identity = function () {
+        Matrix2.prototype.identity = function () {
             this.alpha = this.a = this.d = 1;
             this.b = this.c = this.tx = this.ty = 0;
             this.shadow = this.compositeOperation = null;
@@ -365,7 +365,7 @@ define(["require", "exports"], function (require, exports) {
          * @method invert
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.invert = function () {
+        Matrix2.prototype.invert = function () {
             var a1 = this.a;
             var b1 = this.b;
             var c1 = this.c;
@@ -385,7 +385,7 @@ define(["require", "exports"], function (require, exports) {
          * @method isIdentity
          * @return {Boolean}
          **/
-        Matrix2D.prototype.isIdentity = function () {
+        Matrix2.prototype.isIdentity = function () {
             return this.tx == 0 && this.ty == 0 && this.a == 1 && this.b == 0 && this.c == 0 && this.d == 1;
         };
         /**
@@ -396,7 +396,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Point | Object} [pt] An object to copy the result into. If omitted a generic object with x/y properties will be returned.
          * @return {Point} This matrix. Useful for chaining method calls.
          **/
-        Matrix2D.prototype.transformPoint = function (x, y, pt) {
+        Matrix2.prototype.transformPoint = function (x, y, pt) {
             pt = pt || {};
             pt.x = x * this.a + y * this.c + this.tx;
             pt.y = x * this.b + y * this.d + this.ty;
@@ -410,7 +410,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Object} target The object to apply the transform properties to. If null, then a new object will be returned.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.decompose = function (target) {
+        Matrix2.prototype.decompose = function (target) {
             // TODO: it would be nice to be able to solve for whether the matrix can be decomposed into only scale/rotation
             // even when scale is negative
             if (target == null) {
@@ -424,15 +424,15 @@ define(["require", "exports"], function (require, exports) {
             var skewX = Math.atan2(-this.c, this.d);
             var skewY = Math.atan2(this.b, this.a);
             if (skewX == skewY) {
-                target.rotation = skewY / Matrix2D.DEG_TO_RAD;
+                target.rotation = skewY / Matrix2.DEG_TO_RAD;
                 if (this.a < 0 && this.d >= 0) {
                     target.rotation += (target.rotation <= 0) ? 180 : -180;
                 }
                 target.skewX = target.skewY = 0;
             }
             else {
-                target.skewX = skewX / Matrix2D.DEG_TO_RAD;
-                target.skewY = skewY / Matrix2D.DEG_TO_RAD;
+                target.skewX = skewX / Matrix2.DEG_TO_RAD;
+                target.skewY = skewY / Matrix2.DEG_TO_RAD;
             }
             return target;
         };
@@ -451,7 +451,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Boolean} [visible=true] desired visible value
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.reinitialize = function (a, b, c, d, tx, ty, alpha, shadow, compositeOperation, visible) {
+        Matrix2.prototype.reinitialize = function (a, b, c, d, tx, ty, alpha, shadow, compositeOperation, visible) {
             this._initialize(a, b, c, d, tx, ty);
             this.alpha = alpha == null ? 1 : alpha;
             this.shadow = shadow;
@@ -465,7 +465,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Matrix2D} matrix The matrix to copy properties from.
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.copy = function (matrix) {
+        Matrix2.prototype.copy = function (matrix) {
             return this.reinitialize(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, matrix.alpha, matrix.shadow, matrix.compositeOperation, matrix.visible);
         };
         /**
@@ -477,7 +477,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Boolean} visible desired visible value
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.appendProperties = function (alpha, shadow, compositeOperation, visible) {
+        Matrix2.prototype.appendProperties = function (alpha, shadow, compositeOperation, visible) {
             this.alpha *= alpha;
             this.shadow = shadow || this.shadow;
             this.compositeOperation = compositeOperation || this.compositeOperation;
@@ -493,7 +493,7 @@ define(["require", "exports"], function (require, exports) {
          * @param {Boolean} visible desired visible value
          * @return {Matrix2D} This matrix. Useful for chaining method calls.
          */
-        Matrix2D.prototype.prependProperties = function (alpha, shadow, compositeOperation, visible) {
+        Matrix2.prototype.prependProperties = function (alpha, shadow, compositeOperation, visible) {
             this.alpha *= alpha;
             this.shadow = this.shadow || shadow;
             this.compositeOperation = this.compositeOperation || compositeOperation;
@@ -505,8 +505,8 @@ define(["require", "exports"], function (require, exports) {
          * @method clone
          * @return {Matrix2D} a clone of the Matrix2D instance.
          **/
-        Matrix2D.prototype.clone = function () {
-            var m = new Matrix2D(this.a, this.b, this.c, this.d, this.tx, this.ty);
+        Matrix2.prototype.clone = function () {
+            var m = new Matrix2(this.a, this.b, this.c, this.d, this.tx, this.ty);
             m.alpha = this.alpha;
             m.shadow = this.shadow;
             m.compositeOperation = this.compositeOperation;
@@ -518,7 +518,7 @@ define(["require", "exports"], function (require, exports) {
          * @method toString
          * @return {String} a string representation of the instance.
          **/
-        Matrix2D.prototype.toString = function () {
+        Matrix2.prototype.toString = function () {
             return "[Matrix2D (a=" + this.a + " b=" + this.b + " c=" + this.c + " d=" + this.d + " tx=" + this.tx + " ty=" + this.ty + ")]";
         };
         /**
@@ -528,7 +528,7 @@ define(["require", "exports"], function (require, exports) {
          * @type Matrix2D
          * @readonly
          **/
-        Matrix2D.identity = null; // set at bottom of class definition.
+        Matrix2.identity = null; // set at bottom of class definition.
         /**
          * Multiplier for converting degrees to radians. Used internally by Matrix2D.
          * @property DEG_TO_RAD
@@ -537,8 +537,8 @@ define(["require", "exports"], function (require, exports) {
          * @type Number
          * @readonly
          **/
-        Matrix2D.DEG_TO_RAD = Math.PI / 180;
-        return Matrix2D;
+        Matrix2.DEG_TO_RAD = Math.PI / 180;
+        return Matrix2;
     })();
-    return Matrix2D;
+    exports.Matrix2 = Matrix2;
 });

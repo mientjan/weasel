@@ -51,7 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import Matrix2D = require('../geom/Matrix2');
+import m2 = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
@@ -512,7 +512,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:Matrix2D = new Matrix2D(0, 0, 0, 0, 0, 0);
+	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -1271,10 +1271,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * Matrix object is returned.
 	 * @return {Matrix2D} A matrix representing this display object's transform.
 	 **/
-	public getMatrix(matrix?:Matrix2D)
+	public getMatrix(matrix?:m2.Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new Matrix2D(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1298,7 +1298,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 		else
 		{
-			matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+			matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 		}
 		var o = this;
 		while(o != null)
@@ -1643,7 +1643,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix?:Matrix2D, ignoreTransform?:boolean)
+	public _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean)
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
@@ -1659,7 +1659,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _transformBounds(bounds:Rectangle, matrix:Matrix2D, ignoreTransform:boolean)
+	public _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean)
 	{
 		if(!bounds)
 		{

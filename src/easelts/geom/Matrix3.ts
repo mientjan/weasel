@@ -1,5 +1,5 @@
 import Vector3 = require('./Vector3');
-import Matrix4 = require('./Matrix4');
+import m4 = require('./Matrix4');
 
 /**
  * @method Matrix3
@@ -7,7 +7,7 @@ import Matrix4 = require('./Matrix4');
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://exocortex.com
  */
-class Matrix3
+export class Matrix3
 {
 	public elements:Float32Array;
 
@@ -69,11 +69,13 @@ class Matrix3
 
 	}
 
-	private __v0:Vector3 = new Vector3(0, 0, 0);
+	private __v0:Vector3 = null;
 
 	public applyToVector3Array(array:number[], offset:number, length:number):number[]
 	{
-
+		if(!this.__v0){
+			this.__v0 = new Vector3(0, 0, 0);
+		}
 		var v1 = this.__v0;
 
 		if(offset === undefined)
@@ -135,7 +137,7 @@ class Matrix3
 
 	}
 
-	public getInverse(matrix:Matrix4, throwOnInvertible:boolean = false)
+	public getInverse(matrix:m4.Matrix4, throwOnInvertible:boolean = false)
 	{
 
 		// input: THREE.Matrix4
@@ -228,7 +230,7 @@ class Matrix3
 
 	}
 
-	public getNormalMatrix(m:Matrix4)
+	public getNormalMatrix(m:m4.Matrix4)
 	{
 
 		// input: THREE.Matrix4
@@ -286,5 +288,3 @@ class Matrix3
 	}
 
 }
-
-export = Matrix3;

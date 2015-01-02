@@ -27,7 +27,7 @@
  */
 
 import Methods = require('../util/Methods');
-import Matrix2D = require('../geom/Matrix2');
+import m2 = require('../geom/Matrix2');
 
 /**
  * @module easelts
@@ -529,9 +529,9 @@ class BeginPath
 class Fill
 {
 	public style:any;
-	public matrix:Matrix2D;
+	public matrix:m2.Matrix2;
 
-	constructor(style?:any, matrix?:Matrix2D)
+	constructor(style?:any, matrix?:m2.Matrix2)
 	{
 		this.style = style;
 		this.matrix = matrix;
@@ -1536,7 +1536,7 @@ class Graphics
 	 * will be applied relative to the parent transform.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public beginBitmapFill(image:HTMLImageElement, repetition:string = 'repeat', matrix?:Matrix2D)
+	public beginBitmapFill(image:HTMLImageElement, repetition:string = 'repeat', matrix?:m2.Matrix2)
 	{
 		return this._setFill(new Graphics.Fill(null, matrix).bitmap(image, repetition));
 	}
