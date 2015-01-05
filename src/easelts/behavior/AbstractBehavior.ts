@@ -2,6 +2,7 @@ import DisplayObject = require('../display/DisplayObject');
 
 /**
  * @method AbstractBehavior
+ * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  */
 class AbstractBehaviour
 {

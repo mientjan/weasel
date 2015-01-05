@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     /**
      * @method AbstractBehavior
+     * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      */
     var AbstractBehaviour = (function () {
         function AbstractBehaviour() {

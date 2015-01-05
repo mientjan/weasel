@@ -4,7 +4,11 @@ import Stage = require('../display/Stage');
 import Container = require('../display/Container');
 import DisplayType = require('../enum/DisplayType');
 
-class ButtonBehaviour extends AbstractBehavior
+/**
+ * @method ButtonBehavior
+ * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
+ */
+class ButtonBehavior extends AbstractBehavior
 {
 	private _stage:Stage;
 
@@ -64,4 +68,4 @@ class ButtonBehaviour extends AbstractBehavior
 	}
 }
 
-export = ButtonBehaviour;
+export = ButtonBehavior;
