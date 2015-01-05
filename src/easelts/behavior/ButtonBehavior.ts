@@ -8,6 +8,10 @@ class ButtonBehaviour extends AbstractBehavior
 {
 	private _stage:Stage;
 
+	private _onClickInstance:Function = null;
+	private _onPointerOverInstance:Function = null;
+	private _onPointerOutInstance:Function = null;
+
 	initialize(displayObject:DisplayObject):void
 	{
 		super.initialize(displayObject);
@@ -15,24 +19,45 @@ class ButtonBehaviour extends AbstractBehavior
 		this.owner.enableMouseInteraction();
 		this.owner.cursor = 'pointer';
 
+		this.owner.enableMouseInteraction();
+		this.owner.cursor = 'pointer';
+
 		if(typeof(this.owner['onClick']) == 'function')
 		{
-			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_CLICK, this.owner['onClick'].bind(this.owner));
+			this._onClickInstance = this.owner['onClick'].bind(this.owner);
+			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_CLICK, this._onClickInstance );
 		}
 
 		if(typeof(this.owner['onPointerOver']) == 'function')
 		{
-			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_MOUSEOVER, this.owner['onPointerOver'].bind(this.owner));
+			this._onPointerOverInstance = this.owner['onPointerOver'].bind(this.owner);
+			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_OVER, this._onPointerOverInstance );
 		}
 
 		if(typeof(this.owner['onPointerOut']) == 'function')
 		{
-			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_MOUSEOUT, this.owner['onPointerOut'].bind(this.owner));
+			this._onPointerOutInstance = this.owner['onPointerOut'].bind(this.owner);
+			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_OUT, this._onPointerOutInstance  );
 		}
 	}
 
 	public destruct():void
 	{
+		if(this._onClickInstance)
+		{
+			this.owner.removeEventListener(DisplayObject.EVENT_MOUSE_CLICK, this._onClickInstance);
+		}
+
+		if(this._onPointerOverInstance)
+		{
+			this.owner.removeEventListener(DisplayObject.EVENT_MOUSE_OVER, this._onPointerOverInstance);
+		}
+
+		if(this._onPointerOutInstance)
+		{
+			this.owner.removeEventListener(DisplayObject.EVENT_MOUSE_OUT, this._onPointerOutInstance);
+		}
+
 		this._stage = null;
 		super.destruct();
 	}
