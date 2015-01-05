@@ -59,6 +59,10 @@ class ButtonBehaviour extends AbstractBehavior
 		}
 
 		this._stage = null;
+		this._onClickInstance = null;
+		this._onPointerOverInstance = null;
+		this._onPointerOutInstance = null;
+
 		super.destruct();
 	}
 }

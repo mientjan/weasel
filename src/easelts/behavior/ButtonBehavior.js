@@ -43,6 +43,9 @@ define(["require", "exports", './AbstractBehavior', '../display/DisplayObject'],
                 this.owner.removeEventListener(DisplayObject.EVENT_MOUSE_OUT, this._onPointerOutInstance);
             }
             this._stage = null;
+            this._onClickInstance = null;
+            this._onPointerOverInstance = null;
+            this._onPointerOutInstance = null;
             _super.prototype.destruct.call(this);
         };
         return ButtonBehaviour;
