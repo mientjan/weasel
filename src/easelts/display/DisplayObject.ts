@@ -830,6 +830,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public enableMouseInteraction()
 	{
 		this.mouseEnabled = true;
+		if(this.parent){
+			this.parent.enableMouseInteraction();
+		}
 	}
 
 	/**
