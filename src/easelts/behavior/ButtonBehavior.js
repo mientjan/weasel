@@ -17,8 +17,6 @@ define(["require", "exports", './AbstractBehavior', '../display/DisplayObject'],
             _super.prototype.initialize.call(this, displayObject);
             this.owner.enableMouseInteraction();
             this.owner.cursor = 'pointer';
-            this.owner.enableMouseInteraction();
-            this.owner.cursor = 'pointer';
             if (typeof (this.owner['onClick']) == 'function') {
                 this._onClickInstance = this.owner['onClick'].bind(this.owner);
                 this.owner.addEventListener(DisplayObject.EVENT_MOUSE_CLICK, this._onClickInstance);
