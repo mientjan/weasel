@@ -33,6 +33,8 @@ import TouchInjectProperties = require('../ui/TouchInjectProperties');
 import DisplayObject = require('./DisplayObject');
 import Container = require('./Container');
 
+import Methods = require('../../easelts/util/Methods');
+
 // interfaces
 import IPoint = require('../interface/IVector2');
 
@@ -802,6 +804,8 @@ class Stage extends Container
 
 	// private methods:
 
+
+
 	/**
 	 * @method _getElementRect
 	 * @protected
@@ -810,14 +814,14 @@ class Stage extends Container
 	public _getElementRect(e)
 	{
 		var bounds;
-		try
-		{
+//		try
+//		{
 			bounds = e.getBoundingClientRect();
-		} // this can fail on disconnected DOM elements in IE9
-		catch(err)
-		{
-			bounds = {top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight};
-		}
+//		} // this can fail on disconnected DOM elements in IE9
+//		catch(err)
+//		{
+//			bounds = {top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight};
+//		}
 
 		var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
 		var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
