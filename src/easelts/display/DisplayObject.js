@@ -527,6 +527,9 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          */
         DisplayObject.prototype.enableMouseInteraction = function () {
             this.mouseEnabled = true;
+            if (this.parent) {
+                this.parent.enableMouseInteraction();
+            }
         };
         /**
          * @method disableMouseInteraction

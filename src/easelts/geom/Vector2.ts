@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-import IVertex2 = require('./../interface/IVertex2');
+import IVertex2 = require('./../interface/IVector2');
 import NumberUtil = require('./../util/NumberUtil');
 
 /**

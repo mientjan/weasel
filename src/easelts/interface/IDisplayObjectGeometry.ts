@@ -23,8 +23,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Vector2 = require('./IVertex2');
-import Vector3 = require('./IVertex3');
+import Vector2 = require('./IVector2');
+import Vector3 = require('./IVector3');
 
 interface IDisplayObjectGeometry extends Vector2
 {

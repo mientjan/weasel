@@ -1,5 +1,5 @@
 /*
- * IVector3
+ * IVector2
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,10 +29,12 @@
 
 /**
  *
- * @interface IVertex2
+ * @interface IVector2
+ * @param {Number} [x=0] X position.
+ * @param {Number} [y=0] Y position.
  * @constructor
  **/
-interface IVertex3
+interface IVector2
 {
 	/**
 	 * X position.
@@ -47,13 +49,6 @@ interface IVertex3
 	 * @type Number
 	 **/
 	y:number;
-
-	/**
-	 * z position.
-	 * @property z
-	 * @type Number
-	 **/
-	z:number;
 }
 
-export = IVertex3;
+export = IVector2;

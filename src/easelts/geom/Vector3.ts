@@ -28,7 +28,7 @@ import m3 = require('./Matrix3');
 import MathUtil = require('../util/MathUtil');
 
 // interface
-import IVertex3 = require('../interface/IVertex3');
+import IVertex3 = require('../interface/IVector3');
 
 /**
  * @module easelts

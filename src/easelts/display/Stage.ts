@@ -34,7 +34,7 @@ import DisplayObject = require('./DisplayObject');
 import Container = require('./Container');
 
 // interfaces
-import IPoint = require('../interface/IVertex2');
+import IPoint = require('../interface/IVector2');
 
 // geom
 import Rectangle = require('../geom/Rectangle');
