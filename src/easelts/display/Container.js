@@ -367,10 +367,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @return {DisplayObject} The child with the specified name.
          **/
         Container.prototype.getChildByName = function (name) {
-            var kids = this.children;
-            for (var i = 0, l = kids.length; i < l; i++) {
-                if (kids[i].name == name) {
-                    return kids[i];
+            var children = this.children;
+            for (var i = 0, l = children.length; i < l; i++) {
+                if (children[i].name == name) {
+                    return children[i];
                 }
             }
             return null;
@@ -567,17 +567,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @return {Container} A clone of the current Container instance.
          **/
         Container.prototype.clone = function (recursive) {
-            var o = new Container();
-            this.cloneProps(o);
+            var container = new Container();
+            this.cloneProps(container);
             if (recursive) {
-                var arr = o.children = [];
+                var arr = container.children = [];
                 for (var i = 0, l = this.children.length; i < l; i++) {
                     var clone = this.children[i].clone(recursive);
-                    clone.parent = o;
+                    clone.parent = container;
                     arr.push(clone);
                 }
             }
-            return o;
+            return container;
         };
         /**
          * Returns a string representation of this object.

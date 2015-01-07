@@ -415,7 +415,7 @@ class Container extends DisplayObject
 	 * @param {Number} index The index of the child to return.
 	 * @return {DisplayObject} The child at the specified index. Returns null if there is no child at the index.
 	 **/
-	public getChildAt(index)
+	public getChildAt(index:number):DisplayObject
 	{
 		return this.children[index];
 	}
@@ -426,14 +426,14 @@ class Container extends DisplayObject
 	 * @param {String} name The name of the child to return.
 	 * @return {DisplayObject} The child with the specified name.
 	 **/
-	public getChildByName(name)
+	public getChildByName(name:string):DisplayObject
 	{
-		var kids = this.children;
-		for(var i = 0, l = kids.length; i < l; i++)
+		var children = this.children;
+		for(var i = 0, l = children.length; i < l; i++)
 		{
-			if(kids[i].name == name)
+			if(children[i].name == name)
 			{
-				return kids[i];
+				return children[i];
 			}
 		}
 		return null;
@@ -455,7 +455,7 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction)
+	public sortChildren(sortFunction:(a: DisplayObject, b: DisplayObject) => number )
 	{
 		this.children.sort(sortFunction);
 	}
@@ -471,7 +471,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The child to return the index of.
 	 * @return {Number} The index of the specified child. -1 if the child is not found.
 	 **/
-	public getChildIndex(child)
+	public getChildIndex(child:DisplayObject):number
 	{
 		return this.children.indexOf(child);
 	}
@@ -481,7 +481,7 @@ class Container extends DisplayObject
 	 * @method getNumChildren
 	 * @return {Number} The number of children in the display list.
 	 **/
-	public getNumChildren()
+	public getNumChildren():number
 	{
 		return this.children.length;
 	}
@@ -492,7 +492,7 @@ class Container extends DisplayObject
 	 * @param {Number} index1
 	 * @param {Number} index2
 	 **/
-	public swapChildrenAt(index1, index2)
+	public swapChildrenAt(index1:number, index2:number):void
 	{
 		var kids = this.children;
 		var o1 = kids[index1];
@@ -512,7 +512,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child1
 	 * @param {DisplayObject} child2
 	 **/
-	public swapChildren(child1, child2)
+	public swapChildren(child1:DisplayObject, child2:DisplayObject):void
 	{
 		var kids = this.children;
 		var index1, index2;
@@ -546,7 +546,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child
 	 * @param {Number} index
 	 **/
-	public setChildIndex(child, index)
+	public setChildIndex(child:DisplayObject, index:number):void
 	{
 		var kids = this.children, l = kids.length;
 		if(child.parent != this || index < 0 || index >= l)
@@ -576,7 +576,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The DisplayObject to be checked.
 	 * @return {Boolean} true if the specified display object either is this container or is a descendent.
 	 **/
-	public contains(child)
+	public contains(child:DisplayObject):boolean
 	{
 		while(child)
 		{
@@ -600,7 +600,7 @@ class Container extends DisplayObject
 	 * @return {Boolean} A Boolean indicating whether there is a visible section of a DisplayObject that overlaps the specified
 	 * coordinates.
 	 **/
-	public hitTest(x, y)
+	public hitTest(x:number, y:number):boolean
 	{
 		// TODO: optimize to use the fast cache check where possible.
 		return (this.getObjectUnderPoint(x, y) != null);
@@ -619,7 +619,7 @@ class Container extends DisplayObject
 	 * @param {Number} y The y position in the container to test.
 	 * @return {Array} An Array of DisplayObjects under the specified coordinates.
 	 **/
-	public getObjectsUnderPoint(x, y)
+	public getObjectsUnderPoint(x:number, y:number):DisplayObject[]
 	{
 		var arr = [];
 		var pt = this.localToGlobal(x, y);
@@ -636,7 +636,7 @@ class Container extends DisplayObject
 	 * @param {Number} y The y position in the container to test.
 	 * @return {DisplayObject} The top-most display object under the specified coordinates.
 	 **/
-	public getObjectUnderPoint(x, y)
+	public getObjectUnderPoint(x:number, y:number):DisplayObject[]
 	{
 		var pt = this.localToGlobal(x, y);
 		return this._getObjectsUnderPoint(pt.x, pt.y);
@@ -666,21 +666,22 @@ class Container extends DisplayObject
 	 * properties of the container will be cloned, but the new instance will not have any children.
 	 * @return {Container} A clone of the current Container instance.
 	 **/
-	public clone(recursive:boolean)
+	public clone(recursive:boolean):Container
 	{
-		var o = new Container();
-		this.cloneProps(o);
+		var container = new Container();
+		this.cloneProps(container);
 		if(recursive)
 		{
-			var arr = o.children = [];
+			var arr = container.children = [];
 			for(var i = 0, l = this.children.length; i < l; i++)
 			{
 				var clone = this.children[i].clone(recursive);
-				clone.parent = o;
+				clone.parent = container;
 				arr.push(clone);
 			}
 		}
-		return o;
+
+		return container;
 	}
 
 	/**
@@ -688,12 +689,12 @@ class Container extends DisplayObject
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	public toString()
+	public toString():string
 	{
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(e:Size)
+	public onResize(e:Size):void
 	{
 
 		super.onResize(e);

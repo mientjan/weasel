@@ -1792,9 +1792,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.cursor != null;
 	}
 
-	public onStageSet(){}
+	public onStageSet():void
+	{}
 
-	public onResize(e:Size)
+	public onResize(e:Size):void
 	{
 		this._parentSizeIsKnown = true;
 
