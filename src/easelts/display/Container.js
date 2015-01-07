@@ -181,15 +181,15 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             for (var _i = 0; _i < arguments.length; _i++) {
                 children[_i - 0] = arguments[_i];
             }
-            var l = children.length;
-            if (l == 0) {
+            var length = children.length;
+            if (length == 0) {
                 return null;
             }
-            if (l > 1) {
-                for (var i = 0; i < l; i++) {
+            if (length > 1) {
+                for (var i = 0; i < length; i++) {
                     this.addChild(children[i]);
                 }
-                return children[l - 1];
+                return children[length - 1];
             }
             var child = children[0];
             if (child.parent) {
@@ -228,10 +228,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          *
          *      addChildAt(child1, index);
          *
-         * You can also add multiple children, such as:
-         *
-         *      addChildAt(child1, child2, ..., index);
-         *
          * The index must be between 0 and numChildren. For example, to add myShape under otherShape in the display list,
          * you could use:
          *
@@ -241,10 +237,27 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          *
          * @method addChildAt
          * @param {DisplayObject} child The display object to add.
-         * @param {Number} index The index to add the child at.
+         * @param {number} index The index to add the child at.
          * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
          **/
         Container.prototype.addChildAt = function (child, index) {
+            if (child.parent) {
+                child.parent.removeChild(child);
+            }
+            child.parent = this;
+            if (this._parentSizeIsKnown) {
+                child.onResize(new Size(this.width, this.height));
+            }
+            if (this.stage) {
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
+            this.children.splice(index, 0, child);
+            return child;
+        };
+        Container.prototype.addChildAt_ = function (child, index) {
             var l = arguments.length;
             var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
             if (indx < 0 || indx > this.children.length) {
