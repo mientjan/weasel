@@ -303,49 +303,6 @@ class Container extends DisplayObject
 		return child;
 	}
 
-	private addChildAt_(child, index)
-	{
-		var l = arguments.length;
-		var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
-		if(indx < 0 || indx > this.children.length)
-		{
-			return arguments[l - 2];
-		}
-		if(l > 2)
-		{
-			for(var i = 0; i < l - 1; i++)
-			{
-				this.addChildAt(arguments[i], indx + i);
-			}
-			return arguments[l - 2];
-		}
-		if(child.parent)
-		{
-			child.parent.removeChild(child);
-		}
-
-		child.parent = this;
-		if(this._parentSizeIsKnown)
-		{
-			if(typeof child.onResize == 'function')
-			{
-				child.onResize(new Size(this.width, this.height));
-			}
-		}
-
-		if(this.stage)
-		{
-			child.stage = this.stage;
-			if(child.onStageSet)
-			{
-				child.onStageSet.call(child);
-			}
-		}
-
-		this.children.splice(index, 0, child);
-		return child;
-	}
-
 	/**
 	 * Removes the specified child from the display list. Note that it is faster to use removeChildAt() if the index is
 	 * already known.
@@ -363,20 +320,20 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The child to remove.
 	 * @return {Boolean} true if the child (or children) was removed, or false if it was not in the display list.
 	 **/
-	public removeChild(child)
+	public removeChild(...children:DisplayObject[])
 	{
-		var l = arguments.length;
+		var l = children.length;
 		if(l > 1)
 		{
 			var good = true;
 			for(var i = 0; i < l; i++)
 			{
-				good = good && this.removeChild(arguments[i]);
+				good = good && this.removeChild(children[i]);
 			}
 			return good;
 		}
-		//		return this.removeChildAt(createts.indexOf(this.children, child));
-		return this.removeChildAt(this.children.indexOf(child));
+
+		return this.removeChildAt(this.children.indexOf(children[0]));
 	}
 
 	/**
