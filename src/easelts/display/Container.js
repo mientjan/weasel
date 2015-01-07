@@ -201,9 +201,24 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                     child.onResize(new Size(this.width, this.height));
                 }
             }
-            //		child.initBehaviourList();
+            if (this.stage) {
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
             this.children.push(child);
             return child;
+        };
+        Container.prototype.onStageSet = function () {
+            var children = this.children;
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
         };
         /**
          * Adds a child to the display list at the specified index, bumping children at equal or greater indexes up one, and
@@ -250,7 +265,12 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                     child.onResize(new Size(this.width, this.height));
                 }
             }
-            //		child.initBehaviourList();
+            if (this.stage) {
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
             this.children.splice(index, 0, child);
             return child;
         };

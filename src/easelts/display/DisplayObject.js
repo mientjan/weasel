@@ -195,6 +195,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @default 0
              **/
             this.y = 0;
+            this.stage = null;
             /** When true the geom of this object will be updated when its parent resizes.
              *
              * @property updateGeomOnResize
@@ -342,9 +343,24 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this.DisplayObject_draw = this.draw;
             this.DisplayObject_getBounds = this._getBounds;
             this.setGeomTransform(width, height, x, y, regX, regY);
-            ;
         }
         DisplayObject.prototype.initialize = function () {
+            // has something to do with the createjs toolkit needing to call initialize.
+        };
+        /**
+         * @method dot
+         * @param v
+         * @returns {number}
+         */
+        DisplayObject.prototype.dot = function (v) {
+            return this.x * v.x + this.y * v.y;
+        };
+        DisplayObject.prototype.distanceToSquared = function (v) {
+            var dx = this.x - v.x, dy = this.y - v.y;
+            return dx * dx + dy * dy;
+        };
+        DisplayObject.prototype.distanceTo = function (v) {
+            return Math.sqrt(this.distanceToSquared(v));
         };
         DisplayObject.prototype.setWidth = function (width) {
             if (typeof (width) == 'string') {
@@ -366,6 +382,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getWidth
+         * @returns {number}
+         */
         DisplayObject.prototype.getWidth = function () {
             return this.width;
         };
@@ -390,6 +410,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getHeight
+         * @param {number} height
+         */
         DisplayObject.prototype.getHeight = function () {
             return this.height;
         };
@@ -527,9 +551,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          */
         DisplayObject.prototype.enableMouseInteraction = function () {
             this.mouseEnabled = true;
-            if (this.parent) {
-                this.parent.enableMouseInteraction();
-            }
         };
         /**
          * @method disableMouseInteraction
@@ -1304,6 +1325,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
                 }
             }
             return this.cursor != null;
+        };
+        DisplayObject.prototype.onStageSet = function () {
         };
         DisplayObject.prototype.onResize = function (e) {
             this._parentSizeIsKnown = true;

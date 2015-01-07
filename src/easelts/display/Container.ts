@@ -228,10 +228,32 @@ class Container extends DisplayObject
 				child.onResize(new Size(this.width, this.height));
 			}
 		}
-		//		child.initBehaviourList();
+
+		if(this.stage)
+		{
+			child.stage = this.stage;
+			if(child.onStageSet)
+			{
+				child.onStageSet.call(child);
+			}
+		}
 
 		this.children.push(child);
 		return child;
+	}
+
+	public onStageSet()
+	{
+		var children = this.children;
+		for(var i = 0; i < children.length; i++)
+		{
+			var child = children[i];
+			child.stage = this.stage;
+			if(child.onStageSet)
+			{
+				child.onStageSet.call(child);
+			}
+		}
 	}
 
 	/**
@@ -287,7 +309,15 @@ class Container extends DisplayObject
 				child.onResize(new Size(this.width, this.height));
 			}
 		}
-		//		child.initBehaviourList();
+
+		if(this.stage)
+		{
+			child.stage = this.stage;
+			if(child.onStageSet)
+			{
+				child.onStageSet.call(child);
+			}
+		}
 
 		this.children.splice(index, 0, child);
 		return child;

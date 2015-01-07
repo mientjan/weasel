@@ -343,6 +343,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public y:number = 0;
 
+	public stage:Stage = null;
+
 	/** When true the geom of this object will be updated when its parent resizes.
 	 *
 	 * @property updateGeomOnResize
@@ -448,7 +450,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {DisplayObject}
 	 * @default null
 	 */
-	public hitArea = null;
+	public hitArea:DisplayObject = null;
 
 	/**
 	 * A CSS cursor (ex. "pointer", "help", "text", etc) that will be displayed when the user hovers over this display
@@ -458,7 +460,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {String}
 	 * @default null
 	 */
-	public cursor = null;
+	public cursor:string = null;
 
 	// private properties:
 
@@ -468,7 +470,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetX = 0;
+	public _cacheOffsetX:number = 0;
 
 	/**
 	 * @property _cacheOffsetY
@@ -476,7 +478,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetY = 0;
+	public _cacheOffsetY:number = 0;
 
 	/**
 	 * @property _cacheScale
@@ -496,7 +498,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 */
-	public _cacheDataURLID = 0;
+	public _cacheDataURLID:number = 0;
 
 	/**
 	 * @property _cacheDataURL
@@ -504,7 +506,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {String}
 	 * @default null
 	 */
-	public _cacheDataURL = null;
+	public _cacheDataURL:string = null;
 
 	/**
 	 * @property _matrix
@@ -535,19 +537,39 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		super();
 
 		this.setGeomTransform(width, height, x, y, regX, regY);
-		;
 	}
 
-	initialize()
+	public initialize(){
+		// has something to do with the createjs toolkit needing to call initialize.
+	}
+
+	/**
+	 * @method dot
+	 * @param v
+	 * @returns {number}
+	 */
+	public dot(v:IVector2):number
 	{
-
-
+		return this.x * v.x + this.y * v.y;
 	}
 
+	public distanceToSquared(v:IVector2):number
+	{
+		var dx = this.x - v.x, dy = this.y - v.y;
+		return dx * dx + dy * dy;
+	}
+
+	public distanceTo(v:IVector2):number
+	{
+		return Math.sqrt(this.distanceToSquared(v));
+	}
+
+	/**
+	 * @method setWidth
+	 * @param {string|number} width
+	 */
 	public setWidth(width:string):any;
-
 	public setWidth(width:number):any;
-
 	public setWidth(width:any):any
 	{
 		if(typeof(width) == 'string')
@@ -577,15 +599,21 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
+	/**
+	 * @method getWidth
+	 * @returns {number}
+	 */
 	public getWidth()
 	{
 		return this.width;
 	}
 
+	/**
+	 * @method setHeight
+	 * @param {string|number} height
+	 */
 	public setHeight(height:string):any;
-
 	public setHeight(height:number):any;
-
 	public setHeight(height:any):any
 	{
 		if(typeof(height) == 'string')
@@ -615,15 +643,22 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
+	/**
+	 * @method getHeight
+	 * @param {number} height
+	 */
 	public getHeight()
 	{
 		return this.height;
 	}
 
+
+	/**
+	 * @method setX
+	 * @param {string|number} x
+	 */
 	public setX(x:string):any;
-
 	public setX(x:number):any;
-
 	public setX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -830,9 +865,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public enableMouseInteraction()
 	{
 		this.mouseEnabled = true;
-		if(this.parent){
-			this.parent.enableMouseInteraction();
-		}
 	}
 
 	/**
@@ -1760,13 +1792,14 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.cursor != null;
 	}
 
+	public onStageSet(){}
+
 	public onResize(e:Size)
 	{
 		this._parentSizeIsKnown = true;
 
 		if(this.updateGeomOnResize)
 		{
-
 			if(this.minimumContainerSize || this.maximumContainerSize)
 			{
 				// size object is cloned because we are going to change the value.

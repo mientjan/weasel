@@ -36,7 +36,7 @@ import Container = require('./Container');
 import Methods = require('../../easelts/util/Methods');
 
 // interfaces
-import IPoint = require('../interface/IVector2');
+import IVector2 = require('../interface/IVector2');
 
 // geom
 import Rectangle = require('../geom/Rectangle');
@@ -87,8 +87,10 @@ class Stage extends Container
 {
 	// events:
 
-	public static EVENT_MOUSE_MOUSELEAVE = 'mouseleave';
-	public static EVENT_MOUSE_MOUSEENTER = 'mouseenter';
+	public static EVENT_MOUSE_LEAVE = 'mouseleave';
+	public static EVENT_MOUSE_ENTER = 'mouseenter';
+	public static EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
+
 
 	/**
 	 * Dispatched when the user moves the mouse over the canvas.
@@ -382,14 +384,12 @@ class Stage extends Container
 	public _prevStage = null;
 
 	/**
+	 * @class Stage
 	 * @constructor
-	 * @param {HTMLCanvasElement | String | Object} canvas A canvas object, or the string id of a canvas object in the current document.
-	 * @protected
+	 * @param {HTMLCanvasElement|HTMLDivElement} canvas A canvas object, or the string id of a canvas object in the current document.
 	 **/
 		constructor(element:HTMLDivElement);
-
 	constructor(element:HTMLCanvasElement);
-
 	constructor(element:any)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
@@ -419,8 +419,7 @@ class Stage extends Container
 
 				var onResize = <Function> (function()
 				{
-					return function()
-					{
+					return function(){
 						this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 					}.bind(this);
 				}.bind(this))();
@@ -442,23 +441,13 @@ class Stage extends Container
 		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
 		this.setQuality(QualityType.NORMAL);
+		this.stage = this;
 
 		if(onResize)
 		{
 			onResize.call(window);
 		}
-		//
-		//
-		//		this.enableDOMEvents(true);
-		//		this.ctx = this.canvas.getContext('2d');
-		//		if(onResize)
-		//		{
-		//			onResize.call(window);
-		//		}
-		//
-		//		this.setFps(this._fps);
-		//
-		//		this.onResize(size);
+
 	}
 
 
@@ -498,9 +487,9 @@ class Stage extends Container
 	 * and then render the display list to the canvas.
 	 *
 	 * @method update
-	 * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
+	 * @param {TimeEvent} timeEvent
 	 **/
-	public update = (...args:any[]) =>
+	public update = (timeEvent:TimeEvent) =>
 	{
 		if(!this.canvas)
 		{
@@ -510,7 +499,7 @@ class Stage extends Container
 		if(this.tickOnUpdate)
 		{
 			// update this logic in SpriteStage when necessary
-			this.onTick.apply(this, args);
+			this.onTick.call(this, timeEvent);
 		}
 		//
 		//		if(this.dispatchEvent("drawstart"))
@@ -748,7 +737,7 @@ class Stage extends Container
 			var windowsObject = window['addEventListener'] ? <any> window : <any> document;
 			eventListeners = this._eventListeners = {};
 
-//			Stage.EVENT_MOUSE
+			//			Stage.EVENT_MOUSE
 			eventListeners["mouseup"] = {
 				window: windowsObject,
 				fn: e => this._handleMouseUp(e)
@@ -814,14 +803,14 @@ class Stage extends Container
 	public _getElementRect(e)
 	{
 		var bounds;
-//		try
-//		{
-			bounds = e.getBoundingClientRect();
-//		} // this can fail on disconnected DOM elements in IE9
-//		catch(err)
-//		{
-//			bounds = {top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight};
-//		}
+		//		try
+		//		{
+		bounds = e.getBoundingClientRect();
+		//		} // this can fail on disconnected DOM elements in IE9
+		//		catch(err)
+		//		{
+		//			bounds = {top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight};
+		//		}
 
 		var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
 		var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
@@ -877,7 +866,7 @@ class Stage extends Container
 	{
 		//		if(!e){
 		//			var b = <MouseEvent> window['event'];
-		//		}
+		//		 }
 
 		this._handlePointerMove(-1, e, e.pageX, e.pageY);
 	}
@@ -908,7 +897,8 @@ class Stage extends Container
 		var pointerData = this._getPointerData(id);
 
 		var inBounds = pointerData.inBounds;
-		this._updatePointerPosition(id, e, pageX, pageY);
+		this._updatePointerPosition(id, e, pageX, pageY
+		);
 		if(inBounds || pointerData.inBounds || this.mouseMoveOutside)
 		{
 			if(id == -1 && pointerData.inBounds == !inBounds)
@@ -1250,7 +1240,7 @@ class Stage extends Container
 	{
 		if(!this._isRunning)
 		{
-			this.update();
+			this.update(new TimeEvent('tick',0,false,0,0));
 			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
 			this._isRunning = true;
 			return true;
@@ -1317,7 +1307,7 @@ class Stage extends Container
 
 			if(!this._isRunning)
 			{
-				this.update();
+				this.update(new TimeEvent('tick',0,false,0,0));
 			}
 		}
 	}
