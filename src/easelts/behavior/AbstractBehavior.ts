@@ -1,18 +1,23 @@
 import DisplayObject = require('../display/DisplayObject');
 
 /**
+ * AbstractBehaviour
+ *
+ * @namespace easelts.behavior
  * @method AbstractBehavior
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  */
 class AbstractBehaviour
 {
-
+	/**
+	 * @property owner
+	 */
 	public owner:DisplayObject = null;
 
-	constructor()
-	{
-	}
-
+	/**
+	 *
+	 * @param {DisplayObject} owner
+	 */
 	public initialize(owner:DisplayObject):any
 	{
 		if(this.owner)
