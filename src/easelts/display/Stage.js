@@ -812,8 +812,6 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             }
             nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
         };
-        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
-        };
         /**
          * @method _testMouseOver
          * @param {Boolean} clear If true, clears the mouseover / rollover (ie. no target)
@@ -821,7 +819,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
          * @param {Stage} eventTarget The stage that the cursor is actively over.
          * @protected
          **/
-        Stage.prototype._testMouseOver_old = function (clear, owner, eventTarget) {
+        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
             if (this._prevStage && owner === undefined) {
                 return;
             } // redundant listener.

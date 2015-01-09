@@ -1054,12 +1054,6 @@ class Stage extends Container
 		nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
 	}
 
-	public _testMouseOver(clear?:boolean, owner?:Stage, eventTarget?:Stage)
-	{
-
-
-	}
-
 
 	/**
 	 * @method _testMouseOver
@@ -1068,7 +1062,7 @@ class Stage extends Container
 	 * @param {Stage} eventTarget The stage that the cursor is actively over.
 	 * @protected
 	 **/
-	public _testMouseOver_old(clear?:boolean, owner?:Stage, eventTarget?:Stage)
+	public _testMouseOver(clear?:boolean, owner?:Stage, eventTarget?:Stage)
 	{
 		if(this._prevStage && owner === undefined)
 		{
