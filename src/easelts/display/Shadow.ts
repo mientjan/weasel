@@ -58,7 +58,7 @@ class Shadow
 	 * @final
 	 * @readonly
 	 **/
-	public static identity = null; // set at bottom of class definition.
+	public static identity:Shadow = null; // set at bottom of class definition.
 
 	// public properties:
 	/** The color of the shadow.
@@ -129,8 +129,10 @@ class Shadow
 	}
 
 	// this has to be populated after the class is defined:
-	//	Shadow.identity = new Shadow("transparent", 0, 0, 0);
+	//
 
 }
+
+Shadow.identity = new Shadow("transparent", 0, 0, 0);
 
 export = Shadow;
