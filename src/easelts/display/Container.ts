@@ -352,37 +352,36 @@ class Container extends DisplayObject
 	 * @param {Number} index The index of the child to remove.
 	 * @return {Boolean} true if the child (or children) was removed, or false if any index was out of range.
 	 **/
-	public removeChildAt(index)
+	public removeChildAt(...index:number[])
 	{
-		var l = arguments.length;
+		var l = index.length;
 		if(l > 1)
 		{
-			var a = [];
-			for(var i = 0; i < l; i++)
-			{
-				a[i] = arguments[i];
-			}
-			a.sort(function(a, b)
-			{
-				return b - a;
-			});
+			index.sort(function(a, b){ return b - a; });
 			var good = true;
 			for(var i = 0; i < l; i++)
 			{
-				good = good && this.removeChildAt(a[i]);
+				good = good && this.removeChildAt(index[i]);
 			}
 			return good;
 		}
-		if(index < 0 || index > this.children.length - 1)
+
+		// check if remove command is valid.
+		if(index[0] < 0 || index[0] > this.children.length - 1)
 		{
 			return false;
 		}
-		var child = this.children[index];
+
+
+		var child = this.children[index[0]];
+
+		// remove parent
 		if(child)
 		{
 			child.parent = null;
 		}
-		this.children.splice(index, 1);
+
+		this.children.splice(index[0], 1);
 		return true;
 	}
 
