@@ -1362,7 +1362,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Boolean} A Boolean indicting whether a visible portion of the DisplayObject intersect the specified
 	 * local Point.
 	 */
-	public hitTest(x, y)
+	public hitTest(x:number, y:number)
 	{
 		// TODO: update with support for .hitArea & .mask and update hitArea / mask docs?
 		var ctx = DisplayObject._hitTestContext;
