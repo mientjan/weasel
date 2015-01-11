@@ -425,30 +425,30 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @param {Number} index2
          **/
         Container.prototype.swapChildrenAt = function (index1, index2) {
-            var kids = this.children;
-            var o1 = kids[index1];
-            var o2 = kids[index2];
+            var children = this.children;
+            var o1 = children[index1];
+            var o2 = children[index2];
             if (!o1 || !o2) {
                 return;
             }
-            kids[index1] = o2;
-            kids[index2] = o1;
+            children[index1] = o2;
+            children[index2] = o1;
         };
         /**
          * Swaps the specified children's depth in the display list. Fails silently if either child is not a child of this
          * Container.
          * @method swapChildren
+         * @param {DisplayObject} child0
          * @param {DisplayObject} child1
-         * @param {DisplayObject} child2
          **/
-        Container.prototype.swapChildren = function (child1, child2) {
-            var kids = this.children;
+        Container.prototype.swapChildren = function (child0, child1) {
+            var children = this.children;
             var index1, index2;
-            for (var i = 0, l = kids.length; i < l; i++) {
-                if (kids[i] == child1) {
+            for (var i = 0, l = children.length; i < l; i++) {
+                if (children[i] == child0) {
                     index1 = i;
                 }
-                if (kids[i] == child2) {
+                if (children[i] == child1) {
                     index2 = i;
                 }
                 if (index1 != null && index2 != null) {
@@ -458,8 +458,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             if (i == l) {
                 return;
             } // TODO: throw error?
-            kids[index1] = child2;
-            kids[index2] = child1;
+            children[index1] = child1;
+            children[index2] = child0;
         };
         /**
          * Changes the depth of the specified child. Fails silently if the child is not a child of this container, or the index is out of range.
@@ -469,20 +469,20 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @param {Number} index
          **/
         Container.prototype.setChildIndex = function (child, index) {
-            var kids = this.children, l = kids.length;
+            var children = this.children, l = children.length;
             if (child.parent != this || index < 0 || index >= l) {
                 return;
             }
             for (var i = 0; i < l; i++) {
-                if (kids[i] == child) {
+                if (children[i] == child) {
                     break;
                 }
             }
             if (i == l || i == index) {
                 return;
             }
-            kids.splice(i, 1);
-            kids.splice(index, 0, child);
+            children.splice(i, 1);
+            children.splice(index, 0, child);
         };
         /**
          * Returns true if the specified display object either is this container or is a descendent (child, grandchild, etc)

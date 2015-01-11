@@ -1149,7 +1149,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Point} A Point instance with x and y properties correlating to the transformed coordinates
 	 * on the stage.
 	 **/
-	public localToGlobal(x:number, y:number)
+	public localToGlobal(x:number, y:number):Point
 	{
 		var mtx = this.getConcatenatedMatrix(this._matrix);
 		if(mtx == null)
