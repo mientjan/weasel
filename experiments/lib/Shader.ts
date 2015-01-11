@@ -47,7 +47,7 @@ class Shader
 		return shader;
 	}
 
-	public static programfunction(gl:WebGLRenderingContext, vertexShader:WebGLShader, fragmentShader:WebGLShader, opt_attribs = [], opt_locations = [], opt_errorCallback:Function = function(){} ) {
+	public static program(gl:WebGLRenderingContext, vertexShader:WebGLShader, fragmentShader:WebGLShader, opt_attribs = [], opt_locations = [], opt_errorCallback:Function = function(){} ) {
 		var errFn = opt_errorCallback;
 		var program = gl.createProgram();
 
