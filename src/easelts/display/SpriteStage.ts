@@ -73,7 +73,7 @@
 //});
 
 import Stage = require('./Stage');
-import Matrix2 = require('../geom/Matrix2');
+import m2 = require('../geom/Matrix2');
 
 class SpriteStage extends Stage
 {
@@ -941,7 +941,7 @@ class SpriteStage extends Stage
 	 * @param {Matrix2D} parentMVMatrix   The parent's global transformation matrix.
 	 * @protected
 	 **/
-	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix?:Matrix2)
+	public _drawWebGLKids(kids:any[], ctx:any, parentMVMatrix?:m2.Matrix2)
 	{
 		var kid, mtx,
 			snapToPixelEnabled = this.snapToPixelEnabled,
