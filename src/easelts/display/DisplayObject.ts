@@ -1180,7 +1180,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Point} A Point instance with x and y properties correlating to the transformed position in the
 	 * display object's coordinate space.
 	 **/
-	public globalToLocal(x, y)
+	public globalToLocal(x:number, y:number)
 	{
 		var mtx = this.getConcatenatedMatrix(this._matrix);
 		if(mtx == null)
@@ -1325,7 +1325,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Matrix2D} a concatenated Matrix2D object representing the combined transform of the display object and
 	 * all of its parent Containers up to the highest level ancestor (usually the {{#crossLink "Stage"}}{{/crossLink}}).
 	 **/
-	public getConcatenatedMatrix(matrix)
+	public getConcatenatedMatrix(matrix:m2.Matrix2):m2.Matrix2
 	{
 		if(matrix)
 		{
