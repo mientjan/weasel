@@ -29,4 +29,15 @@ define(["require", "exports"], function (require, exports) {
         return document.createElement('canvas');
     }
     exports.createCanvas = createCanvas;
+    function tryCatch(fn, context, args) {
+        try {
+            return fn.apply(context, args);
+        }
+        catch (e) {
+            var errorObject = {};
+            errorObject.value = e;
+            return errorObject;
+        }
+    }
+    exports.tryCatch = tryCatch;
 });

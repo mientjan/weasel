@@ -23,20 +23,4 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 define(["require", "exports"], function (require, exports) {
-    /**
-     * @module easelts
-     */
-    /**
-     *
-     * @interface IPoint
-     * @param {Number} [x=0] X position.
-     * @param {Number} [y=0] Y position.
-     * @constructor
-     **/
-    var IVector2 = (function () {
-        function IVector2() {
-        }
-        return IVector2;
-    })();
-    return IVector2;
 });

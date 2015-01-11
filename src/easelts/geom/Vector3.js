@@ -22,7 +22,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", './Matrix4'], function (require, exports, Matrix4) {
+define(["require", "exports", './Matrix4', '../util/MathUtil'], function (require, exports, m4, MathUtil) {
     /**
      * @module easelts
      */
@@ -33,7 +33,7 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
      * @author mikael emtinger / http://gomo.se/
      * @author egraether / http://egraether.com/
      * @author WestLangley / http://github.com/WestLangley
-     * @author Mient-jan stelling
+     * @author Mient-jan Stelling
      *
      * @class Vector3
      */
@@ -63,13 +63,13 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
             this.x = x;
             this.y = y;
             this.z = z;
-            this.__projectMatrix = new Matrix4();
-            this.__unprojectMatrix = new Matrix4();
-            this.__clampScalarMin = new Vector3(0, 0, 0);
-            this.__clampScalarMax = new Vector3(0, 0, 0);
-            this.__projectOnVector_v1 = new Vector3(0, 0, 0);
-            this.__projectOnVector_dot = new Vector3(0, 0, 0);
-            this.__projectOnPlane_v1 = new Vector3(0, 0, 0);
+            this.__projectMatrix = null;
+            this.__unprojectMatrix = null;
+            this.__clampScalarMin = null;
+            this.__clampScalarMax = null;
+            this.__projectOnVector_v1 = null;
+            this.__projectOnVector_dot = null;
+            this.__projectOnPlane_v1 = null;
             /**
              * reflect incident vector off plane orthogonal to normal
              * normal is assumed to have unit length
@@ -77,7 +77,7 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
              * @param {Vector3} normal
              * @returns {Vector3}
              */
-            this.__reflect_v1 = new Vector3(0, 0, 0);
+            this.__reflect_v1 = null;
         }
         Vector3.prototype.set = function (x, y, z) {
             this.x = x;
@@ -257,11 +257,17 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
             return this;
         };
         Vector3.prototype.project = function (camera) {
+            if (!this.__projectMatrix) {
+                this.__projectMatrix = new m4.Matrix4();
+            }
             var matrix = this.__projectMatrix;
             matrix.multiplyMatrices(camera.projectionMatrix, matrix.getInverse(camera.matrixWorld));
             return this.applyProjection(matrix);
         };
         Vector3.prototype.unproject = function (camera) {
+            if (!this.__unprojectMatrix) {
+                this.__unprojectMatrix = new m4.Matrix4();
+            }
             var matrix = this.__unprojectMatrix;
             matrix.multiplyMatrices(camera.matrixWorld, matrix.getInverse(camera.projectionMatrix));
             return this.applyProjection(matrix);
@@ -344,6 +350,12 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
             return this;
         };
         Vector3.prototype.clampScalar = function (minVal, maxVal) {
+            if (!this.__clampScalarMin) {
+                this.__clampScalarMin = new Vector3(0, 0, 0);
+            }
+            if (!this.__clampScalarMax) {
+                this.__clampScalarMax = new Vector3(0, 0, 0);
+            }
             var min = this.__clampScalarMin;
             var max = this.__clampScalarMax;
             min.set(minVal, minVal, minVal);
@@ -424,24 +436,36 @@ define(["require", "exports", './Matrix4'], function (require, exports, Matrix4)
             return this;
         };
         Vector3.prototype.projectOnVector = function (vector) {
+            if (!this.__projectOnVector_v1) {
+                this.__projectOnVector_v1 = new Vector3(0, 0, 0);
+            }
+            if (!this.__projectOnVector_dot) {
+                this.__projectOnVector_dot = new Vector3(0, 0, 0);
+            }
             var v1 = this.__projectOnVector_v1;
             v1.copy(vector).normalize();
             var dot = this.dot(v1);
             return this.copy(v1).multiplyScalar(dot);
         };
         Vector3.prototype.projectOnPlane = function (planeNormal) {
+            if (!this.__projectOnPlane_v1) {
+                this.__projectOnPlane_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__projectOnPlane_v1;
             v1.copy(this).projectOnVector(planeNormal);
             return this.sub(v1);
         };
         Vector3.prototype.reflect = function (normal) {
+            if (!this.__reflect_v1) {
+                this.__reflect_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__reflect_v1;
             return this.sub(v1.copy(normal).multiplyScalar(2 * this.dot(normal)));
         };
         Vector3.prototype.angleTo = function (v) {
             var theta = this.dot(v) / (this.length() * v.length());
             // clamp, to handle numerical problems
-            return Math.acos(THREE.Math.clamp(theta, -1, 1));
+            return Math.acos(MathUtil.clamp(theta, -1, 1));
         };
         Vector3.prototype.distanceTo = function (v) {
             return Math.sqrt(this.distanceToSquared(v));

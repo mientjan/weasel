@@ -43,7 +43,7 @@
  * @param {Number} [ty=0] Specifies the ty property for the new matrix.
  * @constructor
  **/
-class Matrix2D
+export class Matrix2
 {
 
 	/**
@@ -53,7 +53,7 @@ class Matrix2D
 	 * @type Matrix2D
 	 * @readonly
 	 **/
-	public static identity:Matrix2D = null; // set at bottom of class definition.
+	public static identity:Matrix2 = null; // set at bottom of class definition.
 
 	/**
 	 * Multiplier for converting degrees to radians. Used internally by Matrix2D.
@@ -268,7 +268,7 @@ class Matrix2D
 	{
 		if(rotation % 360)
 		{
-			var r = rotation * Matrix2D.DEG_TO_RAD;
+			var r = rotation * Matrix2.DEG_TO_RAD;
 			var cos = Math.cos(r);
 			var sin = Math.sin(r);
 		}
@@ -287,8 +287,8 @@ class Matrix2D
 		if(skewX || skewY)
 		{
 			// TODO: can this be combined into a single prepend operation?
-			skewX *= Matrix2D.DEG_TO_RAD;
-			skewY *= Matrix2D.DEG_TO_RAD;
+			skewX *= Matrix2.DEG_TO_RAD;
+			skewY *= Matrix2.DEG_TO_RAD;
 			this.prepend(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
 			this.prepend(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
 		}
@@ -319,7 +319,7 @@ class Matrix2D
 	{
 		if(rotation % 360)
 		{
-			var r = rotation * Matrix2D.DEG_TO_RAD;
+			var r = rotation * Matrix2.DEG_TO_RAD;
 			var cos = Math.cos(r);
 			var sin = Math.sin(r);
 		}
@@ -332,8 +332,8 @@ class Matrix2D
 		if(skewX || skewY)
 		{
 			// TODO: can this be combined into a single append?
-			skewX *= Matrix2D.DEG_TO_RAD;
-			skewY *= Matrix2D.DEG_TO_RAD;
+			skewX *= Matrix2.DEG_TO_RAD;
+			skewY *= Matrix2.DEG_TO_RAD;
 			this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
 			this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
 		}
@@ -384,8 +384,8 @@ class Matrix2D
 	 */
 	public skew(skewX, skewY)
 	{
-		skewX = skewX * Matrix2D.DEG_TO_RAD;
-		skewY = skewY * Matrix2D.DEG_TO_RAD;
+		skewX = skewX * Matrix2.DEG_TO_RAD;
+		skewY = skewY * Matrix2.DEG_TO_RAD;
 		this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), 0, 0);
 		return this;
 	}
@@ -513,7 +513,7 @@ class Matrix2D
 
 		if(skewX == skewY)
 		{
-			target.rotation = skewY / Matrix2D.DEG_TO_RAD;
+			target.rotation = skewY / Matrix2.DEG_TO_RAD;
 			if(this.a < 0 && this.d >= 0)
 			{
 				target.rotation += (target.rotation <= 0) ? 180 : -180;
@@ -522,8 +522,8 @@ class Matrix2D
 		}
 		else
 		{
-			target.skewX = skewX / Matrix2D.DEG_TO_RAD;
-			target.skewY = skewY / Matrix2D.DEG_TO_RAD;
+			target.skewX = skewX / Matrix2.DEG_TO_RAD;
+			target.skewY = skewY / Matrix2.DEG_TO_RAD;
 		}
 		return target;
 	}
@@ -607,7 +607,7 @@ class Matrix2D
 	 **/
 	public clone()
 	{
-		var m = new Matrix2D(this.a, this.b, this.c, this.d, this.tx, this.ty);
+		var m = new Matrix2(this.a, this.b, this.c, this.d, this.tx, this.ty);
 		m.alpha = this.alpha;
 		m.shadow = this.shadow;
 		m.compositeOperation = this.compositeOperation;
@@ -627,4 +627,3 @@ class Matrix2D
 	}
 
 }
-export = Matrix2D

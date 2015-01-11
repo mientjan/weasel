@@ -7,7 +7,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
      */
     var Matrix3 = (function () {
         function Matrix3() {
-            this.__v0 = new Vector3(0, 0, 0);
+            this.__v0 = null;
             this.elements = new Float32Array([
                 1,
                 0,
@@ -43,6 +43,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Matrix3.prototype.applyToVector3Array = function (array, offset, length) {
+            if (!this.__v0) {
+                this.__v0 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__v0;
             if (offset === undefined) {
                 offset = 0;
@@ -177,4 +180,5 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
         };
         return Matrix3;
     })();
+    exports.Matrix3 = Matrix3;
 });

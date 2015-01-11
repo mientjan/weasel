@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, Signal) {
+define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/TimeEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, TimeEvent, Signal) {
     /**
      * @module createts
      */
@@ -266,19 +266,15 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
              * and then render the display list to the canvas.
              *
              * @method update
-             * @param {*} [params]* Params to pass to .tick() if .tickOnUpdate is true.
+             * @param {TimeEvent} timeEvent
              **/
-            this.update = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
+            this.update = function (timeEvent) {
                 if (!_this.canvas) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
                     // update this logic in SpriteStage when necessary
-                    _this.onTick.apply(_this, args);
+                    _this.onTick.call(_this, timeEvent);
                 }
                 //
                 //		if(this.dispatchEvent("drawstart"))
@@ -346,21 +342,10 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             this.setFps(this._fps);
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(0 /* NORMAL */);
+            this.stage = this;
             if (onResize) {
                 onResize.call(window);
             }
-            //
-            //
-            //		this.enableDOMEvents(true);
-            //		this.ctx = this.canvas.getContext('2d');
-            //		if(onResize)
-            //		{
-            //			onResize.call(window);
-            //		}
-            //
-            //		this.setFps(this._fps);
-            //
-            //		this.onResize(size);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
@@ -634,12 +619,14 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
          **/
         Stage.prototype._getElementRect = function (e) {
             var bounds;
-            try {
-                bounds = e.getBoundingClientRect();
-            }
-            catch (err) {
-                bounds = { top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight };
-            }
+            //		try
+            //		{
+            bounds = e.getBoundingClientRect();
+            //		} // this can fail on disconnected DOM elements in IE9
+            //		catch(err)
+            //		{
+            //			bounds = {top: e.offsetTop, left: e.offsetLeft, width: e.offsetWidth, height: e.offsetHeight};
+            //		}
             var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
             var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
             var styles = window.getComputedStyle ? getComputedStyle(e, null) : e.currentStyle; // IE <9 compatibility.
@@ -683,7 +670,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
         Stage.prototype._handleMouseMove = function (e) {
             //		if(!e){
             //			var b = <MouseEvent> window['event'];
-            //		}
+            //		 }
             if (e === void 0) { e = window['event']; }
             this._handlePointerMove(-1, e, e.pageX, e.pageY);
         };
@@ -825,8 +812,6 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             }
             nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
         };
-        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
-        };
         /**
          * @method _testMouseOver
          * @param {Boolean} clear If true, clears the mouseover / rollover (ie. no target)
@@ -834,7 +819,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
          * @param {Stage} eventTarget The stage that the cursor is actively over.
          * @protected
          **/
-        Stage.prototype._testMouseOver_old = function (clear, owner, eventTarget) {
+        Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
             if (this._prevStage && owner === undefined) {
                 return;
             } // redundant listener.
@@ -960,7 +945,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
          */
         Stage.prototype.start = function () {
             if (!this._isRunning) {
-                this.update();
+                this.update(new TimeEvent('tick', 0, false, 0, 0));
                 this._tickSignalConnection = Ticker.getInstance().addTickListener(this.update);
                 this._isRunning = true;
                 return true;
@@ -1011,7 +996,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
                 this.canvas.height = e.height;
                 _super.prototype.onResize.call(this, e);
                 if (!this._isRunning) {
-                    this.update();
+                    this.update(new TimeEvent('tick', 0, false, 0, 0));
                 }
             }
         };
@@ -1020,8 +1005,9 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             _super.prototype.destruct.call(this);
         };
         // events:
-        Stage.EVENT_MOUSE_MOUSELEAVE = 'mouseleave';
-        Stage.EVENT_MOUSE_MOUSEENTER = 'mouseenter';
+        Stage.EVENT_MOUSE_LEAVE = 'mouseleave';
+        Stage.EVENT_MOUSE_ENTER = 'mouseenter';
+        Stage.EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
         return Stage;
     })(Container);
     return Stage;

@@ -1,4 +1,4 @@
-define(["require", "exports", './Vector3'], function (require, exports, Vector3) {
+define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], function (require, exports, Vector3, Euler, MathUtil) {
     /**
      * @author mrdoob / http://mrdoob.com/
      * @author supereggbert / http://www.paulbrunt.co.uk/
@@ -13,194 +13,10 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
      */
     var Matrix4 = (function () {
         function Matrix4() {
-            this.__extractRotation_v1 = new Vector3(0, 0, 0);
-            /*	public makeRotationFromEuler(euler)
-             {
-        
-             if(euler instanceof THREE.Euler === false)
-             {
-        
-             console.error('THREE.Matrix: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
-        
-             }
-        
-             var te = this.elements;
-        
-             var x = euler.x, y = euler.y, z = euler.z;
-             var a = Math.cos(x), b = Math.sin(x);
-             var c = Math.cos(y), d = Math.sin(y);
-             var e = Math.cos(z), f = Math.sin(z);
-        
-             if(euler.order === 'XYZ')
-             {
-        
-             var ae = a * e, af = a * f, be = b * e, bf = b * f;
-        
-             te[ 0 ] = c * e;
-             te[ 4 ] = -c * f;
-             te[ 8 ] = d;
-        
-             te[ 1 ] = af + be * d;
-             te[ 5 ] = ae - bf * d;
-             te[ 9 ] = -b * c;
-        
-             te[ 2 ] = bf - ae * d;
-             te[ 6 ] = be + af * d;
-             te[ 10 ] = a * c;
-        
-             }
-             else if(euler.order === 'YXZ')
-             {
-        
-             var ce = c * e, cf = c * f, de = d * e, df = d * f;
-        
-             te[ 0 ] = ce + df * b;
-             te[ 4 ] = de * b - cf;
-             te[ 8 ] = a * d;
-        
-             te[ 1 ] = a * f;
-             te[ 5 ] = a * e;
-             te[ 9 ] = -b;
-        
-             te[ 2 ] = cf * b - de;
-             te[ 6 ] = df + ce * b;
-             te[ 10 ] = a * c;
-        
-             }
-             else if(euler.order === 'ZXY')
-             {
-        
-             var ce = c * e, cf = c * f, de = d * e, df = d * f;
-        
-             te[ 0 ] = ce - df * b;
-             te[ 4 ] = -a * f;
-             te[ 8 ] = de + cf * b;
-        
-             te[ 1 ] = cf + de * b;
-             te[ 5 ] = a * e;
-             te[ 9 ] = df - ce * b;
-        
-             te[ 2 ] = -a * d;
-             te[ 6 ] = b;
-             te[ 10 ] = a * c;
-        
-             }
-             else if(euler.order === 'ZYX')
-             {
-        
-             var ae = a * e, af = a * f, be = b * e, bf = b * f;
-        
-             te[ 0 ] = c * e;
-             te[ 4 ] = be * d - af;
-             te[ 8 ] = ae * d + bf;
-        
-             te[ 1 ] = c * f;
-             te[ 5 ] = bf * d + ae;
-             te[ 9 ] = af * d - be;
-        
-             te[ 2 ] = -d;
-             te[ 6 ] = b * c;
-             te[ 10 ] = a * c;
-        
-             }
-             else if(euler.order === 'YZX')
-             {
-        
-             var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-        
-             te[ 0 ] = c * e;
-             te[ 4 ] = bd - ac * f;
-             te[ 8 ] = bc * f + ad;
-        
-             te[ 1 ] = f;
-             te[ 5 ] = a * e;
-             te[ 9 ] = -b * e;
-        
-             te[ 2 ] = -d * e;
-             te[ 6 ] = ad * f + bc;
-             te[ 10 ] = ac - bd * f;
-        
-             }
-             else if(euler.order === 'XZY')
-             {
-        
-             var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-        
-             te[ 0 ] = c * e;
-             te[ 4 ] = -f;
-             te[ 8 ] = d * e;
-        
-             te[ 1 ] = ac * f + bd;
-             te[ 5 ] = a * e;
-             te[ 9 ] = ad * f - bc;
-        
-             te[ 2 ] = bc * f - ad;
-             te[ 6 ] = b * e;
-             te[ 10 ] = bd * f + ac;
-        
-             }
-        
-             // last column
-             te[ 3 ] = 0;
-             te[ 7 ] = 0;
-             te[ 11 ] = 0;
-        
-             // bottom row
-             te[ 12 ] = 0;
-             te[ 13 ] = 0;
-             te[ 14 ] = 0;
-             te[ 15 ] = 1;
-        
-             return this;
-        
-             }
-        
-             public setRotationFromQuaternion(q)
-             {
-             console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
-             return this.makeRotationFromQuaternion(q);
-             }
-        
-             public makeRotationFromQuaternion(q)
-             {
-        
-             var te = this.elements;
-        
-             var x = q.x, y = q.y, z = q.z, w = q.w;
-             var x2 = x + x, y2 = y + y, z2 = z + z;
-             var xx = x * x2, xy = x * y2, xz = x * z2;
-             var yy = y * y2, yz = y * z2, zz = z * z2;
-             var wx = w * x2, wy = w * y2, wz = w * z2;
-        
-             te[ 0 ] = 1 - ( yy + zz );
-             te[ 4 ] = xy - wz;
-             te[ 8 ] = xz + wy;
-        
-             te[ 1 ] = xy + wz;
-             te[ 5 ] = 1 - ( xx + zz );
-             te[ 9 ] = yz - wx;
-        
-             te[ 2 ] = xz - wy;
-             te[ 6 ] = yz + wx;
-             te[ 10 ] = 1 - ( xx + yy );
-        
-             // last column
-             te[ 3 ] = 0;
-             te[ 7 ] = 0;
-             te[ 11 ] = 0;
-        
-             // bottom row
-             te[ 12 ] = 0;
-             te[ 13 ] = 0;
-             te[ 14 ] = 0;
-             te[ 15 ] = 1;
-        
-             return this;
-        
-             }*/
-            this.__lookAt_x = new Vector3(0, 0, 0);
-            this.__lookAt_y = new Vector3(0, 0, 0);
-            this.__lookAt_z = new Vector3(0, 0, 0);
+            this.__extractRotation_v1 = null;
+            this.__lookAt_x = null;
+            this.__lookAt_y = null;
+            this.__lookAt_z = null;
             //	public multiplyVector3(vector)
             //	{
             //
@@ -224,9 +40,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             //		return this.applyToVector3Array(a);
             //
             //	}
-            this.__applyToVector3Array_v1 = new Vector3(0, 0, 0);
-            this.__decompose_vector = new Vector3(0, 0, 0);
-            this.__decompose_matrix = new Matrix4();
+            this.__applyToVector3Array_v1 = null;
+            this.__decompose_vector = null;
+            this.__decompose_matrix = null;
             this.elements = new Float32Array([
                 1,
                 0,
@@ -307,6 +123,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Matrix4.prototype.extractRotation = function (m) {
+            if (!this.__extractRotation_v1) {
+                this.__extractRotation_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__extractRotation_v1;
             var te = this.elements;
             var me = m.elements;
@@ -324,7 +143,139 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             te[10] = me[10] * scaleZ;
             return this;
         };
+        Matrix4.prototype.makeRotationFromEuler = function (euler) {
+            if (euler instanceof Euler === false) {
+                console.error('THREE.Matrix: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
+            }
+            var te = this.elements;
+            var x = euler.x, y = euler.y, z = euler.z;
+            var a = Math.cos(x), b = Math.sin(x);
+            var c = Math.cos(y), d = Math.sin(y);
+            var e = Math.cos(z), f = Math.sin(z);
+            if (euler.order === 'XYZ') {
+                var ae = a * e, af = a * f, be = b * e, bf = b * f;
+                te[0] = c * e;
+                te[4] = -c * f;
+                te[8] = d;
+                te[1] = af + be * d;
+                te[5] = ae - bf * d;
+                te[9] = -b * c;
+                te[2] = bf - ae * d;
+                te[6] = be + af * d;
+                te[10] = a * c;
+            }
+            else if (euler.order === 'YXZ') {
+                var ce = c * e, cf = c * f, de = d * e, df = d * f;
+                te[0] = ce + df * b;
+                te[4] = de * b - cf;
+                te[8] = a * d;
+                te[1] = a * f;
+                te[5] = a * e;
+                te[9] = -b;
+                te[2] = cf * b - de;
+                te[6] = df + ce * b;
+                te[10] = a * c;
+            }
+            else if (euler.order === 'ZXY') {
+                var ce = c * e, cf = c * f, de = d * e, df = d * f;
+                te[0] = ce - df * b;
+                te[4] = -a * f;
+                te[8] = de + cf * b;
+                te[1] = cf + de * b;
+                te[5] = a * e;
+                te[9] = df - ce * b;
+                te[2] = -a * d;
+                te[6] = b;
+                te[10] = a * c;
+            }
+            else if (euler.order === 'ZYX') {
+                var ae = a * e, af = a * f, be = b * e, bf = b * f;
+                te[0] = c * e;
+                te[4] = be * d - af;
+                te[8] = ae * d + bf;
+                te[1] = c * f;
+                te[5] = bf * d + ae;
+                te[9] = af * d - be;
+                te[2] = -d;
+                te[6] = b * c;
+                te[10] = a * c;
+            }
+            else if (euler.order === 'YZX') {
+                var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+                te[0] = c * e;
+                te[4] = bd - ac * f;
+                te[8] = bc * f + ad;
+                te[1] = f;
+                te[5] = a * e;
+                te[9] = -b * e;
+                te[2] = -d * e;
+                te[6] = ad * f + bc;
+                te[10] = ac - bd * f;
+            }
+            else if (euler.order === 'XZY') {
+                var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+                te[0] = c * e;
+                te[4] = -f;
+                te[8] = d * e;
+                te[1] = ac * f + bd;
+                te[5] = a * e;
+                te[9] = ad * f - bc;
+                te[2] = bc * f - ad;
+                te[6] = b * e;
+                te[10] = bd * f + ac;
+            }
+            // last column
+            te[3] = 0;
+            te[7] = 0;
+            te[11] = 0;
+            // bottom row
+            te[12] = 0;
+            te[13] = 0;
+            te[14] = 0;
+            te[15] = 1;
+            return this;
+        };
+        Matrix4.prototype.setRotationFromQuaternion = function (q) {
+            console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
+            return this.makeRotationFromQuaternion(q);
+        };
+        Matrix4.prototype.makeRotationFromQuaternion = function (q) {
+            var te = this.elements;
+            var x = q.x, y = q.y, z = q.z, w = q.w;
+            var x2 = x + x, y2 = y + y, z2 = z + z;
+            var xx = x * x2, xy = x * y2, xz = x * z2;
+            var yy = y * y2, yz = y * z2, zz = z * z2;
+            var wx = w * x2, wy = w * y2, wz = w * z2;
+            te[0] = 1 - (yy + zz);
+            te[4] = xy - wz;
+            te[8] = xz + wy;
+            te[1] = xy + wz;
+            te[5] = 1 - (xx + zz);
+            te[9] = yz - wx;
+            te[2] = xz - wy;
+            te[6] = yz + wx;
+            te[10] = 1 - (xx + yy);
+            // last column
+            te[3] = 0;
+            te[7] = 0;
+            te[11] = 0;
+            // bottom row
+            te[12] = 0;
+            te[13] = 0;
+            te[14] = 0;
+            te[15] = 1;
+            return this;
+        };
         Matrix4.prototype.lookAt = function (eye, target, up) {
+            if (!this.__lookAt_x) {
+                this.__lookAt_x = new Vector3(0, 0, 0);
+            }
+            if (!this.__lookAt_y) {
+                this.__lookAt_y = new Vector3(0, 0, 0);
+            }
+            if (!this.__lookAt_z) {
+                this.__lookAt_z = new Vector3(0, 0, 0);
+            }
             var x = this.__lookAt_x;
             var y = this.__lookAt_y;
             var z = this.__lookAt_z;
@@ -425,6 +376,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Matrix4.prototype.applyToVector3Array = function (array, offset, length) {
+            if (!this.__applyToVector3Array_v1) {
+                this.__applyToVector3Array_v1 = new Vector3(0, 0, 0);
+            }
             var v1 = this.__applyToVector3Array_v1;
             if (offset === undefined) {
                 offset = 0;
@@ -673,6 +627,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Matrix4.prototype.decompose = function (position, quaternion, scale) {
+            if (!this.__decompose_vector) {
+                this.__decompose_vector = new Vector3(0, 0, 0);
+            }
+            if (!this.__decompose_matrix) {
+                this.__decompose_matrix = new Matrix4();
+            }
             var vector = this.__decompose_vector;
             var matrix = this.__decompose_matrix;
             var te = this.elements;
@@ -744,7 +704,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Matrix4.prototype.makePerspective = function (fov, aspect, near, far) {
-            var ymax = near * Math.tan(THREE.Math.degToRad(fov * 0.5));
+            var ymax = near * Math.tan(MathUtil.degToRad(fov * 0.5));
             var ymin = -ymax;
             var xmin = ymin * aspect;
             var xmax = ymax * aspect;
@@ -806,5 +766,5 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
         };
         return Matrix4;
     })();
-    return Matrix4;
+    exports.Matrix4 = Matrix4;
 });

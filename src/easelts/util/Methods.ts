@@ -30,6 +30,17 @@ export function createCanvas()
 	return document.createElement('canvas');
 }
 
+export function tryCatch(fn:Function, context:any, args:any[]) {
+	try {
+		return fn.apply(context, args);
+	}
+	catch(e) {
+		var errorObject:{value?:Error} = {};
+		errorObject.value = e;
+		return errorObject;
+	}
+}
+
 
 
 

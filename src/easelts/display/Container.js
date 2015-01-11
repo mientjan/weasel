@@ -181,15 +181,15 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             for (var _i = 0; _i < arguments.length; _i++) {
                 children[_i - 0] = arguments[_i];
             }
-            var l = children.length;
-            if (l == 0) {
+            var length = children.length;
+            if (length == 0) {
                 return null;
             }
-            if (l > 1) {
-                for (var i = 0; i < l; i++) {
+            if (length > 1) {
+                for (var i = 0; i < length; i++) {
                     this.addChild(children[i]);
                 }
-                return children[l - 1];
+                return children[length - 1];
             }
             var child = children[0];
             if (child.parent) {
@@ -201,9 +201,24 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                     child.onResize(new Size(this.width, this.height));
                 }
             }
-            //		child.initBehaviourList();
+            if (this.stage) {
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
             this.children.push(child);
             return child;
+        };
+        Container.prototype.onStageSet = function () {
+            var children = this.children;
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
+                }
+            }
         };
         /**
          * Adds a child to the display list at the specified index, bumping children at equal or greater indexes up one, and
@@ -212,10 +227,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * <h4>Example</h4>
          *
          *      addChildAt(child1, index);
-         *
-         * You can also add multiple children, such as:
-         *
-         *      addChildAt(child1, child2, ..., index);
          *
          * The index must be between 0 and numChildren. For example, to add myShape under otherShape in the display list,
          * you could use:
@@ -226,31 +237,23 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          *
          * @method addChildAt
          * @param {DisplayObject} child The display object to add.
-         * @param {Number} index The index to add the child at.
+         * @param {number} index The index to add the child at.
          * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
          **/
         Container.prototype.addChildAt = function (child, index) {
-            var l = arguments.length;
-            var indx = arguments[l - 1]; // can't use the same name as the index param or it replaces arguments[1]
-            if (indx < 0 || indx > this.children.length) {
-                return arguments[l - 2];
-            }
-            if (l > 2) {
-                for (var i = 0; i < l - 1; i++) {
-                    this.addChildAt(arguments[i], indx + i);
-                }
-                return arguments[l - 2];
-            }
             if (child.parent) {
                 child.parent.removeChild(child);
             }
             child.parent = this;
             if (this._parentSizeIsKnown) {
-                if (typeof child.onResize == 'function') {
-                    child.onResize(new Size(this.width, this.height));
+                child.onResize(new Size(this.width, this.height));
+            }
+            if (this.stage) {
+                child.stage = this.stage;
+                if (child.onStageSet) {
+                    child.onStageSet.call(child);
                 }
             }
-            //		child.initBehaviourList();
             this.children.splice(index, 0, child);
             return child;
         };
@@ -271,17 +274,20 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @param {DisplayObject} child The child to remove.
          * @return {Boolean} true if the child (or children) was removed, or false if it was not in the display list.
          **/
-        Container.prototype.removeChild = function (child) {
-            var l = arguments.length;
+        Container.prototype.removeChild = function () {
+            var children = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                children[_i - 0] = arguments[_i];
+            }
+            var l = children.length;
             if (l > 1) {
                 var good = true;
                 for (var i = 0; i < l; i++) {
-                    good = good && this.removeChild(arguments[i]);
+                    good = good && this.removeChild(children[i]);
                 }
                 return good;
             }
-            //		return this.removeChildAt(createts.indexOf(this.children, child));
-            return this.removeChildAt(this.children.indexOf(child));
+            return this.removeChildAt(this.children.indexOf(children[0]));
         };
         /**
          * Removes the child at the specified index from the display list, and sets its parent to null.
@@ -361,10 +367,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @return {DisplayObject} The child with the specified name.
          **/
         Container.prototype.getChildByName = function (name) {
-            var kids = this.children;
-            for (var i = 0, l = kids.length; i < l; i++) {
-                if (kids[i].name == name) {
-                    return kids[i];
+            var children = this.children;
+            for (var i = 0, l = children.length; i < l; i++) {
+                if (children[i].name == name) {
+                    return children[i];
                 }
             }
             return null;
@@ -561,17 +567,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @return {Container} A clone of the current Container instance.
          **/
         Container.prototype.clone = function (recursive) {
-            var o = new Container();
-            this.cloneProps(o);
+            var container = new Container();
+            this.cloneProps(container);
             if (recursive) {
-                var arr = o.children = [];
+                var arr = container.children = [];
                 for (var i = 0, l = this.children.length; i < l; i++) {
                     var clone = this.children[i].clone(recursive);
-                    clone.parent = o;
+                    clone.parent = container;
                     arr.push(clone);
                 }
             }
-            return o;
+            return container;
         };
         /**
          * Returns a string representation of this object.

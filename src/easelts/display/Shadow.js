@@ -115,5 +115,6 @@ define(["require", "exports"], function (require, exports) {
         Shadow.identity = null; // set at bottom of class definition.
         return Shadow;
     })();
+    Shadow.identity = new Shadow("transparent", 0, 0, 0);
     return Shadow;
 });

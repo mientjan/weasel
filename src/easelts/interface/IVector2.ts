@@ -29,26 +29,26 @@
 
 /**
  *
- * @interface IPoint
+ * @interface IVector2
  * @param {Number} [x=0] X position.
  * @param {Number} [y=0] Y position.
  * @constructor
  **/
-class IVector2
+interface IVector2
 {
 	/**
 	 * X position.
 	 * @property x
 	 * @type Number
 	 **/
-	public x:number;
+	x:number;
 
 	/**
 	 * Y position.
 	 * @property y
 	 * @type Number
 	 **/
-	public y:number;
+	y:number;
 }
 
 export = IVector2;

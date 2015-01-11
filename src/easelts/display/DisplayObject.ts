@@ -51,7 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import Matrix2D = require('../geom/Matrix2');
+import m2 = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
@@ -343,6 +343,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public y:number = 0;
 
+	public stage:Stage = null;
+
 	/** When true the geom of this object will be updated when its parent resizes.
 	 *
 	 * @property updateGeomOnResize
@@ -448,7 +450,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {DisplayObject}
 	 * @default null
 	 */
-	public hitArea = null;
+	public hitArea:DisplayObject = null;
 
 	/**
 	 * A CSS cursor (ex. "pointer", "help", "text", etc) that will be displayed when the user hovers over this display
@@ -458,7 +460,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {String}
 	 * @default null
 	 */
-	public cursor = null;
+	public cursor:string = null;
 
 	// private properties:
 
@@ -468,7 +470,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetX = 0;
+	public _cacheOffsetX:number = 0;
 
 	/**
 	 * @property _cacheOffsetY
@@ -476,7 +478,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetY = 0;
+	public _cacheOffsetY:number = 0;
 
 	/**
 	 * @property _cacheScale
@@ -496,7 +498,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 */
-	public _cacheDataURLID = 0;
+	public _cacheDataURLID:number = 0;
 
 	/**
 	 * @property _cacheDataURL
@@ -504,7 +506,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {String}
 	 * @default null
 	 */
-	public _cacheDataURL = null;
+	public _cacheDataURL:string = null;
 
 	/**
 	 * @property _matrix
@@ -512,7 +514,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:Matrix2D = new Matrix2D(0, 0, 0, 0, 0, 0);
+	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -535,19 +537,39 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		super();
 
 		this.setGeomTransform(width, height, x, y, regX, regY);
-		;
 	}
 
-	initialize()
+	public initialize(){
+		// has something to do with the createjs toolkit needing to call initialize.
+	}
+
+	/**
+	 * @method dot
+	 * @param v
+	 * @returns {number}
+	 */
+	public dot(v:IVector2):number
 	{
-
-
+		return this.x * v.x + this.y * v.y;
 	}
 
+	public distanceToSquared(v:IVector2):number
+	{
+		var dx = this.x - v.x, dy = this.y - v.y;
+		return dx * dx + dy * dy;
+	}
+
+	public distanceTo(v:IVector2):number
+	{
+		return Math.sqrt(this.distanceToSquared(v));
+	}
+
+	/**
+	 * @method setWidth
+	 * @param {string|number} width
+	 */
 	public setWidth(width:string):any;
-
 	public setWidth(width:number):any;
-
 	public setWidth(width:any):any
 	{
 		if(typeof(width) == 'string')
@@ -577,15 +599,21 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
+	/**
+	 * @method getWidth
+	 * @returns {number}
+	 */
 	public getWidth()
 	{
 		return this.width;
 	}
 
+	/**
+	 * @method setHeight
+	 * @param {string|number} height
+	 */
 	public setHeight(height:string):any;
-
 	public setHeight(height:number):any;
-
 	public setHeight(height:any):any
 	{
 		if(typeof(height) == 'string')
@@ -615,15 +643,22 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
+	/**
+	 * @method getHeight
+	 * @param {number} height
+	 */
 	public getHeight()
 	{
 		return this.height;
 	}
 
+
+	/**
+	 * @method setX
+	 * @param {string|number} x
+	 */
 	public setX(x:string):any;
-
 	public setX(x:number):any;
-
 	public setX(x:any):any
 	{
 		if(typeof(x) == 'string')
@@ -1271,10 +1306,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * Matrix object is returned.
 	 * @return {Matrix2D} A matrix representing this display object's transform.
 	 **/
-	public getMatrix(matrix?:Matrix2D)
+	public getMatrix(matrix?:m2.Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new Matrix2D(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1298,7 +1333,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 		else
 		{
-			matrix = new Matrix2D(0, 0, 0, 0, 0, 0);
+			matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 		}
 		var o = this;
 		while(o != null)
@@ -1643,7 +1678,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix?:Matrix2D, ignoreTransform?:boolean)
+	public _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean)
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
@@ -1659,7 +1694,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _transformBounds(bounds:Rectangle, matrix:Matrix2D, ignoreTransform:boolean)
+	public _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean)
 	{
 		if(!bounds)
 		{
@@ -1757,13 +1792,15 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.cursor != null;
 	}
 
-	public onResize(e:Size)
+	public onStageSet():void
+	{}
+
+	public onResize(e:Size):void
 	{
 		this._parentSizeIsKnown = true;
 
 		if(this.updateGeomOnResize)
 		{
-
 			if(this.minimumContainerSize || this.maximumContainerSize)
 			{
 				// size object is cloned because we are going to change the value.
