@@ -352,37 +352,36 @@ class Container extends DisplayObject
 	 * @param {Number} index The index of the child to remove.
 	 * @return {Boolean} true if the child (or children) was removed, or false if any index was out of range.
 	 **/
-	public removeChildAt(index)
+	public removeChildAt(...index:number[])
 	{
-		var l = arguments.length;
+		var l = index.length;
 		if(l > 1)
 		{
-			var a = [];
-			for(var i = 0; i < l; i++)
-			{
-				a[i] = arguments[i];
-			}
-			a.sort(function(a, b)
-			{
-				return b - a;
-			});
+			index.sort(function(a, b){ return b - a; });
 			var good = true;
 			for(var i = 0; i < l; i++)
 			{
-				good = good && this.removeChildAt(a[i]);
+				good = good && this.removeChildAt(index[i]);
 			}
 			return good;
 		}
-		if(index < 0 || index > this.children.length - 1)
+
+		// check if remove command is valid.
+		if(index[0] < 0 || index[0] > this.children.length - 1)
 		{
 			return false;
 		}
-		var child = this.children[index];
+
+
+		var child = this.children[index[0]];
+
+		// remove parent
 		if(child)
 		{
 			child.parent = null;
 		}
-		this.children.splice(index, 1);
+
+		this.children.splice(index[0], 1);
 		return true;
 	}
 
@@ -455,7 +454,7 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction:(a: DisplayObject, b: DisplayObject) => number )
+	public sortChildren(sortFunction:(a: DisplayObject, b: DisplayObject) => number ):void
 	{
 		this.children.sort(sortFunction);
 	}
@@ -494,35 +493,35 @@ class Container extends DisplayObject
 	 **/
 	public swapChildrenAt(index1:number, index2:number):void
 	{
-		var kids = this.children;
-		var o1 = kids[index1];
-		var o2 = kids[index2];
+		var children = this.children;
+		var o1 = children[index1];
+		var o2 = children[index2];
 		if(!o1 || !o2)
 		{
 			return;
 		}
-		kids[index1] = o2;
-		kids[index2] = o1;
+		children[index1] = o2;
+		children[index2] = o1;
 	}
 
 	/**
 	 * Swaps the specified children's depth in the display list. Fails silently if either child is not a child of this
 	 * Container.
 	 * @method swapChildren
+	 * @param {DisplayObject} child0
 	 * @param {DisplayObject} child1
-	 * @param {DisplayObject} child2
 	 **/
-	public swapChildren(child1:DisplayObject, child2:DisplayObject):void
+	public swapChildren(child0:DisplayObject, child1:DisplayObject):void
 	{
-		var kids = this.children;
+		var children = this.children;
 		var index1, index2;
-		for(var i = 0, l = kids.length; i < l; i++)
+		for(var i = 0, l = children.length; i < l; i++)
 		{
-			if(kids[i] == child1)
+			if(children[i] == child0)
 			{
 				index1 = i;
 			}
-			if(kids[i] == child2)
+			if(children[i] == child1)
 			{
 				index2 = i;
 			}
@@ -535,8 +534,8 @@ class Container extends DisplayObject
 		{
 			return;
 		} // TODO: throw error?
-		kids[index1] = child2;
-		kids[index2] = child1;
+		children[index1] = child1;
+		children[index2] = child0;
 	}
 
 	/**
@@ -548,14 +547,14 @@ class Container extends DisplayObject
 	 **/
 	public setChildIndex(child:DisplayObject, index:number):void
 	{
-		var kids = this.children, l = kids.length;
+		var children = this.children, l = children.length;
 		if(child.parent != this || index < 0 || index >= l)
 		{
 			return;
 		}
 		for(var i = 0; i < l; i++)
 		{
-			if(kids[i] == child)
+			if(children[i] == child)
 			{
 				break;
 			}
@@ -564,8 +563,8 @@ class Container extends DisplayObject
 		{
 			return;
 		}
-		kids.splice(i, 1);
-		kids.splice(index, 0, child);
+		children.splice(i, 1);
+		children.splice(index, 0, child);
 	}
 
 	/**
