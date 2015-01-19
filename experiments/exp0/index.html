@@ -1,7 +1,6 @@
 <html>
 <head>
-	<script src="../lib/Shader.js"></script>
-	<script src="app/main.js"></script>
+	<script data-main="app/main" src="../lib/require.js" ></script>
 
 	<script id="2d-vertex-shader" type="x-shader/x-vertex">
 		attribute vec2 a_position;
@@ -20,8 +19,5 @@
 <body>
 <canvas id="canvas" width="500" height="500"></canvas>
 
-<script>
-	main('canvas');
-</script>
 </body>
 </html>
