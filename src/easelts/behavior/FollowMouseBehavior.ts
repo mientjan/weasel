@@ -9,7 +9,7 @@ class FollowMouseBehavior extends AbstractBehavior
 {
 	private _stage:Stage;
 
-	initialize(displayObject:DisplayObject):void
+	public initialize(displayObject:DisplayObject):void
 	{
 		super.initialize(displayObject);
 

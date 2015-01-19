@@ -15,7 +15,7 @@ class AbstractBehaviour
 	public owner:DisplayObject = null;
 
 	/**
-	 *
+	 * @method initialize
 	 * @param {DisplayObject} owner
 	 */
 	public initialize(owner:DisplayObject):any

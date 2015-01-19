@@ -14,7 +14,7 @@ define(["require", "exports"], function (require, exports) {
             this.owner = null;
         }
         /**
-         *
+         * @method initialize
          * @param {DisplayObject} owner
          */
         AbstractBehaviour.prototype.initialize = function (owner) {

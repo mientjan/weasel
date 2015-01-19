@@ -17,6 +17,10 @@ define(["require", "exports", './AbstractBehavior', '../display/DisplayObject'],
             this._onPointerOverInstance = null;
             this._onPointerOutInstance = null;
         }
+        /**
+         * @method initialize
+         * @param displayObject
+         */
         ButtonBehavior.prototype.initialize = function (displayObject) {
             _super.prototype.initialize.call(this, displayObject);
             this.owner.enableMouseInteraction();

@@ -16,7 +16,11 @@ class ButtonBehavior extends AbstractBehavior
 	private _onPointerOverInstance:Function = null;
 	private _onPointerOutInstance:Function = null;
 
-	initialize(displayObject:DisplayObject):void
+	/**
+	 * @method initialize
+	 * @param displayObject
+	 */
+	public initialize(displayObject:DisplayObject):void
 	{
 		super.initialize(displayObject);
 
