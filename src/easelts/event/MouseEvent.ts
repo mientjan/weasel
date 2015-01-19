@@ -1,5 +1,3 @@
-import Event = require('../../createts/event/Event')
-
 /*
  * MouseEvent
  * Visit http://createjs.com/ for documentation, updates and examples.
@@ -27,6 +25,8 @@ import Event = require('../../createts/event/Event')
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import Event = require('../../createts/event/Event');
 
 /**
  * @module Easel
