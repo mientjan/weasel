@@ -235,6 +235,8 @@ class Stage extends Container
 	private _mouseOverX:number;
 	private _mouseOverTarget:any[];
 
+	private _autoSizeOnWindowResize:boolean = false;
+
 	/**
 	 * Specifies the area of the stage to affect when calling update. This can be use to selectively
 	 * re-render only active regions of the canvas. If null, the whole canvas area is affected.
@@ -388,14 +390,13 @@ class Stage extends Container
 	 * @constructor
 	 * @param {HTMLCanvasElement|HTMLDivElement} canvas A canvas object, or the string id of a canvas object in the current document.
 	 **/
-		constructor(element:HTMLDivElement);
+	constructor(element:HTMLDivElement);
 	constructor(element:HTMLCanvasElement);
 	constructor(element:any)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
 		//
-		var onResize:Function = null;
 		var size:Size = null;
 
 		switch(element.tagName)
@@ -417,17 +418,8 @@ class Stage extends Container
 				this.canvas = canvas;
 				this.holder = element;
 
-				var onResize = <Function> (function()
-				{
-					return function(){
-						this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-					}.bind(this);
-				}.bind(this))();
-
-				window.addEventListener('resize', <any> onResize);
-
 				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
-
+				this._autoSizeOnWindowResize = true;
 				break;
 			}
 
@@ -443,11 +435,10 @@ class Stage extends Container
 		this.setQuality(QualityType.NORMAL);
 		this.stage = this;
 
-		if(onResize)
+		if(this._autoSizeOnWindowResize)
 		{
-			onResize.call(window);
+			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 		}
-
 	}
 
 
@@ -761,6 +752,14 @@ class Stage extends Container
 			//				}
 			//			};
 
+			if (this._autoSizeOnWindowResize)
+			{
+				eventListeners["resize"] = {
+					window: windowsObject,
+					fn: e => this._handleWindowResize(e)
+				};
+			}
+
 			for(name in eventListeners)
 			{
 				o = eventListeners[name];
@@ -1054,7 +1053,6 @@ class Stage extends Container
 		nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
 	}
 
-
 	/**
 	 * @method _testMouseOver
 	 * @param {Boolean} clear If true, clears the mouseover / rollover (ie. no target)
@@ -1168,6 +1166,16 @@ class Stage extends Container
 			this._dispatchMouseEvent(target, "dblclick", true, -1, o, e);
 		}
 		nextStage && nextStage._handleDoubleClick(e, owner || target && this);
+	}
+
+	/**
+	 * @method _handleWindowResize
+	 * @protected
+	 * @param {Event} e
+	 **/
+	public _handleWindowResize(e)
+	{
+		this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 	}
 
 	/**
@@ -1308,8 +1316,8 @@ class Stage extends Container
 
 	public destruct()
 	{
-
 		this.stop();
+		this.enableDOMEvents(false);
 
 		super.destruct();
 	}
