@@ -64,6 +64,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
         function Bitmap(imageOrUri, width, height, x, y, regX, regY) {
+            if (width === void 0) { width = 0; }
+            if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
             this.type = 7 /* BITMAP */;
@@ -88,39 +90,37 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             else {
                 this.image = imageOrUri;
             }
-            if (!width && !height) {
-                if (this.image.complete) {
-                    this.image.onload = this.onLoad.bind(this);
-                }
-                else {
-                    this.onLoad();
-                }
+            if (!this.image.complete) {
+                this.image.onload = this.onLoad.bind(this);
+            }
+            else {
+                this.onLoad();
             }
         }
         Bitmap.prototype.onLoad = function () {
             this.loaded = true;
-            this.width = this.image.width;
-            this.height = this.image.height;
+            if (!this.width) {
+                this.width = this.image.width;
+            }
+            if (!this.height) {
+                this.height = this.image.height;
+            }
             this.dispatchEvent(Bitmap.EVENT_ONLOAD);
             if (this._parentSizeIsKnown) {
                 this.onResize(new Size(this.parent.width, this.parent.height));
             }
         };
-        // public methods:
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
          * This does not account for whether it would be visible within the boundaries of the stage.
          *
-         * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
          * @method isVisible
          * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
          **/
         Bitmap.prototype.isVisible = function () {
-            return this.visible;
+            var hasContent = this.cacheCanvas || this.loaded;
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
         };
-        //		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-        //		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
-        //	}
         /**
          * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
          * Returns true if the draw was handled (useful for overriding functionality).
@@ -137,17 +137,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
                 return true;
             }
-            var rect = this.sourceRect;
-            if (rect) {
-                ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
-            }
-            else {
-                ctx.drawImage(this.image, 0, 0);
+            if (this.loaded) {
+                var rect = this.sourceRect;
+                if (rect) {
+                    ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+                }
+                else {
+                    ctx.drawImage(this.image, 0, 0);
+                }
             }
             return true;
         };
-        //Note, the doc sections below document using the specified APIs (from DisplayObject)  from
-        //Bitmap. This is why they have no method implementations.
         /**
          * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
          * You should <b>not</b> cache Bitmap instances as it can degrade performance.
@@ -184,8 +184,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 return rect;
             }
             var o = this.sourceRect || this.image;
-            var hasContent = (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-            return hasContent ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
+            return this.loaded ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
         };
         /**
          * Returns a clone of the Bitmap instance.

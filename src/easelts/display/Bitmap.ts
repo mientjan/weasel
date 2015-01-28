@@ -104,9 +104,11 @@ class Bitmap extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+		constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+
 	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-	constructor(imageOrUri:any, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any)
+
+	constructor(imageOrUri:any, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
@@ -120,16 +122,13 @@ class Bitmap extends DisplayObject
 			this.image = imageOrUri;
 		}
 
-		if(!width && !height)
+		if(!this.image.complete)
 		{
-			if(this.image.complete)
-			{
-				this.image.onload = <any> this.onLoad.bind(this);
-			}
-			else
-			{
-				this.onLoad()
-			}
+			this.image.onload = <any> this.onLoad.bind(this);
+		}
+		else
+		{
+			this.onLoad()
 		}
 	}
 
@@ -137,8 +136,16 @@ class Bitmap extends DisplayObject
 	{
 		this.loaded = true;
 
-		this.width = this.image.width;
-		this.height = this.image.height;
+		if(!this.width)
+		{
+			this.width = this.image.width;
+		}
+
+		if(!this.height)
+		{
+			this.height = this.image.height;
+		}
+
 		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
 
 		if(this._parentSizeIsKnown)
@@ -147,24 +154,18 @@ class Bitmap extends DisplayObject
 		}
 	}
 
-	// public methods:
-
 	/**
 	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
 	 * This does not account for whether it would be visible within the boundaries of the stage.
 	 *
-	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
 	 **/
 	public isVisible()
 	{
-		return this.visible;
+		var hasContent = this.cacheCanvas || this.loaded;
+		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
 	}
-
-	//		var hasContent = this.cacheCanvas || (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-	//		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
-	//	}
 
 	/**
 	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -185,23 +186,22 @@ class Bitmap extends DisplayObject
 		{
 			return true;
 		}
-		var rect = this.sourceRect;
-		if(rect)
-		{
-			ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
 
-		}
-		else
+		if(this.loaded)
 		{
-			ctx.drawImage(this.image, 0, 0);
+			var rect = this.sourceRect;
+			if(rect)
+			{
+				ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+			}
+			else
+			{
+				ctx.drawImage(this.image, 0, 0);
+			}
 		}
-
 
 		return true;
 	}
-
-	//Note, the doc sections below document using the specified APIs (from DisplayObject)  from
-	//Bitmap. This is why they have no method implementations.
 
 	/**
 	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
@@ -245,8 +245,7 @@ class Bitmap extends DisplayObject
 		}
 		var o = <{width:number;height:number;
 		}> this.sourceRect || this.image;
-		var hasContent = (this.image && (this.image.complete || this.image['getContext'] || this.image.readyState >= 2));
-		return hasContent ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
+		return this.loaded ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
 	}
 
 	/**
