@@ -102,11 +102,13 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
              * @default false
              **/
             this.tickChildren = true;
-            this.enableMouseInteraction();
         }
+        /**
+         * Has something todo with the Tweenlite timeline and the createts toolset fro flash animations
+         * @method initialize
+         */
         Container.prototype.initialize = function () {
             this['constructor'].call(this);
-            //		super.initialize();
         };
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.

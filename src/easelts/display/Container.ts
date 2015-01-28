@@ -99,18 +99,18 @@ class Container extends DisplayObject
 	 * @param regX
 	 * @param regY
 	 */
-		constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
-
-		this.enableMouseInteraction();
 	}
 
+	/**
+	 * Has something todo with the Tweenlite timeline and the createts toolset fro flash animations
+	 * @method initialize
+	 */
 	public initialize()
 	{
-
 		this['constructor'].call(this)
-		//		super.initialize();
 	}
 
 	/**
