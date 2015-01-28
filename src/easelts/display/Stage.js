@@ -181,6 +181,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
              * @readonly
              **/
             this.mouseY = 0;
+            this._autoSizeOnWindowResize = false;
             /**
              * Specifies the area of the stage to affect when calling update. This can be use to selectively
              * re-render only active regions of the canvas. If null, the whole canvas area is affected.
@@ -307,7 +308,6 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
                 //		console.timeEnd('stage:update');
             };
             //
-            var onResize = null;
             var size = null;
             switch (element.tagName) {
                 case 'CANVAS':
@@ -323,13 +323,8 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
                         element.appendChild(canvas);
                         this.canvas = canvas;
                         this.holder = element;
-                        var onResize = (function () {
-                            return function () {
-                                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-                            }.bind(this);
-                        }.bind(this))();
-                        window.addEventListener('resize', onResize);
                         size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
+                        this._autoSizeOnWindowResize = true;
                         break;
                     }
                 default:
@@ -343,8 +338,8 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(0 /* NORMAL */);
             this.stage = this;
-            if (onResize) {
-                onResize.call(window);
+            if (this._autoSizeOnWindowResize) {
+                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
             }
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
@@ -587,6 +582,19 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
                     window: this.canvas,
                     fn: function (e) { return _this._handleMouseDown(e); }
                 };
+                //			eventListeners["dblclick"] = {
+                //				window: this.canvas,
+                //				fn: (e) =>
+                //				{
+                //					this._handleDoubleClick(e)
+                //				}
+                //			};
+                if (this._autoSizeOnWindowResize) {
+                    eventListeners["resize"] = {
+                        window: windowsObject,
+                        fn: function (e) { return _this._handleWindowResize(e); }
+                    };
+                }
                 for (name in eventListeners) {
                     o = eventListeners[name];
                     o.window.addEventListener(name, o.fn, false);
@@ -892,6 +900,14 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
             nextStage && nextStage._handleDoubleClick(e, owner || target && this);
         };
         /**
+         * @method _handleWindowResize
+         * @protected
+         * @param {Event} e
+         **/
+        Stage.prototype._handleWindowResize = function (e) {
+            this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+        };
+        /**
          *
          * @todo what is the o param
          *
@@ -1002,6 +1018,7 @@ define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', 
         };
         Stage.prototype.destruct = function () {
             this.stop();
+            this.enableDOMEvents(false);
             _super.prototype.destruct.call(this);
         };
         // events:
