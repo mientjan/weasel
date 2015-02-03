@@ -1,8 +1,9 @@
 /*
  * Tween
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -78,7 +79,6 @@
 import EventDispatcher = require('../createts/event/EventDispatcher');
 import TimeEvent = require('../createts/event/TimeEvent');
 import Ticker = require('../createts/utils/Ticker');
-import Ticker = require('../easelts/interface/');
 
 /**
  * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
@@ -254,10 +254,10 @@ class Tween extends EventDispatcher
 	 * @since 0.4.2
 	 * @deprecated
 	 */
-//	public static handleEvent(event:TimeEvent) =>
-//	{
-//		debugger;
-//	}
+	//	public static handleEvent(event:TimeEvent) =>
+	//	{
+	//		debugger;
+	//	}
 
 	/**
 	 * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code>
@@ -564,7 +564,7 @@ class Tween extends EventDispatcher
 	 * @param {Object} pluginData
 	 * @protected
 	 */
-	constructor(target:I, props:any, pluginData:any)
+	constructor(target:any, props:any, pluginData:any)
 	{
 		super();
 

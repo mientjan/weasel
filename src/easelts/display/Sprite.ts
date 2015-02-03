@@ -188,7 +188,7 @@ class Sprite extends DisplayObject
 	 * @method initialize
 	 * @protected
 	 */
-		constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
+	constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
 	{
 		super();
 
