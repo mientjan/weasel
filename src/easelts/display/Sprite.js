@@ -2,6 +2,8 @@
  * Sprite
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,7 +32,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/events/Event', './DisplayObject'], function (require, exports, Event, DisplayObject) {
+define(["require", "exports", '../../createts/event/Event', './DisplayObject'], function (require, exports, Event, DisplayObject) {
     /**
      * Displays a frame or sequence of frames (ie. an animation) from a SpriteSheet instance. A sprite sheet is a series of
      * images (usually animation frames) combined into a single image. For example, an animation consisting of 8 100x100
@@ -323,11 +325,11 @@ define(["require", "exports", '../../createts/events/Event', './DisplayObject'],
          * @protected
          * @method _tick
          **/
-        Sprite.prototype._tick = function (props) {
+        Sprite.prototype.onTick = function (e) {
             if (!this.paused) {
-                this.advance(props && props.delta);
+                this.advance(e && e.delta);
             }
-            _super.prototype._tick.call(this, props);
+            _super.prototype.onTick.call(this, e);
         };
         /**
          * Normalizes the current frame, advancing animations and dispatching callbacks as appropriate.
