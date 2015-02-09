@@ -206,14 +206,6 @@ class SignalAbstract
 			p = p._next;
 		}
 	}
-
-	public dispose():void
-	{
-		while (this._head != void 0)
-		{
-			this._head.dispose();
-		}
-	}
 }
 
 export = SignalAbstract;
