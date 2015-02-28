@@ -22,14 +22,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports"], function (require, exports) {
-    /**
-     * @module easelts
-     */
-    var ISize = (function () {
-        function ISize() {
-        }
-        return ISize;
-    })();
+/**
+ * @module easelts
+ */
+var ISize = (function () {
+    function ISize() {
+    }
     return ISize;
-});
+})();
+module.exports = ISize;

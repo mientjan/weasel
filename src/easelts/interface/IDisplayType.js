@@ -22,11 +22,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports"], function (require, exports) {
-    var IDisplayType = (function () {
-        function IDisplayType() {
-        }
-        return IDisplayType;
-    })();
+var IDisplayType = (function () {
+    function IDisplayType() {
+    }
     return IDisplayType;
-});
+})();
+module.exports = IDisplayType;
