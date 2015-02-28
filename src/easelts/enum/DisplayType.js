@@ -12,6 +12,7 @@ define(["require", "exports"], function (require, exports) {
         DisplayType[DisplayType["GRAPHICS"] = 5] = "GRAPHICS";
         DisplayType[DisplayType["MOVIECLIP"] = 6] = "MOVIECLIP";
         DisplayType[DisplayType["BITMAP"] = 7] = "BITMAP";
+        DisplayType[DisplayType["BITMAPVIDEO"] = 8] = "BITMAPVIDEO";
     })(DisplayType || (DisplayType = {}));
     return DisplayType;
 });

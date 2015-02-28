@@ -9,7 +9,8 @@ enum DisplayType {
 	SHAPE,
 	GRAPHICS,
 	MOVIECLIP,
-	BITMAP
+	BITMAP,
+	BITMAPVIDEO,
 }
 
 export = DisplayType;
