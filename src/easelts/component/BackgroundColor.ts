@@ -1,4 +1,4 @@
-import Shape = require('../display/Shape')
+import Shape = require('../Shape')
 
 /**
  * @class BackgroundColor

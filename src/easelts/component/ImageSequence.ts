@@ -1,14 +1,14 @@
-import Bitmap = require('../display/Bitmap');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
+import Bitmap = require('../Bitmap');
+import TimeEvent = require('../../../createts/event/TimeEvent');
+import Signal = require('../../../createts/event/Signal');
+import SignalConnection = require('../../../createts/event/SignalConnection');
 
 /**
  * @class ImageSequence
  */
 class ImageSequence extends Bitmap
 {
-	public _playing:boolean = false;
+	public _playing = false;
 	public _timeIndex:number = -1;
 	public _frame:number = -1;
 	public _fps:number = 0;
@@ -29,38 +29,35 @@ class ImageSequence extends Bitmap
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-		constructor(images:string[], fps:number = 1, width:any = 'auto', height:any = 'auto', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(images:HTMLImageElement[], fps:number, width:any, height:any, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(images[0], width, height, x, y, regX, regY);
 
 		for(var i = 0; i < images.length; i++)
 		{
-			var img = document.createElement('img');
-			img.src = images[i];
-			this._images.push(img);
-
+			this._images.push( images[i] );
 		}
 
 		this._fps = 1000 / fps;
 		this._length = images.length;
 	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean)
 	{
 		ctx.drawImage(this.image, 0, 0);
 
 		return true;
 	}
 
-	public play(times = 1, onComplete:Function = null):void
+	public play(times = 1, onComplete:Function = null)
 	{
-		this._playing = true;
 		this._frame = 0;
 		this._times = times;
 		this._onComplete = onComplete;
+		this._playing = true;
 	}
 
-	public stop():void
+	public stop()
 	{
 		this._playing = false;
 		this._timeIndex = -1;
@@ -73,10 +70,9 @@ class ImageSequence extends Bitmap
 		}
 	}
 
-	public onTick(e:TimeEvent):void
+	public onTick(e:TimeEvent)
 	{
 		var playing = this._playing;
-
 
 		if(playing)
 		{
@@ -104,11 +100,15 @@ class ImageSequence extends Bitmap
 				{
 					this._frame = frame;
 					this.image = this._images[frame];
+
+					console.log(this._frame);
+					
 				}
 			}
 
 		}
 	}
+
 }
 
-export  = ImageSequence;
+export = ImageSequence;
