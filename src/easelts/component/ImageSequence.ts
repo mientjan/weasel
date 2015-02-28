@@ -1,7 +1,7 @@
-import Bitmap = require('../Bitmap');
-import TimeEvent = require('../../../createts/event/TimeEvent');
-import Signal = require('../../../createts/event/Signal');
-import SignalConnection = require('../../../createts/event/SignalConnection');
+import Bitmap = require('../display/Bitmap');
+import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal = require('../../createts/event/Signal');
+import SignalConnection = require('../../createts/event/SignalConnection');
 
 /**
  * @class ImageSequence

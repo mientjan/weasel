@@ -1,5 +1,5 @@
-import Bitmap = require('../../Bitmap');
-import Rectangle = require('../../../geom/Rectangle');
+import Bitmap = require('../../display/Bitmap');
+import Rectangle = require('../../geom/Rectangle');
 import NinePatchCoordinates = require('./NinePatchCoordinates');
 
 /**

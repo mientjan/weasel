@@ -1,4 +1,4 @@
-define(["require", "exports", '../../Bitmap', './NinePatchCoordinates'], function (require, exports, Bitmap, NinePatchCoordinates) {
+define(["require", "exports", '../../display/Bitmap', './NinePatchCoordinates'], function (require, exports, Bitmap, NinePatchCoordinates) {
     /**
      *
      */

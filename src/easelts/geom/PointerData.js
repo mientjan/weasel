@@ -25,35 +25,37 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-/**
- * @module easelts
- */
-/**
- * Represents a point on a 2 dimensional x / y coordinate system.
- *
- * <h4>Example</h4>
- *
- *      var point = new createjs.Point(0, 100);
- *
- * @class Point
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-var PointerData = (function () {
-    function PointerData(x, y) {
-        /**
-         * @property inBounds
-         * @type boolean
-         */
-        this.inBounds = false;
-        this.target = null;
-        this.posEvtObj = null;
-        this.rawX = 0;
-        this.rawY = 0;
-        this.x = x;
-        this.y = y;
-    }
+define(["require", "exports"], function (require, exports) {
+    /**
+     * @module easelts
+     */
+    /**
+     * Represents a point on a 2 dimensional x / y coordinate system.
+     *
+     * <h4>Example</h4>
+     *
+     *      var point = new createjs.Point(0, 100);
+     *
+     * @class Point
+     * @param {Number} [x=0] X position.
+     * @param {Number} [y=0] Y position.
+     * @constructor
+     **/
+    var PointerData = (function () {
+        function PointerData(x, y) {
+            /**
+             * @property inBounds
+             * @type boolean
+             */
+            this.inBounds = false;
+            this.target = null;
+            this.posEvtObj = null;
+            this.rawX = 0;
+            this.rawY = 0;
+            this.x = x;
+            this.y = y;
+        }
+        return PointerData;
+    })();
     return PointerData;
-})();
-module.exports = PointerData;
+});

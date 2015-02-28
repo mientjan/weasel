@@ -25,67 +25,68 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-var NumberUtil = require('./../util/NumberUtil');
-/**
- * @module easelts
- */
-/**
- * Represents a point on a 2 dimensional x / y coordinate system.
- *
- * <h4>Example</h4>
- *
- *      var point = new createjs.Point(0, 100);
- *
- * @class Point
- * @param {Number} [x=0] X position.
- * @param {Number} [y=0] Y position.
- * @constructor
- **/
-var Point = (function () {
+define(["require", "exports", './../util/NumberUtil'], function (require, exports, NumberUtil) {
     /**
-     * Initialization method. Can also be used to reinitialize the instance.
-     * @method initialize
+     * @module easelts
+     */
+    /**
+     * Represents a point on a 2 dimensional x / y coordinate system.
+     *
+     * <h4>Example</h4>
+     *
+     *      var point = new createjs.Point(0, 100);
+     *
+     * @class Point
      * @param {Number} [x=0] X position.
      * @param {Number} [y=0] Y position.
-     * @return {Point} This instance. Useful for chaining method calls.
-     */
-    function Point(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    /**
-     * Copies all properties from the specified point to this point.
-     * @method copy
-     * @param {Point} point The point to copy properties from.
-     * @return {Point} This point. Useful for chaining method calls.
-     */
-    Point.prototype.copy = function (point) {
-        return new Point(point.x, point.y);
-    };
-    Point.prototype.toNumber = function () {
-        return NumberUtil.pair(this.x, this.y);
-    };
-    Point.prototype.fromNumber = function (value) {
-        var xy = NumberUtil.depair(value);
-        this.x = xy[0];
-        this.y = xy[1];
-    };
-    /**
-     * Returns a clone of the Point instance.
-     * @method clone
-     * @return {Point} a clone of the Point instance.
+     * @constructor
      **/
-    Point.prototype.clone = function () {
-        return new Point(this.x, this.y);
-    };
-    /**
-     * Returns a string representation of this object.
-     * @method toString
-     * @return {String} a string representation of the instance.
-     **/
-    Point.prototype.toString = function () {
-        return "[Point (x=" + this.x + " y=" + this.y + ")]";
-    };
+    var Point = (function () {
+        /**
+         * Initialization method. Can also be used to reinitialize the instance.
+         * @method initialize
+         * @param {Number} [x=0] X position.
+         * @param {Number} [y=0] Y position.
+         * @return {Point} This instance. Useful for chaining method calls.
+         */
+        function Point(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        /**
+         * Copies all properties from the specified point to this point.
+         * @method copy
+         * @param {Point} point The point to copy properties from.
+         * @return {Point} This point. Useful for chaining method calls.
+         */
+        Point.prototype.copy = function (point) {
+            return new Point(point.x, point.y);
+        };
+        Point.prototype.toNumber = function () {
+            return NumberUtil.pair(this.x, this.y);
+        };
+        Point.prototype.fromNumber = function (value) {
+            var xy = NumberUtil.depair(value);
+            this.x = xy[0];
+            this.y = xy[1];
+        };
+        /**
+         * Returns a clone of the Point instance.
+         * @method clone
+         * @return {Point} a clone of the Point instance.
+         **/
+        Point.prototype.clone = function () {
+            return new Point(this.x, this.y);
+        };
+        /**
+         * Returns a string representation of this object.
+         * @method toString
+         * @return {String} a string representation of the instance.
+         **/
+        Point.prototype.toString = function () {
+            return "[Point (x=" + this.x + " y=" + this.y + ")]";
+        };
+        return Point;
+    })();
     return Point;
-})();
-module.exports = Point;
+});

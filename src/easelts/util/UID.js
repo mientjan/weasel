@@ -25,30 +25,32 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-/**
- * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
- * and should not be instantiated.
- * @class UID
- * @static
- **/
-var UID = (function () {
-    function UID() {
-    }
+define(["require", "exports"], function (require, exports) {
     /**
-     * Returns the next unique id.
-     * @method get
-     * @return {Number} The next unique id
+     * Global utility for generating sequential unique ID numbers. The UID class uses a static interface (ex. <code>UID.get()</code>)
+     * and should not be instantiated.
+     * @class UID
      * @static
      **/
-    UID.get = function () {
-        return UID._nextID++;
-    };
-    /**
-     * @property _nextID
-     * @type Number
-     * @protected
-     **/
-    UID._nextID = 0;
+    var UID = (function () {
+        function UID() {
+        }
+        /**
+         * Returns the next unique id.
+         * @method get
+         * @return {Number} The next unique id
+         * @static
+         **/
+        UID.get = function () {
+            return UID._nextID++;
+        };
+        /**
+         * @property _nextID
+         * @type Number
+         * @protected
+         **/
+        UID._nextID = 0;
+        return UID;
+    })();
     return UID;
-})();
-module.exports = UID;
+});

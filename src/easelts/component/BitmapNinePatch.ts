@@ -1,7 +1,7 @@
 import NinePatch = require('./bitmapninepatch/NinePatch');
-import Bitmap = require('../Bitmap');
-import DisplayObject = require('../DisplayObject');
-import DisplayType = require('../../enum/DisplayType');
+import Bitmap = require('../display/Bitmap');
+import DisplayObject = require('../display/DisplayObject');
+import DisplayType = require('../enum/DisplayType');
 
 class BitmapNinePatch extends DisplayObject {
 

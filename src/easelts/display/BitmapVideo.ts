@@ -138,7 +138,7 @@ class BitmapVideo extends DisplayObject
 		}
 		var o = <{width:number;height:number;
 		}> this.sourceRect || this.video;
-		return this.loaded ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
+		return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
 	}
 
 	public clone()

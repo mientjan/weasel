@@ -1,10 +1,10 @@
-import Bitmap = require('../Bitmap');
-import TimeEvent = require('../../../createts/event/TimeEvent');
-import Signal = require('../../../createts/event/Signal');
-import SignalConnection = require('../../../createts/event/SignalConnection');
+import Bitmap = require('../display/Bitmap');
+import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal = require('../../createts/event/Signal');
+import SignalConnection = require('../../createts/event/SignalConnection');
 import IImageButtonData = require('./imagebutton/IImageButtonData');
-import Methods = require('../../util/Methods');
-import ButtonBehavior = require('../../behavior/ButtonBehavior');
+import Methods = require('../util/Methods');
+import ButtonBehavior = require('../behavior/ButtonBehavior');
 
 /**
  * @class ImageSequence

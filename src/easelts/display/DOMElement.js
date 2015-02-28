@@ -31,190 +31,191 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var DisplayObject = require('./DisplayObject');
-var DOMElement = (function (_super) {
-    __extends(DOMElement, _super);
-    /**
-     * Initialization method.
-     * @method initialize
-     * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
-     * @protected
-     */
-    function DOMElement(htmlElement) {
-        _super.call(this);
-        // public properties:
+define(["require", "exports", './DisplayObject'], function (require, exports, DisplayObject) {
+    var DOMElement = (function (_super) {
+        __extends(DOMElement, _super);
         /**
-         * The DOM object to manage.
-         * @property htmlElement
-         * @type HTMLElement
-         */
-        this.htmlElement = null;
-        // private properties:
-        /**
-         * @property _oldMtx
-         * @type Matrix2D
+         * Initialization method.
+         * @method initialize
+         * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
          * @protected
          */
-        this._oldMtx = null;
-        /**
-         * @property _visible
-         * @type Boolean
-         * @protected
-         */
-        this._visible = false;
-        this._drawEndConnection = null;
-        var htmlDomElement;
-        if (typeof htmlElement == 'string') {
-            htmlDomElement = document.getElementById(htmlElement);
-        }
-        else {
-            htmlDomElement = htmlElement;
-        }
-        this.mouseEnabled = false;
-        this.htmlElement = htmlDomElement;
-        var style = htmlDomElement.style;
-        // this relies on the _tick method because draw isn't called if a parent is not visible.
-        style.position = "absolute";
-        style.transformOrigin = style['WebkitTransformOrigin'] = style['msTransformOrigin'] = style['MozTransformOrigin'] = style['OTransformOrigin'] = "0% 0%";
-    }
-    // public methods:
-    /**
-     * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
-     * This does not account for whether it would be visible within the boundaries of the stage.
-     * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-     * @method isVisible
-     * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
-     */
-    DOMElement.prototype.isVisible = function () {
-        return this.htmlElement != null;
-    };
-    /**
-     * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
-     * Returns true if the draw was handled (useful for overriding functionality).
-     * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-     * @method draw
-     * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
-     * @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
-     * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
-     * into itself).
-     * @return {Boolean}
-     */
-    DOMElement.prototype.draw = function (ctx, ignoreCache) {
-        // this relies on the _tick method because draw isn't called if a parent is not visible.
-        // the actual update happens in _handleDrawEnd
-        return true;
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method cache
-     */
-    DOMElement.prototype.cache = function () {
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method uncache
-     */
-    DOMElement.prototype.uncache = function () {
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method updateCache
-     */
-    DOMElement.prototype.updateCache = function () {
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method hitTest
-     */
-    DOMElement.prototype.hitTest = function (x, y) {
-        throw 'hitTest Not applicable to DOMElement.';
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method localToGlobal
-     */
-    DOMElement.prototype.localToGlobal = function (x, y) {
-        throw 'localToGlobal Not applicable to DOMElement.';
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method globalToLocal
-     */
-    DOMElement.prototype.globalToLocal = function (x, y) {
-        throw 'globalToLocal Not applicable to DOMElement.';
-    };
-    /**
-     * Not applicable to DOMElement.
-     * @method localToLocal
-     */
-    DOMElement.prototype.localToLocal = function (x, y) {
-        throw 'localToLocal Not applicable to DOMElement.';
-    };
-    /**
-     * DOMElement cannot be cloned. Throws an error.
-     * @method clone
-     */
-    DOMElement.prototype.clone = function () {
-        throw ("DOMElement cannot be cloned.");
-    };
-    /**
-     * Returns a string representation of this object.
-     * @method toString
-     * @return {String} a string representation of the instance.
-     */
-    DOMElement.prototype.toString = function () {
-        return "[DOMElement (name=" + this.name + ")]";
-    };
-    /**
-     * @method _tick
-     * @param {Object} props Properties to copy to the DisplayObject {{#crossLink "DisplayObject/tick"}}{{/crossLink}} event object.
-     * function.
-     * @protected
-     */
-    DOMElement.prototype.onTick = function (e) {
-        var stage = this.getStage();
-        this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
-        _super.prototype.onTick.call(this, e);
-        //stage && stage.on("drawend", this._handleDrawEnd, this, true);
-    };
-    /**
-     * @method _handleDrawEnd
-     * @param {Event} evt
-     * @protected
-     */
-    DOMElement.prototype._handleDrawEnd = function () {
-        var o = this.htmlElement;
-        if (!o) {
-            return;
-        }
-        var style = o.style;
-        var mtx = this.getConcatenatedMatrix(this._matrix);
-        var visibility = mtx.visible ? "visible" : "hidden";
-        if (visibility != style.visibility) {
-            style.visibility = visibility;
-        }
-        if (!mtx.visible) {
-            return;
-        }
-        var oMtx = this._oldMtx;
-        var n = 10000; // precision
-        if (!oMtx || oMtx.alpha != mtx.alpha) {
-            style.opacity = "" + (mtx.alpha * n | 0) / n;
-            if (oMtx) {
-                oMtx.alpha = mtx.alpha;
-            }
-        }
-        if (!oMtx || oMtx.tx != mtx.tx || oMtx.ty != mtx.ty || oMtx.a != mtx.a || oMtx.b != mtx.b || oMtx.c != mtx.c || oMtx.d != mtx.d) {
-            var str = "matrix(" + (mtx.a * n | 0) / n + "," + (mtx.b * n | 0) / n + "," + (mtx.c * n | 0) / n + "," + (mtx.d * n | 0) / n + "," + (mtx.tx + 0.5 | 0);
-            style.transform = style['WebkitTransform'] = style['OTransform'] = style['msTransform'] = str + "," + (mtx.ty + 0.5 | 0) + ")";
-            style['MozTransform'] = str + "px," + (mtx.ty + 0.5 | 0) + "px)";
-            this._oldMtx = oMtx ? oMtx.copy(mtx) : mtx.clone();
-        }
-        if (this._drawEndConnection) {
-            this._drawEndConnection.dispose();
+        function DOMElement(htmlElement) {
+            _super.call(this);
+            // public properties:
+            /**
+             * The DOM object to manage.
+             * @property htmlElement
+             * @type HTMLElement
+             */
+            this.htmlElement = null;
+            // private properties:
+            /**
+             * @property _oldMtx
+             * @type Matrix2D
+             * @protected
+             */
+            this._oldMtx = null;
+            /**
+             * @property _visible
+             * @type Boolean
+             * @protected
+             */
+            this._visible = false;
             this._drawEndConnection = null;
+            var htmlDomElement;
+            if (typeof htmlElement == 'string') {
+                htmlDomElement = document.getElementById(htmlElement);
+            }
+            else {
+                htmlDomElement = htmlElement;
+            }
+            this.mouseEnabled = false;
+            this.htmlElement = htmlDomElement;
+            var style = htmlDomElement.style;
+            // this relies on the _tick method because draw isn't called if a parent is not visible.
+            style.position = "absolute";
+            style.transformOrigin = style['WebkitTransformOrigin'] = style['msTransformOrigin'] = style['MozTransformOrigin'] = style['OTransformOrigin'] = "0% 0%";
         }
-    };
+        // public methods:
+        /**
+         * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
+         * This does not account for whether it would be visible within the boundaries of the stage.
+         * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+         * @method isVisible
+         * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
+         */
+        DOMElement.prototype.isVisible = function () {
+            return this.htmlElement != null;
+        };
+        /**
+         * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
+         * Returns true if the draw was handled (useful for overriding functionality).
+         * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+         * @method draw
+         * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
+         * @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
+         * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
+         * into itself).
+         * @return {Boolean}
+         */
+        DOMElement.prototype.draw = function (ctx, ignoreCache) {
+            // this relies on the _tick method because draw isn't called if a parent is not visible.
+            // the actual update happens in _handleDrawEnd
+            return true;
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method cache
+         */
+        DOMElement.prototype.cache = function () {
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method uncache
+         */
+        DOMElement.prototype.uncache = function () {
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method updateCache
+         */
+        DOMElement.prototype.updateCache = function () {
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method hitTest
+         */
+        DOMElement.prototype.hitTest = function (x, y) {
+            throw 'hitTest Not applicable to DOMElement.';
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method localToGlobal
+         */
+        DOMElement.prototype.localToGlobal = function (x, y) {
+            throw 'localToGlobal Not applicable to DOMElement.';
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method globalToLocal
+         */
+        DOMElement.prototype.globalToLocal = function (x, y) {
+            throw 'globalToLocal Not applicable to DOMElement.';
+        };
+        /**
+         * Not applicable to DOMElement.
+         * @method localToLocal
+         */
+        DOMElement.prototype.localToLocal = function (x, y) {
+            throw 'localToLocal Not applicable to DOMElement.';
+        };
+        /**
+         * DOMElement cannot be cloned. Throws an error.
+         * @method clone
+         */
+        DOMElement.prototype.clone = function () {
+            throw ("DOMElement cannot be cloned.");
+        };
+        /**
+         * Returns a string representation of this object.
+         * @method toString
+         * @return {String} a string representation of the instance.
+         */
+        DOMElement.prototype.toString = function () {
+            return "[DOMElement (name=" + this.name + ")]";
+        };
+        /**
+         * @method _tick
+         * @param {Object} props Properties to copy to the DisplayObject {{#crossLink "DisplayObject/tick"}}{{/crossLink}} event object.
+         * function.
+         * @protected
+         */
+        DOMElement.prototype.onTick = function (e) {
+            var stage = this.getStage();
+            this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
+            _super.prototype.onTick.call(this, e);
+            //stage && stage.on("drawend", this._handleDrawEnd, this, true);
+        };
+        /**
+         * @method _handleDrawEnd
+         * @param {Event} evt
+         * @protected
+         */
+        DOMElement.prototype._handleDrawEnd = function () {
+            var o = this.htmlElement;
+            if (!o) {
+                return;
+            }
+            var style = o.style;
+            var mtx = this.getConcatenatedMatrix(this._matrix);
+            var visibility = mtx.visible ? "visible" : "hidden";
+            if (visibility != style.visibility) {
+                style.visibility = visibility;
+            }
+            if (!mtx.visible) {
+                return;
+            }
+            var oMtx = this._oldMtx;
+            var n = 10000; // precision
+            if (!oMtx || oMtx.alpha != mtx.alpha) {
+                style.opacity = "" + (mtx.alpha * n | 0) / n;
+                if (oMtx) {
+                    oMtx.alpha = mtx.alpha;
+                }
+            }
+            if (!oMtx || oMtx.tx != mtx.tx || oMtx.ty != mtx.ty || oMtx.a != mtx.a || oMtx.b != mtx.b || oMtx.c != mtx.c || oMtx.d != mtx.d) {
+                var str = "matrix(" + (mtx.a * n | 0) / n + "," + (mtx.b * n | 0) / n + "," + (mtx.c * n | 0) / n + "," + (mtx.d * n | 0) / n + "," + (mtx.tx + 0.5 | 0);
+                style.transform = style['WebkitTransform'] = style['OTransform'] = style['msTransform'] = str + "," + (mtx.ty + 0.5 | 0) + ")";
+                style['MozTransform'] = str + "px," + (mtx.ty + 0.5 | 0) + "px)";
+                this._oldMtx = oMtx ? oMtx.copy(mtx) : mtx.clone();
+            }
+            if (this._drawEndConnection) {
+                this._drawEndConnection.dispose();
+                this._drawEndConnection = null;
+            }
+        };
+        return DOMElement;
+    })(DisplayObject);
     return DOMElement;
-})(DisplayObject);
-module.exports = DOMElement;
+});
