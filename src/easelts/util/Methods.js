@@ -29,6 +29,15 @@ define(["require", "exports"], function (require, exports) {
         return document.createElement('canvas');
     }
     exports.createCanvas = createCanvas;
+    function createImage(src, onLoad) {
+        if (onLoad === void 0) { onLoad = null; }
+        var img = document.createElement('img');
+        if (onLoad)
+            img.onload = onLoad;
+        img.src = src;
+        return img;
+    }
+    exports.createImage = createImage;
     function tryCatch(fn, context, args) {
         try {
             return fn.apply(context, args);

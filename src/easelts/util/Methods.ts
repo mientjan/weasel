@@ -30,6 +30,14 @@ export function createCanvas()
 	return document.createElement('canvas');
 }
 
+export function createImage(src:string, onLoad = null):HTMLImageElement
+{
+	var img = document.createElement('img');
+	if(onLoad) img.onload = onLoad;
+	img.src = src;
+	return img;
+}
+
 export function tryCatch(fn:Function, context:any, args:any[]) {
 	try {
 		return fn.apply(context, args);
