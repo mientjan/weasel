@@ -120,7 +120,6 @@ class Text extends DisplayObject
 
 		if(this._text != value)
 		{
-
 			this._text = value;
 
 			if(this._autoWidth)
@@ -209,8 +208,8 @@ class Text extends DisplayObject
 	 **/
 	public lineWidth:number = null;
 
-	private _autoWidth:boolean = true;
-	private _autoHeight:boolean = true;
+	private _autoWidth:boolean = false;
+	private _autoHeight:boolean = false;
 
 	/**
 	 * @method constructor
@@ -224,6 +223,8 @@ class Text extends DisplayObject
 	constructor(text:string, font:string, color:string)
 	{
 		super(1, 1, 0, 0, 0, 0);
+
+		console.log(text, font, color);
 
 		// positioning is wrong when a text draw call has no text.
 		if(text.length == 0)
@@ -341,8 +342,18 @@ class Text extends DisplayObject
 			alreadyCached = true;
 		}
 
+		var y = 0;
+
+//		switch( this.textAlign ){
+//			case Text.TEXT_ALIGN_CENTER:{
+//				width = width / 2;
+//				x = -width / 2;
+//				break;
+//			}
+//		}
+
 		var ctx = this.cacheCanvas.getContext('2d');
-		var img = ctx.getImageData(0, 0, width, height);
+		var img = ctx.getImageData(0,0, width, height);
 
 
 		if(alreadyCached)
@@ -374,8 +385,6 @@ class Text extends DisplayObject
 		}
 
 		this.color = color;
-		//		ctx.strokeStyle = '#FF0000';
-		//		ctx.strokeRect(x0, y0,  x1 - x0, y1 - y0);
 
 		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
 	}
@@ -423,7 +432,7 @@ class Text extends DisplayObject
 		var x = w * Text.H_OFFSETS[this.textAlign || "left"];
 		var lineHeight = this.lineHeight || this.getMeasuredLineHeight();
 		var y = lineHeight * Text.V_OFFSETS[this.textBaseline || "top"];
-		return this._rectangle.initialize(x, y, w, o.height);
+		return this._rectangle.setProperies(x, y, w, o.height);
 	}
 
 	/**

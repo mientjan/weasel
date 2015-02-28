@@ -429,16 +429,14 @@ class Stage extends Container
 				break;
 			}
 		}
+
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
 		this.setQuality(QualityType.NORMAL);
 		this.stage = this;
 
-		if(this._autoSizeOnWindowResize)
-		{
-			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-		}
+		this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 	}
 
 
@@ -480,7 +478,7 @@ class Stage extends Container
 	 * @method update
 	 * @param {TimeEvent} timeEvent
 	 **/
-	public update = (timeEvent:TimeEvent) =>
+	public update = (timeEvent?:TimeEvent) =>
 	{
 		if(!this.canvas)
 		{
@@ -1030,10 +1028,13 @@ class Stage extends Container
 	 **/
 	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage):void
 	{
+
+		
 		if(pageY != null)
 		{
 			this._updatePointerPosition(id, e, pageX, pageY);
 		}
+
 		var target = null;
 		var nextStage = this._nextStage;
 		var pointerData = this._getPointerData(id);
@@ -1193,11 +1194,14 @@ class Stage extends Container
 	 **/
 	public _dispatchMouseEvent(target:DisplayObject, type:string, bubbles:boolean, pointerId:number, o:any, nativeEvent:MouseEvent)
 	{
+
 		// TODO: might be worth either reusing MouseEvent instances, or adding a willTrigger method to avoid GC.
 		if(!target || (!bubbles && !target.hasEventListener(type)))
 		{
 			return;
 		}
+
+
 		/*
 		 // TODO: account for stage transformations:
 		 this._mtx = this.getConcatenatedMatrix(this._mtx).invert();

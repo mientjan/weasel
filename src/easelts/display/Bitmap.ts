@@ -83,6 +83,7 @@ class Bitmap extends DisplayObject
 	 * @default null
 	 */
 	sourceRect:Rectangle = null;
+	destinationRect:Rectangle = null;
 
 	/**
 	 * Initialization method.
@@ -104,31 +105,31 @@ class Bitmap extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-		constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-
-	constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-
-	constructor(imageOrUri:any, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
+	//constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+	//constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
+	constructor(imageOrUri:HTMLImageElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
 		if(typeof imageOrUri == "string")
 		{
 			this.image = document.createElement("img");
-			this.image.src = imageOrUri;
+			this.image.src = <string> imageOrUri;
 		}
 		else
 		{
-			this.image = imageOrUri;
+			this.image = <HTMLImageElement> imageOrUri;
 		}
 
-		if(!this.image.complete)
-		{
-			this.image.onload = <any> this.onLoad.bind(this);
-		}
-		else
-		{
-			this.onLoad()
+		if(this.image){
+			if(!this.image.complete)
+			{
+				this.image.onload = <any> this.onLoad.bind(this);
+			}
+			else
+			{
+				this.onLoad()
+			}
 		}
 	}
 
@@ -146,12 +147,13 @@ class Bitmap extends DisplayObject
 			this.height = this.image.height;
 		}
 
-		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
 
 		if(this._parentSizeIsKnown)
 		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
+
+		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
 	}
 
 	/**
@@ -161,7 +163,7 @@ class Bitmap extends DisplayObject
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
 	 **/
-	public isVisible()
+	public isVisible():boolean
 	{
 		var hasContent = this.cacheCanvas || this.loaded;
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
@@ -179,7 +181,7 @@ class Bitmap extends DisplayObject
 	 * into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx, ignoreCache)
+	public draw(ctx, ignoreCache):boolean
 	{
 
 		if(super.draw(ctx, ignoreCache))
@@ -189,10 +191,20 @@ class Bitmap extends DisplayObject
 
 		if(this.loaded)
 		{
-			var rect = this.sourceRect;
-			if(rect)
+			var sourceRect = this.sourceRect;
+			var destRect = this.destinationRect;
+
+			if(sourceRect && !destRect)
 			{
-				ctx.drawImage(this.image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, sourceRect.width, sourceRect.height);
+			}
+			else if(!sourceRect && destRect)
+			{
+				ctx.drawImage(this.image, 0, 0, this.width, this.height, destRect.x, destRect.y, destRect.width, destRect.height);
+			}
+			else if(sourceRect && destRect)
+			{
+				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
 			}
 			else
 			{
@@ -243,9 +255,8 @@ class Bitmap extends DisplayObject
 		{
 			return rect;
 		}
-		var o = <{width:number;height:number;
-		}> this.sourceRect || this.image;
-		return this.loaded ? this._rectangle.initialize(0, 0, o.width, o.height) : null;
+		var o = <{width:number;height:number;}> this.sourceRect || this.image;
+		return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
 	}
 
 	/**
@@ -253,7 +264,7 @@ class Bitmap extends DisplayObject
 	 * @method clone
 	 * @return {Bitmap} a clone of the Bitmap instance.
 	 **/
-	public clone()
+	public clone():Bitmap
 	{
 		var o = new Bitmap(this.image);
 		if(this.sourceRect)
@@ -269,9 +280,13 @@ class Bitmap extends DisplayObject
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	public toString()
+	public toString():string
 	{
 		return "[Bitmap (name=" + this.name + ")]";
+	}
+
+	public destruct(){
+
 	}
 
 }

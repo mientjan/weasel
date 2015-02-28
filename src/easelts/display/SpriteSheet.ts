@@ -444,6 +444,7 @@ class SpriteSheet extends EventDispatcher
 		{
 			return frame;
 		}
+
 		return null;
 	}
 
@@ -533,7 +534,16 @@ class SpriteSheet extends EventDispatcher
 			var ttl = this._numFrames > 0 ? Math.min(this._numFrames - ttlFrames, cols * rows) : cols * rows;
 			for(var j = 0; j < ttl; j++)
 			{
-				this._frames.push({image: img, rect: new Rectangle(j % cols * fw, (j / cols | 0) * fh, fw, fh), regX: this._regX, regY: this._regY });
+				this._frames.push({
+					image: img,
+					rect: new Rectangle(
+						j % cols * fw,
+						(j / cols | 0) * fh,
+						fw, fh
+					),
+					regX: this._regX,
+					regY: this._regY
+				});
 			}
 			ttlFrames += ttl;
 		}

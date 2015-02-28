@@ -1536,9 +1536,9 @@ class Graphics
 	 * will be applied relative to the parent transform.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public beginBitmapFill(image:HTMLImageElement, repetition:string = 'repeat', matrix?:m2.Matrix2)
+	public beginBitmapFill(image:HTMLImageElement|HTMLCanvasElement, repetition:string = 'repeat', matrix?:m2.Matrix2)
 	{
-		return this._setFill(new Graphics.Fill(null, matrix).bitmap(image, repetition));
+		return this._setFill(new Graphics.Fill(null, matrix).bitmap(<HTMLImageElement>image, repetition));
 	}
 
 	/**

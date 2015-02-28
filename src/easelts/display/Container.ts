@@ -78,7 +78,7 @@ class Container extends DisplayObject
 	 * @type Boolean
 	 * @default false
 	 **/
-	public mouseChildren = false;
+	public mouseChildren = true;
 
 	/**
 	 * If false, the tick will not be propagated to children of this Container. This can provide some performance benefits.
@@ -695,14 +695,13 @@ class Container extends DisplayObject
 
 	public onResize(e:Size):void
 	{
-
 		super.onResize(e);
 
 		var size = new Size(this.width, this.height);
-		var child = null;
+
 		for(var i = 0; i < this.children.length; i++)
 		{
-			child = this.children[i];
+			var child = this.children[i];
 			if(typeof child.onResize == 'function')
 			{
 				child.onResize(size)
@@ -901,7 +900,7 @@ class Container extends DisplayObject
 			}
 		}
 
-		return (maxX == null) ? null : this._rectangle.initialize(minX, minY, maxX - minX, maxY - minY);
+		return (maxX == null) ? null : this._rectangle.setProperies(minX, minY, maxX - minX, maxY - minY);
 	}
 
 

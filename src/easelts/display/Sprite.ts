@@ -2,6 +2,8 @@
  * Sprite
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,9 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Event = require('../../createts/events/Event');
+import Event = require('../../createts/event/Event');
+import TimeEvent = require('../../createts/event/TimeEvent');
 import DisplayObject = require('./DisplayObject');
 import SpriteSheet = require('./SpriteSheet');
+import Rectangle = require('../geom/Rectangle');
 
 
 /**
@@ -178,6 +182,8 @@ class Sprite extends DisplayObject
 	 **/
 	public _currentFrame = null;
 
+	public sourceRect:Rectangle = null;
+
 	// constructor:
 
 	/**
@@ -185,7 +191,7 @@ class Sprite extends DisplayObject
 	 * @method initialize
 	 * @protected
 	 */
-		constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
+	constructor(spriteSheet:SpriteSheet, frameOrAnimation?:any)
 	{
 		super();
 
@@ -234,6 +240,7 @@ class Sprite extends DisplayObject
 			return false;
 		}
 		var rect = o.rect;
+		this.sourceRect = rect;
 		if(rect.width && rect.height)
 		{
 			ctx.drawImage(o.image, rect.x, rect.y, rect.width, rect.height, -o.regX, -o.regY, rect.width, rect.height);
@@ -290,11 +297,8 @@ class Sprite extends DisplayObject
 	 * @param {String|Number} frameOrAnimation The frame number or animation name that the playhead should move to
 	 * and begin playing.
 	 **/
-	public gotoAndPlay(frameOrAnimation:number)
 
-	public gotoAndPlay(frameOrAnimation:string)
-
-	public gotoAndPlay(frameOrAnimation:any)
+	public gotoAndPlay(frameOrAnimation:number|string)
 	{
 		this.paused = false;
 		this._goto(frameOrAnimation);
@@ -384,13 +388,13 @@ class Sprite extends DisplayObject
 	 * @protected
 	 * @method _tick
 	 **/
-	public _tick(props)
+	public onTick(e:TimeEvent)
 	{
 		if(!this.paused)
 		{
-			this.advance(props && props.delta);
+			this.advance(e && e.delta);
 		}
-		super._tick(props);
+		super.onTick(e);
 	}
 
 
@@ -528,4 +532,4 @@ class Sprite extends DisplayObject
 	}
 }
 
-export = Sprite;
+export = Sprite; 

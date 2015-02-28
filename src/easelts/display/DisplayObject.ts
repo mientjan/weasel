@@ -532,6 +532,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public _bounds:Rectangle = null;
 
+	public _off:boolean = false;
+
 	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super();
@@ -1010,6 +1012,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		this._cacheOffsetX = x;
 		this._cacheOffsetY = y;
 		this._cacheScale = scale;
+
 		this.updateCache();
 	}
 
@@ -1465,7 +1468,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		if(cacheCanvas)
 		{
 			var scale = this._cacheScale;
-			return this._rectangle.initialize(this._cacheOffsetX, this._cacheOffsetY, cacheCanvas.width / scale, cacheCanvas.height / scale);
+			return this._rectangle.setProperies(this._cacheOffsetX, this._cacheOffsetY, cacheCanvas.width / scale, cacheCanvas.height / scale);
 		}
 
 		return null;
@@ -1661,7 +1664,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			}
 			if(!bounds)
 			{
-				bounds = this._rectangle.initialize(x, y, width, height);
+				bounds = this._rectangle.setProperies(x, y, width, height);
 			}
 			bounds.x += fBounds.x;
 			bounds.y += fBounds.y;
@@ -1768,7 +1771,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			maxY = y;
 		}
 
-		return bounds.initialize(minX, minY, maxX - minX, maxY - minY);
+		return bounds.setProperies(minX, minY, maxX - minX, maxY - minY);
 	}
 
 	/**

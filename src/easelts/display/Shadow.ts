@@ -1,8 +1,8 @@
 /*
  * Shadow
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -48,8 +48,6 @@
 
 class Shadow
 {
-
-	// static public properties:
 	/**
 	 * An identity shadow object (all properties are set to 0).
 	 * @property identity
@@ -127,10 +125,6 @@ class Shadow
 	{
 		return new Shadow(this.color, this.offsetX, this.offsetY, this.blur);
 	}
-
-	// this has to be populated after the class is defined:
-	//
-
 }
 
 Shadow.identity = new Shadow("transparent", 0, 0, 0);
