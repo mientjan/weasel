@@ -1,0 +1,18 @@
+import BitmapChar = require('./BitmapChar');
+
+class CharLocation {
+
+	public scale:number = 0;
+	public x:number = 0;
+	public y:number = 0;
+	public char:BitmapChar;
+
+	constructor(char:BitmapChar)
+	{
+		this.char = char;
+		//this._char = null;
+
+	}
+}
+
+export = CharLocation;

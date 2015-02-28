@@ -2,6 +2,8 @@
  * BitmapText
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
