@@ -78,7 +78,6 @@
 import EventDispatcher = require('../createts/event/EventDispatcher');
 import TimeEvent = require('../createts/event/TimeEvent');
 import Ticker = require('../createts/utils/Ticker');
-import Ticker = require('../easelts/interface/');
 
 /**
  * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
@@ -209,7 +208,7 @@ class Tween extends EventDispatcher
 	 * applied to the returned tween instance.
 	 * @static
 	 */
-	public static get(target:any, props:any, pluginData:any, override:boolean)
+	public static get(target:any, props?:any, pluginData:any = {}, override:boolean = false):Tween
 	{
 		if(override)
 		{
@@ -564,7 +563,7 @@ class Tween extends EventDispatcher
 	 * @param {Object} pluginData
 	 * @protected
 	 */
-	constructor(target:I, props:any, pluginData:any)
+	constructor(target:any, props?:any, pluginData:any = {})
 	{
 		super();
 
@@ -582,7 +581,7 @@ class Tween extends EventDispatcher
 			}
 		}
 
-		this.pluginData = pluginData || {};
+		this.pluginData = pluginData;
 		this._curQueueProps = {};
 		this._initQueueProps = {};
 		this._steps = [];
@@ -616,7 +615,7 @@ class Tween extends EventDispatcher
 	 * at different times.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 **/
-	public wait(duration, passive)
+	public wait(duration = null, passive = 0):Tween
 	{
 		if(duration == null || duration <= 0)
 		{
@@ -640,7 +639,7 @@ class Tween extends EventDispatcher
 	 * @param {Function} ease Optional. The easing function to use for this tween. Defaults to a linear ease.
 	 * @return {Tween} This tween instance (for chaining calls).
 	 */
-	public to(props, duration, ease)
+	public to(props:any, duration = 0, ease = null):Tween
 	{
 		if(isNaN(duration) || duration < 0)
 		{

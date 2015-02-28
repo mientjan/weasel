@@ -89,6 +89,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
          * @protected
          */
         function Tween(target, props, pluginData) {
+            if (pluginData === void 0) { pluginData = {}; }
             _super.call(this);
             // public properties:
             /**
@@ -237,7 +238,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                     Tween.removeTweens(target);
                 }
             }
-            this.pluginData = pluginData || {};
+            this.pluginData = pluginData;
             this._curQueueProps = {};
             this._initQueueProps = {};
             this._steps = [];
@@ -278,6 +279,8 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
          * @static
          */
         Tween.get = function (target, props, pluginData, override) {
+            if (pluginData === void 0) { pluginData = {}; }
+            if (override === void 0) { override = false; }
             if (override) {
                 Tween.removeTweens(target);
             }
@@ -447,6 +450,8 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
          * @return {Tween} This tween instance (for chaining calls).
          **/
         Tween.prototype.wait = function (duration, passive) {
+            if (duration === void 0) { duration = null; }
+            if (passive === void 0) { passive = 0; }
             if (duration == null || duration <= 0) {
                 return this;
             }
@@ -468,6 +473,8 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
          * @return {Tween} This tween instance (for chaining calls).
          */
         Tween.prototype.to = function (props, duration, ease) {
+            if (duration === void 0) { duration = 0; }
+            if (ease === void 0) { ease = null; }
             if (isNaN(duration) || duration < 0) {
                 duration = 0;
             }

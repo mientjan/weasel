@@ -472,6 +472,4 @@ class Ease
 	public static elasticInOut = Ease.getElasticInOut(1, 0.3 * 1.5);
 }
 
-
-// constructor:
-
+export = Ease;
