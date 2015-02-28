@@ -55,28 +55,28 @@ class Rectangle
 	 * @property x
 	 * @type Number
 	 **/
-	public x = 0;
+	public x:number = 0;
 
 	/**
 	 * Y position.
 	 * @property y
 	 * @type Number
 	 **/
-	public y = 0;
+	public y:number = 0;
 
 	/**
 	 * Width.
 	 * @property width
 	 * @type Number
 	 **/
-	public width = 0;
+	public width:number = 0;
 
 	/**
 	 * Height.
 	 * @property height
 	 * @type Number
 	 **/
-	public height = 0;
+	public height:number = 0;
 
 	// constructor:
 	/**
@@ -88,12 +88,12 @@ class Rectangle
 	 * @param {Number} [height=0] The height of the Rectangle.
 	 * @return {Rectangle} This instance. Useful for chaining method calls.
 	 */
-		constructor(x:number, y:number, width:number, height:number)
+	constructor(x:number, y:number, width:number, height:number)
 	{
-		this.initialize(x, y, width, height);
+		this.setProperies(x, y, width, height);
 	}
 
-	public initialize(x:number, y:number, width:number, height:number)
+	public setProperies(x:number, y:number, width:number, height:number):Rectangle
 	{
 		this.x = x;
 		this.y = y;
@@ -109,9 +109,9 @@ class Rectangle
 	 * @param {Rectangle} rectangle The rectangle to copy properties from.
 	 * @return {Rectangle} This rectangle. Useful for chaining method calls.
 	 */
-	public copy(rectangle)
+	public copy(rectangle:Rectangle):Rectangle
 	{
-		return this.initialize(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+		return this.setProperies(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Rectangle
 	 * @method clone
 	 * @return {Rectangle} a clone of the Rectangle instance.
 	 **/
-	public clone()
+	public clone():Rectangle
 	{
 		return new Rectangle(this.x, this.y, this.width, this.height);
 	}
@@ -129,7 +129,7 @@ class Rectangle
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	public toString()
+	public toString():string
 	{
 		return "[Rectangle (x=" + this.x + " y=" + this.y + " width=" + this.width + " height=" + this.height + ")]";
 	}

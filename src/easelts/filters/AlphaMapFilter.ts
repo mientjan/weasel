@@ -1,5 +1,5 @@
 /// <reference path="./Filter.ts" />
-/// <reference path="../utils/Methods.ts" />
+/// <reference path="../util/Methods.ts" />
 
 
 /*
@@ -30,7 +30,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Methods = require('../utils/Methods');
+import Methods = require('../util/Methods');
 import Filter = require('./Filter');
 
 /**

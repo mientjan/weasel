@@ -1,7 +1,6 @@
 /// <reference path="./Filter.ts" />
 /*
  * ColorFilter
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
  *
@@ -138,7 +137,7 @@ class ColorFilter extends Filter
 	 * between -255 and 255.
 	 * @protected
 	 **/
-		constructor(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier, redOffset, greenOffset, blueOffset, alphaOffset)
+	constructor(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier, redOffset, greenOffset, blueOffset, alphaOffset)
 	{
 		super();
 		this.redMultiplier = redMultiplier != null ? redMultiplier : 1;
@@ -152,7 +151,7 @@ class ColorFilter extends Filter
 	}
 
 	// public methods:
-	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY)
+	public applyFilter(ctx:CanvasRenderingContext2D, x, y, width, height, targetCtx, targetX, targetY)
 	{
 		targetCtx = targetCtx || ctx;
 		if(targetX == null)
