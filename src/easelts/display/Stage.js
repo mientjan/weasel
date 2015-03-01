@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/utils/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/TimeEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, TimeEvent, Signal) {
+define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/TimeEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, TimeEvent, Signal) {
     /**
      * @module createts
      */

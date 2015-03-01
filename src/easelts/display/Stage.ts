@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Ticker = require('../../createts/utils/Ticker');
+import Ticker = require('../../createts/util/Ticker');
 import TouchInjectProperties = require('../ui/TouchInjectProperties');
 
 // display

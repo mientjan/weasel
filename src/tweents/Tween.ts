@@ -77,7 +77,7 @@
 
 import EventDispatcher = require('../createts/event/EventDispatcher');
 import TimeEvent = require('../createts/event/TimeEvent');
-import Ticker = require('../createts/utils/Ticker');
+import Ticker = require('../createts/util/Ticker');
 
 /**
  * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
