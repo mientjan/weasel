@@ -10,7 +10,7 @@ class NinePatch {
 	public bitmap:Bitmap;
 	public rectangle:Rectangle;
 
-	constructor(imageOrString:HTMLImageElement|string, rectangle:Rectangle)
+	constructor(imageOrString:HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|string, rectangle:Rectangle)
 	{
 		this.bitmap = new Bitmap(imageOrString);
 		this.rectangle = rectangle;

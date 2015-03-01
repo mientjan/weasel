@@ -7,7 +7,7 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../display/Bitmap', '../display/DisplayObject', '../enum/DisplayType'], function (require, exports, Bitmap, DisplayObject, DisplayType) {
     var BitmapNinePatch = (function (_super) {
         __extends(BitmapNinePatch, _super);
-        function BitmapNinePatch(patch, width, height, x, y, regX, regY) {
+        function BitmapNinePatch(ninePatch, width, height, x, y, regX, regY) {
             if (width === void 0) { width = '100%'; }
             if (height === void 0) { height = '100%'; }
             if (x === void 0) { x = 0; }
@@ -17,7 +17,7 @@ define(["require", "exports", '../display/Bitmap', '../display/DisplayObject', '
             _super.call(this, width, height, x, y, regX, regY);
             this.type = 7 /* BITMAP */;
             this.loaded = false;
-            this._patch = patch;
+            this._patch = ninePatch;
             if (!this._patch.bitmap.loaded) {
                 this._patch.bitmap.addEventListener(Bitmap.EVENT_ONLOAD, this.onLoad.bind(this));
             }
@@ -27,20 +27,6 @@ define(["require", "exports", '../display/Bitmap', '../display/DisplayObject', '
         }
         BitmapNinePatch.prototype.onLoad = function () {
             this.loaded = true;
-            var bitmap = this._patch.bitmap;
-            var width = bitmap.width;
-            var height = bitmap.height;
-            var coordinates = this._patch.getCoordinates(this.width, this.height);
-            var sourceColumn = coordinates.sourceColumn;
-            var sourceRow = coordinates.sourceRow;
-            this._bitmapCenterTop = new Bitmap(bitmap.image);
-            this._bitmapLeftMiddle = new Bitmap(bitmap.image);
-            this._bitmapRightMiddle = new Bitmap(bitmap.image);
-            this._bitmapCenterBottom = new Bitmap(bitmap.image);
-            this._bitmapCenterTop.cache(sourceColumn[1], sourceRow[0], (sourceColumn[2] - sourceColumn[1]) + 1, (sourceRow[1] - sourceRow[0]) + 1, 1);
-            this._bitmapLeftMiddle.cache(sourceColumn[0], sourceRow[1], sourceColumn[1] - sourceColumn[0], sourceRow[2] - sourceRow[1]);
-            this._bitmapRightMiddle.cache(sourceColumn[2], sourceRow[1], sourceColumn[3] - sourceColumn[2], sourceRow[2] - sourceRow[1]);
-            this._bitmapCenterBottom.cache(sourceColumn[1], sourceRow[2], sourceColumn[2] - sourceColumn[1], sourceRow[3] - sourceRow[2]);
         };
         BitmapNinePatch.prototype.draw = function (ctx, ignoreCache) {
             if (!this.loaded) {
