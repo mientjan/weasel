@@ -28,7 +28,10 @@
 
 import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
+import BitmapType = require('../enum/BitmapType');
 import Rectangle = require('../geom/Rectangle');
+import Signal = require('../../createts/event/Signal');
+import SimpleSignal = require('../../createts/event/SimpleSignal');
 import Size = require('../geom/Size');
 
 /**
@@ -67,14 +70,16 @@ class Bitmap extends DisplayObject
 	// public properties:
 
 	public type:DisplayType = DisplayType.BITMAP;
+	public bitmapType:BitmapType = BitmapType.UNKNOWN;
+
 	public loaded:boolean = false;
 
 	/**
 	 * The image to render. This can be an Image, a Canvas, or a Video.
 	 * @property image
-	 * @type Image | HTMLCanvasElement | HTMLVideoElement
+	 * @type HTMLImageElement | HTMLCanvasElement | HTMLVideoElement
 	 **/
-	public image:HTMLImageElement = null;
+	public image:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement = null;
 
 	/**
 	 * Specifies an area of the source image to draw. If omitted, the whole image will be drawn.
@@ -82,8 +87,8 @@ class Bitmap extends DisplayObject
 	 * @type Rectangle
 	 * @default null
 	 */
-	sourceRect:Rectangle = null;
-	destinationRect:Rectangle = null;
+	public sourceRect:Rectangle = null;
+	public destinationRect:Rectangle = null;
 
 	/**
 	 * Initialization method.
@@ -107,28 +112,50 @@ class Bitmap extends DisplayObject
 	 */
 	//constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
 	//constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-	constructor(imageOrUri:HTMLImageElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
+		var image:any;
+
 		if(typeof imageOrUri == "string")
 		{
-			this.image = document.createElement("img");
-			this.image.src = <string> imageOrUri;
-		}
-		else
-		{
-			this.image = <HTMLImageElement> imageOrUri;
+			image = <HTMLImageElement> document.createElement("img");
+			image.src = <string> imageOrUri;
+		} else {
+			image = imageOrUri;
 		}
 
-		if(this.image){
-			if(!this.image.complete)
-			{
-				this.image.onload = <any> this.onLoad.bind(this);
+		var tagName = image.tagName.toLowerCase();
+
+		switch( tagName )
+		{
+			case 'img':{
+				this.image = <HTMLImageElement> image;
+				this.bitmapType = BitmapType.IMAGE;
+
+				if( ( <HTMLImageElement> this.image).complete ){
+					this.onLoad();
+				} else {
+					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad.bind(this) );
+				}
+				break;
 			}
-			else
-			{
-				this.onLoad()
+
+			case 'video':{
+				this.image = <HTMLVideoElement> image;
+				this.bitmapType = BitmapType.VIDEO;
+
+				this.onLoad();
+				break;
+			}
+
+			case 'canvas':{
+				this.image = <HTMLCanvasElement> image;
+				this.bitmapType = BitmapType.IMAGE;
+
+				this.onLoad();
+				break;
 			}
 		}
 	}
@@ -196,7 +223,7 @@ class Bitmap extends DisplayObject
 
 			if(sourceRect && !destRect)
 			{
-				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, sourceRect.width, sourceRect.height);
+				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, this.width, this.height);
 			}
 			else if(!sourceRect && destRect)
 			{
@@ -267,11 +294,12 @@ class Bitmap extends DisplayObject
 	public clone():Bitmap
 	{
 		var o = new Bitmap(this.image);
-		if(this.sourceRect)
-		{
-			o.sourceRect = this.sourceRect.clone();
-		}
+
+		if(this.sourceRect) o.sourceRect = this.sourceRect.clone();
+		if(this.destinationRect) o.destinationRect = this.destinationRect.clone();
+
 		this.cloneProps(o);
+
 		return o;
 	}
 
@@ -286,7 +314,10 @@ class Bitmap extends DisplayObject
 	}
 
 	public destruct(){
-
+		this.image = null;
+		this.sourceRect = null;
+		this.destinationRect = null;
+		super.destruct();
 	}
 
 }

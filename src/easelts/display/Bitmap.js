@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, Size) {
+define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum/BitmapType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, BitmapType, Size) {
     /**
      * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
      * HTML element, or a string.
@@ -90,11 +90,12 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
             this.type = 7 /* BITMAP */;
+            this.bitmapType = 0 /* UNKNOWN */;
             this.loaded = false;
             /**
              * The image to render. This can be an Image, a Canvas, or a Video.
              * @property image
-             * @type Image | HTMLCanvasElement | HTMLVideoElement
+             * @type HTMLImageElement | HTMLCanvasElement | HTMLVideoElement
              **/
             this.image = null;
             /**
@@ -105,19 +106,38 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
              */
             this.sourceRect = null;
             this.destinationRect = null;
+            var image;
             if (typeof imageOrUri == "string") {
-                this.image = document.createElement("img");
-                this.image.src = imageOrUri;
+                image = document.createElement("img");
+                image.src = imageOrUri;
             }
             else {
-                this.image = imageOrUri;
+                image = imageOrUri;
             }
-            if (this.image) {
-                if (!this.image.complete) {
-                    this.image.onload = this.onLoad.bind(this);
+            var tagName = image.tagName.toLowerCase();
+            switch (tagName) {
+                case 'img': {
+                    this.image = image;
+                    this.bitmapType = 1 /* IMAGE */;
+                    if (this.image.complete) {
+                        this.onLoad();
+                    }
+                    else {
+                        this.image.addEventListener('load', this.onLoad.bind(this));
+                    }
+                    break;
                 }
-                else {
+                case 'video': {
+                    this.image = image;
+                    this.bitmapType = 2 /* VIDEO */;
                     this.onLoad();
+                    break;
+                }
+                case 'canvas': {
+                    this.image = image;
+                    this.bitmapType = 1 /* IMAGE */;
+                    this.onLoad();
+                    break;
                 }
             }
         }
@@ -165,7 +185,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 var sourceRect = this.sourceRect;
                 var destRect = this.destinationRect;
                 if (sourceRect && !destRect) {
-                    ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, sourceRect.width, sourceRect.height);
+                    ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, this.width, this.height);
                 }
                 else if (!sourceRect && destRect) {
                     ctx.drawImage(this.image, 0, 0, this.width, this.height, destRect.x, destRect.y, destRect.width, destRect.height);
@@ -224,9 +244,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          **/
         Bitmap.prototype.clone = function () {
             var o = new Bitmap(this.image);
-            if (this.sourceRect) {
+            if (this.sourceRect)
                 o.sourceRect = this.sourceRect.clone();
-            }
+            if (this.destinationRect)
+                o.destinationRect = this.destinationRect.clone();
             this.cloneProps(o);
             return o;
         };
@@ -239,6 +260,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             return "[Bitmap (name=" + this.name + ")]";
         };
         Bitmap.prototype.destruct = function () {
+            this.image = null;
+            this.sourceRect = null;
+            this.destinationRect = null;
+            _super.prototype.destruct.call(this);
         };
         Bitmap.EVENT_ONLOAD = 'onload';
         return Bitmap;
