@@ -40,6 +40,8 @@ var Generator = <IGenerator> function()
 
 		return items;
 	}
+
+	return SimpleSignal;
 }
 
 Generator.TYPE_REMOVE = 1;

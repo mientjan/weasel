@@ -28,6 +28,7 @@ define(["require", "exports"], function (require, exports) {
             }
             return items;
         };
+        return SimpleSignal;
     };
     Generator.TYPE_REMOVE = 1;
     Generator.TYPE_REMOVE_ALL = 2;
