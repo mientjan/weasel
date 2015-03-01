@@ -203,11 +203,12 @@ class DOMElement extends DisplayObject
 	 * function.
 	 * @protected
 	 */
-	public onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
 		var stage = this.getStage();
 		this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
-		super.onTick(e);
+
+		super.onTick(delta);
 
 		//stage && stage.on("drawend", this._handleDrawEnd, this, true);
 	}

@@ -478,7 +478,7 @@ class Stage extends Container
 	 * @method update
 	 * @param {TimeEvent} timeEvent
 	 **/
-	public update = (timeEvent?:TimeEvent) =>
+	public update = (delta:number) =>
 	{
 		if(!this.canvas)
 		{
@@ -488,7 +488,7 @@ class Stage extends Container
 		if(this.tickOnUpdate)
 		{
 			// update this logic in SpriteStage when necessary
-			this.onTick.call(this, timeEvent);
+			this.onTick.call(this, delta);
 		}
 		//
 		//		if(this.dispatchEvent("drawstart"))
@@ -565,7 +565,7 @@ class Stage extends Container
 	 * @method onTick
 	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
 	 **/
-	public tick(e:TimeEvent)
+	public tick(delta:number)
 	{
 		if(!this.tickEnabled)
 		{
@@ -573,7 +573,7 @@ class Stage extends Container
 		}
 
 		this.tickstartSignal.emit();
-		this.onTick(e);
+		this.onTick(delta);
 		this.tickendSignal.emit();
 	}
 
@@ -1246,7 +1246,7 @@ class Stage extends Container
 	{
 		if(!this._isRunning)
 		{
-			this.update(new TimeEvent('tick',0,false,0,0));
+			this.update(0);
 			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
 			this._isRunning = true;
 			return true;
@@ -1313,7 +1313,7 @@ class Stage extends Container
 
 			if(!this._isRunning)
 			{
-				this.update(new TimeEvent('tick',0,false,0,0));
+				this.update(0);
 			}
 		}
 	}

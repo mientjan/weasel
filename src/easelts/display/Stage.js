@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/TimeEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, TimeEvent, Signal) {
+define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, Signal) {
     /**
      * @module createts
      */
@@ -269,13 +269,13 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
              * @method update
              * @param {TimeEvent} timeEvent
              **/
-            this.update = function (timeEvent) {
+            this.update = function (delta) {
                 if (!_this.canvas) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
                     // update this logic in SpriteStage when necessary
-                    _this.onTick.call(_this, timeEvent);
+                    _this.onTick.call(_this, delta);
                 }
                 //
                 //		if(this.dispatchEvent("drawstart"))
@@ -443,12 +443,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @method onTick
          * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
          **/
-        Stage.prototype.tick = function (e) {
+        Stage.prototype.tick = function (delta) {
             if (!this.tickEnabled) {
                 return;
             }
             this.tickstartSignal.emit();
-            this.onTick(e);
+            this.onTick(delta);
             this.tickendSignal.emit();
         };
         /**
@@ -959,7 +959,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          */
         Stage.prototype.start = function () {
             if (!this._isRunning) {
-                this.update(new TimeEvent('tick', 0, false, 0, 0));
+                this.update(0);
                 this._tickSignalConnection = Ticker.getInstance().addTickListener(this.update);
                 this._isRunning = true;
                 return true;
@@ -1010,7 +1010,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 this.canvas.height = e.height;
                 _super.prototype.onResize.call(this, e);
                 if (!this._isRunning) {
-                    this.update(new TimeEvent('tick', 0, false, 0, 0));
+                    this.update(0);
                 }
             }
         };

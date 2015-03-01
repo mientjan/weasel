@@ -70,7 +70,7 @@ class ImageSequence extends Bitmap
 		}
 	}
 
-	public onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
 		var playing = this._playing;
 
@@ -78,15 +78,15 @@ class ImageSequence extends Bitmap
 		{
 			if(this._timeIndex < 0)
 			{
-				this._timeIndex = e.time;
+				this._timeIndex = 0;
 			}
 
-			var fps = this._fps,
-				length = this._length,
-				times = this._times,
-				time = e.time - this._timeIndex,
-				frame = Math.floor(time / fps),
-				currentFrame = this._frame;
+			var time = this._timeIndex += delta;
+			var fps = this._fps;
+			var length = this._length;
+			var times = this._times;
+			var frame = Math.floor(time / fps);
+			var currentFrame = this._frame;
 
 			if(times > -1 && !(times - Math.floor(frame / length)))
 			{
@@ -100,9 +100,6 @@ class ImageSequence extends Bitmap
 				{
 					this._frame = frame;
 					this.image = this._images[frame];
-
-					console.log(this._frame);
-					
 				}
 			}
 

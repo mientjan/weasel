@@ -104,7 +104,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             this.tickChildren = true;
         }
         /**
-         * Has something todo with the Tweenlite timeline and the createts toolset fro flash animations
+         * Has something todo with the Tweents timeline and the createts toolset fro flash animations
          * @method initialize
          */
         Container.prototype.initialize = function () {
@@ -614,17 +614,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * function.
          * @protected
          **/
-        Container.prototype.onTick = function (e) {
+        Container.prototype.onTick = function (delta) {
             if (this.tickChildren) {
                 var children = this.children;
                 for (var i = children.length - 1; i >= 0; i--) {
                     var child = children[i];
                     if (child.tickEnabled) {
-                        child.onTick(e);
+                        child.onTick(delta);
                     }
                 }
             }
-            _super.prototype.onTick.call(this, e);
+            _super.prototype.onTick.call(this, delta);
         };
         /**
          * @method _getObjectsUnderPoint

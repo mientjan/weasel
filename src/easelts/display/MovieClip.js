@@ -202,7 +202,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
              */
             this._t = 0;
             this.parent = null;
-            this.mode = mode || MovieClip.INDEPENDENT;
+            this.mode = mode;
             this.startPosition = startPosition || 0;
             this.loop = loop;
             var props = { paused: true, position: startPosition, useTicks: true };
@@ -265,7 +265,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
          * @param [time] {Number} The amount of time in ms to advance by. Only applicable if framerate is set.
          * @method advance
          */
-        MovieClip.prototype.advance = function (time) {
+        MovieClip.prototype.advance = function (delta) {
             // TODO: should we worry at all about clips who change their own modes via frame scripts?
             var independent = MovieClip.INDEPENDENT;
             if (this.mode != independent) {
@@ -278,7 +278,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
                 }
             }
             this._framerate = fps;
-            var t = (fps != null && fps != -1 && time != null) ? time / (1000 / fps) + this._t : 1;
+            var t = (fps != null && fps != -1 && delta != null) ? delta / (1000 / fps) + this._t : 1;
             var frames = t | 0;
             this._t = t - frames;
             while (frames--) {
@@ -334,9 +334,9 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
          * function.
          * @protected
          **/
-        MovieClip.prototype.onTick = function (e) {
-            this.advance(e && e.delta);
-            _super.prototype.onTick.call(this, e);
+        MovieClip.prototype.onTick = function (delta) {
+            this.advance(delta);
+            _super.prototype.onTick.call(this, delta);
         };
         /**
          * @method _goto

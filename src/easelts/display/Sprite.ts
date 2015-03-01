@@ -322,7 +322,7 @@ class Sprite extends DisplayObject
 	 * or its SpriteSheet.
 	 * @method advance
 	 */
-	public advance(time)
+	public advance(time:number)
 	{
 		var speed = (this._animation && this._animation.speed) || 1;
 		var fps = this.framerate || this.spriteSheet.framerate;
@@ -388,13 +388,14 @@ class Sprite extends DisplayObject
 	 * @protected
 	 * @method _tick
 	 **/
-	public onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
 		if(!this.paused)
 		{
-			this.advance(e && e.delta);
+			this.advance(delta);
 		}
-		super.onTick(e);
+
+		super.onTick(delta);
 	}
 
 

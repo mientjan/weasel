@@ -1591,8 +1591,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * be undefined or contain other values depending on the usage by the application.
 	 * @protected
 	 **/
-	public onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
+
 	}
 
 	/**

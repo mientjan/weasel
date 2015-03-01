@@ -124,7 +124,7 @@ class MovieClip extends Container
 	 * @type String
 	 * @default null
 	 **/
-	mode;
+	public mode:string;
 
 	/**
 	 * Specifies what the first frame to play in this movieclip, or the only frame to display if mode is SINGLE_FRAME.
@@ -295,11 +295,11 @@ class MovieClip extends Container
 	 * Labels only need to be passed if they need to be used.
 	 * @protected
 	 **/
-		constructor(mode = MovieClip.INDEPENDENT, startPosition = 0, loop = false, labels?)
+	constructor(mode:string = MovieClip.INDEPENDENT, startPosition = 0, loop = false, labels?)
 	{
 		super();
 
-		this.mode = mode || MovieClip.INDEPENDENT;
+		this.mode = mode;
 		this.startPosition = startPosition || 0;
 		this.loop = loop;
 		var props = {paused: true, position: startPosition, useTicks: true};
@@ -378,7 +378,7 @@ class MovieClip extends Container
 	 * @param [time] {Number} The amount of time in ms to advance by. Only applicable if framerate is set.
 	 * @method advance
 	 */
-	public advance(time)
+	public advance(delta:number)
 	{
 
 		// TODO: should we worry at all about clips who change their own modes via frame scripts?
@@ -398,7 +398,7 @@ class MovieClip extends Container
 		}
 		this._framerate = fps;
 
-		var t = (fps != null && fps != -1 && time != null) ? time / (1000 / fps) + this._t : 1;
+		var t = (fps != null && fps != -1 && delta != null) ? delta / (1000 / fps) + this._t : 1;
 		var frames = t | 0;
 		this._t = t - frames;
 
@@ -469,10 +469,10 @@ class MovieClip extends Container
 	 * function.
 	 * @protected
 	 **/
-		onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
-		this.advance(e && e.delta);
-		super.onTick(e);
+		this.advance(delta);
+		super.onTick(delta);
 	}
 
 	/**

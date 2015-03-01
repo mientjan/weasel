@@ -105,7 +105,7 @@ class Container extends DisplayObject
 	}
 
 	/**
-	 * Has something todo with the Tweenlite timeline and the createts toolset fro flash animations
+	 * Has something todo with the Tweents timeline and the createts toolset fro flash animations
 	 * @method initialize
 	 */
 	public initialize()
@@ -724,7 +724,7 @@ class Container extends DisplayObject
 	 * function.
 	 * @protected
 	 **/
-	public onTick(e:TimeEvent)
+	public onTick(delta:number)
 	{
 		if(this.tickChildren)
 		{
@@ -734,13 +734,13 @@ class Container extends DisplayObject
 				var child = children[i];
 				if(child.tickEnabled)
 				{
-					child.onTick(e);
+					child.onTick(delta);
 				}
 			}
 
 		}
 
-		super.onTick(e);
+		super.onTick(delta);
 	}
 
 	/**

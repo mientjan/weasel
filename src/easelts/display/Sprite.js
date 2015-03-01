@@ -333,11 +333,11 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
          * @protected
          * @method _tick
          **/
-        Sprite.prototype.onTick = function (e) {
+        Sprite.prototype.onTick = function (delta) {
             if (!this.paused) {
-                this.advance(e && e.delta);
+                this.advance(delta);
             }
-            _super.prototype.onTick.call(this, e);
+            _super.prototype.onTick.call(this, delta);
         };
         /**
          * Normalizes the current frame, advancing animations and dispatching callbacks as appropriate.

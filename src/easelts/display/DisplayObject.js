@@ -1174,7 +1174,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          * be undefined or contain other values depending on the usage by the application.
          * @protected
          **/
-        DisplayObject.prototype.onTick = function (e) {
+        DisplayObject.prototype.onTick = function (delta) {
         };
         /**
          * @method _testHit
