@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/event/EventDispatcher', '../createts/utils/Ticker'], function (require, exports, EventDispatcher, Ticker) {
+define(["require", "exports", '../createts/event/EventDispatcher', '../createts/util/Ticker'], function (require, exports, EventDispatcher, Ticker) {
     /**
      * A Tween instance tweens properties for a single target. Instance methods can be chained for easy construction and sequencing:
      *
