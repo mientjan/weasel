@@ -31,7 +31,6 @@ import DisplayType = require('../enum/DisplayType');
 import BitmapType = require('../enum/BitmapType');
 import Rectangle = require('../geom/Rectangle');
 import Signal = require('../../createts/event/Signal');
-import SimpleSignal = require('../../createts/event/SimpleSignal');
 import Size = require('../geom/Size');
 
 /**

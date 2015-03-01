@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/Bitmap', '../util/Methods', '../behavior/ButtonBehavior'], function (require, exports, Bitmap, Methods, ButtonBehavior) {
+define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType', '../behavior/ButtonBehavior'], function (require, exports, DisplayObject, DisplayType, ButtonBehavior) {
     /**
      * @class ImageSequence
      */
@@ -27,67 +27,59 @@ define(["require", "exports", '../display/Bitmap', '../util/Methods', '../behavi
             if (y === void 0) { y = 0; }
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
-            _super.call(this, data.idle, width, height, x, y, regX, regY);
-            this._images = {
+            _super.call(this, width, height, x, y, regX, regY);
+            this.type = 7 /* BITMAP */;
+            this._bitmaps = {
                 idle: null,
                 over: null,
                 down: null,
                 disabled: null
             };
+            this._bitmap = null;
             this.addBehavior(new ButtonBehavior());
-            if (typeof data.idle == 'string') {
-                this._images.idle = this.image;
-                if (data.over)
-                    this._images.over = Methods.createImage(data.over);
-                if (data.down)
-                    this._images.down = Methods.createImage(data.down);
-                if (data.disabled)
-                    this._images.disabled = Methods.createImage(data.disabled);
-            }
-            else {
-                this._images.idle = this.image;
-                if (data.over)
-                    this._images.over = data.over;
-                if (data.down)
-                    this._images.down = data.down;
-                if (data.disabled)
-                    this._images.disabled = data.disabled;
-            }
+            if (data.idle)
+                this._bitmaps.idle = data.idle;
+            if (data.over)
+                this._bitmaps.over = data.over;
+            if (data.down)
+                this._bitmaps.down = data.down;
+            if (data.disabled)
+                this._bitmaps.disabled = data.disabled;
             this.addEventListener(ImageButton.EVENT_MOUSE_CLICK, function (e) {
-                _this.image = _this._images.idle;
+                _this._bitmap = _this._bitmaps.idle;
             });
-            if (this._images.over) {
+            if (this._bitmaps.over) {
                 this.addEventListener(ImageButton.EVENT_MOUSE_OVER, function (e) {
-                    _this.image = _this._images.over;
+                    _this._bitmap = _this._bitmaps.over;
                 });
             }
-            if (this._images.down) {
+            if (this._bitmaps.down) {
                 this.addEventListener(ImageButton.EVENT_DISABLED, function (e) {
-                    _this.image = _this._images.down;
+                    _this._bitmap = _this._bitmaps.down;
                 });
             }
-            if (this._images.disabled) {
+            if (this._bitmaps.disabled) {
                 this.addEventListener(ImageButton.EVENT_DISABLED, function (e) {
-                    _this.image = _this._images.disabled;
+                    _this._bitmap = _this._bitmaps.disabled;
                 });
             }
         }
         ImageButton.prototype.disable = function () {
-            if (this._images.disabled) {
-                this.image = this._images.disabled;
+            if (this._bitmaps.disabled) {
+                this._bitmap = this._bitmaps.disabled;
             }
         };
         ImageButton.prototype.enable = function () {
-            if (this._images.idle) {
-                this.image = this._images.idle;
+            if (this._bitmaps.idle) {
+                this._bitmap = this._bitmaps.idle;
             }
         };
         ImageButton.prototype.draw = function (ctx, ignoreCache) {
-            ctx.drawImage(this.image, 0, 0);
+            this._bitmap.draw(ctx, ignoreCache);
             return true;
         };
         ImageButton.EVENT_DISABLED = 'disabled';
         return ImageButton;
-    })(Bitmap);
+    })(DisplayObject);
     return ImageButton;
 });
