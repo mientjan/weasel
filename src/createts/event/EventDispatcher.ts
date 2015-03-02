@@ -300,8 +300,8 @@ class EventDispatcher
 	 * dispatching object. <b>This parameter is deprecated and will be removed.</b>
 	 * @return {Boolean} Returns the value of eventObj.defaultPrevented.
 	 **/
-	public dispatchEvent(eventObj:string, target?:any)
-	public dispatchEvent(eventObj:Event, target?:any)
+	public dispatchEvent(eventObj:string, target?:any);
+	public dispatchEvent(eventObj:Event, target?:any);
 	public dispatchEvent(eventObj:any, target?:any)
 	{
 		if(typeof eventObj == "string")

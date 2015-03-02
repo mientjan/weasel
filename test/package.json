@@ -1,0 +1,9 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "karma": "^0.12.31"
+  },
+  "license": "MIT"
+}
