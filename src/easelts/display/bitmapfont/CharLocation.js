@@ -5,7 +5,6 @@ define(["require", "exports"], function (require, exports) {
             this.x = 0;
             this.y = 0;
             this.char = char;
-            //this._char = null;
         }
         return CharLocation;
     })();

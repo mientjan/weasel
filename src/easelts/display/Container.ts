@@ -30,6 +30,7 @@ import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
 import m2 = require('../geom/Matrix2');
+import Rectangle = require('../geom/Rectangle');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
 
@@ -724,7 +725,7 @@ class Container extends DisplayObject
 	 * function.
 	 * @protected
 	 **/
-	public onTick(delta:number)
+	public onTick(delta:number):void
 	{
 		if(this.tickChildren)
 		{
@@ -858,7 +859,7 @@ class Container extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean)
+	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		var bounds = super.getBounds();
 		if(bounds)

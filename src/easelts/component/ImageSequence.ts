@@ -42,14 +42,14 @@ class ImageSequence extends Bitmap
 		this._length = images.length;
 	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
 		ctx.drawImage(this.image, 0, 0);
 
 		return true;
 	}
 
-	public play(times = 1, onComplete:Function = null)
+	public play(times = 1, onComplete:Function = null):void
 	{
 		this._frame = 0;
 		this._times = times;
@@ -57,7 +57,7 @@ class ImageSequence extends Bitmap
 		this._playing = true;
 	}
 
-	public stop()
+	public stop():void
 	{
 		this._playing = false;
 		this._timeIndex = -1;
@@ -70,7 +70,7 @@ class ImageSequence extends Bitmap
 		}
 	}
 
-	public onTick(delta:number)
+	public onTick(delta:number):void
 	{
 		var playing = this._playing;
 

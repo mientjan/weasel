@@ -10,8 +10,6 @@ class CharLocation {
 	constructor(char:BitmapChar)
 	{
 		this.char = char;
-		//this._char = null;
-
 	}
 }
 

@@ -26,6 +26,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import Rectangle = require('../geom/Rectangle');
+
 /**
  * @module EaselJS
  */
@@ -78,7 +80,7 @@ class Filter
 	 * @method getBounds
 	 * @return {Rectangle} a rectangle object indicating the margins required to draw the filter or null if the filter does not effect bounds.
 	 **/
-	public getBounds()
+	public getBounds():Rectangle
 	{
 		return null;
 	}
@@ -106,7 +108,7 @@ class Filter
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
-	public toString()
+	public toString():string
 	{
 		return "[Filter]";
 	}
@@ -116,7 +118,7 @@ class Filter
 	 * @method clone
 	 * @return {Filter} A clone of the current Filter instance.
 	 **/
-	public clone()
+	public clone():Filter
 	{
 		return new Filter();
 	}

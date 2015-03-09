@@ -18,7 +18,7 @@ class AbstractBehaviour
 	 * @method initialize
 	 * @param {DisplayObject} owner
 	 */
-	public initialize(owner:DisplayObject):any
+	public initialize(owner:DisplayObject):void
 	{
 		if(this.owner)
 		{
@@ -34,4 +34,4 @@ class AbstractBehaviour
 	}
 }
 
-export  = AbstractBehaviour;
+export = AbstractBehaviour;

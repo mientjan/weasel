@@ -65,7 +65,7 @@ import Size = require('../geom/Size');
 class Bitmap extends DisplayObject
 {
 
-	public static EVENT_ONLOAD = 'onload';
+	public static EVENT_ONLOAD:string = 'onload';
 	// public properties:
 
 	public type:DisplayType = DisplayType.BITMAP;
@@ -125,11 +125,12 @@ class Bitmap extends DisplayObject
 			image = imageOrUri;
 		}
 
-		var tagName = image.tagName.toLowerCase();
+		var tagName:string = image.tagName.toLowerCase();
 
-		switch( tagName )
+		switch(tagName)
 		{
-			case 'img':{
+			case 'img':
+			{
 				this.image = <HTMLImageElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
@@ -141,7 +142,8 @@ class Bitmap extends DisplayObject
 				break;
 			}
 
-			case 'video':{
+			case 'video':
+			{
 				this.image = <HTMLVideoElement> image;
 				this.bitmapType = BitmapType.VIDEO;
 
@@ -149,7 +151,8 @@ class Bitmap extends DisplayObject
 				break;
 			}
 
-			case 'canvas':{
+			case 'canvas':
+			{
 				this.image = <HTMLCanvasElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
@@ -159,7 +162,7 @@ class Bitmap extends DisplayObject
 		}
 	}
 
-	public onLoad()
+	public onLoad():void
 	{
 		this.loaded = true;
 
@@ -274,7 +277,7 @@ class Bitmap extends DisplayObject
 	/**
 	 * Docced in superclass.
 	 */
-	public getBounds()
+	public getBounds():Rectangle
 	{
 		var rect = super.getBounds();
 		if(rect)

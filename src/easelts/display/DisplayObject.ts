@@ -1523,7 +1523,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method clone
 	 * @return {DisplayObject} A clone of the current DisplayObject instance.
 	 **/
-	public clone(recursive?:boolean)
+	public clone(recursive?:boolean):DisplayObject
 	{
 		var o = new DisplayObject();
 		this.cloneProps(o);

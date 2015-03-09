@@ -116,29 +116,32 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
             }
             var tagName = image.tagName.toLowerCase();
             switch (tagName) {
-                case 'img': {
-                    this.image = image;
-                    this.bitmapType = 1 /* IMAGE */;
-                    if (this.image.complete) {
+                case 'img':
+                    {
+                        this.image = image;
+                        this.bitmapType = 1 /* IMAGE */;
+                        if (this.image.complete) {
+                            this.onLoad();
+                        }
+                        else {
+                            this.image.addEventListener('load', this.onLoad.bind(this));
+                        }
+                        break;
+                    }
+                case 'video':
+                    {
+                        this.image = image;
+                        this.bitmapType = 2 /* VIDEO */;
                         this.onLoad();
+                        break;
                     }
-                    else {
-                        this.image.addEventListener('load', this.onLoad.bind(this));
+                case 'canvas':
+                    {
+                        this.image = image;
+                        this.bitmapType = 1 /* IMAGE */;
+                        this.onLoad();
+                        break;
                     }
-                    break;
-                }
-                case 'video': {
-                    this.image = image;
-                    this.bitmapType = 2 /* VIDEO */;
-                    this.onLoad();
-                    break;
-                }
-                case 'canvas': {
-                    this.image = image;
-                    this.bitmapType = 1 /* IMAGE */;
-                    this.onLoad();
-                    break;
-                }
             }
         }
         Bitmap.prototype.onLoad = function () {
