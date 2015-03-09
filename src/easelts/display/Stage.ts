@@ -235,7 +235,13 @@ class Stage extends Container
 	private _mouseOverX:number;
 	private _mouseOverTarget:any[];
 
-	private _triggerResizeOnWindowResize:boolean = false;
+	/**
+	 * Indicates whether onResize should be called when the window is resized.
+	 * @property triggerResizeOnWindowResize
+	 * @type {boolean}
+	 * @default false
+	 */
+	public triggerResizeOnWindowResize:boolean = false;
 
 	/**
 	 * Specifies the area of the stage to affect when calling update. This can be use to selectively
@@ -389,7 +395,7 @@ class Stage extends Container
 	 * @class Stage
 	 * @constructor
 	 * @param {HTMLCanvasElement|HTMLDivElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
-	 * @param {boolean} triggerResizeOnWindowResize Whether onResize is called when the window is resized. Defaults to false.
+	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
 	constructor(element:HTMLDivElement, triggerResizeOnWindowResize?:boolean);
 	constructor(element:HTMLCanvasElement, triggerResizeOnWindowResize?:boolean);
@@ -397,7 +403,7 @@ class Stage extends Container
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
-		this._triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
 
 		switch(element.tagName)
 		{
@@ -431,17 +437,14 @@ class Stage extends Container
 		this.setQuality(QualityType.NORMAL);
 		this.stage = this;
 
-		var size:Size = null;
-		if (this._triggerResizeOnWindowResize || element.tagName == "DIV")
+		if (this.triggerResizeOnWindowResize || element.tagName == "DIV")
 		{
-			size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
+			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
 		}
 		else
 		{
-			size = new Size(this.canvas.width, this.canvas.height);
+			this.onResize(new Size(this.canvas.width, this.canvas.height));
 		}
-
-		this.onResize(size);
 	}
 
 
@@ -755,13 +758,11 @@ class Stage extends Container
 			//				}
 			//			};
 
-			if (this._triggerResizeOnWindowResize)
-			{
-				eventListeners["resize"] = {
-					window: windowsObject,
-					fn: e => this._handleWindowResize(e)
-				};
-			}
+			eventListeners["resize"] = {
+				window: windowsObject,
+				fn: e => this._handleWindowResize(e)
+			};
+
 
 			for(name in eventListeners)
 			{
@@ -778,7 +779,7 @@ class Stage extends Container
 	 **/
 	public clone()
 	{
-		var o = new Stage(null, this._triggerResizeOnWindowResize);
+		var o = new Stage(null, this.triggerResizeOnWindowResize);
 		this.cloneProps(o);
 		return o;
 	}
@@ -1181,7 +1182,10 @@ class Stage extends Container
 	 **/
 	public _handleWindowResize(e)
 	{
-		this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		if (this.triggerResizeOnWindowResize)
+		{
+			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		}
 	}
 
 	/**

@@ -182,7 +182,13 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
              * @readonly
              **/
             this.mouseY = 0;
-            this._triggerResizeOnWindowResize = false;
+            /**
+             * Indicates whether onResize should be called when the window is resized.
+             * @property triggerResizeOnWindowResize
+             * @type {boolean}
+             * @default false
+             */
+            this.triggerResizeOnWindowResize = false;
             /**
              * Specifies the area of the stage to affect when calling update. This can be use to selectively
              * re-render only active regions of the canvas. If null, the whole canvas area is affected.
@@ -308,7 +314,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 //		this.dispatchEvent("drawend");
                 //		console.timeEnd('stage:update');
             };
-            this._triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+            this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
@@ -335,14 +341,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(0 /* NORMAL */);
             this.stage = this;
-            var size = null;
-            if (this._triggerResizeOnWindowResize || element.tagName == "DIV") {
-                size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
+            if (this.triggerResizeOnWindowResize || element.tagName == "DIV") {
+                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
             }
             else {
-                size = new Size(this.canvas.width, this.canvas.height);
+                this.onResize(new Size(this.canvas.width, this.canvas.height));
             }
-            this.onResize(size);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
@@ -591,12 +595,10 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 //					this._handleDoubleClick(e)
                 //				}
                 //			};
-                if (this._triggerResizeOnWindowResize) {
-                    eventListeners["resize"] = {
-                        window: windowsObject,
-                        fn: function (e) { return _this._handleWindowResize(e); }
-                    };
-                }
+                eventListeners["resize"] = {
+                    window: windowsObject,
+                    fn: function (e) { return _this._handleWindowResize(e); }
+                };
                 for (name in eventListeners) {
                     o = eventListeners[name];
                     o.window.addEventListener(name, o.fn, false);
@@ -609,7 +611,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @return {Stage} A clone of the current Container instance.
          **/
         Stage.prototype.clone = function () {
-            var o = new Stage(null, this._triggerResizeOnWindowResize);
+            var o = new Stage(null, this.triggerResizeOnWindowResize);
             this.cloneProps(o);
             return o;
         };
@@ -907,7 +909,9 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @param {Event} e
          **/
         Stage.prototype._handleWindowResize = function (e) {
-            this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            if (this.triggerResizeOnWindowResize) {
+                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            }
         };
         /**
          *
