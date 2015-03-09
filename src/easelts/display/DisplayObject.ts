@@ -390,8 +390,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _behaviorList:AbstractBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public minimumContainerSize:Rectangle = null;
-	public maximumContainerSize:Rectangle = null;
+	public minimumContainerSize:Size = null;
+	public maximumContainerSize:Size = null;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
