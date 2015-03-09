@@ -540,16 +540,28 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             return this;
         };
         /**
-         * Removes all be behaviors
+         * Removes all behaviors
          *
          * @method removeAllBehaviors
          * @return void
          */
         DisplayObject.prototype.removeAllBehaviors = function () {
             if (this._behaviorList) {
+                this._behaviorList.length = 0;
+            }
+        };
+        /**
+         * Destructs all behaviors
+         *
+         * @method destructAllBehaviors
+         * @return void
+         */
+        DisplayObject.prototype.destructAllBehaviors = function () {
+            if (this._behaviorList) {
                 while (this._behaviorList.length) {
                     this._behaviorList.pop().destruct();
                 }
+                this._behaviorList = null;
             }
         };
         /**
@@ -1367,7 +1379,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         };
         DisplayObject.prototype.destruct = function () {
             this.parent = null;
-            this.removeAllBehaviors();
+            this.destructAllBehaviors();
             _super.prototype.destruct.call(this);
         };
         DisplayObject.EVENT_MOUSE_CLICK = 'click';

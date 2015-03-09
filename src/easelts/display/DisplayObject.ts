@@ -60,7 +60,7 @@ import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 
-import AbstractBehavior = require('../behavior/AbstractBehavior');
+import IBehavior = require('../behavior/IBehavior');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -387,7 +387,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _regY_percent:number = .0;
 	public _regY_calc:FluidMeasurementsUnit[];
 
-	public _behaviorList:AbstractBehavior[] = null;
+	public _behaviorList:IBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
 	public minimumContainerSize:Size = null;
@@ -819,7 +819,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.regY;
 	}
 
-	public addBehavior(behavior:AbstractBehavior):DisplayObject
+	public addBehavior(behavior:IBehavior):DisplayObject
 	{
 		if(!this._behaviorList)
 		{
@@ -836,9 +836,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
-	public removeBehavior(behavior:AbstractBehavior):DisplayObject
+	public removeBehavior(behavior:IBehavior):DisplayObject
 	{
-		var behaviorList:AbstractBehavior[] = this._behaviorList;
+		var behaviorList:IBehavior[] = this._behaviorList;
 
 		if(behaviorList)
 		{
@@ -854,7 +854,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 	/**
-	 * Removes all be behaviors
+	 * Removes all behaviors
 	 *
 	 * @method removeAllBehaviors
 	 * @return void
@@ -863,10 +863,26 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		if(this._behaviorList)
 		{
+			this._behaviorList.length = 0;
+		}
+	}
+
+	/**
+	 * Destructs all behaviors
+	 *
+	 * @method destructAllBehaviors
+	 * @return void
+	 */
+	public destructAllBehaviors():void
+	{
+		if(this._behaviorList)
+		{
 			while(this._behaviorList.length)
 			{
 				this._behaviorList.pop().destruct();
 			}
+
+			this._behaviorList = null;
 		}
 	}
 
@@ -1860,7 +1876,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public destruct():void
 	{
 		this.parent = null;
-		this.removeAllBehaviors();
+		this.destructAllBehaviors();
 
 		super.destruct();
 	}
