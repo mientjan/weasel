@@ -172,8 +172,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
          * @protected
          */
         DOMElement.prototype.onTick = function (delta) {
-            var stage = this.getStage();
-            this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
+            this._drawEndConnection = this.stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
             _super.prototype.onTick.call(this, delta);
             //stage && stage.on("drawend", this._handleDrawEnd, this, true);
         };

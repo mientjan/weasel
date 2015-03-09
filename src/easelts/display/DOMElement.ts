@@ -205,8 +205,7 @@ class DOMElement extends DisplayObject
 	 */
 	public onTick(delta:number)
 	{
-		var stage = this.getStage();
-		this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
+		this._drawEndConnection = this.stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
 
 		super.onTick(delta);
 

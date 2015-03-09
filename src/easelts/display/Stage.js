@@ -1003,7 +1003,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             return this._isRunning;
         };
         /**
-         * Is triggerd when the stage (canvas) is resized.
+         * Is triggered when the stage (canvas) is resized.
          * Will give this new information to all children.
          *
          * @method onResize
