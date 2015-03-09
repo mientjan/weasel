@@ -3,7 +3,7 @@
  */
 enum CalculationType {
 	UNKOWN,
-	PROCENT,
+	PERCENT,
 	STATIC,
 	CALC
 }

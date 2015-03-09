@@ -446,7 +446,8 @@ class EventDispatcher
 		}
 	}
 
-	public destruct(){
+	public destruct():void
+	{
 		this.removeAllEventListeners();
 	}
 }

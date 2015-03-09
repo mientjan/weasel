@@ -1,11 +1,11 @@
 import Shape = require('../display/Shape');
+import Size = require('../geom/Size');
 
 /**
  * @class BackgroundColor
  */
 class SquareColor extends Shape
 {
-
 	public set color(value:string)
 	{
 		this._color = value;
@@ -36,14 +36,14 @@ class SquareColor extends Shape
 		this._color = color;
 	}
 
-	private setColor()
+	private setColor():void
 	{
 		this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
 	}
 
-	public onResize(e)
+	public onResize(size:Size):void
 	{
-		super.onResize(e);
+		super.onResize(size);
 		this.setColor();
 	}
 }

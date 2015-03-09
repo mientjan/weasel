@@ -693,9 +693,9 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(e:Size):void
+	public onResize(size:Size):void
 	{
-		super.onResize(e);
+		super.onResize(size);
 
 		var size = new Size(this.width, this.height);
 
@@ -904,7 +904,7 @@ class Container extends DisplayObject
 	}
 
 
-	public destruct()
+	public destruct():void
 	{
 
 		for(var i = 0; i < this.children.length; i++)

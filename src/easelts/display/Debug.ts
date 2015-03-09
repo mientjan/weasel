@@ -2,6 +2,7 @@ import Container = require("./Container");
 import Shape = require("./Shape");
 import Graphics = require("./Graphics");
 import Text = require("./Text");
+import Size = require('../geom/Size');
 
 class Debug extends Container
 {
@@ -29,7 +30,7 @@ class Debug extends Container
 		this.update();
 	}
 
-	update()
+	update():void
 	{
 		if(this.width > 0 && this.height > 0)
 		{
@@ -65,9 +66,9 @@ class Debug extends Container
 		}
 	}
 
-	public onResize(e)
+	public onResize(size:Size):void
 	{
-		super.onResize(e);
+		super.onResize(size);
 		this.update();
 	}
 }

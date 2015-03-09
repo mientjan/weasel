@@ -312,7 +312,8 @@ class Bitmap extends DisplayObject
 		return "[Bitmap (name=" + this.name + ")]";
 	}
 
-	public destruct(){
+	public destruct():void
+	{
 		this.image = null;
 		this.sourceRect = null;
 		this.destinationRect = null;

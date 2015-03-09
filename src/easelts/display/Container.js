@@ -591,8 +591,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
-        Container.prototype.onResize = function (e) {
-            _super.prototype.onResize.call(this, e);
+        Container.prototype.onResize = function (size) {
+            _super.prototype.onResize.call(this, size);
             var size = new Size(this.width, this.height);
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];

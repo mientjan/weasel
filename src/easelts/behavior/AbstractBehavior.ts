@@ -28,7 +28,7 @@ class AbstractBehaviour
 		this.owner = owner;
 	}
 
-	public destruct():any
+	public destruct():void
 	{
 		this.owner = null;
 	}
