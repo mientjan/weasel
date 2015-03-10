@@ -825,10 +825,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			this._behaviorList = [];
 		}
-		else if (this._behaviorList.indexOf(behavior) != -1)
-		{
-			return this;
-		}
 
 		this._behaviorList.push(behavior);
 		behavior.initialize(this);

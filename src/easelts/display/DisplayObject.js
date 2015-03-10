@@ -521,9 +521,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             if (!this._behaviorList) {
                 this._behaviorList = [];
             }
-            else if (this._behaviorList.indexOf(behavior) != -1) {
-                return this;
-            }
             this._behaviorList.push(behavior);
             behavior.initialize(this);
             return this;
