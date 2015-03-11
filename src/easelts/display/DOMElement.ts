@@ -111,7 +111,7 @@ class DOMElement extends DisplayObject
 	 * into itself).
 	 * @return {Boolean}
 	 */
-	public draw(ctx, ignoreCache)
+	public draw(ctx, ignoreCache):boolean
 	{
 		// this relies on the _tick method because draw isn't called if a parent is not visible.
 		// the actual update happens in _handleDrawEnd
