@@ -195,6 +195,13 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @default 0
              **/
             this.y = 0;
+            /**
+             * The Stage instance that the display object is a descendent of. null if the DisplayObject has not
+             * been added to a Stage.
+             * @property stage
+             * @type {Stage}
+             * @default null
+             **/
             this.stage = null;
             /** When true the geom of this object will be updated when its parent resizes.
              *
@@ -521,29 +528,37 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.removeBehavior = function (behavior) {
             var behaviorList = this._behaviorList;
             if (behaviorList) {
-                var length = behaviorList.length;
-                for (var i = 0; i < behaviorList.length; i++) {
-                    var behaviorItem = behaviorList[i];
-                    if (behaviorItem === behavior) {
+                for (var i = behaviorList.length - 1; i >= 0; i--) {
+                    if (behaviorList[i] === behavior) {
                         behaviorList.splice(i, 1);
-                        length--;
-                        i--;
                     }
                 }
             }
             return this;
         };
         /**
-         * Removes all be behaviors
+         * Removes all behaviors
          *
          * @method removeAllBehaviors
          * @return void
          */
         DisplayObject.prototype.removeAllBehaviors = function () {
             if (this._behaviorList) {
+                this._behaviorList.length = 0;
+            }
+        };
+        /**
+         * Destructs all behaviors
+         *
+         * @method destructAllBehaviors
+         * @return void
+         */
+        DisplayObject.prototype.destructAllBehaviors = function () {
+            if (this._behaviorList) {
                 while (this._behaviorList.length) {
                     this._behaviorList.pop().destruct();
                 }
+                this._behaviorList = null;
             }
         };
         /**
@@ -750,23 +765,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
                 this._cacheDataURL = this.cacheCanvas.toDataURL();
             }
             return this._cacheDataURL;
-        };
-        /**
-         * Returns the stage that this display object will be rendered on, or null if it has not been added to one.
-         * @method getStage
-         * @return {Stage} The Stage instance that the display object is a descendent of. null if the DisplayObject has not
-         * been added to a Stage.
-         **/
-        DisplayObject.prototype.getStage = function () {
-            var o = this;
-            while (o.parent) {
-                o = o.parent;
-            }
-            // using dynamic access to avoid circular dependencies;
-            if (o.type == 1 /* STAGE */) {
-                return o;
-            }
-            return null;
         };
         /**
          * Transforms the specified x and y position from the coordinate space of the display object
@@ -1378,7 +1376,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         };
         DisplayObject.prototype.destruct = function () {
             this.parent = null;
-            this.removeAllBehaviors();
+            this.destructAllBehaviors();
             _super.prototype.destruct.call(this);
         };
         DisplayObject.EVENT_MOUSE_CLICK = 'click';

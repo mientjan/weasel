@@ -60,7 +60,7 @@ import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 
-import AbstractBehavior = require('../behavior/AbstractBehavior');
+import IBehavior = require('../behavior/IBehavior');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -343,6 +343,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public y:number = 0;
 
+	/**
+	 * The Stage instance that the display object is a descendent of. null if the DisplayObject has not
+	 * been added to a Stage.
+	 * @property stage
+	 * @type {Stage}
+	 * @default null
+	 **/
 	public stage:Stage = null;
 
 	/** When true the geom of this object will be updated when its parent resizes.
@@ -380,11 +387,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _regY_percent:number = .0;
 	public _regY_calc:FluidMeasurementsUnit[];
 
-	public _behaviorList:AbstractBehavior[] = null;
+	public _behaviorList:IBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public minimumContainerSize:Rectangle = null;
-	public maximumContainerSize:Rectangle = null;
+	public minimumContainerSize:Size = null;
+	public maximumContainerSize:Size = null;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -812,31 +819,30 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.regY;
 	}
 
-	public addBehavior(behavior:AbstractBehavior):DisplayObject
+	public addBehavior(behavior:IBehavior):DisplayObject
 	{
 		if(!this._behaviorList)
 		{
 			this._behaviorList = [];
 		}
+
 		this._behaviorList.push(behavior);
 		behavior.initialize(this);
+
 		return this;
 	}
 
-	public removeBehavior(behavior:AbstractBehavior):DisplayObject
+	public removeBehavior(behavior:IBehavior):DisplayObject
 	{
-		var behaviorList = this._behaviorList;
+		var behaviorList:IBehavior[] = this._behaviorList;
+
 		if(behaviorList)
 		{
-			var length = behaviorList.length;
-			for(var i = 0; i < behaviorList.length; i++)
+			for(var i:number = behaviorList.length - 1; i >= 0; i--)
 			{
-				var behaviorItem = behaviorList[i];
-				if(behaviorItem === behavior)
+				if(behaviorList[i] === behavior)
 				{
 					behaviorList.splice(i, 1);
-					length--;
-					i--;
 				}
 			}
 		}
@@ -844,7 +850,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 	/**
-	 * Removes all be behaviors
+	 * Removes all behaviors
 	 *
 	 * @method removeAllBehaviors
 	 * @return void
@@ -853,10 +859,26 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		if(this._behaviorList)
 		{
+			this._behaviorList.length = 0;
+		}
+	}
+
+	/**
+	 * Destructs all behaviors
+	 *
+	 * @method destructAllBehaviors
+	 * @return void
+	 */
+	public destructAllBehaviors():void
+	{
+		if(this._behaviorList)
+		{
 			while(this._behaviorList.length)
 			{
 				this._behaviorList.pop().destruct();
 			}
+
+			this._behaviorList = null;
 		}
 	}
 
@@ -1107,29 +1129,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 
 		return this._cacheDataURL;
-	}
-
-	/**
-	 * Returns the stage that this display object will be rendered on, or null if it has not been added to one.
-	 * @method getStage
-	 * @return {Stage} The Stage instance that the display object is a descendent of. null if the DisplayObject has not
-	 * been added to a Stage.
-	 **/
-	public getStage():Stage
-	{
-		var o = this;
-		while(o.parent)
-		{
-			o = o.parent;
-		}
-
-		// using dynamic access to avoid circular dependencies;
-		if(o.type == DisplayType.STAGE)
-		{
-			return <Stage> o;
-		}
-
-		return null;
 	}
 
 	/**
@@ -1873,7 +1872,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public destruct():void
 	{
 		this.parent = null;
-		this.removeAllBehaviors();
+		this.destructAllBehaviors();
 
 		super.destruct();
 	}

@@ -23,13 +23,4 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 define(["require", "exports"], function (require, exports) {
-    /**
-     * @module easelts
-     */
-    var ISize = (function () {
-        function ISize() {
-        }
-        return ISize;
-    })();
-    return ISize;
 });

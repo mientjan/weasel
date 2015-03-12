@@ -1301,7 +1301,7 @@ class Stage extends Container
 	}
 
 	/**
-	 * Is triggerd when the stage (canvas) is resized.
+	 * Is triggered when the stage (canvas) is resized.
 	 * Will give this new information to all children.
 	 *
 	 * @method onResize
