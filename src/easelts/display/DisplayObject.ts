@@ -30,6 +30,7 @@
 import EventDispatcher = require('../../createts/event/EventDispatcher');
 import Event = require('../../createts/event/Event');
 import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal2 = require('../../createts/event/Signal2');
 
 // utils
 import UID = require('../util/UID');
@@ -383,10 +384,15 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _behaviorList:AbstractBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public downScaleBreakPoint:Size = null;
-	public downScaleLimit:Size = null;
-	public upScaleBreakPoint:Size = null;
-	public upScaleLimit:Size = null;
+	private _resizeSignal:Signal2<number, number>;
+	public get resizeSignal():Signal2<number, number>
+	{
+		if (this._resizeSignal === void 0)
+		{
+			this._resizeSignal = new Signal2<number, number>();
+		}
+		return this._resizeSignal;
+	}
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -1807,42 +1813,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 		if(this.updateGeomOnResize)
 		{
-			if (this.downScaleBreakPoint || this.upScaleBreakPoint)
-			{
-				// Size object values may be copied, because we are going to change the values and this object
-				// is used by multiple display objects as well as other calculations below.
-				var resizeWidth:number;
-				var resizeHeight:number;
-
-				if(this.downScaleBreakPoint && (size.width < this.downScaleBreakPoint.width || size.height < this.downScaleBreakPoint.height))
-				{
-					if (this.downScaleLimit)
-					{
-						resizeWidth  = Math.max(size.width, this.downScaleLimit.width);
-						resizeHeight = Math.max(size.height, this.downScaleLimit.height);
-					}
-
-					this.scaleX =
-					this.scaleY = Math.min(1, resizeWidth / this.downScaleBreakPoint.width, resizeHeight / this.downScaleBreakPoint.height);
-				}
-				else if(this.upScaleBreakPoint && (size.width > this.upScaleBreakPoint.width || size.height > this.upScaleBreakPoint.height))
-				{
-					if (this.upScaleLimit)
-					{
-						resizeWidth  = Math.min(size.width, this.upScaleLimit.width);
-						resizeHeight = Math.min(size.height, this.upScaleLimit.height);
-					}
-
-					this.scaleX =
-					this.scaleY = Math.max(1, Math.min(resizeWidth / this.upScaleBreakPoint.width, resizeHeight / this.upScaleBreakPoint.height));
-				}
-				else
-				{
-					this.scaleX =
-					this.scaleY = 1;
-				}
-			}
-
 			if(this._width_type == CalculationType.PERCENT)
 			{
 				this.width = this._width_percent * size.width;
@@ -1896,12 +1866,18 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			{
 				this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
 			}
+
+			if (this._resizeSignal && this._resizeSignal.hasListeners())
+			{
+				this._resizeSignal.emit(size.width, size.height);
+			}
 		}
 	}
 
 	public destruct():void
 	{
 		this.parent = null;
+		this._resizeSignal = null;
 		this.removeAllBehaviors();
 
 		super.destruct();

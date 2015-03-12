@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject
@@ -218,10 +218,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this._regY_percent = .0;
             this._behaviorList = null;
             this._parentSizeIsKnown = false;
-            this.downScaleBreakPoint = null;
-            this.downScaleLimit = null;
-            this.upScaleBreakPoint = null;
-            this.upScaleLimit = null;
             /**
              * The composite operation indicates how the pixels of this display object will be composited with the elements
              * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -347,6 +343,16 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this.DisplayObject_getBounds = this._getBounds;
             this.setGeomTransform(width, height, x, y, regX, regY);
         }
+        Object.defineProperty(DisplayObject.prototype, "resizeSignal", {
+            get: function () {
+                if (this._resizeSignal === void 0) {
+                    this._resizeSignal = new Signal2();
+                }
+                return this._resizeSignal;
+            },
+            enumerable: true,
+            configurable: true
+        });
         DisplayObject.prototype.initialize = function () {
             // has something to do with the createjs toolkit needing to call initialize.
         };
@@ -1334,29 +1340,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.onResize = function (size) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
-                if (this.downScaleBreakPoint || this.upScaleBreakPoint) {
-                    // Size object values may be copied, because we are going to change the values and this object
-                    // is used by multiple display objects as well as other calculations below.
-                    var resizeWidth;
-                    var resizeHeight;
-                    if (this.downScaleBreakPoint && (size.width < this.downScaleBreakPoint.width || size.height < this.downScaleBreakPoint.height)) {
-                        if (this.downScaleLimit) {
-                            resizeWidth = Math.max(size.width, this.downScaleLimit.width);
-                            resizeHeight = Math.max(size.height, this.downScaleLimit.height);
-                        }
-                        this.scaleX = this.scaleY = Math.min(1, resizeWidth / this.downScaleBreakPoint.width, resizeHeight / this.downScaleBreakPoint.height);
-                    }
-                    else if (this.upScaleBreakPoint && (size.width > this.upScaleBreakPoint.width || size.height > this.upScaleBreakPoint.height)) {
-                        if (this.upScaleLimit) {
-                            resizeWidth = Math.min(size.width, this.upScaleLimit.width);
-                            resizeHeight = Math.min(size.height, this.upScaleLimit.height);
-                        }
-                        this.scaleX = this.scaleY = Math.max(1, Math.min(resizeWidth / this.upScaleBreakPoint.width, resizeHeight / this.upScaleBreakPoint.height));
-                    }
-                    else {
-                        this.scaleX = this.scaleY = 1;
-                    }
-                }
                 if (this._width_type == 1 /* PERCENT */) {
                     this.width = this._width_percent * size.width;
                 }
@@ -1393,10 +1376,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
                 else if (this._y_type == 3 /* CALC */) {
                     this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
                 }
+                if (this._resizeSignal && this._resizeSignal.hasListeners()) {
+                    this._resizeSignal.emit(size.width, size.height);
+                }
             }
         };
         DisplayObject.prototype.destruct = function () {
             this.parent = null;
+            this._resizeSignal = null;
             this.removeAllBehaviors();
             _super.prototype.destruct.call(this);
         };
