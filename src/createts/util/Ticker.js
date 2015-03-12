@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/event/Signal1'], function (require, exports, TimeEvent, Signal1) {
+define(["require", "exports", '../../createts/event/Signal1'], function (require, exports, Signal1) {
     /**
      * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick
      * event to be notified when a set time interval has elapsed.
@@ -85,16 +85,6 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
              */
             // public static properties:
             /**
-             * Deprecated in favour of {{#crossLink "Ticker/timingMode"}}{{/crossLink}}, and will be removed in a future version. If true, timingMode will
-             * use {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} by default.
-             * @deprecated Deprecated in favour of {{#crossLink "Ticker/timingMode"}}{{/crossLink}}.
-             * @property useRAF
-             * @static
-             * @type {Boolean}
-             * @default false
-             **/
-            //	public useRAF:boolean = false;
-            /**
              * Specifies the timing api (setTimeout or requestAnimationFrame) and mode to use. See
              * {{#crossLink "Ticker/TIMEOUT"}}{{/crossLink}}, {{#crossLink "Ticker/RAF"}}{{/crossLink}}, and
              * {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} for mode details.
@@ -104,18 +94,6 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
              * @default Ticker.TIMEOUT
              **/
             this.timingMode = Ticker.TIMINGMODE_TIMEOUT;
-            // mix-ins:
-            // EventDispatcher methods:
-            //	public static removeEventListener = null;
-            //	public static removeAllEventListeners = null;
-            //	public static dispatchEvent = null;
-            //	public static hasEventListener = null;
-            //	public static _listeners = null;
-            //	public static _addEventListener = Ticker.addEventListener;
-            //	public static addEventListener() {
-            //		!Ticker._inited && Ticker.init();
-            //		return Ticker._addEventListener.apply(Ticker, arguments);
-            //	};
             // private static properties:
             /**
              * @property _paused
@@ -478,8 +456,7 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
             this._lastTime = time;
             if (this.tickSignal.hasListeners()) {
                 var maxDelta = Ticker.maxDelta;
-                var event = new TimeEvent('tick', (maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime, paused, time, time - this._pausedTime);
-                this.tickSignal.emit(event);
+                this.tickSignal.emit((maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime);
             }
             this._tickTimes.unshift(Ticker._getTime() - time);
             while (this._tickTimes.length > 100) {
@@ -490,13 +467,6 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
                 this._times.pop();
             }
         };
-        /**
-         * 	 * {{#crossLink "Ticker/TIMEOUT"}}{{/crossLink}}, {{#crossLink "Ticker/RAF"}}{{/crossLink}}, and
-         * {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} for mode details.
-         */
-        Ticker.TIMINGMODE_TIMEOUT = 'timeout';
-        Ticker.TIMINGMODE_RAF = 'raf';
-        Ticker.TIMINGMODE_RAFSYNCHED = 'raf_synched';
         /**
          * In this mode, Ticker uses the requestAnimationFrame API, but attempts to synch the ticks to target framerate. It
          * uses a simple heuristic that compares the time of the RAF return to the target time for the current frame and
@@ -515,7 +485,7 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
          * @default "synched"
          * @readonly
          **/
-        //	public static RAF_SYNCHED = "synched";
+        Ticker.TIMINGMODE_RAFSYNCHED = 'raf_synched';
         /**
          * In this mode, Ticker passes through the requestAnimationFrame heartbeat, ignoring the target framerate completely.
          * Because requestAnimationFrame frequency is not deterministic, any content using this mode should be time based.
@@ -529,7 +499,7 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
          * @default "raf"
          * @readonly
          **/
-        //	public static RAF = "raf";
+        Ticker.TIMINGMODE_RAF = 'raf';
         /**
          * In this mode, Ticker uses the setTimeout API. This provides predictable, adaptive frame timing, but does not
          * provide the benefits of requestAnimationFrame (screen synch, background throttling).
@@ -539,7 +509,7 @@ define(["require", "exports", '../../createts/event/TimeEvent', '../../createts/
          * @default "timer"
          * @readonly
          **/
-        //	public static TIMEOUT = "timeout";
+        Ticker.TIMINGMODE_TIMEOUT = 'timeout';
         /**
          * @method _getTime
          * @static

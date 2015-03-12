@@ -26,9 +26,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-//import EventDispatcher = require('../../createts/events/EventDispatcher');
-import Event = require('../../createts/event/Event');
-import TimeEvent = require('../../createts/event/TimeEvent');
 import Signal1 = require('../../createts/event/Signal1');
 import SignalConnection = require('../../createts/event/SignalConnection');
 
@@ -61,13 +58,6 @@ import SignalConnection = require('../../createts/event/SignalConnection');
  **/
 class Ticker
 {
-	/**
-	 * 	 * {{#crossLink "Ticker/TIMEOUT"}}{{/crossLink}}, {{#crossLink "Ticker/RAF"}}{{/crossLink}}, and
-	 * {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} for mode details.
-	 */
-	public static TIMINGMODE_TIMEOUT = 'timeout';
-	public static TIMINGMODE_RAF = 'raf';
-	public static TIMINGMODE_RAFSYNCHED = 'raf_synched';
 
 	/**
 	 * In this mode, Ticker uses the requestAnimationFrame API, but attempts to synch the ticks to target framerate. It
@@ -87,7 +77,7 @@ class Ticker
 	 * @default "synched"
 	 * @readonly
 	 **/
-//	public static RAF_SYNCHED = "synched";
+	public static TIMINGMODE_RAFSYNCHED = 'raf_synched';
 
 	/**
 	 * In this mode, Ticker passes through the requestAnimationFrame heartbeat, ignoring the target framerate completely.
@@ -102,7 +92,7 @@ class Ticker
 	 * @default "raf"
 	 * @readonly
 	 **/
-//	public static RAF = "raf";
+	public static TIMINGMODE_RAF = 'raf';
 
 	/**
 	 * In this mode, Ticker uses the setTimeout API. This provides predictable, adaptive frame timing, but does not
@@ -113,7 +103,7 @@ class Ticker
 	 * @default "timer"
 	 * @readonly
 	 **/
-//	public static TIMEOUT = "timeout";
+	public static TIMINGMODE_TIMEOUT = 'timeout';
 
 	/**
 	 * @method _getTime
@@ -164,16 +154,6 @@ class Ticker
 	 */
 
 	// public static properties:
-	/**
-	 * Deprecated in favour of {{#crossLink "Ticker/timingMode"}}{{/crossLink}}, and will be removed in a future version. If true, timingMode will
-	 * use {{#crossLink "Ticker/RAF_SYNCHED"}}{{/crossLink}} by default.
-	 * @deprecated Deprecated in favour of {{#crossLink "Ticker/timingMode"}}{{/crossLink}}.
-	 * @property useRAF
-	 * @static
-	 * @type {Boolean}
-	 * @default false
-	 **/
-//	public useRAF:boolean = false;
 
 	/**
 	 * Specifies the timing api (setTimeout or requestAnimationFrame) and mode to use. See
@@ -202,20 +182,6 @@ class Ticker
 	 * @default 0
 	 */
 	public static maxDelta = 0;
-
-	// mix-ins:
-	// EventDispatcher methods:
-	//	public static removeEventListener = null;
-	//	public static removeAllEventListeners = null;
-	//	public static dispatchEvent = null;
-	//	public static hasEventListener = null;
-	//	public static _listeners = null;
-
-	//	public static _addEventListener = Ticker.addEventListener;
-	//	public static addEventListener() {
-	//		!Ticker._inited && Ticker.init();
-	//		return Ticker._addEventListener.apply(Ticker, arguments);
-	//	};
 
 	// private static properties:
 
@@ -300,7 +266,7 @@ class Ticker
 	 **/
 	public _timerId:number = -1;
 
-	public tickSignal:Signal1<TimeEvent> = new Signal1<TimeEvent>(null);
+	public tickSignal:Signal1<number> = new Signal1<number>(null);
 
 	/**
 	 * True if currently using requestAnimationFrame, false if using setTimeout.
@@ -356,7 +322,8 @@ class Ticker
 	 *
 	 * @returns {SignalConnection}
 	 */
-	public addTickListener(fn:Function):SignalConnection {
+	public addTickListener(fn:Function):SignalConnection
+	{
 		return this.tickSignal.connectImpl(fn, false);
 	}
 
@@ -633,7 +600,6 @@ class Ticker
 	 **/
 	public _tick()
 	{
-
 		var time = Ticker._getTime() - this._startTime;
 		var elapsedTime = time - this._lastTime;
 		var paused = this._paused;
@@ -648,15 +614,8 @@ class Ticker
 
 		if(this.tickSignal.hasListeners())
 		{
-			var maxDelta = Ticker.maxDelta;
-			var event = new TimeEvent('tick',
-				(maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime,
-				paused,
-				time,
-				time - this._pausedTime
-			);
-
-			this.tickSignal.emit(event);
+			var maxDelta:number = Ticker.maxDelta;
+			this.tickSignal.emit((maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime);
 		}
 
 		this._tickTimes.unshift(Ticker._getTime() - time);
