@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject
@@ -387,7 +387,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._width_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -415,7 +415,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._height_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -442,7 +442,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._x_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -465,7 +465,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._y_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -488,7 +488,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._regX_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -511,7 +511,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this._regY_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -924,7 +924,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
             this._parentSizeIsKnown = parentIsKnown;
             if (this._parentSizeIsKnown) {
-                this.onResize(new Size(this.parent.width, this.parent.height));
+                this.onResize(this.parent.width, this.parent.height);
             }
             return this;
         };
@@ -1337,20 +1337,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         };
         DisplayObject.prototype.onStageSet = function () {
         };
-        DisplayObject.prototype.onResize = function (size) {
+        DisplayObject.prototype.onResize = function (width, height) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
                 if (this._width_type == 1 /* PERCENT */) {
-                    this.width = this._width_percent * size.width;
+                    this.width = this._width_percent * width;
                 }
                 else if (this._width_type == 3 /* CALC */) {
-                    this.width = FluidCalculation.calcUnit(size.width, this._width_calc);
+                    this.width = FluidCalculation.calcUnit(width, this._width_calc);
                 }
                 if (this._height_type == 1 /* PERCENT */) {
-                    this.height = this._height_percent * size.height;
+                    this.height = this._height_percent * height;
                 }
                 else if (this._height_type == 3 /* CALC */) {
-                    this.height = FluidCalculation.calcUnit(size.height, this._height_calc);
+                    this.height = FluidCalculation.calcUnit(height, this._height_calc);
                 }
                 if (this._regX_type == 1 /* PERCENT */) {
                     this.regX = this._regX_percent * this.width;
@@ -1365,19 +1365,19 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                     this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
                 }
                 if (this._x_type == 1 /* PERCENT */) {
-                    this.x = Math.round(this._x_percent * size.width);
+                    this.x = Math.round(this._x_percent * width);
                 }
                 else if (this._x_type == 3 /* CALC */) {
-                    this.x = Math.round(FluidCalculation.calcUnit(size.width, this._x_calc));
+                    this.x = Math.round(FluidCalculation.calcUnit(width, this._x_calc));
                 }
                 if (this._y_type == 1 /* PERCENT */) {
-                    this.y = Math.round(this._y_percent * size.height);
+                    this.y = Math.round(this._y_percent * height);
                 }
                 else if (this._y_type == 3 /* CALC */) {
-                    this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
+                    this.y = Math.round(FluidCalculation.calcUnit(height, this._y_calc));
                 }
                 if (this._resizeSignal && this._resizeSignal.hasListeners()) {
-                    this._resizeSignal.emit(size.width, size.height);
+                    this._resizeSignal.emit(width, height);
                 }
             }
         };

@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, Size) {
+define(["require", "exports", './DisplayObject', '../enum/DisplayType'], function (require, exports, DisplayObject, DisplayType) {
     /**
      * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
      * group arm, leg, torso and head {{#crossLink "Bitmap"}}{{/crossLink}} instances together into a Person Container, and
@@ -200,7 +200,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             child.parent = this;
             if (this._parentSizeIsKnown) {
                 if (typeof child.onResize == 'function') {
-                    child.onResize(new Size(this.width, this.height));
+                    child.onResize(this.width, this.height);
                 }
             }
             if (this.stage) {
@@ -248,7 +248,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             }
             child.parent = this;
             if (this._parentSizeIsKnown) {
-                child.onResize(new Size(this.width, this.height));
+                child.onResize(this.width, this.height);
             }
             if (this.stage) {
                 child.stage = this.stage;
@@ -591,13 +591,12 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
-        Container.prototype.onResize = function (size) {
-            _super.prototype.onResize.call(this, size);
-            var size = new Size(this.width, this.height);
+        Container.prototype.onResize = function (width, height) {
+            _super.prototype.onResize.call(this, width, height);
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
                 if (typeof child.onResize == 'function') {
-                    child.onResize(size);
+                    child.onResize(width, height);
                 }
             }
         };

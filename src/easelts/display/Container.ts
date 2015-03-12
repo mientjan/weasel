@@ -227,7 +227,7 @@ class Container extends DisplayObject
 		{
 			if(typeof child.onResize == 'function')
 			{
-				child.onResize(new Size(this.width, this.height));
+				child.onResize(this.width, this.height);
 			}
 		}
 
@@ -288,7 +288,7 @@ class Container extends DisplayObject
 		child.parent = this;
 		if(this._parentSizeIsKnown)
 		{
-			child.onResize(new Size(this.width, this.height));
+			child.onResize(this.width, this.height);
 		}
 
 		if(this.stage)
@@ -694,18 +694,16 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
-		super.onResize(size);
-
-		var size = new Size(this.width, this.height);
+		super.onResize(width, height);
 
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 			if(typeof child.onResize == 'function')
 			{
-				child.onResize(size)
+				child.onResize(width, height);
 			}
 		}
 
