@@ -27,6 +27,7 @@
  */
 
 import Signal1 = require('../../createts/event/Signal1');
+import Signal = require('../../createts/event/Signal');
 import SignalConnection = require('../../createts/event/SignalConnection');
 
 /**
@@ -77,7 +78,7 @@ class Ticker
 	 * @default "synched"
 	 * @readonly
 	 **/
-	public static TIMINGMODE_RAFSYNCHED = 'raf_synched';
+	public static TIMING_MODE_RAFSYNCHED = 'raf_synched';
 
 	/**
 	 * In this mode, Ticker passes through the requestAnimationFrame heartbeat, ignoring the target framerate completely.
@@ -92,7 +93,7 @@ class Ticker
 	 * @default "raf"
 	 * @readonly
 	 **/
-	public static TIMINGMODE_RAF = 'raf';
+	public static TIMING_MODE_RAF = 'raf';
 
 	/**
 	 * In this mode, Ticker uses the setTimeout API. This provides predictable, adaptive frame timing, but does not
@@ -103,7 +104,7 @@ class Ticker
 	 * @default "timer"
 	 * @readonly
 	 **/
-	public static TIMINGMODE_TIMEOUT = 'timeout';
+	public static TIMING_MODE_TIMEOUT = 'timeout';
 
 	/**
 	 * @method _getTime
@@ -129,30 +130,6 @@ class Ticker
 		return Ticker._instance;
 	}
 
-	// events:
-
-	/**
-	 * Dispatched each tick. The event will be dispatched to each listener even when the Ticker has been paused using
-	 * {{#crossLink "Ticker/setPaused"}}{{/crossLink}}.
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *      createjs.Ticker.addEventListener("tick", handleTick);
-	 *      function handleTick(event) {
-	 *          console.log("Paused:", event.paused, event.delta);
-	 *      }
-	 *
-	 * @event tick
-	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The event type.
-	 * @param {Boolean} paused Indicates whether the ticker is currently paused.
-	 * @param {Number} delta The time elapsed in ms since the last tick.
-	 * @param {Number} time The total time in ms since Ticker was initialized.
-	 * @param {Number} runTime The total time in ms that Ticker was not paused since it was initialized. For example,
-	 *    you could determine the amount of time that the Ticker has been paused since initialization with time-runTime.
-	 * @since 0.6.0
-	 */
-
 	// public static properties:
 
 	/**
@@ -162,9 +139,9 @@ class Ticker
 	 * @property timingMode
 	 * @static
 	 * @type {String}
-	 * @default Ticker.TIMEOUT
+	 * @default  Ticker.TIMINGMODE_RAF
 	 **/
-	public timingMode = Ticker.TIMINGMODE_TIMEOUT;
+	public timingMode = Ticker.TIMING_MODE_RAF;
 
 	/**
 	 * Specifies a maximum value for the delta property in the tick event object. This is useful when building time
@@ -186,48 +163,18 @@ class Ticker
 	// private static properties:
 
 	/**
-	 * @property _paused
+	 * @property _isRunning
 	 * @type {Boolean}
 	 * @protected
 	 **/
-	public _paused:boolean = false;
-
-	/**
-	 * @property _startTime
-	 * @type {Number}
-	 * @protected
-	 **/
-	public _startTime:number = 0;
-
-	/**
-	 * @property _pausedTime
-	 * @type {Number}
-	 * @protected
-	 **/
-	public _pausedTime:number = 0;
-
-	/**
-	 * The number of ticks that have passed
-	 * @property _ticks
-	 * @type {Number}
-	 * @protected
-	 **/
-	public _ticks:number = 0;
-
-	/**
-	 * The number of ticks that have passed while Ticker has been paused
-	 * @property _pausedTicks
-	 * @type {Number}
-	 * @protected
-	 **/
-	public _pausedTicks:number = 0;
+	public _isRunning:boolean = false;
 
 	/**
 	 * @property _interval
 	 * @type {Number}
 	 * @protected
 	 **/
-	public _interval:number = 50;
+	public _interval:number = 50.0;
 
 	/**
 	 * @property _lastTime
@@ -245,36 +192,57 @@ class Ticker
 	 **/
 	public _timerId:number = -1;
 
-	public tickSignal:Signal1<number> = new Signal1<number>(null);
+	public signals:{
+		tick:Signal1<number>;
+		started:Signal;
+		stopped:Signal;
+	} = {
+		tick: new Signal1<number>(),
+		started: new Signal(),
+		stopped: new Signal()
+	};
+
 
 	/**
 	 * True if currently using requestAnimationFrame, false if using setTimeout.
 	 *
-	 * @property _raf
+	 * @property _isUsingRAF
 	 * @type {Boolean}
 	 * @protected
 	 **/
-	public _raf:boolean = true;
+	public _isUsingRAF:boolean = true;
+
 
 	/**
-	 * Starts the tick. This is called automatically when the first listener is added.
-	 * @method init
-	 * @static
+	 * Starts the Ticker. Use stop() to stop the Ticker.
+	 *
+	 * @method stop
 	 **/
-	constructor()
+	public start():void
 	{
-		this._startTime = Ticker._getTime();
-		this._lastTime  = 0;
+		if (this._isRunning) return;
+
+		this._isRunning = true;
+
+		this._lastTime = Ticker._getTime();
+		this._setupTick();
+
+		if (this.signals.started)
+		{
+			this.signals.started.emit();
+		}
 	}
 
 	/**
-	 * Stops the Ticker and removes all listeners. Use init() to restart the Ticker.
+	 * Stops the Ticker. Use start() to restart the Ticker.
 	 *
-	 * @method reset
+	 * @method stop
 	 **/
-	public reset():void
+	public stop():void
 	{
-		if(this._raf)
+		if (!this._isRunning) return;
+
+		if(this._isUsingRAF)
 		{
 			var fn = window.cancelAnimationFrame
 				|| window['webkitCancelAnimationFrame']
@@ -290,6 +258,12 @@ class Ticker
 		}
 
 		this._timerId = null;
+		this._isRunning = false;
+
+		if (this.signals.stopped)
+		{
+			this.signals.stopped.emit();
+		}
 	}
 
 	/**
@@ -298,7 +272,7 @@ class Ticker
 	 */
 	public addTickListener(fn:Function):SignalConnection
 	{
-		return this.tickSignal.connectImpl(fn, false);
+		return this.signals.tick.connectImpl(fn, false);
 	}
 
 	/**
@@ -312,7 +286,11 @@ class Ticker
 	public setInterval(interval):void
 	{
 		this._interval = interval;
-		this._setupTick();
+
+		if (this._isRunning)
+		{
+			this._setupTick();
+		}
 	}
 
 	/**
@@ -345,99 +323,21 @@ class Ticker
 	 * @static
 	 * @return {Number} The current target number of frames / ticks broadcast per second.
 	 **/
-	public getFPS()
+	public getFPS():number
 	{
 		return 1000 / this._interval;
 	}
 
 	/**
-	 * Changes the "paused" state of the Ticker, which can be retrieved by the {{#crossLink "Ticker/getPaused"}}{{/crossLink}}
-	 * method, and is passed as the "paused" property of the <code>tick</code> event. When the ticker is paused, all
-	 * listeners will still receive a tick event, but the <code>paused</code> property will be false.
+	 * Returns a boolean indicating whether Ticker is currently running.
 	 *
-	 * Note that in EaselJS v0.5.0 and earlier, "pauseable" listeners would <strong>not</strong> receive the tick
-	 * callback when Ticker was paused. This is no longer the case.
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *      createjs.Ticker.addEventListener("tick", handleTick);
-	 *      createjs.Ticker.setPaused(true);
-	 *      function handleTick(event) {
-	 *          console.log("Paused:", event.paused, createjs.Ticker.getPaused());
-	 *      }
-	 *
-	 * @method setPaused
+	 * @method getIsRunning
 	 * @static
-	 * @param {Boolean} value Indicates whether to pause (true) or unpause (false) Ticker.
+	 * @return {Boolean} Whether the Ticker is currently running.
 	 **/
-	public setPaused(value:boolean)
+	public getIsRunning():boolean
 	{
-		this._paused = value;
-	}
-
-	/**
-	 * Returns a boolean indicating whether Ticker is currently paused, as set with {{#crossLink "Ticker/setPaused"}}{{/crossLink}}.
-	 * When the ticker is paused, all listeners will still receive a tick event, but this value will be false.
-	 *
-	 * Note that in EaselJS v0.5.0 and earlier, "pauseable" listeners would <strong>not</strong> receive the tick
-	 * callback when Ticker was paused. This is no longer the case.
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *      createjs.Ticker.addEventListener("tick", handleTick);
-	 *      createjs.Ticker.setPaused(true);
-	 *      function handleTick(event) {
-	 *          console.log("Paused:", createjs.Ticker.getPaused());
-	 *      }
-	 *
-	 * @method getPaused
-	 * @static
-	 * @return {Boolean} Whether the Ticker is currently paused.
-	 **/
-	public getPaused()
-	{
-		return this._paused;
-	}
-
-	/**
-	 * Returns the number of milliseconds that have elapsed since Ticker was initialized via {{#crossLink "Ticker/init"}}.
-	 * Returns -1 if Ticker has not been initialized. For example, you could use
-	 * this in a time synchronized animation to determine the exact amount of time that has elapsed.
-	 * @method getTime
-	 * @static
-	 * @param {Boolean} [runTime=false] If true only time elapsed while Ticker was not paused will be returned.
-	 * If false, the value returned will be total time elapsed since the first tick event listener was added.
-	 * @return {Number} Number of milliseconds that have elapsed since Ticker was initialized or -1.
-	 **/
-	public getTime(runTime:boolean = false)
-	{
-		return this._startTime ? Ticker._getTime() - this._startTime - (runTime ? this._pausedTime : 0) : -1;
-	}
-
-	/**
-	 * Similar to getTime(), but returns the time included with the current (or most recent) tick event object.
-	 * @method getEventTime
-	 * @param runTime {Boolean} [runTime=false] If true, the runTime property will be returned instead of time.
-	 * @returns {number} The time or runTime property from the most recent tick event or -1.
-	 */
-	public getEventTime(runTime:boolean = false)
-	{
-		return this._startTime ? (this._lastTime || this._startTime) - (runTime ? this._pausedTime : 0) : -1;
-	}
-
-	/**
-	 * Returns the number of ticks that have been broadcast by Ticker.
-	 * @method getTicks
-	 * @static
-	 * @param {Boolean} pauseable Indicates whether to include ticks that would have been broadcast
-	 * while Ticker was paused. If true only tick events broadcast while Ticker is not paused will be returned.
-	 * If false, tick events that would have been broadcast while Ticker was paused will be included in the return
-	 * value. The default value is false.
-	 * @return {Number} of ticks that have been broadcast.
-	 **/
-	public getTicks(pauseable:boolean)
-	{
-		return this._ticks - (pauseable ? this._pausedTicks : 0);
+		return this._isRunning;
 	}
 
 	// private static methods:
@@ -448,12 +348,11 @@ class Ticker
 	 **/
 	public _handleSynch = () =>
 	{
-		var time:number = Ticker._getTime() - this._startTime;
 		this._timerId = -1;
 		this._setupTick();
 
 		// run if enough time has elapsed, with a little bit of flexibility to be early:
-		if(time - this._lastTime >= (this._interval - 1) * 0.97)
+		if(Ticker._getTime() - this._lastTime >= (this._interval - 1) * 0.97)
 		{
 			this._tick();
 		}
@@ -488,7 +387,7 @@ class Ticker
 	 * @static
 	 * @protected
 	 **/
-	public _setupTick()
+	public _setupTick():void
 	{
 		if(this._timerId > -1)
 		{
@@ -496,18 +395,18 @@ class Ticker
 		} // avoid duplicates
 
 		var mode = this.timingMode;
-		if(mode == Ticker.TIMINGMODE_RAFSYNCHED || mode == Ticker.TIMINGMODE_RAF)
+		if(mode == Ticker.TIMING_MODE_RAFSYNCHED || mode == Ticker.TIMING_MODE_RAF)
 		{
 			var fn = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFrame'] || window['oRequestAnimationFrame'] || window['msRequestAnimationFrame'];
 			if(fn)
 			{
-				this._timerId = fn(mode == Ticker.TIMINGMODE_RAF ? this._handleRAF : this._handleSynch);
-				this._raf = true;
+				this._timerId = fn(mode == Ticker.TIMING_MODE_RAF ? this._handleRAF : this._handleSynch);
+				this._isUsingRAF = true;
 				return;
 			}
 		}
 
-		this._raf = false;
+		this._isUsingRAF = false;
 		this._timerId = setTimeout(this._handleTimeout, this._interval);
 	}
 
@@ -518,20 +417,14 @@ class Ticker
 	 **/
 	public _tick():void
 	{
-		var time:number = Ticker._getTime() - this._startTime;
+		var time:number = Ticker._getTime();
 		var delta:number = time - this._lastTime;
 		this._lastTime = time;
 
-		this._ticks++;
-		if(this._paused)
-		{
-			this._pausedTicks++;
-			this._pausedTime += delta;
-		}
-		else if(this.tickSignal.hasListeners())
+		if(this.signals.tick.hasListeners())
 		{
 			var maxDelta:number = Ticker.maxDelta;
-			this.tickSignal.emit((maxDelta && delta > maxDelta) ? maxDelta : delta);
+			this.signals.tick.emit((maxDelta && delta > maxDelta) ? maxDelta : delta);
 		}
 	}
 }
