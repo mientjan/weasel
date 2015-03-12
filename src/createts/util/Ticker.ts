@@ -193,13 +193,6 @@ class Ticker
 	public _paused:boolean = false;
 
 	/**
-	 * @property _inited
-	 * @type {Boolean}
-	 * @protected
-	 **/
-	public _inited:boolean = false;
-
-	/**
 	 * @property _startTime
 	 * @type {Number}
 	 * @protected
@@ -244,20 +237,6 @@ class Ticker
 	public _lastTime:number = 0;
 
 	/**
-	 * @property _times
-	 * @type {Array}
-	 * @protected
-	 **/
-	public _times:any[] = [];
-
-	/**
-	 * @property _tickTimes
-	 * @type {Array}
-	 * @protected
-	 **/
-	public _tickTimes:number[] = [];
-
-	/**
 	 * Stores the timeout or requestAnimationFrame id.
 	 *
 	 * @property _timerId
@@ -284,12 +263,8 @@ class Ticker
 	 **/
 	constructor()
 	{
-		//		if (Ticker._inited) { return; }
-		//		Ticker._inited = true;
-		//		Ticker._tickTimes = [];
 		this._startTime = Ticker._getTime();
-		this._times.push(this._lastTime = 0);
-		//		Ticker.setInterval(Ticker._interval);
+		this._lastTime  = 0;
 	}
 
 	/**
@@ -315,7 +290,6 @@ class Ticker
 		}
 
 		this._timerId = null;
-		this._inited = false;
 	}
 
 	/**
@@ -374,62 +348,6 @@ class Ticker
 	public getFPS()
 	{
 		return 1000 / this._interval;
-	}
-
-	/**
-	 * Returns the average time spent within a tick. This can vary significantly from the value provided by getMeasuredFPS
-	 * because it only measures the time spent within the tick execution stack.
-	 *
-	 * Example 1: With a target FPS of 20, getMeasuredFPS() returns 20fps, which indicates an average of 50ms between
-	 * the end of one tick and the end of the next. However, getMeasuredTickTime() returns 15ms. This indicates that
-	 * there may be up to 35ms of "idle" time between the end of one tick and the start of the next.
-	 *
-	 * Example 2: With a target FPS of 30, getFPS() returns 10fps, which indicates an average of 100ms between the end of
-	 * one tick and the end of the next. However, getMeasuredTickTime() returns 20ms. This would indicate that something
-	 * other than the tick is using ~80ms (another script, DOM rendering, etc).
-	 * @method getMeasuredTickTime
-	 * @static
-	 * @param {Number} [ticks] The number of previous ticks over which to measure the average time spent in a tick.
-	 * Defaults to the number of ticks per second. To get only the last tick's time, pass in 1.
-	 * @return {Number} The average time spent in a tick in milliseconds.
-	 **/
-	public getMeasuredTickTime(ticks):number
-	{
-		var ttl = 0, times = this._tickTimes;
-		if(times.length < 1)
-		{
-			return -1;
-		}
-
-		// by default, calculate average for the past ~1 second:
-		ticks = Math.min(times.length, ticks || (this.getFPS() | 0));
-		for(var i = 0; i < ticks; i++)
-		{
-			ttl += times[i];
-		}
-		return ttl / ticks;
-	}
-
-	/**
-	 * Returns the actual frames / ticks per second.
-	 * @method getMeasuredFPS
-	 * @static
-	 * @param {Number} [ticks] The number of previous ticks over which to measure the actual frames / ticks per second.
-	 * Defaults to the number of ticks per second.
-	 * @return {Number} The actual frames / ticks per second. Depending on performance, this may differ
-	 * from the target frames per second.
-	 **/
-	public getMeasuredFPS(ticks:number)
-	{
-		var times = this._times;
-		if(times.length < 2)
-		{
-			return -1;
-		}
-
-		// by default, calculate fps for the past ~1 second:
-		ticks = Math.min(times.length - 1, ticks || (this.getFPS() | 0));
-		return 1000 / ((times[0] - times[ticks]) / ticks);
 	}
 
 	/**
@@ -530,7 +448,7 @@ class Ticker
 	 **/
 	public _handleSynch = () =>
 	{
-		var time = Ticker._getTime() - this._startTime;
+		var time:number = Ticker._getTime() - this._startTime;
 		this._timerId = -1;
 		this._setupTick();
 
@@ -598,36 +516,22 @@ class Ticker
 	 * @static
 	 * @protected
 	 **/
-	public _tick()
+	public _tick():void
 	{
-		var time = Ticker._getTime() - this._startTime;
-		var elapsedTime = time - this._lastTime;
-		var paused = this._paused;
-
-		this._ticks++;
-		if(paused)
-		{
-			this._pausedTicks++;
-			this._pausedTime += elapsedTime;
-		}
+		var time:number = Ticker._getTime() - this._startTime;
+		var delta:number = time - this._lastTime;
 		this._lastTime = time;
 
-		if(this.tickSignal.hasListeners())
+		this._ticks++;
+		if(this._paused)
+		{
+			this._pausedTicks++;
+			this._pausedTime += delta;
+		}
+		else if(this.tickSignal.hasListeners())
 		{
 			var maxDelta:number = Ticker.maxDelta;
-			this.tickSignal.emit((maxDelta && elapsedTime > maxDelta) ? maxDelta : elapsedTime);
-		}
-
-		this._tickTimes.unshift(Ticker._getTime() - time);
-		while(this._tickTimes.length > 100)
-		{
-			this._tickTimes.pop();
-		}
-
-		this._times.unshift(time);
-		while(this._times.length > 100)
-		{
-			this._times.pop();
+			this.tickSignal.emit((maxDelta && delta > maxDelta) ? maxDelta : delta);
 		}
 	}
 }
