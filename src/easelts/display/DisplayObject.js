@@ -218,8 +218,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this._regY_percent = .0;
             this._behaviorList = null;
             this._parentSizeIsKnown = false;
-            this.minimumContainerSize = null;
-            this.maximumContainerSize = null;
+            this.downScaleBreakPoint = null;
+            this.downScaleLimit = null;
+            this.upScaleBreakPoint = null;
+            this.upScaleLimit = null;
             /**
              * The composite operation indicates how the pixels of this display object will be composited with the elements
              * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -1332,11 +1334,28 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.onResize = function (size) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
-                if (this.minimumContainerSize || this.maximumContainerSize) {
-                    // size object is cloned because we are going to change the value.
-                    // and this object is used by multiple display objects.
-                    var mincs = this.minimumContainerSize;
-                    this.scaleX = this.scaleY = Math.min(1, size.width / mincs.width, size.height / mincs.height);
+                if (this.downScaleBreakPoint || this.upScaleBreakPoint) {
+                    // Size object values may be copied, because we are going to change the values and this object
+                    // is used by multiple display objects as well as other calculations below.
+                    var resizeWidth;
+                    var resizeHeight;
+                    if (this.downScaleBreakPoint && (size.width < this.downScaleBreakPoint.width || size.height < this.downScaleBreakPoint.height)) {
+                        if (this.downScaleLimit) {
+                            resizeWidth = Math.max(size.width, this.downScaleLimit.width);
+                            resizeHeight = Math.max(size.height, this.downScaleLimit.height);
+                        }
+                        this.scaleX = this.scaleY = Math.min(1, resizeWidth / this.downScaleBreakPoint.width, resizeHeight / this.downScaleBreakPoint.height);
+                    }
+                    else if (this.upScaleBreakPoint && (size.width > this.upScaleBreakPoint.width || size.height > this.upScaleBreakPoint.height)) {
+                        if (this.upScaleLimit) {
+                            resizeWidth = Math.min(size.width, this.upScaleLimit.width);
+                            resizeHeight = Math.min(size.height, this.upScaleLimit.height);
+                        }
+                        this.scaleX = this.scaleY = Math.max(1, Math.min(resizeWidth / this.upScaleBreakPoint.width, resizeHeight / this.upScaleBreakPoint.height));
+                    }
+                    else {
+                        this.scaleX = this.scaleY = 1;
+                    }
                 }
                 if (this._width_type == 1 /* PERCENT */) {
                     this.width = this._width_percent * size.width;

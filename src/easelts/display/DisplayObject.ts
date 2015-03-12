@@ -383,8 +383,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _behaviorList:AbstractBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public minimumContainerSize:Rectangle = null;
-	public maximumContainerSize:Rectangle = null;
+	public downScaleBreakPoint:Size = null;
+	public downScaleLimit:Size = null;
+	public upScaleBreakPoint:Size = null;
+	public upScaleLimit:Size = null;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -1805,12 +1807,40 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 		if(this.updateGeomOnResize)
 		{
-			if(this.minimumContainerSize || this.maximumContainerSize)
+			if (this.downScaleBreakPoint || this.upScaleBreakPoint)
 			{
-				// size object is cloned because we are going to change the value.
-				// and this object is used by multiple display objects.
-				var mincs = this.minimumContainerSize;
-				this.scaleX = this.scaleY = Math.min(1, size.width / mincs.width, size.height / mincs.height);
+				// Size object values may be copied, because we are going to change the values and this object
+				// is used by multiple display objects as well as other calculations below.
+				var resizeWidth:number;
+				var resizeHeight:number;
+
+				if(this.downScaleBreakPoint && (size.width < this.downScaleBreakPoint.width || size.height < this.downScaleBreakPoint.height))
+				{
+					if (this.downScaleLimit)
+					{
+						resizeWidth  = Math.max(size.width, this.downScaleLimit.width);
+						resizeHeight = Math.max(size.height, this.downScaleLimit.height);
+					}
+
+					this.scaleX =
+					this.scaleY = Math.min(1, resizeWidth / this.downScaleBreakPoint.width, resizeHeight / this.downScaleBreakPoint.height);
+				}
+				else if(this.upScaleBreakPoint && (size.width > this.upScaleBreakPoint.width || size.height > this.upScaleBreakPoint.height))
+				{
+					if (this.upScaleLimit)
+					{
+						resizeWidth  = Math.min(size.width, this.upScaleLimit.width);
+						resizeHeight = Math.min(size.height, this.upScaleLimit.height);
+					}
+
+					this.scaleX =
+					this.scaleY = Math.max(1, Math.min(resizeWidth / this.upScaleBreakPoint.width, resizeHeight / this.upScaleBreakPoint.height));
+				}
+				else
+				{
+					this.scaleX =
+					this.scaleY = 1;
+				}
 			}
 
 			if(this._width_type == CalculationType.PERCENT)
@@ -1867,7 +1897,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 				this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
 			}
 		}
-
 	}
 
 	public destruct():void
