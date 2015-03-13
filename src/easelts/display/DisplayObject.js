@@ -106,6 +106,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * A reference to the {{#crossLink "Container"}}{{/crossLink}} or {{#crossLink "Stage"}}{{/crossLink}} object that
              * contains this display object, or null if it has not been added
              * to one.
+             *
              * @property parent
              * @final
              * @type {Container}
