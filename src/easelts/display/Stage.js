@@ -61,8 +61,9 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
      **/
     var Stage = (function (_super) {
         __extends(Stage, _super);
-        function Stage(element) {
+        function Stage(element, triggerResizeOnWindowResize) {
             var _this = this;
+            if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
             /**
              * Dispatched when the user moves the mouse over the canvas.
@@ -181,7 +182,13 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
              * @readonly
              **/
             this.mouseY = 0;
-            this._autoSizeOnWindowResize = false;
+            /**
+             * Indicates whether onResize should be called when the window is resized.
+             * @property triggerResizeOnWindowResize
+             * @type {boolean}
+             * @default false
+             */
+            this.triggerResizeOnWindowResize = false;
             /**
              * Specifies the area of the stage to affect when calling update. This can be use to selectively
              * re-render only active regions of the canvas. If null, the whole canvas area is affected.
@@ -307,14 +314,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 //		this.dispatchEvent("drawend");
                 //		console.timeEnd('stage:update');
             };
-            //
-            var size = null;
+            this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
                         this.canvas = element;
                         this.holder = element.parentElement;
-                        size = new Size(this.canvas.width, this.canvas.height);
                         break;
                     }
                 case 'DIV':
@@ -323,8 +328,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                         element.appendChild(canvas);
                         this.canvas = canvas;
                         this.holder = element;
-                        size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
-                        this._autoSizeOnWindowResize = true;
                         break;
                     }
                 default:
@@ -338,7 +341,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(0 /* NORMAL */);
             this.stage = this;
-            this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            if (this.triggerResizeOnWindowResize || element.tagName == "DIV") {
+                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            }
+            else {
+                this.onResize(new Size(this.canvas.width, this.canvas.height));
+            }
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
@@ -587,12 +595,10 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 //					this._handleDoubleClick(e)
                 //				}
                 //			};
-                if (this._autoSizeOnWindowResize) {
-                    eventListeners["resize"] = {
-                        window: windowsObject,
-                        fn: function (e) { return _this._handleWindowResize(e); }
-                    };
-                }
+                eventListeners["resize"] = {
+                    window: windowsObject,
+                    fn: function (e) { return _this._handleWindowResize(e); }
+                };
                 for (name in eventListeners) {
                     o = eventListeners[name];
                     o.window.addEventListener(name, o.fn, false);
@@ -605,7 +611,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @return {Stage} A clone of the current Container instance.
          **/
         Stage.prototype.clone = function () {
-            var o = new Stage(null);
+            var o = new Stage(null, this.triggerResizeOnWindowResize);
             this.cloneProps(o);
             return o;
         };
@@ -903,7 +909,9 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @param {Event} e
          **/
         Stage.prototype._handleWindowResize = function (e) {
-            this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            if (this.triggerResizeOnWindowResize) {
+                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+            }
         };
         /**
          *
@@ -995,20 +1003,20 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             return this._isRunning;
         };
         /**
-         * Is triggerd when the stage (canvas) is resized.
+         * Is triggered when the stage (canvas) is resized.
          * Will give this new information to all children.
          *
          * @method onResize
-         * @param {Size} e
+         * @param {Size} size
          */
-        Stage.prototype.onResize = function (e) {
+        Stage.prototype.onResize = function (size) {
             // anti-half pixel fix
-            e.width = e.width + 1 >> 1 << 1;
-            e.height = e.height + 1 >> 1 << 1;
-            if (this.width != e.width || this.height != e.height) {
-                this.canvas.width = e.width;
-                this.canvas.height = e.height;
-                _super.prototype.onResize.call(this, e);
+            size.width = size.width + 1 >> 1 << 1;
+            size.height = size.height + 1 >> 1 << 1;
+            if (this.width != size.width || this.height != size.height) {
+                this.canvas.width = size.width;
+                this.canvas.height = size.height;
+                _super.prototype.onResize.call(this, size);
                 if (!this._isRunning) {
                     this.update(0);
                 }

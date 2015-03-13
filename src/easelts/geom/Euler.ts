@@ -7,7 +7,8 @@
 import Quaternion = require('./Quaternion');
 import MathUtil = require('../util/MathUtil');
 
-class Euler {
+class Euler
+{
 
 	public static RotationOrders = [ 'XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX' ];
 	public static DefaultOrder = 'XYZ';

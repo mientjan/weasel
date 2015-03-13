@@ -30,6 +30,7 @@ import DisplayObject = require('./DisplayObject');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
 import m2 = require('../geom/Matrix2');
+import Rectangle = require('../geom/Rectangle');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
 
@@ -249,10 +250,14 @@ class Container extends DisplayObject
 		for(var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-			child.stage = this.stage;
-			if(child.onStageSet)
+
+			if (child.stage != this.stage)
 			{
-				child.onStageSet.call(child);
+				child.stage = this.stage;
+				if(child.onStageSet)
+				{
+					child.onStageSet.call(child);
+				}
 			}
 		}
 	}
@@ -284,12 +289,6 @@ class Container extends DisplayObject
 			child.parent.removeChild(child);
 		}
 
-		child.parent = this;
-		if(this._parentSizeIsKnown)
-		{
-			child.onResize(new Size(this.width, this.height));
-		}
-
 		if(this.stage)
 		{
 			child.stage = this.stage;
@@ -297,6 +296,12 @@ class Container extends DisplayObject
 			{
 				child.onStageSet.call(child);
 			}
+		}
+
+		child.parent = this;
+		if(this._parentSizeIsKnown)
+		{
+			child.onResize(new Size(this.width, this.height));
 		}
 
 		this.children.splice(index, 0, child);
@@ -371,7 +376,6 @@ class Container extends DisplayObject
 		{
 			return false;
 		}
-
 
 		var child = this.children[index[0]];
 
@@ -693,9 +697,9 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(e:Size):void
+	public onResize(size:Size):void
 	{
-		super.onResize(e);
+		super.onResize(size);
 
 		var size = new Size(this.width, this.height);
 
@@ -724,7 +728,7 @@ class Container extends DisplayObject
 	 * function.
 	 * @protected
 	 **/
-	public onTick(delta:number)
+	public onTick(delta:number):void
 	{
 		if(this.tickChildren)
 		{
@@ -858,7 +862,7 @@ class Container extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean)
+	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		var bounds = super.getBounds();
 		if(bounds)
@@ -904,7 +908,7 @@ class Container extends DisplayObject
 	}
 
 
-	public destruct()
+	public destruct():void
 	{
 
 		for(var i = 0; i < this.children.length; i++)

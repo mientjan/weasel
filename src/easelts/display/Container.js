@@ -216,9 +216,11 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             var children = this.children;
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                child.stage = this.stage;
-                if (child.onStageSet) {
-                    child.onStageSet.call(child);
+                if (child.stage != this.stage) {
+                    child.stage = this.stage;
+                    if (child.onStageSet) {
+                        child.onStageSet.call(child);
+                    }
                 }
             }
         };
@@ -246,15 +248,15 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             if (child.parent) {
                 child.parent.removeChild(child);
             }
-            child.parent = this;
-            if (this._parentSizeIsKnown) {
-                child.onResize(new Size(this.width, this.height));
-            }
             if (this.stage) {
                 child.stage = this.stage;
                 if (child.onStageSet) {
                     child.onStageSet.call(child);
                 }
+            }
+            child.parent = this;
+            if (this._parentSizeIsKnown) {
+                child.onResize(new Size(this.width, this.height));
             }
             this.children.splice(index, 0, child);
             return child;
@@ -591,8 +593,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
-        Container.prototype.onResize = function (e) {
-            _super.prototype.onResize.call(this, e);
+        Container.prototype.onResize = function (size) {
+            _super.prototype.onResize.call(this, size);
             var size = new Size(this.width, this.height);
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];

@@ -60,7 +60,7 @@ module createts
 		 * @protected
 		 * @static
 		 **/
-		public static DELTA_INDEX = [
+		public static DELTA_INDEX:number[] = [
 			0, 0.01, 0.02, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.11,
 			0.12, 0.14, 0.15, 0.16, 0.17, 0.18, 0.20, 0.21, 0.22, 0.24,
 			0.25, 0.27, 0.28, 0.30, 0.32, 0.34, 0.36, 0.38, 0.40, 0.42,
@@ -81,7 +81,7 @@ module createts
 		 * @protected
 		 * @static
 		 **/
-		public static IDENTITY_MATRIX = [
+		public static IDENTITY_MATRIX:number[] = [
 			1, 0, 0, 0, 0,
 			0, 1, 0, 0, 0,
 			0, 0, 1, 0, 0,
@@ -96,7 +96,7 @@ module createts
 		 * @protected
 		 * @static
 		 **/
-		public static LENGTH = ColorMatrix.IDENTITY_MATRIX.length;
+		public static LENGTH:number = ColorMatrix.IDENTITY_MATRIX.length;
 
 
 		/**
@@ -108,7 +108,7 @@ module createts
 		 * @param {Number} hue
 		 * @protected
 		 */
-			constructor(brightness:number, contrast:number, saturation:number, hue:number)
+		constructor(brightness:number, contrast:number, saturation:number, hue:number)
 		{
 			this.reset();
 			this.adjustColor(brightness, contrast, saturation, hue);
@@ -120,7 +120,7 @@ module createts
 		 * @method reset
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 */
-		public reset()
+		public reset():ColorMatrix
 		{
 			return this.copyMatrix(ColorMatrix.IDENTITY_MATRIX);
 		}
@@ -136,7 +136,7 @@ module createts
 		 * @param {Number} hue
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public adjustColor(brightness, contrast, saturation, hue)
+		public adjustColor(brightness, contrast, saturation, hue):ColorMatrix
 		{
 			this.adjustHue(hue);
 			this.adjustContrast(contrast);
@@ -151,7 +151,7 @@ module createts
 		 * @param {Number} value A value between -255 & 255 that will be added to the RGB channels.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public adjustBrightness(value)
+		public adjustBrightness(value):ColorMatrix
 		{
 			if(value == 0 || isNaN(value))
 			{
@@ -175,7 +175,7 @@ module createts
 		 * @param {Number} value A value between -100 & 100.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public adjustContrast(value)
+		public adjustContrast(value):ColorMatrix
 		{
 			if(value == 0 || isNaN(value))
 			{
@@ -217,7 +217,7 @@ module createts
 		 * @param {Number} value A value between -100 & 100.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public adjustSaturation(value)
+		public adjustSaturation(value):ColorMatrix
 		{
 			if(value == 0 || isNaN(value))
 			{
@@ -245,7 +245,7 @@ module createts
 		 * @param {Number} value A value between -180 & 180.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public adjustHue(value)
+		public adjustHue(value):ColorMatrix
 		{
 			if(value == 0 || isNaN(value))
 			{
@@ -273,7 +273,7 @@ module createts
 		 * @param {Array} matrix An array or ColorMatrix instance.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-			concat(matrix)
+		concat(matrix):ColorMatrix
 		{
 			matrix = this._fixMatrix(matrix);
 			if(matrix.length != ColorMatrix.LENGTH)
@@ -289,7 +289,7 @@ module createts
 		 * @method clone
 		 * @return {ColorMatrix} A clone of this ColorMatrix.
 		 **/
-		public clone()
+		public clone():ColorMatrix
 		{
 			return (new ColorMatrix(0, 0, 0, 0)).copyMatrix(<any> this);
 		}
@@ -299,7 +299,7 @@ module createts
 		 * @method toArray
 		 * @return {Array} An array holding this matrix's values.
 		 **/
-		public toArray()
+		public toArray():number[]
 		{
 			var arr = [];
 			for(var i = 0, l = ColorMatrix.LENGTH; i < l; i++)
@@ -315,7 +315,7 @@ module createts
 		 * @param {Array} matrix An array or ColorMatrix instance.
 		 * @return {ColorMatrix} The ColorMatrix instance the method is called on (useful for chaining calls.)
 		 **/
-		public copyMatrix(matrix)
+		public copyMatrix(matrix):ColorMatrix
 		{
 			var l = ColorMatrix.LENGTH;
 			for(var i = 0; i < l; i++)
@@ -330,7 +330,7 @@ module createts
 		 * @method toString
 		 * @return {String} a string representation of the instance.
 		 **/
-		public toString()
+		public toString():string
 		{
 			return "[ColorMatrix]";
 		}
@@ -342,7 +342,7 @@ module createts
 		 * @param {Array} matrix
 		 * @protected
 		 **/
-		public _multiplyMatrix(matrix)
+		public _multiplyMatrix(matrix):void
 		{
 			var col = [];
 
@@ -371,7 +371,7 @@ module createts
 		 * @param {Number} limit The maximum that the number can be. The minimum is the limit * -1.
 		 * @protected
 		 **/
-		public _cleanValue(value, limit)
+		public _cleanValue(value, limit):number
 		{
 			return Math.min(limit, Math.max(-limit, value));
 		}
@@ -383,7 +383,7 @@ module createts
 		 * @param {Array} matrix
 		 * @protected
 		 **/
-		public _fixMatrix(matrix:any)
+		public _fixMatrix(matrix:any):number[]
 		{
 			if(matrix instanceof ColorMatrix)
 			{

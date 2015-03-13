@@ -60,7 +60,7 @@ import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
 
-import AbstractBehavior = require('../behavior/AbstractBehavior');
+import IBehavior = require('../behavior/IBehavior');
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -343,6 +343,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public y:number = 0;
 
+	/**
+	 * The Stage instance that the display object is a descendent of. null if the DisplayObject has not
+	 * been added to a Stage.
+	 * @property stage
+	 * @type {Stage}
+	 * @default null
+	 **/
 	public stage:Stage = null;
 
 	/** When true the geom of this object will be updated when its parent resizes.
@@ -357,34 +364,34 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public height:number = 0;
 
 	public _x_type:CalculationType = CalculationType.STATIC;
-	public _x_procent:number = .0;
+	public _x_percent:number = .0;
 	public _x_calc:FluidMeasurementsUnit[];
 
 	public _y_type:CalculationType;
-	public _y_procent:number = .0;
+	public _y_percent:number = .0;
 	public _y_calc:FluidMeasurementsUnit[];
 
 	public _width_type:CalculationType = CalculationType.STATIC;
-	public _width_procent:number = .0;
+	public _width_percent:number = .0;
 	public _width_calc:FluidMeasurementsUnit[];
 
 	public _height_type:CalculationType = CalculationType.STATIC;
-	public _height_procent:number = .0;
+	public _height_percent:number = .0;
 	public _height_calc:FluidMeasurementsUnit[];
 
 	public _regX_type:CalculationType = CalculationType.STATIC;
-	public _regX_procent:number = .0;
+	public _regX_percent:number = .0;
 	public _regX_calc:FluidMeasurementsUnit[];
 
 	public _regY_type:CalculationType = CalculationType.STATIC;
-	public _regY_procent:number = .0;
+	public _regY_percent:number = .0;
 	public _regY_calc:FluidMeasurementsUnit[];
 
-	public _behaviorList:AbstractBehavior[] = null;
+	public _behaviorList:IBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public minimumContainerSize:Rectangle = null;
-	public maximumContainerSize:Rectangle = null;
+	public minimumContainerSize:Size = null;
+	public maximumContainerSize:Size = null;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -578,8 +585,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			if(width.substr(-1) == '%')
 			{
-				this._width_procent = parseFloat(width.substr(0, width.length - 1)) / 100;
-				this._width_type = CalculationType.PROCENT;
+				this._width_percent = parseFloat(width.substr(0, width.length - 1)) / 100;
+				this._width_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -620,11 +627,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		if(typeof(height) == 'string')
 		{
-			// @todo check if only procent unit.
+			// @todo check if only percent unit.
 			if(height.substr(-1) == '%')
 			{
-				this._height_procent = parseFloat(height.substr(0, height.length - 1)) / 100;
-				this._height_type = CalculationType.PROCENT;
+				this._height_percent = parseFloat(height.substr(0, height.length - 1)) / 100;
+				this._height_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -667,8 +674,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			if(x.substr(-1) == '%')
 			{
-				this._x_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
-				this._x_type = CalculationType.PROCENT;
+				this._x_percent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._x_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -706,8 +713,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			if(y.substr(-1) == '%')
 			{
-				this._y_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
-				this._y_type = CalculationType.PROCENT;
+				this._y_percent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._y_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -745,8 +752,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			if(x.substr(-1) == '%')
 			{
-				this._regX_procent = parseFloat(x.substr(0, x.length - 1)) / 100;
-				this._regX_type = CalculationType.PROCENT;
+				this._regX_percent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._regX_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -784,8 +791,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			if(y.substr(-1) == '%')
 			{
-				this._regY_procent = parseFloat(y.substr(0, y.length - 1)) / 100;
-				this._regY_type = CalculationType.PROCENT;
+				this._regY_percent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._regY_type = CalculationType.PERCENT;
 			}
 			else
 			{
@@ -812,31 +819,30 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.regY;
 	}
 
-	public addBehavior(behavior:AbstractBehavior):DisplayObject
+	public addBehavior(behavior:IBehavior):DisplayObject
 	{
 		if(!this._behaviorList)
 		{
 			this._behaviorList = [];
 		}
+
 		this._behaviorList.push(behavior);
 		behavior.initialize(this);
+
 		return this;
 	}
 
-	public removeBehavior(behavior:AbstractBehavior):DisplayObject
+	public removeBehavior(behavior:IBehavior):DisplayObject
 	{
-		var behaviorList = this._behaviorList;
+		var behaviorList:IBehavior[] = this._behaviorList;
+
 		if(behaviorList)
 		{
-			var length = behaviorList.length;
-			for(var i = 0; i < behaviorList.length; i++)
+			for(var i:number = behaviorList.length - 1; i >= 0; i--)
 			{
-				var behaviorItem = behaviorList[i];
-				if(behaviorItem === behavior)
+				if(behaviorList[i] === behavior)
 				{
 					behaviorList.splice(i, 1);
-					length--;
-					i--;
 				}
 			}
 		}
@@ -844,7 +850,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 	/**
-	 * Removes all be behaviors
+	 * Removes all behaviors
 	 *
 	 * @method removeAllBehaviors
 	 * @return void
@@ -853,10 +859,26 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		if(this._behaviorList)
 		{
+			this._behaviorList.length = 0;
+		}
+	}
+
+	/**
+	 * Destructs all behaviors
+	 *
+	 * @method destructAllBehaviors
+	 * @return void
+	 */
+	public destructAllBehaviors():void
+	{
+		if(this._behaviorList)
+		{
 			while(this._behaviorList.length)
 			{
 				this._behaviorList.pop().destruct();
 			}
+
+			this._behaviorList = null;
 		}
 	}
 
@@ -1107,29 +1129,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 
 		return this._cacheDataURL;
-	}
-
-	/**
-	 * Returns the stage that this display object will be rendered on, or null if it has not been added to one.
-	 * @method getStage
-	 * @return {Stage} The Stage instance that the display object is a descendent of. null if the DisplayObject has not
-	 * been added to a Stage.
-	 **/
-	public getStage():Stage
-	{
-		var o = this;
-		while(o.parent)
-		{
-			o = o.parent;
-		}
-
-		// using dynamic access to avoid circular dependencies;
-		if(o.type == DisplayType.STAGE)
-		{
-			return <Stage> o;
-		}
-
-		return null;
 	}
 
 	/**
@@ -1523,7 +1522,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method clone
 	 * @return {DisplayObject} A clone of the current DisplayObject instance.
 	 **/
-	public clone(recursive?:boolean)
+	public clone(recursive?:boolean):DisplayObject
 	{
 		var o = new DisplayObject();
 		this.cloneProps(o);
@@ -1799,7 +1798,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public onStageSet():void
 	{}
 
-	public onResize(e:Size):void
+	public onResize(size:Size):void
 	{
 		this._parentSizeIsKnown = true;
 
@@ -1810,70 +1809,70 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 				// size object is cloned because we are going to change the value.
 				// and this object is used by multiple display objects.
 				var mincs = this.minimumContainerSize;
-				this.scaleX = this.scaleY = Math.min(1, e.width / mincs.width, e.height / mincs.height);
+				this.scaleX = this.scaleY = Math.min(1, size.width / mincs.width, size.height / mincs.height);
 			}
 
-			if(this._width_type == CalculationType.PROCENT)
+			if(this._width_type == CalculationType.PERCENT)
 			{
-				this.width = this._width_procent * e.width;
+				this.width = this._width_percent * size.width;
 			}
 			else if(this._width_type == CalculationType.CALC)
 			{
-				this.width = FluidCalculation.calcUnit(e.width, this._width_calc);
+				this.width = FluidCalculation.calcUnit(size.width, this._width_calc);
 			}
 
-			if(this._height_type == CalculationType.PROCENT)
+			if(this._height_type == CalculationType.PERCENT)
 			{
-				this.height = this._height_procent * e.height;
+				this.height = this._height_percent * size.height;
 			}
 			else if(this._height_type == CalculationType.CALC)
 			{
-				this.height = FluidCalculation.calcUnit(e.height, this._height_calc);
+				this.height = FluidCalculation.calcUnit(size.height, this._height_calc);
 			}
 
-			if(this._regX_type == CalculationType.PROCENT)
+			if(this._regX_type == CalculationType.PERCENT)
 			{
-				this.regX = this._regX_procent * this.width;
+				this.regX = this._regX_percent * this.width;
 			}
 			else if(this._regX_type == CalculationType.CALC)
 			{
 				this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
 			}
 
-			if(this._regY_type == CalculationType.PROCENT)
+			if(this._regY_type == CalculationType.PERCENT)
 			{
-				this.regY = this._regY_procent * this.height;
+				this.regY = this._regY_percent * this.height;
 			}
 			else if(this._regY_type == CalculationType.CALC)
 			{
 				this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
 			}
 
-			if(this._x_type == CalculationType.PROCENT)
+			if(this._x_type == CalculationType.PERCENT)
 			{
-				this.x = Math.round(this._x_procent * e.width);
+				this.x = Math.round(this._x_percent * size.width);
 			}
 			else if(this._x_type == CalculationType.CALC)
 			{
-				this.x = Math.round(FluidCalculation.calcUnit(e.width, this._x_calc));
+				this.x = Math.round(FluidCalculation.calcUnit(size.width, this._x_calc));
 			}
 
-			if(this._y_type == CalculationType.PROCENT)
+			if(this._y_type == CalculationType.PERCENT)
 			{
-				this.y = Math.round(this._y_procent * e.height);
+				this.y = Math.round(this._y_percent * size.height);
 			}
 			else if(this._y_type == CalculationType.CALC)
 			{
-				this.y = Math.round(FluidCalculation.calcUnit(e.height, this._y_calc));
+				this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
 			}
 		}
 
 	}
 
-	public destruct()
+	public destruct():void
 	{
 		this.parent = null;
-		this.removeAllBehaviors();
+		this.destructAllBehaviors();
 
 		super.destruct();
 	}

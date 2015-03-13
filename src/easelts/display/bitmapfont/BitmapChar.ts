@@ -20,7 +20,7 @@ class BitmapChar
 	}
 
 
-	public addKerning(charId, amount)
+	public addKerning(charId, amount):void
 	{
 		if(this.mKernings == null)
 		{
@@ -30,7 +30,7 @@ class BitmapChar
 		this.mKernings[charId] = amount;
 	}
 
-	public getKerning(charId)
+	public getKerning(charId):any
 	{
 		return (this.mKernings == null || this.mKernings[charId] == null || this.mKernings[charId] == undefined) ? 0 : this.mKernings[charId];
 	}
@@ -40,22 +40,22 @@ class BitmapChar
 		return this.mTexture.clone();
 	}
 
-	public getCharId()
+	public getCharId():number
 	{
 		return this.mCharId;
 	}
 
-	public getXOffset()
+	public getXOffset():number
 	{
 		return this.mXOffset;
 	}
 
-	public getYOffset()
+	public getYOffset():number
 	{
 		return this.mYOffset;
 	}
 
-	public getXAdvance()
+	public getXAdvance():number
 	{
 		return this.mXAdvance;
 	}
@@ -65,12 +65,12 @@ class BitmapChar
 		return this.mTexture;
 	}
 
-	public getWidth()
+	public getWidth():number
 	{
 		return this.mTexture.spriteSheet.getFrame(this.mTexture.currentFrame).rect.width;
 	}
 
-	public getHeight()
+	public getHeight():number
 	{
 		return this.mTexture.spriteSheet.getFrame(this.mTexture.currentFrame).rect.height;
 	}

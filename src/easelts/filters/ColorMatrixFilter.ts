@@ -72,7 +72,7 @@ class ColorMatrixFilter extends Filter
 	}
 
 	// public methods:
-	public applyFilter(ctx:CanvasRenderingContext2D, x:number, y:number, width:number, height:number, targetCtx?, targetX?:number, targetY?:number)
+	public applyFilter(ctx:CanvasRenderingContext2D, x:number, y:number, width:number, height:number, targetCtx?, targetX?:number, targetY?:number):boolean
 	{
 		targetCtx = targetCtx || ctx;
 		if(targetX == null)
@@ -115,7 +115,7 @@ class ColorMatrixFilter extends Filter
 		return true;
 	}
 
-	public toString()
+	public toString():string
 	{
 		return "[ColorMatrixFilter]";
 	}
@@ -125,7 +125,7 @@ class ColorMatrixFilter extends Filter
 	 * @method clone
 	 * @return {ColorMatrixFilter} A clone of the current ColorMatrixFilter instance.
 	 **/
-	public clone()
+	public clone():ColorMatrixFilter
 	{
 		return new ColorMatrixFilter(this.matrix);
 	}

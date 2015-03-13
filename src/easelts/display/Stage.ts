@@ -235,7 +235,13 @@ class Stage extends Container
 	private _mouseOverX:number;
 	private _mouseOverTarget:any[];
 
-	private _autoSizeOnWindowResize:boolean = false;
+	/**
+	 * Indicates whether onResize should be called when the window is resized.
+	 * @property triggerResizeOnWindowResize
+	 * @type {boolean}
+	 * @default false
+	 */
+	public triggerResizeOnWindowResize:boolean = false;
 
 	/**
 	 * Specifies the area of the stage to affect when calling update. This can be use to selectively
@@ -388,16 +394,16 @@ class Stage extends Container
 	/**
 	 * @class Stage
 	 * @constructor
-	 * @param {HTMLCanvasElement|HTMLDivElement} canvas A canvas object, or the string id of a canvas object in the current document.
+	 * @param {HTMLCanvasElement|HTMLDivElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
+	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-	constructor(element:HTMLDivElement);
-	constructor(element:HTMLCanvasElement);
-	constructor(element:any)
+	constructor(element:HTMLDivElement, triggerResizeOnWindowResize?:boolean);
+	constructor(element:HTMLCanvasElement, triggerResizeOnWindowResize?:boolean);
+	constructor(element:any, triggerResizeOnWindowResize:any = false)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
-		//
-		var size:Size = null;
+		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
 
 		switch(element.tagName)
 		{
@@ -405,8 +411,6 @@ class Stage extends Container
 			{
 				this.canvas = element;
 				this.holder = element.parentElement;
-
-				size = new Size(this.canvas.width, this.canvas.height);
 				break;
 			}
 
@@ -417,9 +421,6 @@ class Stage extends Container
 
 				this.canvas = canvas;
 				this.holder = element;
-
-				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
-				this._autoSizeOnWindowResize = true;
 				break;
 			}
 
@@ -436,7 +437,14 @@ class Stage extends Container
 		this.setQuality(QualityType.NORMAL);
 		this.stage = this;
 
-		this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		if (this.triggerResizeOnWindowResize || element.tagName == "DIV")
+		{
+			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		}
+		else
+		{
+			this.onResize(new Size(this.canvas.width, this.canvas.height));
+		}
 	}
 
 
@@ -750,13 +758,11 @@ class Stage extends Container
 			//				}
 			//			};
 
-			if (this._autoSizeOnWindowResize)
-			{
-				eventListeners["resize"] = {
-					window: windowsObject,
-					fn: e => this._handleWindowResize(e)
-				};
-			}
+			eventListeners["resize"] = {
+				window: windowsObject,
+				fn: e => this._handleWindowResize(e)
+			};
+
 
 			for(name in eventListeners)
 			{
@@ -773,7 +779,7 @@ class Stage extends Container
 	 **/
 	public clone()
 	{
-		var o = new Stage(null);
+		var o = new Stage(null, this.triggerResizeOnWindowResize);
 		this.cloneProps(o);
 		return o;
 	}
@@ -1176,7 +1182,10 @@ class Stage extends Container
 	 **/
 	public _handleWindowResize(e)
 	{
-		this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		if (this.triggerResizeOnWindowResize)
+		{
+			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+		}
 	}
 
 	/**
@@ -1292,24 +1301,24 @@ class Stage extends Container
 	}
 
 	/**
-	 * Is triggerd when the stage (canvas) is resized.
+	 * Is triggered when the stage (canvas) is resized.
 	 * Will give this new information to all children.
 	 *
 	 * @method onResize
-	 * @param {Size} e
+	 * @param {Size} size
 	 */
-	public onResize(e:Size)
+	public onResize(size:Size):void
 	{
 		// anti-half pixel fix
-		e.width = e.width + 1 >> 1 << 1;
-		e.height = e.height + 1 >> 1 << 1;
+		size.width = size.width + 1 >> 1 << 1;
+		size.height = size.height + 1 >> 1 << 1;
 
-		if(this.width != e.width || this.height != e.height)
+		if(this.width != size.width || this.height != size.height)
 		{
-			this.canvas.width = e.width;
-			this.canvas.height = e.height;
+			this.canvas.width = size.width;
+			this.canvas.height = size.height;
 
-			super.onResize(e);
+			super.onResize(size);
 
 			if(!this._isRunning)
 			{
@@ -1318,7 +1327,7 @@ class Stage extends Container
 		}
 	}
 
-	public destruct()
+	public destruct():void
 	{
 		this.stop();
 		this.enableDOMEvents(false);

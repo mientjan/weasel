@@ -1,4 +1,5 @@
 import DisplayObject = require('../display/DisplayObject');
+import IBehavior = require('./IBehavior');
 
 /**
  * AbstractBehaviour
@@ -7,7 +8,7 @@ import DisplayObject = require('../display/DisplayObject');
  * @method AbstractBehavior
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  */
-class AbstractBehaviour
+class AbstractBehavior implements IBehavior
 {
 	/**
 	 * @property owner
@@ -18,7 +19,7 @@ class AbstractBehaviour
 	 * @method initialize
 	 * @param {DisplayObject} owner
 	 */
-	public initialize(owner:DisplayObject):any
+	public initialize(owner:DisplayObject):void
 	{
 		if(this.owner)
 		{
@@ -28,10 +29,10 @@ class AbstractBehaviour
 		this.owner = owner;
 	}
 
-	public destruct():any
+	public destruct():void
 	{
 		this.owner = null;
 	}
 }
 
-export  = AbstractBehaviour;
+export = AbstractBehavior;

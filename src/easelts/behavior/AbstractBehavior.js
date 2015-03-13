@@ -6,8 +6,8 @@ define(["require", "exports"], function (require, exports) {
      * @method AbstractBehavior
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      */
-    var AbstractBehaviour = (function () {
-        function AbstractBehaviour() {
+    var AbstractBehavior = (function () {
+        function AbstractBehavior() {
             /**
              * @property owner
              */
@@ -17,16 +17,16 @@ define(["require", "exports"], function (require, exports) {
          * @method initialize
          * @param {DisplayObject} owner
          */
-        AbstractBehaviour.prototype.initialize = function (owner) {
+        AbstractBehavior.prototype.initialize = function (owner) {
             if (this.owner) {
                 throw new Error('behavior already has a owner');
             }
             this.owner = owner;
         };
-        AbstractBehaviour.prototype.destruct = function () {
+        AbstractBehavior.prototype.destruct = function () {
             this.owner = null;
         };
-        return AbstractBehaviour;
+        return AbstractBehavior;
     })();
-    return AbstractBehaviour;
+    return AbstractBehavior;
 });

@@ -23,10 +23,4 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 define(["require", "exports"], function (require, exports) {
-    var IDisplayType = (function () {
-        function IDisplayType() {
-        }
-        return IDisplayType;
-    })();
-    return IDisplayType;
 });

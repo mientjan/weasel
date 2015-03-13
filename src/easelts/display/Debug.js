@@ -49,8 +49,8 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./Text"],
                 }
             }
         };
-        Debug.prototype.onResize = function (e) {
-            _super.prototype.onResize.call(this, e);
+        Debug.prototype.onResize = function (size) {
+            _super.prototype.onResize.call(this, size);
             this.update();
         };
         return Debug;

@@ -111,13 +111,13 @@ class BlurFilter extends Filter
 
 	// public methods:
 	/** docced in super class **/
-	public getBounds()
+	public getBounds():Rectangle
 	{
 		var q = Math.pow(this.quality, 0.6) * 0.5;
 		return new Rectangle(-this.blurX * q, -this.blurY * q, 2 * this.blurX * q, 2 * this.blurY * q);
 	}
 
-	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY)
+	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY):boolean
 	{
 		targetCtx = targetCtx || ctx;
 		if(targetX == null)
@@ -380,12 +380,12 @@ class BlurFilter extends Filter
 	 * @method clone
 	 * @return {BlurFilter}
 	 **/
-	public clone()
+	public clone():BlurFilter
 	{
 		return new BlurFilter(this.blurX, this.blurY, this.quality);
 	}
 
-	public toString()
+	public toString():string
 	{
 		return "[BlurFilter]";
 	}

@@ -97,7 +97,7 @@ class AlphaMaskFilter extends Filter
 	 * @param {Number} [targetY] The y position to draw the result to. Defaults to the value passed to y.
 	 * @return {Boolean} If the filter was applied successfully.
 	 **/
-	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY)
+	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY):boolean
 	{
 		if(!this.mask)
 		{
@@ -131,12 +131,12 @@ class AlphaMaskFilter extends Filter
 	 * @method clone
 	 * @return {AlphaMaskFilter}
 	 **/
-	public clone()
+	public clone():AlphaMaskFilter
 	{
 		return new AlphaMaskFilter(this.mask);
 	}
 
-	public toString()
+	public toString():string
 	{
 		return "[AlphaMaskFilter]";
 	}

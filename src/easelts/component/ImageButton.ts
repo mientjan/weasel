@@ -76,19 +76,23 @@ class ImageButton extends DisplayObject
 		}
 	}
 
-	public disable(){
-		if(this._bitmaps.disabled){
+	public disable():void
+	{
+		if(this._bitmaps.disabled)
+		{
 			this._bitmap = this._bitmaps.disabled;
 		}
 	}
 
-	public enable(){
-		if(this._bitmaps.idle){
+	public enable():void
+	{
+		if(this._bitmaps.idle)
+		{
 			this._bitmap = this._bitmaps.idle;
 		}
 	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean)
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):void
 	{
 		this._bitmap.draw(ctx, ignoreCache);
 

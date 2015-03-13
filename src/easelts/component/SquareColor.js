@@ -45,8 +45,8 @@ define(["require", "exports", '../display/Shape'], function (require, exports, S
         SquareColor.prototype.setColor = function () {
             this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
         };
-        SquareColor.prototype.onResize = function (e) {
-            _super.prototype.onResize.call(this, e);
+        SquareColor.prototype.onResize = function (size) {
+            _super.prototype.onResize.call(this, size);
             this.setColor();
         };
         return SquareColor;

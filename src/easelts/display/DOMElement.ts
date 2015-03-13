@@ -205,12 +205,12 @@ class DOMElement extends DisplayObject
 	 */
 	public onTick(delta:number)
 	{
-		var stage = this.getStage();
-		this._drawEndConnection = stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
+		// Do nothing, prevent super class from having onTick called
+	}
 
-		super.onTick(delta);
-
-		//stage && stage.on("drawend", this._handleDrawEnd, this, true);
+	public onStageSet():void
+	{
+		this._drawEndConnection = this.stage.drawendSignal.connect(this._handleDrawEnd.bind(this));
 	}
 
 	/**

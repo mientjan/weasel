@@ -68,56 +68,56 @@ class ColorFilter extends Filter
 	 * @property redMultiplier
 	 * @type Number
 	 **/
-	public redMultiplier = 1;
+	public redMultiplier:number = 1;
 
 	/**
 	 * Green channel multiplier.
 	 * @property greenMultiplier
 	 * @type Number
 	 **/
-	public greenMultiplier = 1;
+	public greenMultiplier:number = 1;
 
 	/**
 	 * Blue channel multiplier.
 	 * @property blueMultiplier
 	 * @type Number
 	 **/
-	public blueMultiplier = 1;
+	public blueMultiplier:number = 1;
 
 	/**
 	 * Alpha channel multiplier.
 	 * @property alphaMultiplier
 	 * @type Number
 	 **/
-	public alphaMultiplier = 1;
+	public alphaMultiplier:number = 1;
 
 	/**
 	 * Red channel offset (added to value).
 	 * @property redOffset
 	 * @type Number
 	 **/
-	public redOffset = 0;
+	public redOffset:number = 0;
 
 	/**
 	 * Green channel offset (added to value).
 	 * @property greenOffset
 	 * @type Number
 	 **/
-	public greenOffset = 0;
+	public greenOffset:number = 0;
 
 	/**
 	 * Blue channel offset (added to value).
 	 * @property blueOffset
 	 * @type Number
 	 **/
-	public blueOffset = 0;
+	public blueOffset:number = 0;
 
 	/**
 	 * Alpha channel offset (added to value).
 	 * @property alphaOffset
 	 * @type Number
 	 **/
-	public alphaOffset = 0;
+	public alphaOffset:number = 0;
 
 	// constructor:
 	/**
@@ -151,7 +151,7 @@ class ColorFilter extends Filter
 	}
 
 	// public methods:
-	public applyFilter(ctx:CanvasRenderingContext2D, x, y, width, height, targetCtx, targetX, targetY)
+	public applyFilter(ctx:CanvasRenderingContext2D, x, y, width, height, targetCtx, targetX, targetY):boolean
 	{
 		targetCtx = targetCtx || ctx;
 		if(targetX == null)
@@ -183,7 +183,7 @@ class ColorFilter extends Filter
 		return true;
 	}
 
-	public toString()
+	public toString():string
 	{
 		return "[ColorFilter]";
 	}
@@ -193,7 +193,7 @@ class ColorFilter extends Filter
 	 * @method clone
 	 * @return {ColorFilter} A clone of the current ColorFilter instance.
 	 **/
-	public clone()
+	public clone():ColorFilter
 	{
 		return new ColorFilter(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
 	}

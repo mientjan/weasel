@@ -88,7 +88,7 @@ class AlphaMapFilter extends Filter
 
 	// public methods:
 
-	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY)
+	public applyFilter(ctx, x, y, width, height, targetCtx, targetX, targetY):boolean
 	{
 		if(!this.alphaMap)
 		{
@@ -132,18 +132,18 @@ class AlphaMapFilter extends Filter
 	 * @method clone
 	 * @return {AlphaMapFilter} A clone of the current AlphaMapFilter instance.
 	 **/
-	public clone()
+	public clone():AlphaMapFilter
 	{
 		return new AlphaMapFilter(this.alphaMap);
 	}
 
-	public toString()
+	public toString():string
 	{
 		return "[AlphaMapFilter]";
 	}
 
 	// private methods:
-	private _prepAlphaMap()
+	private _prepAlphaMap():boolean
 	{
 		if(!this.alphaMap)
 		{
