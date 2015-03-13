@@ -391,9 +391,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public _behaviorList:IBehavior[] = null;
 	public _parentSizeIsKnown:boolean = false;
 
-	public minimumContainerSize:Size = null;
-	public maximumContainerSize:Size = null;
-
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
 	 * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -1820,13 +1817,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 		if(this.updateGeomOnResize)
 		{
-			if(this.minimumContainerSize || this.maximumContainerSize)
-			{
-				// size object is cloned because we are going to change the value.
-				// and this object is used by multiple display objects.
-				var mincs = this.minimumContainerSize;
-				this.scaleX = this.scaleY = Math.min(1, size.width / mincs.width, size.height / mincs.height);
-			}
 
 			if(this._width_type == CalculationType.PERCENT)
 			{

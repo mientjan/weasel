@@ -225,8 +225,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this._regY_percent = .0;
             this._behaviorList = null;
             this._parentSizeIsKnown = false;
-            this.minimumContainerSize = null;
-            this.maximumContainerSize = null;
             /**
              * The composite operation indicates how the pixels of this display object will be composited with the elements
              * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -1377,12 +1375,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.onResize = function (size) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
-                if (this.minimumContainerSize || this.maximumContainerSize) {
-                    // size object is cloned because we are going to change the value.
-                    // and this object is used by multiple display objects.
-                    var mincs = this.minimumContainerSize;
-                    this.scaleX = this.scaleY = Math.min(1, size.width / mincs.width, size.height / mincs.height);
-                }
                 if (this._width_type == 1 /* PERCENT */) {
                     this.width = this._width_percent * size.width;
                 }
