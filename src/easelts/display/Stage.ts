@@ -1257,6 +1257,7 @@ class Stage extends Container
 		{
 			this.update(0);
 			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
+			Ticker.getInstance().start();
 			this._isRunning = true;
 			return true;
 		}
@@ -1277,6 +1278,7 @@ class Stage extends Container
 			// remove Signal connection
 			this._tickSignalConnection.dispose();
 			this._tickSignalConnection = null;
+			Ticker.getInstance().stop();
 
 			// update stage for a last tick, solves rendering
 			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
