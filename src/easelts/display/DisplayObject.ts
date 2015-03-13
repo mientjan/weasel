@@ -51,6 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
+
 import m2 = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
@@ -562,6 +563,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.x * v.x + this.y * v.y;
 	}
 
+	/**
+	 * @method distanceToSquared
+	 * @param v
+	 * @returns {number}
+	 */
 	public distanceToSquared(v:IVector2):number
 	{
 		var dx = this.x - v.x, dy = this.y - v.y;
