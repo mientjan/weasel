@@ -630,6 +630,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	/**
 	 * @method setHeight
 	 * @param {string|number} height
+	 * @result DisplayObject
 	 */
 	public setHeight(height:number|string):any
 	{
@@ -665,7 +666,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	/**
 	 * @method getHeight
-	 * @param {number} height
+	 * @returns {number}
 	 */
 	public getHeight():number
 	{
@@ -676,6 +677,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	/**
 	 * @method setX
 	 * @param {string|number} x
+	 * @return DisplayObject
 	 */
 	public setX(x:number|string):any
 	{
@@ -718,8 +720,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 
 	/**
-	 *
-	 * @param y
+	 * @method setY
+	 * @param {number|string} y
 	 * @returns {DisplayObject}
 	 */
 	public setY(y:number|string):any
@@ -751,7 +753,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
-
+	/**
+	 * @method getY
+	 * @returns {number}
+	 */
 	public getY():number
 	{
 		return this.y;
@@ -759,7 +764,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	/**
 	 * @method setRegX
-	 * @param value
+	 * @param {number|string} value
 	 * @returns {DisplayObject}
 	 */
 	public setRegX(value:number|string):any
@@ -1594,13 +1599,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	/**
 	 * @method _tick
-	 * @param {Object} props Props to copy to the tick event object. This will usually include the
-	 * properties from the {{#crossLink "Ticker"}}{{/crossLink}} "tick" event, such as `delta` and `paused`, but may
-	 * be undefined or contain other values depending on the usage by the application.
+	 * @param {number} delta
 	 * @protected
 	 **/
 
-	public onTick(delta:number)
+	protected onTick(delta:number)
 	{
 
 	}
@@ -1611,7 +1614,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {CanvasRenderingContext2D} ctx
 	 * @return {Boolean}
 	 **/
-	public _testHit(ctx)
+	protected _testHit(ctx)
 	{
 		try
 		{
@@ -1631,7 +1634,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method _applyFilters
 	 * @protected
 	 **/
-	public _applyFilters()
+	protected _applyFilters()
 	{
 		if(!this.filters || this.filters.length == 0 || !this.cacheCanvas)
 		{
@@ -1656,7 +1659,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _applyFilterBounds(x, y, width, height)
+	protected _applyFilterBounds(x, y, width, height)
 	{
 		var bounds, l, filters = this.filters;
 		if(!filters || !(l = filters.length))
@@ -1691,7 +1694,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean)
+	protected _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean)
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
@@ -1707,7 +1710,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean)
+	protected _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean)
 	{
 		if(!bounds)
 		{
@@ -1791,7 +1794,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Boolean}
 	 * @protected
 	 **/
-	public _hasMouseEventListener():boolean
+	protected _hasMouseEventListener():boolean
 	{
 		var evts = DisplayObject._MOUSE_EVENTS;
 		for(var i = 0, l = evts.length; i < l; i++)
@@ -1805,10 +1808,12 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.cursor != null;
 	}
 
-	public onStageSet():void
-	{
-	}
+	public onStageSet():void {}
 
+	/**
+	 * @method onResize
+	 * @param {Size} size
+	 */
 	public onResize(size:Size):void
 	{
 		this._parentSizeIsKnown = true;

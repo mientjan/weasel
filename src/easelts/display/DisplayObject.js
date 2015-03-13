@@ -414,6 +414,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         /**
          * @method setHeight
          * @param {string|number} height
+         * @result DisplayObject
          */
         DisplayObject.prototype.setHeight = function (height) {
             if (typeof (height) == 'string') {
@@ -439,7 +440,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         };
         /**
          * @method getHeight
-         * @param {number} height
+         * @returns {number}
          */
         DisplayObject.prototype.getHeight = function () {
             return this.height;
@@ -447,6 +448,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         /**
          * @method setX
          * @param {string|number} x
+         * @return DisplayObject
          */
         DisplayObject.prototype.setX = function (x) {
             if (typeof (x) == 'string') {
@@ -476,8 +478,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             return this.x;
         };
         /**
-         *
-         * @param y
+         * @method setY
+         * @param {number|string} y
          * @returns {DisplayObject}
          */
         DisplayObject.prototype.setY = function (y) {
@@ -500,12 +502,16 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getY
+         * @returns {number}
+         */
         DisplayObject.prototype.getY = function () {
             return this.y;
         };
         /**
          * @method setRegX
-         * @param value
+         * @param {number|string} value
          * @returns {DisplayObject}
          */
         DisplayObject.prototype.setRegX = function (value) {
@@ -1206,9 +1212,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         };
         /**
          * @method _tick
-         * @param {Object} props Props to copy to the tick event object. This will usually include the
-         * properties from the {{#crossLink "Ticker"}}{{/crossLink}} "tick" event, such as `delta` and `paused`, but may
-         * be undefined or contain other values depending on the usage by the application.
+         * @param {number} delta
          * @protected
          **/
         DisplayObject.prototype.onTick = function (delta) {
@@ -1366,6 +1370,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         };
         DisplayObject.prototype.onStageSet = function () {
         };
+        /**
+         * @method onResize
+         * @param {Size} size
+         */
         DisplayObject.prototype.onResize = function (size) {
             this._parentSizeIsKnown = true;
             if (this.updateGeomOnResize) {
