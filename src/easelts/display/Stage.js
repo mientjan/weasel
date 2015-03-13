@@ -969,6 +969,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             if (!this._isRunning) {
                 this.update(0);
                 this._tickSignalConnection = Ticker.getInstance().addTickListener(this.update);
+                Ticker.getInstance().start();
                 this._isRunning = true;
                 return true;
             }
@@ -985,6 +986,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 // remove Signal connection
                 this._tickSignalConnection.dispose();
                 this._tickSignalConnection = null;
+                Ticker.getInstance().stop();
                 // update stage for a last tick, solves rendering
                 // issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
                 setTimeout(this.update, 1000 / this._fps);
