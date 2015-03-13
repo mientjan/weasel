@@ -549,7 +549,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		this.setGeomTransform(width, height, x, y, regX, regY);
 	}
 
-	public initialize(){
+	public initialize()
+	{
 		// has something to do with the createjs toolkit needing to call initialize.
 	}
 
@@ -574,6 +575,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return dx * dx + dy * dy;
 	}
 
+	/**
+	 * distanceTo
+	 * @param {IVector2} v
+	 * @returns {any}
+	 */
 	public distanceTo(v:IVector2):number
 	{
 		return Math.sqrt(this.distanceToSquared(v));
@@ -583,27 +589,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method setWidth
 	 * @param {string|number} width
 	 */
-	public setWidth(width:string):any;
-	public setWidth(width:number):any;
-	public setWidth(width:any):any
+	public setWidth(width:number|string):any
 	{
 		if(typeof(width) == 'string')
 		{
-			if(width.substr(-1) == '%')
+			if((<string> width).substr(-1) == '%')
 			{
-				this._width_percent = parseFloat(width.substr(0, width.length - 1)) / 100;
+				this._width_percent = parseFloat((<string> width).substr(0, (<string> width).length - 1)) / 100;
 				this._width_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._width_calc = FluidCalculation.dissolveCalcElements(width);
+				this._width_calc = FluidCalculation.dissolveCalcElements( <string> width);
 				this._width_type = CalculationType.CALC;
 			}
 
 		}
 		else
 		{
-			this.width = width;
+			this.width = <number> width;
 			this._width_type = CalculationType.STATIC;
 		}
 
@@ -618,7 +622,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method getWidth
 	 * @returns {number}
 	 */
-	public getWidth()
+	public getWidth():number
 	{
 		return this.width;
 	}
@@ -627,27 +631,27 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method setHeight
 	 * @param {string|number} height
 	 */
-	public setHeight(height:string):any;
-	public setHeight(height:number):any;
-	public setHeight(height:any):any
+	public setHeight(height:number|string):any
 	{
 		if(typeof(height) == 'string')
 		{
+			var heightString = <string> height;
+
 			// @todo check if only percent unit.
-			if(height.substr(-1) == '%')
+			if(heightString.substr(-1) == '%')
 			{
-				this._height_percent = parseFloat(height.substr(0, height.length - 1)) / 100;
+				this._height_percent = parseFloat(heightString.substr(0, heightString.length - 1)) / 100;
 				this._height_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._height_calc = FluidCalculation.dissolveCalcElements(height);
+				this._height_calc = FluidCalculation.dissolveCalcElements(heightString);
 				this._height_type = CalculationType.CALC;
 			}
 		}
 		else
 		{
-			this.height = height;
+			this.height = <number> height;
 			this._height_type = CalculationType.STATIC;
 		}
 
@@ -655,6 +659,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			this.onResize(new Size(this.parent.width, this.parent.height));
 		}
+
 		return this;
 	}
 
@@ -662,7 +667,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method getHeight
 	 * @param {number} height
 	 */
-	public getHeight()
+	public getHeight():number
 	{
 		return this.height;
 	}
@@ -672,27 +677,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method setX
 	 * @param {string|number} x
 	 */
-	public setX(x:string):any;
-	public setX(x:number):any;
-	public setX(x:any):any
+	public setX(x:number|string):any
 	{
 		if(typeof(x) == 'string')
 		{
-			if(x.substr(-1) == '%')
+			if((<string> x).substr(-1) == '%')
 			{
-				this._x_percent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._x_percent = parseFloat((<string> x).substr(0, (<string> x).length - 1)) / 100;
 				this._x_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._x_calc = FluidCalculation.dissolveCalcElements(x);
+				this._x_calc = FluidCalculation.dissolveCalcElements(<string> x);
 				this._x_type = CalculationType.CALC;
 			}
 
 		}
 		else
 		{
-			this.x = x;
+			this.x = <number> x;
 			this._x_type = CalculationType.STATIC;
 		}
 
@@ -704,34 +707,40 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
-	public getX()
+	/**
+	 * @method getX
+	 * @return {Number}
+	 */
+	public getX():number
 	{
 		return this.x;
 	}
 
-	public setY(y:string):any;
 
-	public setY(y:number):any;
-
-	public setY(y:any):any
+	/**
+	 *
+	 * @param y
+	 * @returns {DisplayObject}
+	 */
+	public setY(y:number|string):any
 	{
 		if(typeof(y) == 'string')
 		{
-			if(y.substr(-1) == '%')
+			if((<string> y).substr(-1) == '%')
 			{
-				this._y_percent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._y_percent = parseFloat((<string> y).substr(0, (<string> y).length - 1)) / 100;
 				this._y_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._y_calc = FluidCalculation.dissolveCalcElements(y);
+				this._y_calc = FluidCalculation.dissolveCalcElements(<string> y);
 				this._y_type = CalculationType.CALC;
 			}
 
 		}
 		else
 		{
-			this.y = y;
+			this.y = <number> y;
 			this._y_type = CalculationType.STATIC;
 		}
 
@@ -743,34 +752,35 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 
-	public getY()
+	public getY():number
 	{
 		return this.y;
 	}
 
-	public setRegX(x:string):any;
-
-	public setRegX(x:number):any;
-
-	public setRegX(x:any):any
+	/**
+	 * @method setRegX
+	 * @param value
+	 * @returns {DisplayObject}
+	 */
+	public setRegX(value:number|string):any
 	{
-		if(typeof(x) == 'string')
+		if(typeof(value) == 'string')
 		{
-			if(x.substr(-1) == '%')
+			if(( <string> value).substr(-1) == '%')
 			{
-				this._regX_percent = parseFloat(x.substr(0, x.length - 1)) / 100;
+				this._regX_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
 				this._regX_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._regX_calc = FluidCalculation.dissolveCalcElements(x);
+				this._regX_calc = FluidCalculation.dissolveCalcElements(<string> value);
 				this._regX_type = CalculationType.CALC;
 			}
 
 		}
 		else
 		{
-			this.regX = x;
+			this.regX = <number> value;
 			this._regX_type = CalculationType.STATIC;
 		}
 
@@ -782,34 +792,39 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
+	/**
+	 * @method getRegX
+	 * @returns {number}
+	 */
 	public getRegX()
 	{
 		return this.regX;
 	}
 
-	public setRegY(y:string):any;
-
-	public setRegY(y:number):any;
-
-	public setRegY(y:any):any
+	/**
+	 * @method setRegY
+	 * @param {number|string} value
+	 * @returns {DisplayObject}
+	 */
+	public setRegY(value:number|string):any
 	{
-		if(typeof(y) == 'string')
+		if(typeof(value) == 'string')
 		{
-			if(y.substr(-1) == '%')
+			if((<string> value).substr(-1) == '%')
 			{
-				this._regY_percent = parseFloat(y.substr(0, y.length - 1)) / 100;
+				this._regY_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
 				this._regY_type = CalculationType.PERCENT;
 			}
 			else
 			{
-				this._regY_calc = FluidCalculation.dissolveCalcElements(y);
+				this._regY_calc = FluidCalculation.dissolveCalcElements(<string> value);
 				this._regY_type = CalculationType.CALC;
 			}
 
 		}
 		else
 		{
-			this.regY = y;
+			this.regY = <number> value;
 			this._regY_type = CalculationType.STATIC;
 		}
 
@@ -820,7 +835,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
-	public getRegY()
+	/**
+	 * @method getRegY
+	 * @returns {number}
+	 */
+	public getRegY():number
 	{
 		return this.regY;
 	}
@@ -838,7 +857,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this;
 	}
 
-	public removeBehavior(behavior:IBehavior):DisplayObject
+	public destructBehavior(behavior:IBehavior):DisplayObject
 	{
 		var behaviorList:IBehavior[] = this._behaviorList;
 
@@ -856,35 +875,20 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 	/**
-	 * Removes all behaviors
-	 *
-	 * @method removeAllBehaviors
-	 * @return void
-	 */
-	public removeAllBehaviors():void
-	{
-		if(this._behaviorList)
-		{
-			this._behaviorList.length = 0;
-		}
-	}
-
-	/**
 	 * Destructs all behaviors
 	 *
-	 * @method destructAllBehaviors
+	 * @method removeAllBehaviors
 	 * @return void
 	 */
 	public destructAllBehaviors():void
 	{
 		if(this._behaviorList)
 		{
-			while(this._behaviorList.length)
-			{
-				this._behaviorList.pop().destruct();
+			while( this._behaviorList.length ){
+				this._behaviorList.shift().destruct()
 			}
 
-			this._behaviorList = null;
+			this._behaviorList = null
 		}
 	}
 
@@ -892,7 +896,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method enableMouseInteraction
 	 * @return void
 	 */
-	public enableMouseInteraction()
+	public enableMouseInteraction():void
 	{
 		this.mouseEnabled = true;
 	}
@@ -901,7 +905,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method disableMouseInteraction
 	 * @return void
 	 */
-	public disableMouseInteraction()
+	public disableMouseInteraction():void
 	{
 		this.mouseEnabled = false;
 	}
@@ -914,7 +918,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method isVisible
 	 * @return {Boolean} Boolean indicating whether the display object would be visible if drawn to a canvas
 	 **/
-	public isVisible()
+	public isVisible():boolean
 	{
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
 	}
@@ -932,7 +936,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
 		{
@@ -1596,6 +1599,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * be undefined or contain other values depending on the usage by the application.
 	 * @protected
 	 **/
+
 	public onTick(delta:number)
 	{
 
@@ -1802,7 +1806,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	}
 
 	public onStageSet():void
-	{}
+	{
+	}
 
 	public onResize(size:Size):void
 	{

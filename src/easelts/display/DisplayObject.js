@@ -363,13 +363,27 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.dot = function (v) {
             return this.x * v.x + this.y * v.y;
         };
+        /**
+         * @method distanceToSquared
+         * @param v
+         * @returns {number}
+         */
         DisplayObject.prototype.distanceToSquared = function (v) {
             var dx = this.x - v.x, dy = this.y - v.y;
             return dx * dx + dy * dy;
         };
+        /**
+         * distanceTo
+         * @param {IVector2} v
+         * @returns {any}
+         */
         DisplayObject.prototype.distanceTo = function (v) {
             return Math.sqrt(this.distanceToSquared(v));
         };
+        /**
+         * @method setWidth
+         * @param {string|number} width
+         */
         DisplayObject.prototype.setWidth = function (width) {
             if (typeof (width) == 'string') {
                 if (width.substr(-1) == '%') {
@@ -397,15 +411,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.getWidth = function () {
             return this.width;
         };
+        /**
+         * @method setHeight
+         * @param {string|number} height
+         */
         DisplayObject.prototype.setHeight = function (height) {
             if (typeof (height) == 'string') {
+                var heightString = height;
                 // @todo check if only percent unit.
-                if (height.substr(-1) == '%') {
-                    this._height_percent = parseFloat(height.substr(0, height.length - 1)) / 100;
+                if (heightString.substr(-1) == '%') {
+                    this._height_percent = parseFloat(heightString.substr(0, heightString.length - 1)) / 100;
                     this._height_type = 1 /* PERCENT */;
                 }
                 else {
-                    this._height_calc = FluidCalculation.dissolveCalcElements(height);
+                    this._height_calc = FluidCalculation.dissolveCalcElements(heightString);
                     this._height_type = 3 /* CALC */;
                 }
             }
@@ -425,6 +444,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.getHeight = function () {
             return this.height;
         };
+        /**
+         * @method setX
+         * @param {string|number} x
+         */
         DisplayObject.prototype.setX = function (x) {
             if (typeof (x) == 'string') {
                 if (x.substr(-1) == '%') {
@@ -445,9 +468,18 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getX
+         * @return {Number}
+         */
         DisplayObject.prototype.getX = function () {
             return this.x;
         };
+        /**
+         *
+         * @param y
+         * @returns {DisplayObject}
+         */
         DisplayObject.prototype.setY = function (y) {
             if (typeof (y) == 'string') {
                 if (y.substr(-1) == '%') {
@@ -471,19 +503,24 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
         DisplayObject.prototype.getY = function () {
             return this.y;
         };
-        DisplayObject.prototype.setRegX = function (x) {
-            if (typeof (x) == 'string') {
-                if (x.substr(-1) == '%') {
-                    this._regX_percent = parseFloat(x.substr(0, x.length - 1)) / 100;
+        /**
+         * @method setRegX
+         * @param value
+         * @returns {DisplayObject}
+         */
+        DisplayObject.prototype.setRegX = function (value) {
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    this._regX_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
                     this._regX_type = 1 /* PERCENT */;
                 }
                 else {
-                    this._regX_calc = FluidCalculation.dissolveCalcElements(x);
+                    this._regX_calc = FluidCalculation.dissolveCalcElements(value);
                     this._regX_type = 3 /* CALC */;
                 }
             }
             else {
-                this.regX = x;
+                this.regX = value;
                 this._regX_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
@@ -491,22 +528,31 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getRegX
+         * @returns {number}
+         */
         DisplayObject.prototype.getRegX = function () {
             return this.regX;
         };
-        DisplayObject.prototype.setRegY = function (y) {
-            if (typeof (y) == 'string') {
-                if (y.substr(-1) == '%') {
-                    this._regY_percent = parseFloat(y.substr(0, y.length - 1)) / 100;
+        /**
+         * @method setRegY
+         * @param {number|string} value
+         * @returns {DisplayObject}
+         */
+        DisplayObject.prototype.setRegY = function (value) {
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    this._regY_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
                     this._regY_type = 1 /* PERCENT */;
                 }
                 else {
-                    this._regY_calc = FluidCalculation.dissolveCalcElements(y);
+                    this._regY_calc = FluidCalculation.dissolveCalcElements(value);
                     this._regY_type = 3 /* CALC */;
                 }
             }
             else {
-                this.regY = y;
+                this.regY = value;
                 this._regY_type = 2 /* STATIC */;
             }
             if (this._parentSizeIsKnown) {
@@ -514,6 +560,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             }
             return this;
         };
+        /**
+         * @method getRegY
+         * @returns {number}
+         */
         DisplayObject.prototype.getRegY = function () {
             return this.regY;
         };
@@ -525,7 +575,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             behavior.initialize(this);
             return this;
         };
-        DisplayObject.prototype.removeBehavior = function (behavior) {
+        DisplayObject.prototype.destructBehavior = function (behavior) {
             var behaviorList = this._behaviorList;
             if (behaviorList) {
                 for (var i = behaviorList.length - 1; i >= 0; i--) {
@@ -537,26 +587,15 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             return this;
         };
         /**
-         * Removes all behaviors
-         *
-         * @method removeAllBehaviors
-         * @return void
-         */
-        DisplayObject.prototype.removeAllBehaviors = function () {
-            if (this._behaviorList) {
-                this._behaviorList.length = 0;
-            }
-        };
-        /**
          * Destructs all behaviors
          *
-         * @method destructAllBehaviors
+         * @method removeAllBehaviors
          * @return void
          */
         DisplayObject.prototype.destructAllBehaviors = function () {
             if (this._behaviorList) {
                 while (this._behaviorList.length) {
-                    this._behaviorList.pop().destruct();
+                    this._behaviorList.shift().destruct();
                 }
                 this._behaviorList = null;
             }
