@@ -21,6 +21,9 @@ var index = 0;
 
 var cx = stage.width / 2;
 var cy = stage.height / 2;
+
+console.log(cx, cy);
+
 spiral.graphics.moveTo(cx, cy);
 spiral.graphics.beginStroke('#000');
 //spiral.graphics.strokeStyle = "#000";

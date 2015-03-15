@@ -596,7 +596,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             var size = new Size(this.width, this.height);
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
-                if (typeof child.onResize == 'function') {
+                if (child.onResize) {
                     child.onResize(size);
                 }
             }

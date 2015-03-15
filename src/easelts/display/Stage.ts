@@ -404,6 +404,7 @@ class Stage extends Container
 
 		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
 		var size:Size;
+
 		switch(element.tagName)
 		{
 			case 'CANVAS':
@@ -431,7 +432,7 @@ class Stage extends Container
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
-		this.setQuality(QualityType.NORMAL);
+		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
 		this.onResize(size);
@@ -1305,8 +1306,12 @@ class Stage extends Container
 		size.width = size.width + 1 >> 1 << 1;
 		size.height = size.height + 1 >> 1 << 1;
 
+
+
 		if(this.width != size.width || this.height != size.height)
 		{
+			this.isDirty = true;
+
 			this.canvas.width = size.width;
 			this.canvas.height = size.height;
 

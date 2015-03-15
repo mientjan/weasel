@@ -1316,6 +1316,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             this.regY = this._regY.get(this.height);
             this.x = this._x.get(size.width);
             this.y = this._y.get(size.height);
+            this.isDirty = false;
+            //console.log(this, this.width, this.height, size);
         };
         DisplayObject.prototype.destruct = function () {
             this.parent = null;

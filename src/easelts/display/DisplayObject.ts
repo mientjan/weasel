@@ -1702,6 +1702,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		this.regY = this._regY.get(this.height);
 		this.x = this._x.get(size.width);
 		this.y = this._y.get(size.height);
+
+		this.isDirty = false;
+
+		//console.log(this, this.width, this.height, size);
 	}
 
 	public destruct():void
