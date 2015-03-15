@@ -394,39 +394,36 @@ class Stage extends Container
 	/**
 	 * @class Stage
 	 * @constructor
-	 * @param {HTMLCanvasElement|HTMLDivElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
+	 * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-	constructor(element:HTMLDivElement, triggerResizeOnWindowResize?:boolean);
-	constructor(element:HTMLCanvasElement, triggerResizeOnWindowResize?:boolean);
-	constructor(element:any, triggerResizeOnWindowResize:any = false)
+
+	constructor(element:HTMLBlockElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
 		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
-
+		var size:Size;
 		switch(element.tagName)
 		{
 			case 'CANVAS':
 			{
 				this.canvas = element;
 				this.holder = element.parentElement;
-				break;
-			}
 
-			case 'DIV':
-			{
-				var canvas = document.createElement('canvas');
-				element.appendChild(canvas);
-
-				this.canvas = canvas;
-				this.holder = element;
+				size = new Size(this.canvas.width, this.canvas.height);
 				break;
 			}
 
 			default:
 			{
-				throw new Error('unsupported element used "' + element.tagName + '"');
+				var canvas = document.createElement('canvas');
+
+				this.canvas = canvas;
+				this.holder = <HTMLBlockElement> element;
+				this.holder.appendChild(canvas);
+
+				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
 				break;
 			}
 		}
@@ -437,14 +434,7 @@ class Stage extends Container
 		this.setQuality(QualityType.NORMAL);
 		this.stage = this;
 
-		if (this.triggerResizeOnWindowResize || element.tagName == "DIV")
-		{
-			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-		}
-		else
-		{
-			this.onResize(new Size(this.canvas.width, this.canvas.height));
-		}
+		this.onResize(size);
 	}
 
 

@@ -61,6 +61,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
      **/
     var Stage = (function (_super) {
         __extends(Stage, _super);
+        /**
+         * @class Stage
+         * @constructor
+         * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
+         * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
+         **/
         function Stage(element, triggerResizeOnWindowResize) {
             var _this = this;
             if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
@@ -315,24 +321,22 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 //		console.timeEnd('stage:update');
             };
             this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+            var size;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
                         this.canvas = element;
                         this.holder = element.parentElement;
-                        break;
-                    }
-                case 'DIV':
-                    {
-                        var canvas = document.createElement('canvas');
-                        element.appendChild(canvas);
-                        this.canvas = canvas;
-                        this.holder = element;
+                        size = new Size(this.canvas.width, this.canvas.height);
                         break;
                     }
                 default:
                     {
-                        throw new Error('unsupported element used "' + element.tagName + '"');
+                        var canvas = document.createElement('canvas');
+                        this.canvas = canvas;
+                        this.holder = element;
+                        this.holder.appendChild(canvas);
+                        size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
                         break;
                     }
             }
@@ -341,12 +345,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(0 /* NORMAL */);
             this.stage = this;
-            if (this.triggerResizeOnWindowResize || element.tagName == "DIV") {
-                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
-            }
-            else {
-                this.onResize(new Size(this.canvas.width, this.canvas.height));
-            }
+            this.onResize(size);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
