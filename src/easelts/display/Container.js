@@ -596,7 +596,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
                 if (child.onResize) {
-                    child.onResize(width, height);
+                    child.onResize(this.width, this.height);
                 }
             }
         };

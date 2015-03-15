@@ -579,8 +579,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setWidth(value:number|string):any
 	{
-		this.isDirty = true;
-
 		if(typeof(value) == 'string')
 		{
 			if((<string> value).substr(-1) == '%')
@@ -599,6 +597,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			this.width = <number> value;
 			this._width_type = CalculationType.STATIC;
 		}
+
+		this.isDirty = true;
 
 		return this;
 	}
@@ -619,8 +619,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setHeight(value:number|string):any
 	{
-		this.isDirty = true;
-
 		if(typeof(value) == 'string')
 		{
 			if((<string> value).substr(-1) == '%')
@@ -639,6 +637,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			this.height = <number> value;
 			this._height_type = CalculationType.STATIC;
 		}
+
+		this.isDirty = true;
 
 		return this;
 	}
@@ -660,7 +660,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setX(value:number|string):any
 	{
-		this.isDirty = true;
 
 		if(typeof(value) == 'string')
 		{
@@ -680,6 +679,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			this.x = <number> value;
 			this._x_type = CalculationType.STATIC;
 		}
+
+		this.isDirty = true;
 
 		return this;
 	}

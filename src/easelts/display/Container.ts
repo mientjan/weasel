@@ -703,7 +703,7 @@ class Container extends DisplayObject
 			var child = this.children[i];
 			if(child.onResize)
 			{
-				child.onResize(width, height);
+				child.onResize(this.width, this.height);
 			}
 		}
 

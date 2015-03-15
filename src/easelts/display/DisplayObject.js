@@ -377,7 +377,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @param {string|number} width
          */
         DisplayObject.prototype.setWidth = function (value) {
-            this.isDirty = true;
             if (typeof (value) == 'string') {
                 if (value.substr(-1) == '%') {
                     this._width_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
@@ -392,6 +391,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this.width = value;
                 this._width_type = 2 /* STATIC */;
             }
+            this.isDirty = true;
             return this;
         };
         /**
@@ -407,7 +407,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @result DisplayObject
          */
         DisplayObject.prototype.setHeight = function (value) {
-            this.isDirty = true;
             if (typeof (value) == 'string') {
                 if (value.substr(-1) == '%') {
                     this._height_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
@@ -422,6 +421,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this.height = value;
                 this._height_type = 2 /* STATIC */;
             }
+            this.isDirty = true;
             return this;
         };
         /**
@@ -437,7 +437,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @return DisplayObject
          */
         DisplayObject.prototype.setX = function (value) {
-            this.isDirty = true;
             if (typeof (value) == 'string') {
                 if (value.substr(-1) == '%') {
                     this._x_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
@@ -452,6 +451,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this.x = value;
                 this._x_type = 2 /* STATIC */;
             }
+            this.isDirty = true;
             return this;
         };
         /**
