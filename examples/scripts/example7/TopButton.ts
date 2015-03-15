@@ -24,15 +24,6 @@ class TopButton extends Container
 		this.addChild(this._text);
 
 	}
-
-	onResize(width, height){
-		console.log('a', width, height);
-
-
-		super.onResize(width, height);
-
-		console.log('b', this.width, this.height);
-	}
 }
 
 export = TopButton;

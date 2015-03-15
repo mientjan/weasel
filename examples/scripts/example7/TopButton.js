@@ -18,11 +18,6 @@ define(["require", "exports", '../../../src/easelts/display/Container', '../../.
             this.addChild(this._bg);
             this.addChild(this._text);
         }
-        TopButton.prototype.onResize = function (width, height) {
-            console.log('a', width, height);
-            _super.prototype.onResize.call(this, width, height);
-            console.log('b', this.width, this.height);
-        };
         return TopButton;
     })(Container);
     return TopButton;
