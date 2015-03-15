@@ -217,6 +217,7 @@ class Container extends DisplayObject
 		}
 
 		var child = children[0];
+
 		if(child.parent)
 		{
 			child.parent.removeChild(child);
@@ -241,6 +242,10 @@ class Container extends DisplayObject
 		return child;
 	}
 
+	/**
+	 * @method onStageSet
+	 * @description When the stage is set this method is called to all its children.
+	 */
 	public onStageSet()
 	{
 		var children = this.children;
@@ -251,6 +256,7 @@ class Container extends DisplayObject
 			if (child.stage != this.stage)
 			{
 				child.stage = this.stage;
+
 				if(child.onStageSet)
 				{
 					child.onStageSet.call(child);

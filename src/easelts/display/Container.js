@@ -210,6 +210,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             this.children.push(child);
             return child;
         };
+        /**
+         * @method onStageSet
+         * @description When the stage is set this method is called to all its children.
+         */
         Container.prototype.onStageSet = function () {
             var children = this.children;
             for (var i = 0; i < children.length; i++) {
