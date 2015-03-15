@@ -435,7 +435,7 @@ class Stage extends Container
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
-		this.onResize(size);
+		this.onResize(size.width, size.height);
 	}
 
 
@@ -1175,7 +1175,7 @@ class Stage extends Container
 	{
 		if (this.triggerResizeOnWindowResize)
 		{
-			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+			this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
 		}
 	}
 
@@ -1300,19 +1300,18 @@ class Stage extends Container
 	 * @method onResize
 	 * @param {Size} size
 	 */
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
 		// anti-half pixel fix
-		size.width = size.width + 1 >> 1 << 1;
-		size.height = size.height + 1 >> 1 << 1;
+		width = width + 1 >> 1 << 1;
+		height = height + 1 >> 1 << 1;
 
-
-		if(this.width != size.width || this.height != size.height)
+		if(this.width != width || this.height != height)
 		{
-			this.canvas.width = size.width;
-			this.canvas.height = size.height;
+			this.canvas.width = width;
+			this.canvas.height = height;
 
-			super.onResize(size);
+			super.onResize(width, height);
 
 			if(!this._isRunning)
 			{

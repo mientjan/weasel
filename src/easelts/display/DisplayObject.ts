@@ -30,6 +30,7 @@
 import EventDispatcher = require('../../createts/event/EventDispatcher');
 import Event = require('../../createts/event/Event');
 import TimeEvent = require('../../createts/event/TimeEvent');
+import Signal2 = require('../../createts/event/Signal2');
 
 // utils
 import UID = require('../util/UID');
@@ -370,9 +371,17 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public stage:Stage = null;
 
-
 	public _behaviorList:IBehavior[] = null;
-	//public _parentSizeIsKnown:boolean = false;
+
+	private _resizeSignal:Signal2<number, number>;
+	public get resizeSignal():Signal2<number, number>
+	{
+		if (this._resizeSignal === void 0)
+		{
+			this._resizeSignal = new Signal2<number, number>();
+		}
+		return this._resizeSignal;
+	}
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -1553,7 +1562,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	protected onTick(delta:number)
 	{
 		if(this.isDirty && this.parent){
-			this.onResize(new Size(this.parent.width, this.parent.height));
+			this.onResize(this.parent.width, this.parent.height);
 		}
 	}
 
@@ -1759,31 +1768,27 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	public onStageSet():void {}
 
-	/**
-	 * @method onResize
-	 * @param {Size} size
-	 */
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
 		// is no longer dirty
 		this.isDirty = false;
 
 		if(this._width_type == CalculationType.PERCENT)
 		{
-			this.width = this._width_percent * size.width;
+			this.width = this._width_percent * width;
 		}
 		else if(this._width_type == CalculationType.CALC)
 		{
-			this.width = FluidCalculation.calcUnit(size.width, this._width_calc);
+			this.width = FluidCalculation.calcUnit(width, this._width_calc);
 		}
 
 		if(this._height_type == CalculationType.PERCENT)
 		{
-			this.height = this._height_percent * size.height;
+			this.height = this._height_percent * height;
 		}
 		else if(this._height_type == CalculationType.CALC)
 		{
-			this.height = FluidCalculation.calcUnit(size.height, this._height_calc);
+			this.height = FluidCalculation.calcUnit(height, this._height_calc);
 		}
 
 		if(this._regX_type == CalculationType.PERCENT)
@@ -1806,20 +1811,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 		if(this._x_type == CalculationType.PERCENT)
 		{
-			this.x = Math.round(this._x_percent * size.width);
+			this.x = Math.round(this._x_percent * width);
 		}
 		else if(this._x_type == CalculationType.CALC)
 		{
-			this.x = Math.round(FluidCalculation.calcUnit(size.width, this._x_calc));
+			this.x = Math.round(FluidCalculation.calcUnit(width, this._x_calc));
 		}
 
 		if(this._y_type == CalculationType.PERCENT)
 		{
-			this.y = Math.round(this._y_percent * size.height);
+			this.y = Math.round(this._y_percent * height);
 		}
 		else if(this._y_type == CalculationType.CALC)
 		{
-			this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
+			this.y = Math.round(FluidCalculation.calcUnit(height, this._y_calc));
+		}
+		
+		if (this._resizeSignal && this._resizeSignal.hasListeners())
+		{
+			this._resizeSignal.emit(width, height);
 		}
 	}
 

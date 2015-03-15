@@ -694,18 +694,16 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
-		super.onResize(size);
-
-		var size = new Size(this.width, this.height);
+		super.onResize(width, height);
 
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 			if(child.onResize)
 			{
-				child.onResize(size)
+				child.onResize(width, height);
 			}
 		}
 

@@ -345,7 +345,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(1 /* LOW */);
             this.stage = this;
-            this.onResize(size);
+            this.onResize(size.width, size.height);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
             // getter / setters:
@@ -909,7 +909,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          **/
         Stage.prototype._handleWindowResize = function (e) {
             if (this.triggerResizeOnWindowResize) {
-                this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+                this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
             }
         };
         /**
@@ -1010,14 +1010,14 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          * @method onResize
          * @param {Size} size
          */
-        Stage.prototype.onResize = function (size) {
+        Stage.prototype.onResize = function (width, height) {
             // anti-half pixel fix
-            size.width = size.width + 1 >> 1 << 1;
-            size.height = size.height + 1 >> 1 << 1;
-            if (this.width != size.width || this.height != size.height) {
-                this.canvas.width = size.width;
-                this.canvas.height = size.height;
-                _super.prototype.onResize.call(this, size);
+            width = width + 1 >> 1 << 1;
+            height = height + 1 >> 1 << 1;
+            if (this.width != width || this.height != height) {
+                this.canvas.width = width;
+                this.canvas.height = height;
+                _super.prototype.onResize.call(this, width, height);
                 if (!this._isRunning) {
                     this.update(0);
                 }
