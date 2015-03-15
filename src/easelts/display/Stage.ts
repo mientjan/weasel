@@ -435,7 +435,7 @@ class Stage extends Container
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
-		this.onResize(size);
+		this.onResize(size.width, size.height);
 	}
 
 
