@@ -6,6 +6,6 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
     stage.addChild(new Debug);
     var bitmap = new BitmapNinePatch(new NinePatch('assets/image/ninepatch_red.png', new Rectangle(40, 100, 160, 100)), '50%', '50%', '50%', '50%', '50%', '50%');
     stage.addChild(bitmap);
-    //bitmap.addBehavior(new FollowMouseBehavior);
+    //bitmap.addBehavior(new FollowMouseBehavior); 
     stage.start();
 });
