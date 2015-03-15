@@ -51,6 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
+import CalculationUnitType = require('../enum/CalculationUnitType');
 import ValueCalculation = require('../geom/ValueCalculation');
 
 import m2 = require('../geom/Matrix2');
@@ -269,7 +270,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public x:number = 0;
-	protected _x:ValueCalculation = new ValueCalculation(0);
+	protected _x_type:CalculationType = CalculationType.STATIC;
+	protected _x_percent:number = .0;
+	protected _x_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
 	/** The y (vertical) position of the display object, relative to its parent.
 	 * @property y
@@ -277,41 +280,29 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public y:number = 0;
-	protected _y:ValueCalculation = new ValueCalculation(0);
+	protected _y_type:CalculationType;
+	protected _y_percent:number = .0;
+	protected _y_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
-	/**
-	 * @property width
-	 * @type {number}
-	 */
 	public width:number = 0;
-	protected _width:ValueCalculation = new ValueCalculation(0);
+	protected _width_type:CalculationType = CalculationType.STATIC;
+	protected _width_percent:number = .0;
+	protected _width_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
-	/**
-	 * @property height
-	 * @type {number}
-	 */
 	public height:number = 0;
-	protected _height:ValueCalculation = new ValueCalculation(0);
+	protected _height_type:CalculationType = CalculationType.STATIC;
+	protected _height_percent:number = .0;
+	protected _height_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
-	/**
-	 * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
-	 * around its center, you would set regX and {{#crossLink "DisplayObject/regY:property"}}{{/crossLink}} to 50.
-	 * @property regX
-	 * @type {Number}
-	 * @default 0
-	 **/
 	public regX:number = 0;
-	protected _regX:ValueCalculation = new ValueCalculation(0);
+	protected _regX_type:CalculationType = CalculationType.STATIC;
+	protected _regX_percent:number = .0;
+	protected _regX_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
-	/**
-	 * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
-	 * its center, you would set {{#crossLink "DisplayObject/regX:property"}}{{/crossLink}} and regY to 50.
-	 * @property regY
-	 * @type {Number}
-	 * @default 0
-	 **/
 	public regY:number = 0;
-	protected _regY:ValueCalculation = new ValueCalculation(0);
+	protected _regY_type:CalculationType = CalculationType.STATIC;
+	protected _regY_percent:number = .0;
+	protected _regY_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
 	/**
 	 * The rotation in degrees for this display object.
@@ -320,7 +311,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public rotation:number = 0;
-	protected _rotation:ValueCalculation = new ValueCalculation(0);
 
 	/**
 	 * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
@@ -330,7 +320,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 1
 	 **/
 	public scaleX:number = 1;
-	protected _scaleX:ValueCalculation = new ValueCalculation(0);
 
 	/**
 	 * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
@@ -340,7 +329,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 1
 	 **/
 	public scaleY:number = 1;
-	protected _scaleY:ValueCalculation = new ValueCalculation(0);
 
 	/**
 	 * The factor to skew this display object horizontally.
@@ -349,7 +337,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public skewX:number = 0;
-	protected _skewX:ValueCalculation = new ValueCalculation(0);
 
 	/**
 	 * The factor to skew this display object vertically.
@@ -358,7 +345,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public skewY:number = 0;
-	protected _skewY:ValueCalculation = new ValueCalculation(0);
 
 	/**
 	 * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
@@ -378,37 +364,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public stage:Stage = null;
 
-	/** When true the geom of this object will be updated when its parent resizes.
-	 *
-	 * @property updateGeomOnResize
-	 * @type {Boolean}
-	 * @default true
-	 **/
-	//public updateGeomOnResize = true;
-	//
-	//public _x_type:CalculationType = CalculationType.STATIC;
-	//public _x_percent:number = .0;
-	//public _x_calc:FluidMeasurementsUnit[];
-	//
-	//public _y_type:CalculationType;
-	//public _y_percent:number = .0;
-	//public _y_calc:FluidMeasurementsUnit[];
-	//
-	//public _width_type:CalculationType = CalculationType.STATIC;
-	//public _width_percent:number = .0;
-	//public _width_calc:FluidMeasurementsUnit[];
-	//
-	//public _height_type:CalculationType = CalculationType.STATIC;
-	//public _height_percent:number = .0;
-	//public _height_calc:FluidMeasurementsUnit[];
-	//
-	//public _regX_type:CalculationType = CalculationType.STATIC;
-	//public _regX_percent:number = .0;
-	//public _regX_calc:FluidMeasurementsUnit[];
-	//
-	//public _regY_type:CalculationType = CalculationType.STATIC;
-	//public _regY_percent:number = .0;
-	//public _regY_calc:FluidMeasurementsUnit[];
 
 	public _behaviorList:IBehavior[] = null;
 	//public _parentSizeIsKnown:boolean = false;
@@ -607,10 +562,28 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @method setWidth
 	 * @param {string|number} width
 	 */
-	public setWidth(width:number|string):any
+	public setWidth(value:number|string):any
 	{
 		this.isDirty = true;
-		this._width.set(width);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._width_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._width_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._width_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._width_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.width = <number> value;
+			this._width_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -629,10 +602,28 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {string|number} height
 	 * @result DisplayObject
 	 */
-	public setHeight(height:number|string):any
+	public setHeight(value:number|string):any
 	{
 		this.isDirty = true;
-		this._height.set(height);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._height_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._height_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._height_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._height_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.height = <number> value;
+			this._height_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -655,7 +646,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public setX(value:number|string):any
 	{
 		this.isDirty = true;
-		this._x.set(value);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._x_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._x_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._x_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._x_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.x = <number> value;
+			this._x_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -678,7 +687,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public setY(value:number|string):any
 	{
 		this.isDirty = true;
-		this._y.set(value);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._y_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._y_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._y_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._y_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.y = <number> value;
+			this._y_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -700,7 +727,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public setRegX(value:number|string):any
 	{
 		this.isDirty = true;
-		this._regX.set(value);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._regX_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._regX_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._regX_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._regX_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.regX = <number> value;
+			this._regX_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -722,7 +767,25 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public setRegY(value:number|string):any
 	{
 		this.isDirty = true;
-		this._regY.set(value);
+
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				this._regY_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
+				this._regY_type = CalculationType.PERCENT;
+			}
+			else
+			{
+				this._regY_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._regY_type = CalculationType.CALC;
+			}
+		}
+		else
+		{
+			this.regY = <number> value;
+			this._regY_type = CalculationType.STATIC;
+		}
 
 		return this;
 	}
@@ -1696,16 +1759,64 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public onResize(size:Size):void
 	{
-		this.width = this._width.get(size.width);
-		this.height = this._height.get(size.height);
-		this.regX = this._regX.get(this.width);
-		this.regY = this._regY.get(this.height);
-		this.x = this._x.get(size.width);
-		this.y = this._y.get(size.height);
-
+		// is no longer dirty
 		this.isDirty = false;
 
-		//console.log(this, this.width, this.height, size);
+		if(this._width_type == CalculationType.PERCENT)
+		{
+			this.width = this._width_percent * size.width;
+		}
+		else if(this._width_type == CalculationType.CALC)
+		{
+			this.width = FluidCalculation.calcUnit(size.width, this._width_calc);
+		}
+
+		if(this._height_type == CalculationType.PERCENT)
+		{
+			this.height = this._height_percent * size.height;
+		}
+		else if(this._height_type == CalculationType.CALC)
+		{
+			this.height = FluidCalculation.calcUnit(size.height, this._height_calc);
+		}
+
+		if(this._regX_type == CalculationType.PERCENT)
+		{
+			this.regX = this._regX_percent * this.width;
+		}
+		else if(this._regX_type == CalculationType.CALC)
+		{
+			this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
+		}
+
+		if(this._regY_type == CalculationType.PERCENT)
+		{
+			this.regY = this._regY_percent * this.height;
+		}
+		else if(this._regY_type == CalculationType.CALC)
+		{
+			this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+		}
+
+		if(this._x_type == CalculationType.PERCENT)
+		{
+			this.x = Math.round(this._x_percent * size.width);
+		}
+		else if(this._x_type == CalculationType.CALC)
+		{
+			this.x = Math.round(FluidCalculation.calcUnit(size.width, this._x_calc));
+		}
+
+		if(this._y_type == CalculationType.PERCENT)
+		{
+			this.y = Math.round(this._y_percent * size.height);
+		}
+		else if(this._y_type == CalculationType.CALC)
+		{
+			this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
+		}
+
+		console.log(this.width, this.height, this,  size);
 	}
 
 	public destruct():void

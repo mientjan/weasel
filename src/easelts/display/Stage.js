@@ -1015,7 +1015,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             size.width = size.width + 1 >> 1 << 1;
             size.height = size.height + 1 >> 1 << 1;
             if (this.width != size.width || this.height != size.height) {
-                this.isDirty = true;
                 this.canvas.width = size.width;
                 this.canvas.height = size.height;
                 _super.prototype.onResize.call(this, size);

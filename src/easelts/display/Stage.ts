@@ -409,8 +409,8 @@ class Stage extends Container
 		{
 			case 'CANVAS':
 			{
-				this.canvas = element;
-				this.holder = element.parentElement;
+				this.canvas = <HTMLCanvasElement> element;
+				this.holder = <HTMLBlockElement> element.parentElement;
 
 				size = new Size(this.canvas.width, this.canvas.height);
 				break;
@@ -420,7 +420,7 @@ class Stage extends Container
 			{
 				var canvas = document.createElement('canvas');
 
-				this.canvas = canvas;
+				this.canvas = <HTMLCanvasElement> canvas;
 				this.holder = <HTMLBlockElement> element;
 				this.holder.appendChild(canvas);
 
@@ -1307,11 +1307,8 @@ class Stage extends Container
 		size.height = size.height + 1 >> 1 << 1;
 
 
-
 		if(this.width != size.width || this.height != size.height)
 		{
-			this.isDirty = true;
-
 			this.canvas.width = size.width;
 			this.canvas.height = size.height;
 
