@@ -15,7 +15,7 @@ class TopButton extends Container
 
 	constructor()
 	{
-		super(200, 50, '50%', '0%', '50%', '0%');
+		super(10, 10, '50%', '0%', '50%', '0%');
 
 		this.addBehavior(new ButtonBehavior);
 		this.hitArea = this._bg;
@@ -23,6 +23,15 @@ class TopButton extends Container
 		this.addChild(this._bg);
 		this.addChild(this._text);
 
+	}
+
+	onResize(width, height){
+		console.log('a', width, height);
+
+
+		super.onResize(width, height);
+
+		console.log('b', this.width, this.height);
 	}
 }
 

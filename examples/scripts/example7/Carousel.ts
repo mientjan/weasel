@@ -117,9 +117,9 @@ class Carousel extends Container
 		}
 	}
 
-	onResize(e)
+	onResize(width:number, height:number)
 	{
-		super.onResize(e);
+		super.onResize(width, height);
 		this.reset();
 	}
 }

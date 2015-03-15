@@ -698,12 +698,15 @@ class Container extends DisplayObject
 	{
 		super.onResize(width, height);
 
+		var newWidth = this.width;
+		var newHeight = this.height;
+
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 			if(child.onResize)
 			{
-				child.onResize(this.width, this.height);
+				child.onResize(newWidth, newHeight);
 			}
 		}
 

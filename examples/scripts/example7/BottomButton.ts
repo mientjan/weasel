@@ -11,7 +11,7 @@ class BottomButton extends Container
 {
 	private _ninepatch:NinePatch = new NinePatch('assets/image/ninepatch_blue.png', new Rectangle(5, 12, 139, 8) );
 	private _bg:BitmapNinePatch = new BitmapNinePatch(this._ninepatch);
-	private _text:Text = new Text('top');
+	private _text:Text = new Text('bottom');
 
 	constructor()
 	{

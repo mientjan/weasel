@@ -9,7 +9,7 @@ define(["require", "exports", '../../../src/easelts/display/Container', '../../.
     var TopButton = (function (_super) {
         __extends(TopButton, _super);
         function TopButton() {
-            _super.call(this, 200, 50, '50%', '0%', '50%', '0%');
+            _super.call(this, 10, 10, '50%', '0%', '50%', '0%');
             this._ninepatch = new NinePatch('assets/image/ninepatch_blue.png', new Rectangle(5, 12, 139, 8));
             this._bg = new BitmapNinePatch(this._ninepatch);
             this._text = new Text('top');
@@ -18,6 +18,11 @@ define(["require", "exports", '../../../src/easelts/display/Container', '../../.
             this.addChild(this._bg);
             this.addChild(this._text);
         }
+        TopButton.prototype.onResize = function (width, height) {
+            console.log('a', width, height);
+            _super.prototype.onResize.call(this, width, height);
+            console.log('b', this.width, this.height);
+        };
         return TopButton;
     })(Container);
     return TopButton;

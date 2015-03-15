@@ -593,10 +593,12 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
         };
         Container.prototype.onResize = function (width, height) {
             _super.prototype.onResize.call(this, width, height);
+            var newWidth = this.width;
+            var newHeight = this.height;
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
                 if (child.onResize) {
-                    child.onResize(this.width, this.height);
+                    child.onResize(newWidth, newHeight);
                 }
             }
         };

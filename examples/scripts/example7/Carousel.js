@@ -86,8 +86,8 @@ define(["require", "exports", '../../../src/easelts/display/Container'], functio
                 }
             }
         };
-        Carousel.prototype.onResize = function (e) {
-            _super.prototype.onResize.call(this, e);
+        Carousel.prototype.onResize = function (width, height) {
+            _super.prototype.onResize.call(this, width, height);
             this.reset();
         };
         return Carousel;

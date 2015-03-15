@@ -12,7 +12,7 @@ define(["require", "exports", '../../../src/easelts/display/Container', '../../.
             _super.call(this, 200, 50, '50%', '100%', '50%', '100%');
             this._ninepatch = new NinePatch('assets/image/ninepatch_blue.png', new Rectangle(5, 12, 139, 8));
             this._bg = new BitmapNinePatch(this._ninepatch);
-            this._text = new Text('top');
+            this._text = new Text('bottom');
             this.addBehavior(new ButtonBehavior);
             this.hitArea = this._bg;
             this.addChild(this._bg);
