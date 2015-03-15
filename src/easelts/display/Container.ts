@@ -223,12 +223,9 @@ class Container extends DisplayObject
 		}
 
 		child.parent = this;
-		if(this._parentSizeIsKnown)
+		if(this.parent && child.onResize)
 		{
-			if(typeof child.onResize == 'function')
-			{
-				child.onResize(new Size(this.width, this.height));
-			}
+			child.onResize(new Size(this.width, this.height));
 		}
 
 		if(this.stage)
@@ -299,7 +296,7 @@ class Container extends DisplayObject
 		}
 
 		child.parent = this;
-		if(this._parentSizeIsKnown)
+		if(this.parent && child.onResize)
 		{
 			child.onResize(new Size(this.width, this.height));
 		}

@@ -198,10 +198,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 child.parent.removeChild(child);
             }
             child.parent = this;
-            if (this._parentSizeIsKnown) {
-                if (typeof child.onResize == 'function') {
-                    child.onResize(new Size(this.width, this.height));
-                }
+            if (this.parent && child.onResize) {
+                child.onResize(new Size(this.width, this.height));
             }
             if (this.stage) {
                 child.stage = this.stage;
@@ -255,7 +253,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 }
             }
             child.parent = this;
-            if (this._parentSizeIsKnown) {
+            if (this.parent && child.onResize) {
                 child.onResize(new Size(this.width, this.height));
             }
             this.children.splice(index, 0, child);

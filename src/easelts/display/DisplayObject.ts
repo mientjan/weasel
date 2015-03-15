@@ -612,31 +612,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		this.isDirty = true;
 		this._width.set(width);
 
-
-		if(typeof(width) == 'string')
-		{
-			if((<string> width).substr(-1) == '%')
-			{
-				this._width_percent = parseFloat((<string> width).substr(0, (<string> width).length - 1)) / 100;
-				this._width_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._width_calc = FluidCalculation.dissolveCalcElements( <string> width);
-				this._width_type = CalculationType.CALC;
-			}
-
-		}
-		else
-		{
-			this.width = <number> width;
-			this._width_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
 		return this;
 	}
 
@@ -656,32 +631,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setHeight(height:number|string):any
 	{
-		if(typeof(height) == 'string')
-		{
-			var heightString = <string> height;
-
-			// @todo check if only percent unit.
-			if(heightString.substr(-1) == '%')
-			{
-				this._height_percent = parseFloat(heightString.substr(0, heightString.length - 1)) / 100;
-				this._height_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._height_calc = FluidCalculation.dissolveCalcElements(heightString);
-				this._height_type = CalculationType.CALC;
-			}
-		}
-		else
-		{
-			this.height = <number> height;
-			this._height_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
+		this.isDirty = true;
+		this._height.set(height);
 
 		return this;
 	}
@@ -701,32 +652,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {string|number} x
 	 * @return DisplayObject
 	 */
-	public setX(x:number|string):any
+	public setX(value:number|string):any
 	{
-		if(typeof(x) == 'string')
-		{
-			if((<string> x).substr(-1) == '%')
-			{
-				this._x_percent = parseFloat((<string> x).substr(0, (<string> x).length - 1)) / 100;
-				this._x_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._x_calc = FluidCalculation.dissolveCalcElements(<string> x);
-				this._x_type = CalculationType.CALC;
-			}
-
-		}
-		else
-		{
-			this.x = <number> x;
-			this._x_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
+		this.isDirty = true;
+		this._x.set(value);
 
 		return this;
 	}
@@ -746,32 +675,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {number|string} y
 	 * @returns {DisplayObject}
 	 */
-	public setY(y:number|string):any
+	public setY(value:number|string):any
 	{
-		if(typeof(y) == 'string')
-		{
-			if((<string> y).substr(-1) == '%')
-			{
-				this._y_percent = parseFloat((<string> y).substr(0, (<string> y).length - 1)) / 100;
-				this._y_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._y_calc = FluidCalculation.dissolveCalcElements(<string> y);
-				this._y_type = CalculationType.CALC;
-			}
+		this.isDirty = true;
+		this._y.set(value);
 
-		}
-		else
-		{
-			this.y = <number> y;
-			this._y_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
 		return this;
 	}
 
@@ -791,30 +699,8 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setRegX(value:number|string):any
 	{
-		if(typeof(value) == 'string')
-		{
-			if(( <string> value).substr(-1) == '%')
-			{
-				this._regX_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._regX_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._regX_calc = FluidCalculation.dissolveCalcElements(<string> value);
-				this._regX_type = CalculationType.CALC;
-			}
-
-		}
-		else
-		{
-			this.regX = <number> value;
-			this._regX_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
+		this.isDirty = true;
+		this._regX.set(value);
 
 		return this;
 	}
@@ -835,30 +721,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setRegY(value:number|string):any
 	{
-		if(typeof(value) == 'string')
-		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._regY_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._regY_type = CalculationType.PERCENT;
-			}
-			else
-			{
-				this._regY_calc = FluidCalculation.dissolveCalcElements(<string> value);
-				this._regY_type = CalculationType.CALC;
-			}
+		this.isDirty = true;
+		this._regY.set(value);
 
-		}
-		else
-		{
-			this.regY = <number> value;
-			this._regY_type = CalculationType.STATIC;
-		}
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
 		return this;
 	}
 
@@ -1299,8 +1164,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setGeomTransform(w:any = null, h:any = null, x:any = null, y:any = null, rx:any = null, ry:any = null):any
 	{
-		var parentIsKnown = this._parentSizeIsKnown;
-		this._parentSizeIsKnown = false;
 
 		if(x != null)
 		{
@@ -1325,13 +1188,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		if(ry != null)
 		{
 			this.setRegY(ry);
-		}
-
-		this._parentSizeIsKnown = parentIsKnown;
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height))
 		}
 
 		return this;
@@ -1627,7 +1483,9 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	protected onTick(delta:number)
 	{
-
+		if(this.isDirty && this.parent){
+			this.onResize(new Size(this.parent.width, this.parent.height));
+		}
 	}
 
 	/**
@@ -1838,66 +1696,12 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public onResize(size:Size):void
 	{
-		this._parentSizeIsKnown = true;
-
-		if(this.updateGeomOnResize)
-		{
-
-			if(this._width_type == CalculationType.PERCENT)
-			{
-				this.width = this._width_percent * size.width;
-			}
-			else if(this._width_type == CalculationType.CALC)
-			{
-				this.width = FluidCalculation.calcUnit(size.width, this._width_calc);
-			}
-
-			if(this._height_type == CalculationType.PERCENT)
-			{
-				this.height = this._height_percent * size.height;
-			}
-			else if(this._height_type == CalculationType.CALC)
-			{
-				this.height = FluidCalculation.calcUnit(size.height, this._height_calc);
-			}
-
-			if(this._regX_type == CalculationType.PERCENT)
-			{
-				this.regX = this._regX_percent * this.width;
-			}
-			else if(this._regX_type == CalculationType.CALC)
-			{
-				this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
-			}
-
-			if(this._regY_type == CalculationType.PERCENT)
-			{
-				this.regY = this._regY_percent * this.height;
-			}
-			else if(this._regY_type == CalculationType.CALC)
-			{
-				this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
-			}
-
-			if(this._x_type == CalculationType.PERCENT)
-			{
-				this.x = Math.round(this._x_percent * size.width);
-			}
-			else if(this._x_type == CalculationType.CALC)
-			{
-				this.x = Math.round(FluidCalculation.calcUnit(size.width, this._x_calc));
-			}
-
-			if(this._y_type == CalculationType.PERCENT)
-			{
-				this.y = Math.round(this._y_percent * size.height);
-			}
-			else if(this._y_type == CalculationType.CALC)
-			{
-				this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
-			}
-		}
-
+		this.width = this._width.get(size.width);
+		this.height = this._height.get(size.height);
+		this.regX = this._regX.get(this.width);
+		this.regY = this._regY.get(this.height);
+		this.x = this._x.get(size.width);
+		this.y = this._y.get(size.height);
 	}
 
 	public destruct():void
