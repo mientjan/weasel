@@ -5,11 +5,11 @@ import BitmapNinePatch = require('../../src/easelts/component/BitmapNinePatch');
 import NinePatch = require('../../src/easelts/component/bitmapninepatch/NinePatch');
 import Rectangle = require('../../src/easelts/geom/Rectangle');
 
-import ButtonBehavior = require('lib/easelts/behavior/ButtonBehavior');
+import ButtonBehavior = require('../../src/easelts/behavior/ButtonBehavior');
 //import FollowMouseBehavior = require('lib/easelts/behavior/FollowMouseBehavior');
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
-var stage = new Stage(holder);
+var stage = new Stage(holder, true);
 stage.enableMouseOver();
 stage.addChild(new Debug);
 

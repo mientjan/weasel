@@ -7,7 +7,7 @@ import Rectangle = require('../../src/easelts/geom/Rectangle');
 import TopButton = require('./example7/TopButton');
 import BottomButton = require('./example7/BottomButton');
 
-import ButtonBehavior = require('lib/easelts/behavior/ButtonBehavior');
+import ButtonBehavior = require('../../src/easelts/behavior/ButtonBehavior');
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
