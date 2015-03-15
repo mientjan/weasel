@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../lib/easelts/display/Text', '../lib/easelts/component/BitmapNinePatch', '../lib/easelts/component/bitmapninepatch/NinePatch', '../lib/easelts/geom/Rectangle', '../lib/easelts/behavior/ButtonBehavior'], function (require, exports, Text, BitmapNinePatch, NinePatch, Rectangle, ButtonBehavior) {
+define(["require", "exports", '../../../src/easelts/display/Container', '../../../src/easelts/display/Text', '../../../src/easelts/component/BitmapNinePatch', '../../../src/easelts/component/bitmapninepatch/NinePatch', '../../../src/easelts/geom/Rectangle', '../../../src/easelts/behavior/ButtonBehavior'], function (require, exports, Container, Text, BitmapNinePatch, NinePatch, Rectangle, ButtonBehavior) {
     var BottomButton = (function (_super) {
         __extends(BottomButton, _super);
         function BottomButton() {

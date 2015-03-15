@@ -1,11 +1,11 @@
 ///<reference path="../lib/gsap/greensock.d.ts" />
 
-import Container = require('../lib/easelts/display/Container');
-import Text = require('../lib/easelts/display/Text');
-import BitmapNinePatch = require('../lib/easelts/component/BitmapNinePatch');
-import NinePatch = require('../lib/easelts/component/bitmapninepatch/NinePatch');
-import Rectangle = require('../lib/easelts/geom/Rectangle');
-import ButtonBehavior = require('../lib/easelts/behavior/ButtonBehavior');
+import Container = require('../../../src/easelts/display/Container');
+import Text = require('../../../src/easelts/display/Text');
+import BitmapNinePatch = require('../../../src/easelts/component/BitmapNinePatch');
+import NinePatch = require('../../../src/easelts/component/bitmapninepatch/NinePatch');
+import Rectangle = require('../../../src/easelts/geom/Rectangle');
+import ButtonBehavior = require('../../../src/easelts/behavior/ButtonBehavior');
 
 class BottomButton extends Container
 {
