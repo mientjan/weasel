@@ -217,19 +217,14 @@ class Container extends DisplayObject
 		}
 
 		var child = children[0];
+
 		if(child.parent)
 		{
 			child.parent.removeChild(child);
 		}
 
 		child.parent = this;
-		if(this._parentSizeIsKnown)
-		{
-			if(typeof child.onResize == 'function')
-			{
-				child.onResize(this.width, this.height);
-			}
-		}
+		child.isDirty = true;
 
 		if(this.stage)
 		{
@@ -244,16 +239,25 @@ class Container extends DisplayObject
 		return child;
 	}
 
+	/**
+	 * @method onStageSet
+	 * @description When the stage is set this method is called to all its children.
+	 */
 	public onStageSet()
 	{
 		var children = this.children;
 		for(var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-			child.stage = this.stage;
-			if(child.onStageSet)
+
+			if (child.stage != this.stage)
 			{
-				child.onStageSet.call(child);
+				child.stage = this.stage;
+
+				if(child.onStageSet)
+				{
+					child.onStageSet.call(child);
+				}
 			}
 		}
 	}
@@ -285,12 +289,6 @@ class Container extends DisplayObject
 			child.parent.removeChild(child);
 		}
 
-		child.parent = this;
-		if(this._parentSizeIsKnown)
-		{
-			child.onResize(this.width, this.height);
-		}
-
 		if(this.stage)
 		{
 			child.stage = this.stage;
@@ -299,6 +297,9 @@ class Container extends DisplayObject
 				child.onStageSet.call(child);
 			}
 		}
+
+		child.parent = this;
+		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
 		return child;
@@ -372,7 +373,6 @@ class Container extends DisplayObject
 		{
 			return false;
 		}
-
 
 		var child = this.children[index[0]];
 
@@ -701,7 +701,7 @@ class Container extends DisplayObject
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
-			if(typeof child.onResize == 'function')
+			if(child.onResize)
 			{
 				child.onResize(width, height);
 			}
@@ -725,6 +725,8 @@ class Container extends DisplayObject
 	 **/
 	public onTick(delta:number):void
 	{
+		super.onTick(delta);
+
 		if(this.tickChildren)
 		{
 			var children = this.children;
@@ -738,8 +740,6 @@ class Container extends DisplayObject
 			}
 
 		}
-
-		super.onTick(delta);
 	}
 
 	/**

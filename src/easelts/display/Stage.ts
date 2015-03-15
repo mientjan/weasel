@@ -394,39 +394,37 @@ class Stage extends Container
 	/**
 	 * @class Stage
 	 * @constructor
-	 * @param {HTMLCanvasElement|HTMLDivElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
+	 * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-	constructor(element:HTMLDivElement, triggerResizeOnWindowResize?:boolean);
-	constructor(element:HTMLCanvasElement, triggerResizeOnWindowResize?:boolean);
-	constructor(element:any, triggerResizeOnWindowResize:any = false)
+
+	constructor(element:HTMLBlockElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
 		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+		var size:Size;
 
 		switch(element.tagName)
 		{
 			case 'CANVAS':
 			{
-				this.canvas = element;
-				this.holder = element.parentElement;
-				break;
-			}
+				this.canvas = <HTMLCanvasElement> element;
+				this.holder = <HTMLBlockElement> element.parentElement;
 
-			case 'DIV':
-			{
-				var canvas = document.createElement('canvas');
-				element.appendChild(canvas);
-
-				this.canvas = canvas;
-				this.holder = element;
+				size = new Size(this.canvas.width, this.canvas.height);
 				break;
 			}
 
 			default:
 			{
-				throw new Error('unsupported element used "' + element.tagName + '"');
+				var canvas = document.createElement('canvas');
+
+				this.canvas = <HTMLCanvasElement> canvas;
+				this.holder = <HTMLBlockElement> element;
+				this.holder.appendChild(canvas);
+
+				size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
 				break;
 			}
 		}
@@ -434,17 +432,10 @@ class Stage extends Container
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
-		this.setQuality(QualityType.NORMAL);
+		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
-		if (this.triggerResizeOnWindowResize || element.tagName == "DIV")
-		{
-			this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
-		}
-		else
-		{
-			this.onResize(this.canvas.width, this.canvas.height);
-		}
+		this.onResize(size);
 	}
 
 
@@ -1257,6 +1248,7 @@ class Stage extends Container
 		{
 			this.update(0);
 			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
+			Ticker.getInstance().start();
 			this._isRunning = true;
 			return true;
 		}
@@ -1277,6 +1269,7 @@ class Stage extends Container
 			// remove Signal connection
 			this._tickSignalConnection.dispose();
 			this._tickSignalConnection = null;
+			Ticker.getInstance().stop();
 
 			// update stage for a last tick, solves rendering
 			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
@@ -1301,7 +1294,7 @@ class Stage extends Container
 	}
 
 	/**
-	 * Is triggerd when the stage (canvas) is resized.
+	 * Is triggered when the stage (canvas) is resized.
 	 * Will give this new information to all children.
 	 *
 	 * @method onResize

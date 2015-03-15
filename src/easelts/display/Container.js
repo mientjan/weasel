@@ -198,11 +198,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
                 child.parent.removeChild(child);
             }
             child.parent = this;
-            if (this._parentSizeIsKnown) {
-                if (typeof child.onResize == 'function') {
-                    child.onResize(this.width, this.height);
-                }
-            }
+            child.isDirty = true;
             if (this.stage) {
                 child.stage = this.stage;
                 if (child.onStageSet) {
@@ -212,13 +208,19 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             this.children.push(child);
             return child;
         };
+        /**
+         * @method onStageSet
+         * @description When the stage is set this method is called to all its children.
+         */
         Container.prototype.onStageSet = function () {
             var children = this.children;
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                child.stage = this.stage;
-                if (child.onStageSet) {
-                    child.onStageSet.call(child);
+                if (child.stage != this.stage) {
+                    child.stage = this.stage;
+                    if (child.onStageSet) {
+                        child.onStageSet.call(child);
+                    }
                 }
             }
         };
@@ -246,16 +248,14 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             if (child.parent) {
                 child.parent.removeChild(child);
             }
-            child.parent = this;
-            if (this._parentSizeIsKnown) {
-                child.onResize(this.width, this.height);
-            }
             if (this.stage) {
                 child.stage = this.stage;
                 if (child.onStageSet) {
                     child.onStageSet.call(child);
                 }
             }
+            child.parent = this;
+            child.isDirty = true;
             this.children.splice(index, 0, child);
             return child;
         };
@@ -595,7 +595,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             _super.prototype.onResize.call(this, width, height);
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
-                if (typeof child.onResize == 'function') {
+                if (child.onResize) {
                     child.onResize(width, height);
                 }
             }
@@ -614,6 +614,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
          * @protected
          **/
         Container.prototype.onTick = function (delta) {
+            _super.prototype.onTick.call(this, delta);
             if (this.tickChildren) {
                 var children = this.children;
                 for (var i = children.length - 1; i >= 0; i--) {
@@ -623,7 +624,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
                     }
                 }
             }
-            _super.prototype.onTick.call(this, delta);
         };
         /**
          * @method _getObjectsUnderPoint

@@ -152,9 +152,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
             if (!this.height) {
                 this.height = this.image.height;
             }
-            if (this._parentSizeIsKnown) {
-                this.onResize(this.parent.width, this.parent.height);
-            }
+            this.isDirty = true;
             this.dispatchEvent(Bitmap.EVENT_ONLOAD);
         };
         /**
