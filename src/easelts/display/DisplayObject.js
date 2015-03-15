@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, m2, Rectangle, Size, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../util/UID', '../util/Methods', './Shadow', '../enum/CalculationType', '../enum/DisplayType', '../geom/FluidCalculation', '../geom/ValueCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Size', '../geom/Point'], function (require, exports, EventDispatcher, UID, Methods, Shadow, CalculationType, DisplayType, FluidCalculation, ValueCalculation, m2, Rectangle, Size, Point) {
     /**
      * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
      * @class DisplayObject
@@ -46,15 +46,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this);
-            // public properties:
             this.type = 3 /* DISPLAYOBJECT */;
-            /**
-             * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
-             * @property alpha
-             * @type {Number}
-             * @default 1
-             **/
-            this.alpha = 1;
             /**
              * If a cache is active, this returns the canvas that holds the cached version of this display object. See {{#crossLink "cache"}}{{/crossLink}}
              * for more information.
@@ -115,67 +107,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              **/
             this.parent = null;
             /**
-             * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
-             * around its center, you would set regX and {{#crossLink "DisplayObject/regY:property"}}{{/crossLink}} to 50.
-             * @property regX
-             * @type {Number}
-             * @default 0
-             **/
-            this.regX = 0;
-            /**
-             * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
-             * its center, you would set {{#crossLink "DisplayObject/regX:property"}}{{/crossLink}} and regY to 50.
-             * @property regY
-             * @type {Number}
-             * @default 0
-             **/
-            this.regY = 0;
-            /**
-             * The rotation in degrees for this display object.
-             * @property rotation
-             * @type {Number}
-             * @default 0
-             **/
-            this.rotation = 0;
-            /**
-             * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
-             * object to twice its nominal width. To horizontally flip an object, set the scale to a negative number.
-             * @property scaleX
-             * @type {Number}
-             * @default 1
-             **/
-            this.scaleX = 1;
-            /**
-             * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
-             * object to half its nominal height. To vertically flip an object, set the scale to a negative number.
-             * @property scaleY
-             * @type {Number}
-             * @default 1
-             **/
-            this.scaleY = 1;
-            /**
-             * The factor to skew this display object horizontally.
-             * @property skewX
-             * @type {Number}
-             * @default 0
-             **/
-            this.skewX = 0;
-            /**
-             * The factor to skew this display object vertically.
-             * @property skewY
-             * @type {Number}
-             * @default 0
-             **/
-            this.skewY = 0;
-            /**
-             * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
-             * null, this property is inherited from the parent container.
-             * @property shadow
-             * @type {Shadow}
-             * @default null
-             **/
-            this.shadow = null;
-            /**
              * Indicates whether this display object should be rendered to the canvas and included when running the Stage
              * {{#crossLink "Stage/getObjectsUnderPoint"}}{{/crossLink}} method.
              * @property visible
@@ -184,18 +115,108 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              **/
             this.visible = true;
             /**
+             * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
+             * @property alpha
+             * @type {Number}
+             * @default 1
+             **/
+            this.alpha = 1;
+            this.isDirty = false;
+            /**
              * The x (horizontal) position of the display object, relative to its parent.
              * @property x
              * @type {Number}
              * @default 0
              **/
             this.x = 0;
+            this._x = new ValueCalculation(0);
             /** The y (vertical) position of the display object, relative to its parent.
              * @property y
              * @type {Number}
              * @default 0
              **/
             this.y = 0;
+            this._y = new ValueCalculation(0);
+            /**
+             * @property width
+             * @type {number}
+             */
+            this.width = 0;
+            this._width = new ValueCalculation(0);
+            /**
+             * @property height
+             * @type {number}
+             */
+            this.height = 0;
+            this._height = new ValueCalculation(0);
+            /**
+             * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
+             * around its center, you would set regX and {{#crossLink "DisplayObject/regY:property"}}{{/crossLink}} to 50.
+             * @property regX
+             * @type {Number}
+             * @default 0
+             **/
+            this.regX = 0;
+            this._regX = new ValueCalculation(0);
+            /**
+             * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
+             * its center, you would set {{#crossLink "DisplayObject/regX:property"}}{{/crossLink}} and regY to 50.
+             * @property regY
+             * @type {Number}
+             * @default 0
+             **/
+            this.regY = 0;
+            this._regY = new ValueCalculation(0);
+            /**
+             * The rotation in degrees for this display object.
+             * @property rotation
+             * @type {Number}
+             * @default 0
+             **/
+            this.rotation = 0;
+            this._rotation = new ValueCalculation(0);
+            /**
+             * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
+             * object to twice its nominal width. To horizontally flip an object, set the scale to a negative number.
+             * @property scaleX
+             * @type {Number}
+             * @default 1
+             **/
+            this.scaleX = 1;
+            this._scaleX = new ValueCalculation(0);
+            /**
+             * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
+             * object to half its nominal height. To vertically flip an object, set the scale to a negative number.
+             * @property scaleY
+             * @type {Number}
+             * @default 1
+             **/
+            this.scaleY = 1;
+            this._scaleY = new ValueCalculation(0);
+            /**
+             * The factor to skew this display object horizontally.
+             * @property skewX
+             * @type {Number}
+             * @default 0
+             **/
+            this.skewX = 0;
+            this._skewX = new ValueCalculation(0);
+            /**
+             * The factor to skew this display object vertically.
+             * @property skewY
+             * @type {Number}
+             * @default 0
+             **/
+            this.skewY = 0;
+            this._skewY = new ValueCalculation(0);
+            /**
+             * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
+             * null, this property is inherited from the parent container.
+             * @property shadow
+             * @type {Shadow}
+             * @default null
+             **/
+            this.shadow = null;
             /**
              * The Stage instance that the display object is a descendent of. null if the DisplayObject has not
              * been added to a Stage.
@@ -210,22 +231,33 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @type {Boolean}
              * @default true
              **/
-            this.updateGeomOnResize = true;
-            this.width = 0;
-            this.height = 0;
-            this._x_type = 2 /* STATIC */;
-            this._x_percent = .0;
-            this._y_percent = .0;
-            this._width_type = 2 /* STATIC */;
-            this._width_percent = .0;
-            this._height_type = 2 /* STATIC */;
-            this._height_percent = .0;
-            this._regX_type = 2 /* STATIC */;
-            this._regX_percent = .0;
-            this._regY_type = 2 /* STATIC */;
-            this._regY_percent = .0;
+            //public updateGeomOnResize = true;
+            //
+            //public _x_type:CalculationType = CalculationType.STATIC;
+            //public _x_percent:number = .0;
+            //public _x_calc:FluidMeasurementsUnit[];
+            //
+            //public _y_type:CalculationType;
+            //public _y_percent:number = .0;
+            //public _y_calc:FluidMeasurementsUnit[];
+            //
+            //public _width_type:CalculationType = CalculationType.STATIC;
+            //public _width_percent:number = .0;
+            //public _width_calc:FluidMeasurementsUnit[];
+            //
+            //public _height_type:CalculationType = CalculationType.STATIC;
+            //public _height_percent:number = .0;
+            //public _height_calc:FluidMeasurementsUnit[];
+            //
+            //public _regX_type:CalculationType = CalculationType.STATIC;
+            //public _regX_percent:number = .0;
+            //public _regX_calc:FluidMeasurementsUnit[];
+            //
+            //public _regY_type:CalculationType = CalculationType.STATIC;
+            //public _regY_percent:number = .0;
+            //public _regY_calc:FluidMeasurementsUnit[];
             this._behaviorList = null;
-            this._parentSizeIsKnown = false;
+            //public _parentSizeIsKnown:boolean = false;
             /**
              * The composite operation indicates how the pixels of this display object will be composited with the elements
              * behind it. If `null`, this property is inherited from the parent container. For more information, read the
@@ -295,7 +327,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @default null
              */
             this.cursor = null;
-            // private properties:
             /**
              * @property _cacheOffsetX
              * @protected
@@ -384,6 +415,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
          * @param {string|number} width
          */
         DisplayObject.prototype.setWidth = function (width) {
+            this.isDirty = true;
+            this._width.set(width);
             if (typeof (width) == 'string') {
                 if (width.substr(-1) == '%') {
                     this._width_percent = parseFloat(width.substr(0, width.length - 1)) / 100;

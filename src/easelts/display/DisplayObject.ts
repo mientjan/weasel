@@ -51,6 +51,7 @@ import DisplayType = require('../enum/DisplayType');
 // geom
 import FluidCalculation = require('../geom/FluidCalculation');
 import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
+import ValueCalculation = require('../geom/ValueCalculation');
 
 import m2 = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
@@ -175,17 +176,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public static _nextCacheID:number = 1;
 
-	// public properties:
-
 	public type:DisplayType = DisplayType.DISPLAYOBJECT;
-
-	/**
-	 * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
-	 * @property alpha
-	 * @type {Number}
-	 * @default 1
-	 **/
-	public alpha:number = 1;
 
 	/**
 	 * If a cache is active, this returns the canvas that holds the cached version of this display object. See {{#crossLink "cache"}}{{/crossLink}}
@@ -253,75 +244,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public parent:Container = null;
 
 	/**
-	 * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
-	 * around its center, you would set regX and {{#crossLink "DisplayObject/regY:property"}}{{/crossLink}} to 50.
-	 * @property regX
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public regX:number = 0;
-
-	/**
-	 * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
-	 * its center, you would set {{#crossLink "DisplayObject/regX:property"}}{{/crossLink}} and regY to 50.
-	 * @property regY
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public regY:number = 0;
-
-	/**
-	 * The rotation in degrees for this display object.
-	 * @property rotation
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public rotation:number = 0;
-
-	/**
-	 * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
-	 * object to twice its nominal width. To horizontally flip an object, set the scale to a negative number.
-	 * @property scaleX
-	 * @type {Number}
-	 * @default 1
-	 **/
-	public scaleX:number = 1;
-
-	/**
-	 * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
-	 * object to half its nominal height. To vertically flip an object, set the scale to a negative number.
-	 * @property scaleY
-	 * @type {Number}
-	 * @default 1
-	 **/
-	public scaleY:number = 1;
-
-	/**
-	 * The factor to skew this display object horizontally.
-	 * @property skewX
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public skewX:number = 0;
-
-	/**
-	 * The factor to skew this display object vertically.
-	 * @property skewY
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public skewY:number = 0;
-
-	/**
-	 * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
-	 * null, this property is inherited from the parent container.
-	 * @property shadow
-	 * @type {Shadow}
-	 * @default null
-	 **/
-	public shadow:Shadow = null;
-
-	/**
 	 * Indicates whether this display object should be rendered to the canvas and included when running the Stage
 	 * {{#crossLink "Stage/getObjectsUnderPoint"}}{{/crossLink}} method.
 	 * @property visible
@@ -331,12 +253,23 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public visible:boolean = true;
 
 	/**
+	 * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
+	 * @property alpha
+	 * @type {Number}
+	 * @default 1
+	 **/
+	public alpha:number = 1;
+
+	protected isDirty = false;
+
+	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
 	 * @property x
 	 * @type {Number}
 	 * @default 0
 	 **/
 	public x:number = 0;
+	protected _x:ValueCalculation = new ValueCalculation(0);
 
 	/** The y (vertical) position of the display object, relative to its parent.
 	 * @property y
@@ -344,6 +277,97 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @default 0
 	 **/
 	public y:number = 0;
+	protected _y:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * @property width
+	 * @type {number}
+	 */
+	public width:number = 0;
+	protected _width:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * @property height
+	 * @type {number}
+	 */
+	public height:number = 0;
+	protected _height:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The left offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate
+	 * around its center, you would set regX and {{#crossLink "DisplayObject/regY:property"}}{{/crossLink}} to 50.
+	 * @property regX
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public regX:number = 0;
+	protected _regX:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The y offset for this display object's registration point. For example, to make a 100x100px Bitmap rotate around
+	 * its center, you would set {{#crossLink "DisplayObject/regX:property"}}{{/crossLink}} and regY to 50.
+	 * @property regY
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public regY:number = 0;
+	protected _regY:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The rotation in degrees for this display object.
+	 * @property rotation
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public rotation:number = 0;
+	protected _rotation:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
+	 * object to twice its nominal width. To horizontally flip an object, set the scale to a negative number.
+	 * @property scaleX
+	 * @type {Number}
+	 * @default 1
+	 **/
+	public scaleX:number = 1;
+	protected _scaleX:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
+	 * object to half its nominal height. To vertically flip an object, set the scale to a negative number.
+	 * @property scaleY
+	 * @type {Number}
+	 * @default 1
+	 **/
+	public scaleY:number = 1;
+	protected _scaleY:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The factor to skew this display object horizontally.
+	 * @property skewX
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public skewX:number = 0;
+	protected _skewX:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * The factor to skew this display object vertically.
+	 * @property skewY
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public skewY:number = 0;
+	protected _skewY:ValueCalculation = new ValueCalculation(0);
+
+	/**
+	 * A shadow object that defines the shadow to render on this display object. Set to `null` to remove a shadow. If
+	 * null, this property is inherited from the parent container.
+	 * @property shadow
+	 * @type {Shadow}
+	 * @default null
+	 **/
+	public shadow:Shadow = null;
 
 	/**
 	 * The Stage instance that the display object is a descendent of. null if the DisplayObject has not
@@ -360,37 +384,34 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Boolean}
 	 * @default true
 	 **/
-	public updateGeomOnResize = true;
-
-	public width:number = 0;
-	public height:number = 0;
-
-	public _x_type:CalculationType = CalculationType.STATIC;
-	public _x_percent:number = .0;
-	public _x_calc:FluidMeasurementsUnit[];
-
-	public _y_type:CalculationType;
-	public _y_percent:number = .0;
-	public _y_calc:FluidMeasurementsUnit[];
-
-	public _width_type:CalculationType = CalculationType.STATIC;
-	public _width_percent:number = .0;
-	public _width_calc:FluidMeasurementsUnit[];
-
-	public _height_type:CalculationType = CalculationType.STATIC;
-	public _height_percent:number = .0;
-	public _height_calc:FluidMeasurementsUnit[];
-
-	public _regX_type:CalculationType = CalculationType.STATIC;
-	public _regX_percent:number = .0;
-	public _regX_calc:FluidMeasurementsUnit[];
-
-	public _regY_type:CalculationType = CalculationType.STATIC;
-	public _regY_percent:number = .0;
-	public _regY_calc:FluidMeasurementsUnit[];
+	//public updateGeomOnResize = true;
+	//
+	//public _x_type:CalculationType = CalculationType.STATIC;
+	//public _x_percent:number = .0;
+	//public _x_calc:FluidMeasurementsUnit[];
+	//
+	//public _y_type:CalculationType;
+	//public _y_percent:number = .0;
+	//public _y_calc:FluidMeasurementsUnit[];
+	//
+	//public _width_type:CalculationType = CalculationType.STATIC;
+	//public _width_percent:number = .0;
+	//public _width_calc:FluidMeasurementsUnit[];
+	//
+	//public _height_type:CalculationType = CalculationType.STATIC;
+	//public _height_percent:number = .0;
+	//public _height_calc:FluidMeasurementsUnit[];
+	//
+	//public _regX_type:CalculationType = CalculationType.STATIC;
+	//public _regX_percent:number = .0;
+	//public _regX_calc:FluidMeasurementsUnit[];
+	//
+	//public _regY_type:CalculationType = CalculationType.STATIC;
+	//public _regY_percent:number = .0;
+	//public _regY_calc:FluidMeasurementsUnit[];
 
 	public _behaviorList:IBehavior[] = null;
-	public _parentSizeIsKnown:boolean = false;
+	//public _parentSizeIsKnown:boolean = false;
 
 	/**
 	 * The composite operation indicates how the pixels of this display object will be composited with the elements
@@ -468,7 +489,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public cursor:string = null;
 
-	// private properties:
 
 	/**
 	 * @property _cacheOffsetX
@@ -476,7 +496,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetX:number = 0;
+	protected _cacheOffsetX:number = 0;
 
 	/**
 	 * @property _cacheOffsetY
@@ -484,7 +504,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 **/
-	public _cacheOffsetY:number = 0;
+	protected _cacheOffsetY:number = 0;
 
 	/**
 	 * @property _cacheScale
@@ -492,11 +512,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 1
 	 **/
-	public _cacheWidth:number;
-	public _cacheHeight:number;
-	public _cacheX:number;
-	public _cacheY:number;
-	public _cacheScale:number = 1;
+	protected _cacheWidth:number;
+	protected _cacheHeight:number;
+	protected _cacheX:number;
+	protected _cacheY:number;
+	protected _cacheScale:number = 1;
 
 	/**
 	 * @property _cacheDataURLID
@@ -504,7 +524,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Number}
 	 * @default 0
 	 */
-	public _cacheDataURLID:number = 0;
+	protected _cacheDataURLID:number = 0;
 
 	/**
 	 * @property _cacheDataURL
@@ -512,7 +532,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {String}
 	 * @default null
 	 */
-	public _cacheDataURL:string = null;
+	protected _cacheDataURL:string = null;
 
 	/**
 	 * @property _matrix
@@ -520,7 +540,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+	protected _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -528,7 +548,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _rectangle:Rectangle = new Rectangle(0, 0, 0, 0);
+	protected _rectangle:Rectangle = new Rectangle(0, 0, 0, 0);
 
 	/**
 	 * @property _bounds
@@ -536,7 +556,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Rectangle}
 	 * @default null
 	 **/
-	public _bounds:Rectangle = null;
+	protected _bounds:Rectangle = null;
 
 	public _off:boolean = false;
 
@@ -589,6 +609,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setWidth(width:number|string):any
 	{
+		this.isDirty = true;
+		this._width.set(width);
+
+
 		if(typeof(width) == 'string')
 		{
 			if((<string> width).substr(-1) == '%')
