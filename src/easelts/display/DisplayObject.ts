@@ -261,7 +261,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public alpha:number = 1;
 
-	protected isDirty = false;
+	/**
+	 * @property isDirty
+	 * @type {boolean}
+	 * @description is set by Container, setWidth setHeight, setX, setY, setRegX, setRegY. When set true onTick will trigger a onResize event.
+	 *  this is a better way to check if its been added to the stage because onTick is only triggerd when added to the stage.
+	 */
+	public isDirty = false;
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.

@@ -224,10 +224,7 @@ class Container extends DisplayObject
 		}
 
 		child.parent = this;
-		if(this.parent && child.onResize)
-		{
-			child.onResize(new Size(this.width, this.height));
-		}
+		child.isDirty = true;
 
 		if(this.stage)
 		{
@@ -302,10 +299,7 @@ class Container extends DisplayObject
 		}
 
 		child.parent = this;
-		if(this.parent && child.onResize)
-		{
-			child.onResize(new Size(this.width, this.height));
-		}
+		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
 		return child;

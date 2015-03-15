@@ -121,6 +121,12 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
              * @default 1
              **/
             this.alpha = 1;
+            /**
+             * @property isDirty
+             * @type {boolean}
+             * @description is set by Container, setWidth setHeight, setX, setY, setRegX, setRegY. When set true onTick will trigger a onResize event.
+             *  this is a better way to check if its been added to the stage because onTick is only triggerd when added to the stage.
+             */
             this.isDirty = false;
             /**
              * The x (horizontal) position of the display object, relative to its parent.

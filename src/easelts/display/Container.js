@@ -198,9 +198,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 child.parent.removeChild(child);
             }
             child.parent = this;
-            if (this.parent && child.onResize) {
-                child.onResize(new Size(this.width, this.height));
-            }
+            child.isDirty = true;
             if (this.stage) {
                 child.stage = this.stage;
                 if (child.onStageSet) {
@@ -257,9 +255,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 }
             }
             child.parent = this;
-            if (this.parent && child.onResize) {
-                child.onResize(new Size(this.width, this.height));
-            }
+            child.isDirty = true;
             this.children.splice(index, 0, child);
             return child;
         };
