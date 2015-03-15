@@ -13,7 +13,7 @@ btn.addBehavior(new ButtonBehavior);
 stage.addChild(btn);
 
 btn.addEventListener(Bitmap.EVENT_MOUSE_CLICK, () => {
-	alert('asddsadsdasdasads');
+	alert('i clicked this button');
 })
 
 

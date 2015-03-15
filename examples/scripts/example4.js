@@ -7,7 +7,7 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
     btn.addBehavior(new ButtonBehavior);
     stage.addChild(btn);
     btn.addEventListener(Bitmap.EVENT_MOUSE_CLICK, function () {
-        alert('asddsadsdasdasads');
+        alert('i clicked this button');
     });
     stage.start();
 });
