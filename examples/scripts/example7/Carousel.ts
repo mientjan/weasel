@@ -1,6 +1,6 @@
 ///<reference path="../lib/gsap/greensock.d.ts" />
 
-import Container = require('../lib/easelts/display/Container')
+import Container = require('../../../src/easelts/display/Container')
 
 class Carousel extends Container
 {

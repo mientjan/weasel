@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", '../../../src/easelts/display/Container'], function (require, exports, Container) {
     var Carousel = (function (_super) {
         __extends(Carousel, _super);
         function Carousel(width, height, x, y, regX, regY) {
@@ -87,7 +87,7 @@ define(["require", "exports"], function (require, exports) {
             }
         };
         Carousel.prototype.onResize = function (e) {
-            super.onResize.call(this, e);
+            _super.prototype.onResize.call(this, e);
             this.reset();
         };
         return Carousel;
