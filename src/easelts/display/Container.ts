@@ -727,6 +727,8 @@ class Container extends DisplayObject
 	 **/
 	public onTick(delta:number):void
 	{
+		super.onTick(delta);
+
 		if(this.tickChildren)
 		{
 			var children = this.children;
@@ -740,8 +742,6 @@ class Container extends DisplayObject
 			}
 
 		}
-
-		super.onTick(delta);
 	}
 
 	/**

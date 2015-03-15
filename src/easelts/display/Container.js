@@ -615,6 +615,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @protected
          **/
         Container.prototype.onTick = function (delta) {
+            _super.prototype.onTick.call(this, delta);
             if (this.tickChildren) {
                 var children = this.children;
                 for (var i = children.length - 1; i >= 0; i--) {
@@ -624,7 +625,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                     }
                 }
             }
-            _super.prototype.onTick.call(this, delta);
         };
         /**
          * @method _getObjectsUnderPoint
