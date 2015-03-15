@@ -1821,8 +1821,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
 		}
-
-		console.log(this.width, this.height, this,  size);
 	}
 
 	public destruct():void

@@ -1379,7 +1379,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../util/U
             else if (this._y_type == 3 /* CALC */) {
                 this.y = Math.round(FluidCalculation.calcUnit(size.height, this._y_calc));
             }
-            console.log(this.width, this.height, this, size);
         };
         DisplayObject.prototype.destruct = function () {
             this.parent = null;
