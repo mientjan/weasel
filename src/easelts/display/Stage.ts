@@ -788,7 +788,6 @@ class Stage extends Container
 	// private methods:
 
 
-
 	/**
 	 * @method _getElementRect
 	 * @protected
@@ -1026,7 +1025,7 @@ class Stage extends Container
 	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage):void
 	{
 
-		
+
 		if(pageY != null)
 		{
 			this._updatePointerPosition(id, e, pageX, pageY);
@@ -1173,7 +1172,7 @@ class Stage extends Container
 	 **/
 	public _handleWindowResize(e)
 	{
-		if (this.triggerResizeOnWindowResize)
+		if(this.triggerResizeOnWindowResize)
 		{
 			this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
 		}
