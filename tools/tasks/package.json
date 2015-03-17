@@ -1,0 +1,7 @@
+{
+  "name": "tasks",
+  "description": "",
+  "dependencies": {
+    "esprima": "^2.1.0"
+  }
+}
