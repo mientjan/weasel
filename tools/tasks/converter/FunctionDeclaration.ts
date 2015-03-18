@@ -56,10 +56,9 @@ class FunctionDeclaration extends Node
 		{
 			data.push('function ' + this.id.toString());
 		}
+
 		data.push(this.getParamsString());
 		data.push(this.getBodyString());
-
-
 
 		return data.join(' ');
 	}

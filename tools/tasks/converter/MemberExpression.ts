@@ -5,6 +5,7 @@
 import Node = require('./Node');
 import Identifier = require('./Identifier');
 import Identifier = require('./BlockStatement');
+import AssignmentExpression = require('./AssignmentExpression');
 import esprima = require('esprima');
 import Syntax = esprima.Syntax;
 
@@ -28,6 +29,14 @@ class MemberExpression extends Node implements Syntax.MemberExpression
 	{
 
 		var data = [];
+
+
+//		if( this.object instanceof AssignmentExpression
+//			&& this.object.left)
+//		{
+//			console.log(JSON.stringify(this.object, null, 2));
+//
+//		}
 
 		data.push( this.object.toString() );
 		data.push( this.property.toString() );

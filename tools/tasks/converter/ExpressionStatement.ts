@@ -25,7 +25,9 @@ class ExpressionStatement extends Node {
 		var expression = this.expression.toString();
 
 //		data.push(super.toString());
+//		data.push('(');
 		data.push(expression);
+//		data.push(')');
 		return data.join('');
 	}
 }

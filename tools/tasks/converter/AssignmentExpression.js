@@ -12,6 +12,11 @@ var AssignmentExpression = (function (_super) {
     function AssignmentExpression(data) {
         _super.call(this, data);
     }
+    AssignmentExpression.prototype.toString = function () {
+        var str = this.getNodeArrayToStringArray([this.left, this.right]).join(' ' + this.operator + ' ');
+        return str;
+        return '(' + str + ')';
+    };
     return AssignmentExpression;
 })(BinaryExpression);
 module.exports = AssignmentExpression;

@@ -18,7 +18,9 @@ var ExpressionStatement = (function (_super) {
         var data = [];
         var expression = this.expression.toString();
         //		data.push(super.toString());
+        //		data.push('(');
         data.push(expression);
+        //		data.push(')');
         return data.join('');
     };
     return ExpressionStatement;

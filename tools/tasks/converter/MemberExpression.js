@@ -17,6 +17,12 @@ var MemberExpression = (function (_super) {
     }
     MemberExpression.prototype.toString = function () {
         var data = [];
+        //		if( this.object instanceof AssignmentExpression
+        //			&& this.object.left)
+        //		{
+        //			console.log(JSON.stringify(this.object, null, 2));
+        //
+        //		}
         data.push(this.object.toString());
         data.push(this.property.toString());
         return data.join('.');

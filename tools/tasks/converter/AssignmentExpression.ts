@@ -13,6 +13,18 @@ class AssignmentExpression extends BinaryExpression
 	constructor(data){
 		super(data);
 	}
+
+	public toString():string
+	{
+		var str = this.getNodeArrayToStringArray([this.left, this.right])
+			.join(' ' + this.operator + ' ');
+
+
+
+		return str;
+		return '(' + str + ')';
+
+	}
 }
 
 export = AssignmentExpression;
