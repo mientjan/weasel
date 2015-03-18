@@ -16,7 +16,7 @@ var VariableDeclaration = (function (_super) {
         this.declarations = this.getObjectArrayToNodeArray(data.declarations);
     }
     VariableDeclaration.prototype.toString = function () {
-        return this.kind + this.spacing + this.getNodeArrayToStringArray(this.declarations).join(' ` ');
+        return this.kind + this.spacing + this.getNodeArrayToStringArray(this.declarations).join(', ') + ';';
     };
     return VariableDeclaration;
 })(Node);

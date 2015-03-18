@@ -22,7 +22,7 @@ class VariableDeclaration extends Node {
 
 	public toString():string
 	{
-		return this.kind + this.spacing + this.getNodeArrayToStringArray(this.declarations).join(' ` ');
+		return this.kind + this.spacing + this.getNodeArrayToStringArray(this.declarations).join(', ') + ';';
 	}
 }
 

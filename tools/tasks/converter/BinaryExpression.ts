@@ -23,7 +23,8 @@ class BinaryExpression extends Node {
 
 	public toString():string
 	{
-		return this.getNodeArrayToStringArray([this.left, this.right]).join(' ' + this.operator + ' ');
+		return this.getNodeArrayToStringArray([this.left, this.right])
+			.join(' ' + this.operator + ' ');
 	}
 }
 
