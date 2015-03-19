@@ -1560,7 +1560,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @protected
 	 **/
 
-	protected onTick(delta:number)
+	public onTick(delta:number)
 	{
 		if(this.isDirty && this.parent){
 			this.onResize(this.parent.width, this.parent.height);

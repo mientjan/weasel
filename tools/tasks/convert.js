@@ -2,7 +2,7 @@
 /// <reference path="esprima.d.ts" />
 var fs = require('fs');
 var esprima = require('esprima');
-var Node = require('./converter/Node');
+var Node = require('./converter_ts/Node');
 var test1 = fs.readFileSync('../../assets/RotatingCube.js', 'utf-8');
 var test2 = fs.readFileSync('../../assets/test2.js', 'utf-8');
 var syntax = esprima.parse(test2);
