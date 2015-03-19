@@ -1559,7 +1559,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {number} delta
 	 * @protected
 	 **/
-
 	public onTick(delta:number)
 	{
 		if(this.isDirty && this.parent){
