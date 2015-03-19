@@ -7,6 +7,7 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Node = require('./Node');
+var AssignmentExpression = require('./AssignmentExpression');
 var MemberExpression = (function (_super) {
     __extends(MemberExpression, _super);
     function MemberExpression(data) {
@@ -23,7 +24,12 @@ var MemberExpression = (function (_super) {
         //			console.log(JSON.stringify(this.object, null, 2));
         //
         //		}
-        data.push(this.object.toString());
+        if (this.object instanceof AssignmentExpression) {
+            data.push('(' + this.object.toString() + ')');
+        }
+        else {
+            data.push(this.object.toString());
+        }
         data.push(this.property.toString());
         return data.join('.');
     };

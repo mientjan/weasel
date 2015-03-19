@@ -47,9 +47,13 @@ class Node implements INode {
 
 
 		var Program = require('./Program');
+		var Identifier = require('./Identifier');
+		var Literal = require('./Literal');
+		var Property = require('./Property');
+
 		var VariableDeclaration = require('./VariableDeclaration');
 		var VariableDeclarator = require('./VariableDeclarator');
-		var Identifier = require('./Identifier');
+		var FunctionDeclaration = require('./FunctionDeclaration');
 
 		var BinaryExpression = require('./BinaryExpression');
 		var AssignmentExpression = require('./AssignmentExpression');
@@ -60,13 +64,13 @@ class Node implements INode {
 		var MemberExpression = require('./MemberExpression');
 		var ThisExpression = require('./ThisExpression');
 		var NewExpression = require('./NewExpression');
+		var UnaryExpression = require('./UnaryExpression');
 
-		var FunctionDeclaration = require('./FunctionDeclaration');
+
 		var ExpressionStatement = require('./ExpressionStatement');
-
+		var ReturnStatement = require('./ReturnStatement');
 		var BlockStatement = require('./BlockStatement');
-		var Literal = require('./Literal');
-		var Property = require('./Property');
+
 
 		switch(data.type){
 			case 'Program':{
@@ -83,6 +87,10 @@ class Node implements INode {
 			}
 			case 'BlockStatement':{
 				return new BlockStatement(data);
+				break
+			}
+			case 'ReturnStatement':{
+				return new ReturnStatement(data);
 				break
 			}
 			case 'VariableDeclaration':{
@@ -143,6 +151,11 @@ class Node implements INode {
 
 			case 'ThisExpression':{
 				return new ThisExpression(data);
+				break
+			}
+
+			case 'UnaryExpression':{
+				return new UnaryExpression(data);
 				break
 			}
 

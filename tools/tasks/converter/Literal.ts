@@ -10,17 +10,27 @@ import Syntax = esprima.Syntax;
 class Literal extends Node {
 
 	value:string|number;
+	raw:string|number;
 	init:Node;
 
 	constructor(data:Syntax.Literal){
 		super(data);
 
 		this.value = data.value;
+		this.raw = data.raw;
 	}
 
 	public toString():string
 	{
-		return '' + this.value;
+		var value = '';
+
+		if(typeof this.value == 'string'){
+			value = "'" + this.value + "'";
+		} else {
+			value += "" + this.value;
+		}
+
+		return value
 	}
 }
 

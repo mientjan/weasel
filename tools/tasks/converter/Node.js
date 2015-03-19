@@ -31,9 +31,12 @@ var Node = (function () {
             return data;
         }
         var Program = require('./Program');
+        var Identifier = require('./Identifier');
+        var Literal = require('./Literal');
+        var Property = require('./Property');
         var VariableDeclaration = require('./VariableDeclaration');
         var VariableDeclarator = require('./VariableDeclarator');
-        var Identifier = require('./Identifier');
+        var FunctionDeclaration = require('./FunctionDeclaration');
         var BinaryExpression = require('./BinaryExpression');
         var AssignmentExpression = require('./AssignmentExpression');
         var FunctionExpression = require('./FunctionExpression');
@@ -43,11 +46,10 @@ var Node = (function () {
         var MemberExpression = require('./MemberExpression');
         var ThisExpression = require('./ThisExpression');
         var NewExpression = require('./NewExpression');
-        var FunctionDeclaration = require('./FunctionDeclaration');
+        var UnaryExpression = require('./UnaryExpression');
         var ExpressionStatement = require('./ExpressionStatement');
+        var ReturnStatement = require('./ReturnStatement');
         var BlockStatement = require('./BlockStatement');
-        var Literal = require('./Literal');
-        var Property = require('./Property');
         switch (data.type) {
             case 'Program': {
                 return new Program(data);
@@ -63,6 +65,10 @@ var Node = (function () {
             }
             case 'BlockStatement': {
                 return new BlockStatement(data);
+                break;
+            }
+            case 'ReturnStatement': {
+                return new ReturnStatement(data);
                 break;
             }
             case 'VariableDeclaration': {
@@ -115,6 +121,10 @@ var Node = (function () {
             }
             case 'ThisExpression': {
                 return new ThisExpression(data);
+                break;
+            }
+            case 'UnaryExpression': {
+                return new UnaryExpression(data);
                 break;
             }
             case 'Property': {

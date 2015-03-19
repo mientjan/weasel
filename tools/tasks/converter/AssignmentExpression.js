@@ -7,8 +7,6 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var BinaryExpression = require('./BinaryExpression');
-var MemberExpression = require('./MemberExpression');
-var FunctionExpression = require('./FunctionExpression');
 var AssignmentExpression = (function (_super) {
     __extends(AssignmentExpression, _super);
     function AssignmentExpression(data) {
@@ -18,12 +16,13 @@ var AssignmentExpression = (function (_super) {
         var result = '';
         var left = this.left.toString();
         var right = this.right.toString();
-        if (this.left instanceof MemberExpression && this.right instanceof FunctionExpression) {
-            result = ['(', left, this.operator, this.right, ')'].join(' ');
-        }
-        else {
-            result = this.getNodeArrayToStringArray([this.left, this.right]).join(' ' + this.operator + ' ');
-        }
+        //		if( this.left instanceof MemberExpression
+        //			&& this.right instanceof FunctionExpression )
+        //		{
+        //			result = ['(',left,this.operator,this.right,')'].join(' ');
+        //		} else {
+        result = this.getNodeArrayToStringArray([this.left, this.right]).join(' ' + this.operator + ' ');
+        //		}
         return result;
     };
     return AssignmentExpression;

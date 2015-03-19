@@ -38,7 +38,12 @@ class MemberExpression extends Node implements Syntax.MemberExpression
 //
 //		}
 
-		data.push( this.object.toString() );
+		if( this.object instanceof AssignmentExpression ){
+			data.push( '(' + this.object.toString() + ')' );
+		} else {
+			data.push( this.object.toString() );
+		}
+
 		data.push( this.property.toString() );
 
 		return data.join('.');

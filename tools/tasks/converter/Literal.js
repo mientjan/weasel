@@ -12,9 +12,17 @@ var Literal = (function (_super) {
     function Literal(data) {
         _super.call(this, data);
         this.value = data.value;
+        this.raw = data.raw;
     }
     Literal.prototype.toString = function () {
-        return '' + this.value;
+        var value = '';
+        if (typeof this.value == 'string') {
+            value = "'" + this.value + "'";
+        }
+        else {
+            value += "" + this.value;
+        }
+        return value;
     };
     return Literal;
 })(Node);

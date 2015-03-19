@@ -17,6 +17,6 @@ var syntax = esprima.parse(test2);
 
 var node = new Node(syntax);
 var data = node.getObjectByType(syntax);
-console.log(JSON.stringify(syntax, null, 2));
+//console.log(JSON.stringify(syntax, null, 2));
 console.log(data.toString());
 
