@@ -1,11 +1,11 @@
 ///<reference path="../lib/gsap/greensock.d.ts" />
 
-import Container = require('../lib/easelts/display/Container');
-import Text = require('../lib/easelts/display/Text');
-import BitmapNinePatch = require('../lib/easelts/component/BitmapNinePatch');
-import NinePatch = require('../lib/easelts/component/bitmapninepatch/NinePatch');
-import Rectangle = require('../lib/easelts/geom/Rectangle');
-import ButtonBehavior = require('../lib/easelts/behavior/ButtonBehavior');
+import Container = require('../../../src/easelts/display/Container');
+import Text = require('../../../src/easelts/display/Text');
+import BitmapNinePatch = require('../../../src/easelts/component/BitmapNinePatch');
+import NinePatch = require('../../../src/easelts/component/bitmapninepatch/NinePatch');
+import Rectangle = require('../../../src/easelts/geom/Rectangle');
+import ButtonBehavior = require('../../../src/easelts/behavior/ButtonBehavior');
 
 class TopButton extends Container
 {
@@ -15,7 +15,7 @@ class TopButton extends Container
 
 	constructor()
 	{
-		super(200, 50, '50%', '0%', '50%', '0%');
+		super(10, 10, '50%', '0%', '50%', '0%');
 
 		this.addBehavior(new ButtonBehavior);
 		this.hitArea = this._bg;

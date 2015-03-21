@@ -4,7 +4,7 @@ import Bitmap = require('../../src/easelts/display/Bitmap');
 import ButtonBehavior = require('../../src/easelts/behavior/ButtonBehavior');
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
-var stage = new Stage(holder);
+var stage = new Stage(holder, true);
 stage.enableMouseOver();
 stage.addChild(new Debug);
 
@@ -13,7 +13,7 @@ btn.addBehavior(new ButtonBehavior);
 stage.addChild(btn);
 
 btn.addEventListener(Bitmap.EVENT_MOUSE_CLICK, () => {
-	alert('asddsadsdasdasads');
+	alert('i clicked this button');
 })
 
 

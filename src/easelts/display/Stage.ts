@@ -3,6 +3,8 @@
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling.
+ * Copyright (c) 2015 mediamonks.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -409,8 +411,8 @@ class Stage extends Container
 		{
 			case 'CANVAS':
 			{
-				this.canvas = element;
-				this.holder = element.parentElement;
+				this.canvas = <HTMLCanvasElement> element;
+				this.holder = <HTMLBlockElement> element.parentElement;
 
 				size = new Size(this.canvas.width, this.canvas.height);
 				break;
@@ -420,7 +422,7 @@ class Stage extends Container
 			{
 				var canvas = document.createElement('canvas');
 
-				this.canvas = canvas;
+				this.canvas = <HTMLCanvasElement> canvas;
 				this.holder = <HTMLBlockElement> element;
 				this.holder.appendChild(canvas);
 
@@ -435,7 +437,7 @@ class Stage extends Container
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
-		this.onResize(size);
+		this.onResize(size.width, size.height);
 	}
 
 
@@ -788,7 +790,6 @@ class Stage extends Container
 	// private methods:
 
 
-
 	/**
 	 * @method _getElementRect
 	 * @protected
@@ -1026,7 +1027,7 @@ class Stage extends Container
 	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage):void
 	{
 
-		
+
 		if(pageY != null)
 		{
 			this._updatePointerPosition(id, e, pageX, pageY);
@@ -1173,9 +1174,9 @@ class Stage extends Container
 	 **/
 	public _handleWindowResize(e)
 	{
-		if (this.triggerResizeOnWindowResize)
+		if(this.triggerResizeOnWindowResize)
 		{
-			this.onResize(new Size(this.holder.offsetWidth, this.holder.offsetHeight));
+			this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
 		}
 	}
 
@@ -1300,22 +1301,18 @@ class Stage extends Container
 	 * @method onResize
 	 * @param {Size} size
 	 */
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
 		// anti-half pixel fix
-		size.width = size.width + 1 >> 1 << 1;
-		size.height = size.height + 1 >> 1 << 1;
+		width = width + 1 >> 1 << 1;
+		height = height + 1 >> 1 << 1;
 
-
-
-		if(this.width != size.width || this.height != size.height)
+		if(this.width != width || this.height != height)
 		{
-			this.isDirty = true;
+			this.canvas.width = width;
+			this.canvas.height = height;
 
-			this.canvas.width = size.width;
-			this.canvas.height = size.height;
-
-			super.onResize(size);
+			super.onResize(width, height);
 
 			if(!this._isRunning)
 			{

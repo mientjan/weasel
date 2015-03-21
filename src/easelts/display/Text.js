@@ -3,6 +3,8 @@
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling.
+ * Copyright (c) 2015 mediamonks.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -77,6 +79,8 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
          * @protected
          */
         function Text(text, font, color) {
+            if (font === void 0) { font = '12px Arial'; }
+            if (color === void 0) { color = '#000000'; }
             _super.call(this, 1, 1, 0, 0, 0, 0);
             this._text = "";
             /**

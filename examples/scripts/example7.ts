@@ -7,7 +7,7 @@ import Rectangle = require('../../src/easelts/geom/Rectangle');
 import TopButton = require('./example7/TopButton');
 import BottomButton = require('./example7/BottomButton');
 
-import ButtonBehavior = require('lib/easelts/behavior/ButtonBehavior');
+import ButtonBehavior = require('../../src/easelts/behavior/ButtonBehavior');
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
@@ -33,3 +33,17 @@ stage.addChild(top);
 stage.addChild(bottom);
 
 stage.start();
+//
+//
+//var container:createjs.Container = new createjs.Container();
+//container.name = country;
+//var circle = new createjs.Shape();
+//circle.graphics.beginFill(this.colorMap[country].color).drawCircle(0, 0, 50);
+//circle.name = 'circle';
+//var mask = new createjs.Bitmap(this.colorMap[country].img);
+//mask.name = 'mask';
+//circle.compositeOperation = 'source-over';
+//mask.compositeOperation = 'destination-in';
+//container.addChild(circle);
+//container.addChild(mask);
+//this._stage.addChild(container);

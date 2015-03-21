@@ -3,6 +3,8 @@
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling.
+ * Copyright (c) 2015 mediamonks.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -176,11 +178,7 @@ class Bitmap extends DisplayObject
 			this.height = this.image.height;
 		}
 
-
-		if(this._parentSizeIsKnown)
-		{
-			this.onResize(new Size(this.parent.width, this.parent.height));
-		}
+		this.isDirty = true;
 
 		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
 	}

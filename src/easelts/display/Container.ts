@@ -217,16 +217,14 @@ class Container extends DisplayObject
 		}
 
 		var child = children[0];
+
 		if(child.parent)
 		{
 			child.parent.removeChild(child);
 		}
 
 		child.parent = this;
-		if(this.parent && child.onResize)
-		{
-			child.onResize(new Size(this.width, this.height));
-		}
+		child.isDirty = true;
 
 		if(this.stage)
 		{
@@ -241,6 +239,10 @@ class Container extends DisplayObject
 		return child;
 	}
 
+	/**
+	 * @method onStageSet
+	 * @description When the stage is set this method is called to all its children.
+	 */
 	public onStageSet()
 	{
 		var children = this.children;
@@ -251,6 +253,7 @@ class Container extends DisplayObject
 			if (child.stage != this.stage)
 			{
 				child.stage = this.stage;
+
 				if(child.onStageSet)
 				{
 					child.onStageSet.call(child);
@@ -296,10 +299,7 @@ class Container extends DisplayObject
 		}
 
 		child.parent = this;
-		if(this.parent && child.onResize)
-		{
-			child.onResize(new Size(this.width, this.height));
-		}
+		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
 		return child;
@@ -694,18 +694,19 @@ class Container extends DisplayObject
 		return "[Container (name=" + this.name + ")]";
 	}
 
-	public onResize(size:Size):void
+	public onResize(width:number, height:number):void
 	{
-		super.onResize(size);
+		super.onResize(width, height);
 
-		var size = new Size(this.width, this.height);
+		var newWidth = this.width;
+		var newHeight = this.height;
 
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
 			if(child.onResize)
 			{
-				child.onResize(size)
+				child.onResize(newWidth, newHeight);
 			}
 		}
 
@@ -727,6 +728,8 @@ class Container extends DisplayObject
 	 **/
 	public onTick(delta:number):void
 	{
+		super.onTick(delta);
+
 		if(this.tickChildren)
 		{
 			var children = this.children;
@@ -740,8 +743,6 @@ class Container extends DisplayObject
 			}
 
 		}
-
-		super.onTick(delta);
 	}
 
 	/**

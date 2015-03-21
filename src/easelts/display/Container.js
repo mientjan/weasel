@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom/Size'], function (require, exports, DisplayObject, DisplayType, Size) {
+define(["require", "exports", './DisplayObject', '../enum/DisplayType'], function (require, exports, DisplayObject, DisplayType) {
     /**
      * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
      * group arm, leg, torso and head {{#crossLink "Bitmap"}}{{/crossLink}} instances together into a Person Container, and
@@ -198,9 +198,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 child.parent.removeChild(child);
             }
             child.parent = this;
-            if (this.parent && child.onResize) {
-                child.onResize(new Size(this.width, this.height));
-            }
+            child.isDirty = true;
             if (this.stage) {
                 child.stage = this.stage;
                 if (child.onStageSet) {
@@ -210,6 +208,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
             this.children.push(child);
             return child;
         };
+        /**
+         * @method onStageSet
+         * @description When the stage is set this method is called to all its children.
+         */
         Container.prototype.onStageSet = function () {
             var children = this.children;
             for (var i = 0; i < children.length; i++) {
@@ -253,9 +255,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                 }
             }
             child.parent = this;
-            if (this.parent && child.onResize) {
-                child.onResize(new Size(this.width, this.height));
-            }
+            child.isDirty = true;
             this.children.splice(index, 0, child);
             return child;
         };
@@ -591,13 +591,14 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
-        Container.prototype.onResize = function (size) {
-            _super.prototype.onResize.call(this, size);
-            var size = new Size(this.width, this.height);
+        Container.prototype.onResize = function (width, height) {
+            _super.prototype.onResize.call(this, width, height);
+            var newWidth = this.width;
+            var newHeight = this.height;
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
                 if (child.onResize) {
-                    child.onResize(size);
+                    child.onResize(newWidth, newHeight);
                 }
             }
         };
@@ -615,6 +616,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
          * @protected
          **/
         Container.prototype.onTick = function (delta) {
+            _super.prototype.onTick.call(this, delta);
             if (this.tickChildren) {
                 var children = this.children;
                 for (var i = children.length - 1; i >= 0; i--) {
@@ -624,7 +626,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../geom
                     }
                 }
             }
-            _super.prototype.onTick.call(this, delta);
         };
         /**
          * @method _getObjectsUnderPoint

@@ -1,6 +1,6 @@
 ///<reference path="../lib/gsap/greensock.d.ts" />
 
-import Container = require('../lib/easelts/display/Container')
+import Container = require('../../../src/easelts/display/Container')
 
 class Carousel extends Container
 {
@@ -117,9 +117,9 @@ class Carousel extends Container
 		}
 	}
 
-	onResize(e)
+	onResize(width:number, height:number)
 	{
-		super.onResize(e);
+		super.onResize(width, height);
 		this.reset();
 	}
 }
