@@ -226,8 +226,6 @@ class Text extends DisplayObject
 	{
 		super(1, 1, 0, 0, 0, 0);
 
-		console.log(text, font, color);
-
 		// positioning is wrong when a text draw call has no text.
 		if(text.length == 0)
 		{

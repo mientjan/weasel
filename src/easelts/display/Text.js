@@ -144,7 +144,6 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
             this.lineWidth = null;
             this._autoWidth = false;
             this._autoHeight = false;
-            console.log(text, font, color);
             // positioning is wrong when a text draw call has no text.
             if (text.length == 0) {
                 text = " ";
