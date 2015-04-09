@@ -700,6 +700,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
                     var positions = self.__positions;
                     var endPos = positions.length - 1;
                     var startPos = endPos;
+                    // Move pointer to position measured 100ms ago
                     for (var i = endPos; i > 0 && positions[i] > (self.__lastTouchMove - 100); i -= 3) {
                         startPos = i;
                     }

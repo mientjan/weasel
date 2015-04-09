@@ -134,7 +134,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
              */
             this.drawendSignal = new Signal();
             // public properties:
-            this.type = 1 /* STAGE */;
+            this.type = DisplayType.STAGE;
             this._isRunning = false;
             this._tickSignalConnection = null;
             this._fps = 60;
@@ -345,7 +345,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.enableDOMEvents(true);
             this.setFps(this._fps);
             this.ctx = this.canvas.getContext('2d');
-            this.setQuality(1 /* LOW */);
+            this.setQuality(QualityType.LOW);
             this.stage = this;
             this.onResize(size.width, size.height);
         }
@@ -403,7 +403,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
          */
         Stage.prototype.setQuality = function (value) {
             switch (value) {
-                case 1 /* LOW */:
+                case QualityType.LOW:
                     {
                         this.ctx['mozImageSmoothingEnabled'] = false;
                         this.ctx['webkitImageSmoothingEnabled'] = false;
@@ -411,7 +411,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                         this.ctx['imageSmoothingEnabled'] = false;
                         break;
                     }
-                case 0 /* NORMAL */:
+                case QualityType.NORMAL:
                     {
                         this.ctx['mozImageSmoothingEnabled'] = true;
                         this.ctx['webkitImageSmoothingEnabled'] = true;
@@ -870,6 +870,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             if (!owner && eventTarget) {
                 eventTarget.canvas.style.cursor = cursor;
             }
+            // find common ancestor:
             for (i = 0, l = list.length; i < l; i++) {
                 if (list[i] != oldList[i]) {
                     break;

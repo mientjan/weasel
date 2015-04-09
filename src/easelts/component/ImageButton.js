@@ -28,7 +28,7 @@ define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType',
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = DisplayType.BITMAP;
             this._bitmaps = {
                 idle: null,
                 over: null,

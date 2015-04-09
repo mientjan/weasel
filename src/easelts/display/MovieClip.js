@@ -311,6 +311,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
          * @method clone
          **/
         MovieClip.prototype.clone = function (recursive) {
+            // TODO: add support for this? Need to clone the Timeline & retarget tweens - pretty complex.
             throw ("MovieClip cannot be cloned.");
         };
         /**
