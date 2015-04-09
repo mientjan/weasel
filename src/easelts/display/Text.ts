@@ -36,36 +36,33 @@ import Bounds = require('../geom/Bounds');
 /**
  * @module easelts
  */
+
 /**
  * Display one or more lines of dynamic text (not user editable) in the display list. Line wrapping support (using the
  * lineWidth) is very basic, wrapping on spaces and tabs only. Note that as an alternative to Text, you can position HTML
  * text above or below the canvas relative to items in the display list using the {{#crossLink "DisplayObject/localToGlobal"}}{{/crossLink}}
  * method, or using {{#crossLink "DOMElement"}}{{/crossLink}}.
  *
- * <b>Please note that Text does not support HTML text, and can only display one font style at a time.</b> To use
+ * *Please note that Text does not support HTML text, and can only display one font style at a time.* To use
  * multiple font styles, you will need to create multiple text instances, and position them manually.
  *
- * <h4>Example</h4>
+ * #### Example
  *
- *      var text = new createjs.Text("Hello World", "20px Arial", "#ff7700");
- *      text.x = 100;
- *      text.textBaseline = "alphabetic";
+ * '''
+ * var text = new createjs.Text("Hello World", "20px Arial", "#ff7700");
+ * text.x = 100;
+ * text.textBaseline = "alphabetic";
+ * '''
  *
- * CreateJS Text supports web fonts (the same rules as Canvas). The font must be loaded and supported by the browser
- * before it can be displayed.
- *
- * <strong>Note:</strong> Text can be expensive to generate, so cache instances where possible. Be aware that not all
- * browsers will render Text exactly the same.
+ * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  * @namespace easelts.display
  * @class Text
  * @extends DisplayObject
  * @constructor
  * @param {String} [text] The text to display.
- * @param {String} [font] The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold
- * 36px Arial").
- * @param {String} [color] The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex.
- * "#F00", "red", or "#FF0000").
- **/
+ * @param {String} [font] The font style to use. Any valid value for the CSS font attribute is acceptable (ex. "bold 36px Arial").
+ * @param {String} [color] The color to draw the text in. Any valid value for the CSS color attribute is acceptable (ex. "#F00", "red", or "#FF0000").
+ */
 class Text extends DisplayObject
 {
 	/**
@@ -353,8 +350,6 @@ class Text extends DisplayObject
             }
 		}
 
-        console.log(this.textBaseline);
-
 		switch( this.textBaseline ){
 
             case Text.TEXT_BASELINE_ALPHABETIC:{
@@ -429,8 +424,6 @@ class Text extends DisplayObject
         y0 += y;
         x1 += x;
         y1 += y;
-
-        console.log(x0, y0, x1, y1);
 
 		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
 	}
