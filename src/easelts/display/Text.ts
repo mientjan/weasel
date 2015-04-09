@@ -222,7 +222,7 @@ class Text extends DisplayObject
 	 * "#F00", "red", or "#FF0000").
 	 * @protected
 	 */
-	constructor(text:string, font:string = '12px Arial', color:string = '#000000')
+	constructor(text:string, font:string = '10px sans-serif', color:string = '#000000')
 	{
 		super(1, 1, 0, 0, 0, 0);
 
@@ -317,7 +317,7 @@ class Text extends DisplayObject
 	 **/
 	public getMeasuredWidth():number
 	{
-		return this._getMeasuredWidth(this.text);
+		return this._drawText(null, {}).width;
 	}
 
 	/**
@@ -330,36 +330,75 @@ class Text extends DisplayObject
 	public getExactSize():Bounds
 	{
 		var width = Math.ceil(this.getMeasuredWidth());
-		var height = Math.ceil(width * 1.6);
-		var alreadyCached = false;
+		var height = Math.ceil(this.getMeasuredHeight() * 1.6);
+		var rowHeight = Math.ceil(this._getMeasuredWidth('M') * 2);
+		var cacheArguments = null;
 
 		var color = this.color;
 		this.color = '#000';
 
-		if(!this.cacheCanvas)
-		{
-			this.cache(0, 0, width, height);
-			alreadyCached = true;
-		}
-
 		var y = 0;
+		var x = 0;
 
-//		switch( this.textAlign ){
-//			case Text.TEXT_ALIGN_CENTER:{
-//				width = width / 2;
-//				x = -width / 2;
-//				break;
-//			}
-//		}
+		switch( this.textAlign ){
+            case Text.TEXT_ALIGN_CENTER:{
+                x = -width / 2;
+                break;
+            }
 
-		var ctx = this.cacheCanvas.getContext('2d');
-		var img = ctx.getImageData(0,0, width, height);
-
-
-		if(alreadyCached)
-		{
-			this.uncache();
+            case Text.TEXT_ALIGN_END:
+            case Text.TEXT_ALIGN_RIGHT:{
+                x = -width;
+                break;
+            }
 		}
+
+        console.log(this.textBaseline);
+
+		switch( this.textBaseline ){
+
+            case Text.TEXT_BASELINE_ALPHABETIC:{
+                y = -rowHeight;
+                break;
+            }
+
+            case Text.TEXT_BASELINE_BOTTOM:{
+                y = -rowHeight;
+                break;
+            }
+
+            case Text.TEXT_BASELINE_TOP:
+            case Text.TEXT_BASELINE_HANGING:{
+                //y = height;
+                break;
+            }
+
+            case Text.TEXT_BASELINE_IDEOGRAPHIC:{
+                y = -rowHeight;
+                break;
+            }
+
+            case Text.TEXT_BASELINE_MIDDLE:{
+                y = -rowHeight / 2;
+                break;
+            }
+
+		}
+
+        if(this.cacheCanvas)
+        {
+            cacheArguments = [ this._cacheX, this._cacheY, this._cacheWidth, this._cacheHeight, this._cacheScale ];
+        }
+
+        this.cache(x, y, width, height);
+		var ctx = this.cacheCanvas.getContext('2d');
+		var img = ctx.getImageData(0, 0, width, height);
+
+        if(cacheArguments){
+            this.cache.apply(this, cacheArguments);
+        } else {
+			this.uncache();
+        }
 
 		var data = img.data,
 			x0 = width,
@@ -369,22 +408,29 @@ class Text extends DisplayObject
 
 		for(var i = 3, l = data.length, p = 0; i < l; i += 4, ++p)
 		{
-			var x = p % width;
-			var y = Math.floor(p / width);
+			var px = p % width;
+			var py = Math.floor(p / width);
 
-			if(data[i - 3] > 0 ||
+			if( data[i - 3] > 0 ||
 				data[i - 2] > 0 ||
 				data[i - 1] > 0 ||
 				data[i] > 0)
 			{
-				x0 = Math.min(x0, x);
-				y0 = Math.min(y0, y);
-				x1 = Math.max(x1, x);
-				y1 = Math.max(y1, y);
+				x0 = Math.min(x0, px);
+				y0 = Math.min(y0, py);
+				x1 = Math.max(x1, px);
+				y1 = Math.max(y1, py);
 			}
 		}
 
 		this.color = color;
+
+        x0 += x;
+        y0 += y;
+        x1 += x;
+        y1 += y;
+
+        console.log(x0, y0, x1, y1);
 
 		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
 	}
@@ -429,9 +475,9 @@ class Text extends DisplayObject
 		}
 		var o = <any> this._drawText(null, {});
 		var w = (this.maxWidth && this.maxWidth < o.width) ? this.maxWidth : o.width;
-		var x = w * Text.H_OFFSETS[this.textAlign || "left"];
+		var x = w * Text.H_OFFSETS[this.textAlign];
 		var lineHeight = this.lineHeight || this.getMeasuredLineHeight();
-		var y = lineHeight * Text.V_OFFSETS[this.textBaseline || "top"];
+		var y = lineHeight * Text.V_OFFSETS[this.textBaseline];
 		return this._rectangle.setProperies(x, y, w, o.height);
 	}
 
@@ -447,7 +493,7 @@ class Text extends DisplayObject
 	{
 		var o:any = {lines: []};
 		o.lineHeight = this.lineHeight || this.getMeasuredLineHeight();
-		o.vOffset = o.lineHeight * Text.V_OFFSETS[this.textBaseline || "top"];
+		o.vOffset = o.lineHeight * Text.V_OFFSETS[this.textBaseline];
 		return this._drawText(null, o, o.lines);
 	}
 
@@ -499,9 +545,9 @@ class Text extends DisplayObject
 	 **/
 	public _prepContext(ctx:CanvasRenderingContext2D):CanvasRenderingContext2D
 	{
-		ctx.font = this.font || "10px sans-serif";
-		ctx.textAlign = this.textAlign || "left";
-		ctx.textBaseline = this.textBaseline || "top";
+		ctx.font = this.font;
+		ctx.textAlign = this.textAlign;
+		ctx.textBaseline = this.textBaseline;
 		return ctx;
 	}
 
@@ -631,6 +677,7 @@ class Text extends DisplayObject
 	 **/
 	public _getMeasuredWidth(text)
 	{
+
 		var ctx = Text._workingContext;
 		ctx.save();
 		var w = this._prepContext(ctx).measureText(text).width;
