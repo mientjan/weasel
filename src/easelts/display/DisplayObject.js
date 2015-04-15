@@ -125,9 +125,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
              * @property isDirty
              * @type {boolean}
              * @description is set by Container, setWidth setHeight, setX, setY, setRegX, setRegY. When set true onTick will trigger a onResize event.
-             *  this is a better way to check if its been added to the stage because onTick is only triggerd when added to the stage.
+             *  this is a better way to check if its been added to the stage because onTick is only triggered when added to the stage.
              */
             this.isDirty = false;
+            this.willDrawOnCache = false;
             /**
              * The x (horizontal) position of the display object, relative to its parent.
              * @property x
@@ -377,19 +378,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @param {string|number} width
          */
         DisplayObject.prototype.setWidth = function (value) {
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._width_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._width_type = 1 /* PERCENT */;
+            this._width_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._width_type) {
+                case 1 /* PERCENT */: {
+                    this._width_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
+                case 3 /* CALC */: {
                     this._width_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._width_type = 3 /* CALC */;
+                    break;
                 }
-            }
-            else {
-                this.width = value;
-                this._width_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.width = value;
+                    break;
+                }
             }
             this.isDirty = true;
             return this;
@@ -407,19 +409,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @result DisplayObject
          */
         DisplayObject.prototype.setHeight = function (value) {
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._height_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._height_type = 1 /* PERCENT */;
+            this._height_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._height_type) {
+                case 1 /* PERCENT */: {
+                    this._height_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
+                case 3 /* CALC */: {
                     this._height_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._height_type = 3 /* CALC */;
+                    break;
                 }
-            }
-            else {
-                this.height = value;
-                this._height_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.height = value;
+                    break;
+                }
             }
             this.isDirty = true;
             return this;
@@ -437,19 +440,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @return DisplayObject
          */
         DisplayObject.prototype.setX = function (value) {
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._x_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._x_type = 1 /* PERCENT */;
+            this._x_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._x_type) {
+                case 1 /* PERCENT */: {
+                    this._x_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
+                case 3 /* CALC */: {
                     this._x_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._x_type = 3 /* CALC */;
+                    break;
                 }
-            }
-            else {
-                this.x = value;
-                this._x_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.x = value;
+                    break;
+                }
             }
             this.isDirty = true;
             return this;
@@ -468,19 +472,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          */
         DisplayObject.prototype.setY = function (value) {
             this.isDirty = true;
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._y_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._y_type = 1 /* PERCENT */;
+            this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._y_type) {
+                case 1 /* PERCENT */: {
+                    this._y_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
+                case 3 /* CALC */: {
                     this._y_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._y_type = 3 /* CALC */;
+                    break;
                 }
-            }
-            else {
-                this.y = value;
-                this._y_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.y = value;
+                    break;
+                }
             }
             return this;
         };
@@ -498,19 +503,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          */
         DisplayObject.prototype.setRegX = function (value) {
             this.isDirty = true;
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._regX_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._regX_type = 1 /* PERCENT */;
+            this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._y_type) {
+                case 1 /* PERCENT */: {
+                    this._y_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
-                    this._regX_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._regX_type = 3 /* CALC */;
+                case 3 /* CALC */: {
+                    this._y_calc = FluidCalculation.dissolveCalcElements(value);
+                    break;
                 }
-            }
-            else {
-                this.regX = value;
-                this._regX_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.y = value;
+                    break;
+                }
             }
             return this;
         };
@@ -528,19 +534,20 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          */
         DisplayObject.prototype.setRegY = function (value) {
             this.isDirty = true;
-            if (typeof (value) == 'string') {
-                if (value.substr(-1) == '%') {
-                    this._regY_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
-                    this._regY_type = 1 /* PERCENT */;
+            this._x_type = FluidCalculation.getCalculationTypeByValue(value);
+            switch (this._regX_type) {
+                case 1 /* PERCENT */: {
+                    this._regX_percent = FluidCalculation.getPercentageParcedValue(value);
+                    break;
                 }
-                else {
-                    this._regY_calc = FluidCalculation.dissolveCalcElements(value);
-                    this._regY_type = 3 /* CALC */;
+                case 3 /* CALC */: {
+                    this._regX_calc = FluidCalculation.dissolveCalcElements(value);
+                    break;
                 }
-            }
-            else {
-                this.regY = value;
-                this._regY_type = 2 /* STATIC */;
+                case 2 /* STATIC */: {
+                    this.regX = value;
+                    break;
+                }
             }
             return this;
         };
@@ -700,12 +707,19 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          *    cached elements with greater fidelity. Default is 1.
          **/
         DisplayObject.prototype.cache = function (x, y, width, height, scale) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (width === void 0) { width = '100%'; }
+            if (height === void 0) { height = '100%'; }
             if (scale === void 0) { scale = 1; }
             // draw to canvas.
-            //		scale = scale||1;
             if (!this.cacheCanvas) {
                 this.cacheCanvas = Methods.createCanvas();
             }
+            var xType = FluidCalculation.getCalculationTypeByValue(x);
+            var yType = FluidCalculation.getCalculationTypeByValue(y);
+            var wType = FluidCalculation.getCalculationTypeByValue(width);
+            var hType = FluidCalculation.getCalculationTypeByValue(height);
             this._cacheWidth = width;
             this._cacheHeight = height;
             this._cacheOffsetX = x;

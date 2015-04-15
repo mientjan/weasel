@@ -156,14 +156,26 @@ class Container extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		if(super.draw(ctx, ignoreCache))
+		var globalCtx:CanvasRenderingContext2D = null;
+
+		if( !this.willDrawOnCache )
 		{
-			return true;
+			if(super.draw(ctx, ignoreCache))
+			{
+				return true;
+			}
+		} else {
+
+			if( this.cacheCanvas ){
+				var globalCtx = ctx;
+				var ctx = this.cacheCanvas.getContext('2d');
+			}
 		}
 
 		// this ensures we don't have issues with display list changes that occur during a draw:
 		var list = this.children, //.slice(0);
 			child;
+
 		for(var i = 0, l = list.length; i < l; i++)
 		{
 			child = list[i];
@@ -178,6 +190,14 @@ class Container extends DisplayObject
 			child.updateContext(ctx);
 			child.draw(ctx);
 			ctx.restore();
+		}
+
+		if( this.willDrawOnCache )
+		{
+			if(super.draw(globalCtx, ignoreCache))
+			{
+				return true;
+			}
 		}
 
 		return true;

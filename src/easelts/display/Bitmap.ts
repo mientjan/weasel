@@ -89,21 +89,21 @@ class Bitmap extends DisplayObject
 	 * @default null
 	 */
 	public sourceRect:Rectangle = null;
-	public destinationRect:Rectangle = null;
 
 	/**
-	 * Initialization method.
-	 * @method initialize
-	 * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to
-	 * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
-	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
-	 * @protected
-	 **/
+	 * Specifies an area of the destination wil be drawn to.
+	 * @property destinationRect
+	 * @type Rectangle
+	 * @default null
+	 */
+	public destinationRect:Rectangle = null;
 
 	/**
 	 * @class Bitmap
 	 * @constructor
-	 * @param {string|HTMLImageElement} imageOrUri
+	 * @param {string|HTMLImageElement} imageOrUri The source object or URI to an image to
+	 * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
+	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @param {string|number} width
 	 * @param {string|number} height
 	 * @param {string|number} x
@@ -111,8 +111,6 @@ class Bitmap extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	//constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-	//constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
 	constructor(imageOrUri:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
@@ -139,7 +137,7 @@ class Bitmap extends DisplayObject
 				if( ( <HTMLImageElement> this.image).complete ){
 					this.onLoad();
 				} else {
-					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad.bind(this) );
+					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad );
 				}
 				break;
 			}
@@ -164,7 +162,7 @@ class Bitmap extends DisplayObject
 		}
 	}
 
-	public onLoad():void
+	public onLoad = ():void =>
 	{
 		this.loaded = true;
 
@@ -210,14 +208,17 @@ class Bitmap extends DisplayObject
 	 **/
 	public draw(ctx, ignoreCache):boolean
 	{
-
-		if(super.draw(ctx, ignoreCache))
+		if(this.loaded && this.isVisible())
 		{
-			return true;
-		}
 
-		if(this.loaded)
-		{
+
+			
+
+			if(super.draw(ctx, ignoreCache))
+			{
+				return true;
+			}
+
 			var sourceRect = this.sourceRect;
 			var destRect = this.destinationRect;
 
@@ -235,42 +236,14 @@ class Bitmap extends DisplayObject
 			}
 			else
 			{
-				ctx.drawImage(this.image, 0, 0);
+				ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
 			}
+
+
 		}
 
 		return true;
 	}
-
-	/**
-	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-	 *
-	 * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-	 * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-	 * method.
-	 * @method cache
-	 **/
-
-	/**
-	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-	 *
-	 * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-	 * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-	 * method.
-	 * @method updateCache
-	 **/
-
-	/**
-	 * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-	 * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-	 *
-	 * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-	 * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-	 * method.
-	 * @method uncache
-	 **/
 
 	/**
 	 * Docced in superclass.

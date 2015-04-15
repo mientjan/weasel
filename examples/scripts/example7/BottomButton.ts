@@ -1,4 +1,4 @@
-///<reference path="../lib/gsap/greensock.d.ts" />
+///<reference path="../../assets/scripts/lib/gsap/greensock.d.ts" />
 
 import Container = require('../../../src/easelts/display/Container');
 import Text = require('../../../src/easelts/display/Text');

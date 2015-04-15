@@ -266,9 +266,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @property isDirty
 	 * @type {boolean}
 	 * @description is set by Container, setWidth setHeight, setX, setY, setRegX, setRegY. When set true onTick will trigger a onResize event.
-	 *  this is a better way to check if its been added to the stage because onTick is only triggerd when added to the stage.
+	 *  this is a better way to check if its been added to the stage because onTick is only triggered when added to the stage.
 	 */
-	public isDirty = false;
+	public isDirty:boolean = false;
+
+	public willDrawOnCache:boolean = false;
+
+
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
@@ -579,23 +583,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setWidth(value:number|string):any
 	{
-		if(typeof(value) == 'string')
+		this._width_type = FluidCalculation.getCalculationTypeByValue(value);
+
+		switch( this._width_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._width_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._width_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._width_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
+
+			case CalculationType.CALC:{
 				this._width_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._width_type = CalculationType.CALC;
+				break;
 			}
-		}
-		else
-		{
-			this.width = <number> value;
-			this._width_type = CalculationType.STATIC;
+
+			case CalculationType.STATIC:{
+				this.width = <number> value;
+				break;
+			}
 		}
 
 		this.isDirty = true;
@@ -619,23 +624,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setHeight(value:number|string):any
 	{
-		if(typeof(value) == 'string')
+		this._height_type = FluidCalculation.getCalculationTypeByValue(value);
+
+		switch( this._height_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._height_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._height_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._height_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
+
+			case CalculationType.CALC:{
 				this._height_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._height_type = CalculationType.CALC;
+				break;
 			}
-		}
-		else
-		{
-			this.height = <number> value;
-			this._height_type = CalculationType.STATIC;
+
+			case CalculationType.STATIC:{
+				this.height = <number> value;
+				break;
+			}
 		}
 
 		this.isDirty = true;
@@ -652,7 +658,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this.height;
 	}
 
-
 	/**
 	 * @method setX
 	 * @param {string|number} x
@@ -660,24 +665,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setX(value:number|string):any
 	{
+		this._x_type = FluidCalculation.getCalculationTypeByValue(value);
 
-		if(typeof(value) == 'string')
+		switch( this._x_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._x_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._x_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._x_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
+
+			case CalculationType.CALC:{
 				this._x_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._x_type = CalculationType.CALC;
+				break;
 			}
-		}
-		else
-		{
-			this.x = <number> value;
-			this._x_type = CalculationType.STATIC;
+
+			case CalculationType.STATIC:{
+				this.x = <number> value;
+				break;
+			}
 		}
 
 		this.isDirty = true;
@@ -704,24 +709,26 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		this.isDirty = true;
 
-		if(typeof(value) == 'string')
+		this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+
+		switch( this._y_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._y_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._y_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._y_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
+
+			case CalculationType.CALC:{
 				this._y_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._y_type = CalculationType.CALC;
+				break;
+			}
+
+			case CalculationType.STATIC:{
+				this.y = <number> value;
+				break;
 			}
 		}
-		else
-		{
-			this.y = <number> value;
-			this._y_type = CalculationType.STATIC;
-		}
+
 
 		return this;
 	}
@@ -744,23 +751,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		this.isDirty = true;
 
-		if(typeof(value) == 'string')
+		this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+
+		switch( this._y_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._regX_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._regX_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._y_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
-				this._regX_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._regX_type = CalculationType.CALC;
+
+			case CalculationType.CALC:{
+				this._y_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				break;
 			}
-		}
-		else
-		{
-			this.regX = <number> value;
-			this._regX_type = CalculationType.STATIC;
+
+			case CalculationType.STATIC:{
+				this.y = <number> value;
+				break;
+			}
 		}
 
 		return this;
@@ -784,23 +792,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		this.isDirty = true;
 
-		if(typeof(value) == 'string')
+		this._x_type = FluidCalculation.getCalculationTypeByValue(value);
+
+		switch( this._regX_type )
 		{
-			if((<string> value).substr(-1) == '%')
-			{
-				this._regY_percent = parseFloat((<string> value).substr(0, (<string> value).length - 1)) / 100;
-				this._regY_type = CalculationType.PERCENT;
+			case CalculationType.PERCENT:{
+				this._regX_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				break;
 			}
-			else
-			{
-				this._regY_calc = FluidCalculation.dissolveCalcElements( <string> value);
-				this._regY_type = CalculationType.CALC;
+
+			case CalculationType.CALC:{
+				this._regX_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				break;
 			}
-		}
-		else
-		{
-			this.regY = <number> value;
-			this._regY_type = CalculationType.STATIC;
+
+			case CalculationType.STATIC:{
+				this.regX = <number> value;
+				break;
+			}
 		}
 
 		return this;
@@ -1001,19 +1010,24 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 *    myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate
 	 *    cached elements with greater fidelity. Default is 1.
 	 **/
-	public cache(x:number, y:number, width:number, height:number, scale = 1):void
+	public cache(x:number|string = 0, y:number|string = 0, width:number|string = '100%', height:number|string = '100%', scale:number = 1):void
 	{
 		// draw to canvas.
-		//		scale = scale||1;
 		if(!this.cacheCanvas)
 		{
 			this.cacheCanvas = Methods.createCanvas();
 		}
-		this._cacheWidth = width;
-		this._cacheHeight = height;
-		this._cacheOffsetX = x;
-		this._cacheOffsetY = y;
-		this._cacheScale = scale;
+
+		var xType = FluidCalculation.getCalculationTypeByValue(x);
+		var yType = FluidCalculation.getCalculationTypeByValue(y);
+		var wType = FluidCalculation.getCalculationTypeByValue(width);
+		var hType = FluidCalculation.getCalculationTypeByValue(height);
+
+		this._cacheWidth = <number> width;
+		this._cacheHeight = <number> height;
+		this._cacheOffsetX = <number> x;
+		this._cacheOffsetY = <number> y;
+		this._cacheScale = <number> scale;
 
 		this.updateCache();
 	}

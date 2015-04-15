@@ -156,6 +156,44 @@ class FluidCalculation
 	}
 
 	/**
+	 * @author Mient-jan Stelling
+	 * @method getCalculationTypeByValue
+	 * @param value {number|string}
+	 * @returns {CalculationType}
+	 * @public
+	 * @static
+	 */
+	public static getCalculationTypeByValue(value:number|string):CalculationType
+	{
+		if(typeof(value) == 'string')
+		{
+			if((<string> value).substr(-1) == '%')
+			{
+				return CalculationType.PERCENT;
+			}
+			else
+			{
+				return CalculationType.CALC;
+			}
+		}
+
+		return CalculationType.STATIC;
+	}
+
+	/**
+	 * @author Mient-jan Stelling
+	 * @method getCalculationTypeByValue
+	 * @param value {number|string}
+	 * @returns {CalculationType}
+	 * @public
+	 * @static
+	 */
+	public static getPercentageParcedValue(value:string):number
+	{
+		return parseFloat(value.substr(0, value.length - 1)) / 100;
+	}
+
+	/**
 	 *
 	 * @todo add support for more unit types.
 	 *

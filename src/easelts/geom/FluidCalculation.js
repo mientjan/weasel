@@ -1,4 +1,4 @@
-define(["require", "exports", './FluidMeasurementsUnit', '../enum/CalculationUnitType', '../enum/MeasurementUnitType'], function (require, exports, FluidMeasurementsUnit, CalculationUnitType, MeasurementUnitType) {
+define(["require", "exports", './FluidMeasurementsUnit', '../enum/CalculationType', '../enum/CalculationUnitType', '../enum/MeasurementUnitType'], function (require, exports, FluidMeasurementsUnit, CalculationType, CalculationUnitType, MeasurementUnitType) {
     /**
      * @todo add more unit types
      * @class FluidCalculation
@@ -98,6 +98,36 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/CalculationUni
                         break;
                     }
             }
+        };
+        /**
+         * @author Mient-jan Stelling
+         * @method getCalculationTypeByValue
+         * @param value {number|string}
+         * @returns {CalculationType}
+         * @public
+         * @static
+         */
+        FluidCalculation.getCalculationTypeByValue = function (value) {
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    return 1 /* PERCENT */;
+                }
+                else {
+                    return 3 /* CALC */;
+                }
+            }
+            return 2 /* STATIC */;
+        };
+        /**
+         * @author Mient-jan Stelling
+         * @method getCalculationTypeByValue
+         * @param value {number|string}
+         * @returns {CalculationType}
+         * @public
+         * @static
+         */
+        FluidCalculation.getPercentageParcedValue = function (value) {
+            return parseFloat(value.substr(0, value.length - 1)) / 100;
         };
         /**
          *

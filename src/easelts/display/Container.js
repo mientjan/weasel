@@ -145,8 +145,17 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
          * into itself).
          **/
         Container.prototype.draw = function (ctx, ignoreCache) {
-            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
-                return true;
+            var globalCtx = null;
+            if (!this.willDrawOnCache) {
+                if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+                    return true;
+                }
+            }
+            else {
+                if (this.cacheCanvas) {
+                    var globalCtx = ctx;
+                    var ctx = this.cacheCanvas.getContext('2d');
+                }
             }
             // this ensures we don't have issues with display list changes that occur during a draw:
             var list = this.children, child;
@@ -160,6 +169,11 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
                 child.updateContext(ctx);
                 child.draw(ctx);
                 ctx.restore();
+            }
+            if (this.willDrawOnCache) {
+                if (_super.prototype.draw.call(this, globalCtx, ignoreCache)) {
+                    return true;
+                }
             }
             return true;
         };

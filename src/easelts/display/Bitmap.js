@@ -66,17 +66,11 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
         /**
-         * Initialization method.
-         * @method initialize
-         * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to
-         * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
-         * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
-         * @protected
-         **/
-        /**
          * @class Bitmap
          * @constructor
-         * @param {string|HTMLImageElement} imageOrUri
+         * @param {string|HTMLImageElement} imageOrUri The source object or URI to an image to
+         * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
+         * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
          * @param {string|number} width
          * @param {string|number} height
          * @param {string|number} x
@@ -84,9 +78,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
          * @param {string|number} regX
          * @param {string|number} regY
          */
-        //constructor(imageOrUri:string, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
-        //constructor(imageOrUri:HTMLImageElement, width?:any, height?:any, x?:any, y?:any, regX?:any, regY?:any);
         function Bitmap(imageOrUri, width, height, x, y, regX, regY) {
+            var _this = this;
             if (width === void 0) { width = 0; }
             if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
@@ -107,7 +100,24 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
              * @default null
              */
             this.sourceRect = null;
+            /**
+             * Specifies an area of the destination wil be drawn to.
+             * @property destinationRect
+             * @type Rectangle
+             * @default null
+             */
             this.destinationRect = null;
+            this.onLoad = function () {
+                _this.loaded = true;
+                if (!_this.width) {
+                    _this.width = _this.image.width;
+                }
+                if (!_this.height) {
+                    _this.height = _this.image.height;
+                }
+                _this.isDirty = true;
+                _this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+            };
             var image;
             if (typeof imageOrUri == "string") {
                 image = document.createElement("img");
@@ -126,7 +136,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
                             this.onLoad();
                         }
                         else {
-                            this.image.addEventListener('load', this.onLoad.bind(this));
+                            this.image.addEventListener('load', this.onLoad);
                         }
                         break;
                     }
@@ -146,17 +156,6 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
                     }
             }
         }
-        Bitmap.prototype.onLoad = function () {
-            this.loaded = true;
-            if (!this.width) {
-                this.width = this.image.width;
-            }
-            if (!this.height) {
-                this.height = this.image.height;
-            }
-            this.isDirty = true;
-            this.dispatchEvent(Bitmap.EVENT_ONLOAD);
-        };
         /**
          * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
          * This does not account for whether it would be visible within the boundaries of the stage.
@@ -181,10 +180,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
          * @return {Boolean}
          **/
         Bitmap.prototype.draw = function (ctx, ignoreCache) {
-            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
-                return true;
-            }
-            if (this.loaded) {
+            if (this.loaded && this.isVisible()) {
+                if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+                    return true;
+                }
                 var sourceRect = this.sourceRect;
                 var destRect = this.destinationRect;
                 if (sourceRect && !destRect) {
@@ -197,38 +196,11 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
                     ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
                 }
                 else {
-                    ctx.drawImage(this.image, 0, 0);
+                    ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
                 }
             }
             return true;
         };
-        /**
-         * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-         * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-         *
-         * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-         * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-         * method.
-         * @method cache
-         **/
-        /**
-         * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-         * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-         *
-         * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-         * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-         * method.
-         * @method updateCache
-         **/
-        /**
-         * Because the content of a Bitmap is already in a simple format, cache is unnecessary for Bitmap instances.
-         * You should <b>not</b> cache Bitmap instances as it can degrade performance.
-         *
-         * <strong>However: If you want to use a filter on a Bitmap, you <em>MUST</em> cache it, or it will not work.</strong>
-         * To see the API for caching, please visit the DisplayObject {{#crossLink "DisplayObject/cache"}}{{/crossLink}}
-         * method.
-         * @method uncache
-         **/
         /**
          * Docced in superclass.
          */
