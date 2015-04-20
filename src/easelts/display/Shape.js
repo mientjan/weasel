@@ -71,7 +71,7 @@ define(["require", "exports", './Graphics', './DisplayObject', '../enum/DisplayT
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
-            this.type = 4 /* SHAPE */;
+            this.type = DisplayType.SHAPE;
             this.graphics = graphics ? graphics : new Graphics();
         }
         /**

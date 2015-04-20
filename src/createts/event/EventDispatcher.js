@@ -205,7 +205,7 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
                 if (arr[i] == listener) {
                     if (l == 1) {
                         delete (listeners[type]);
-                    }
+                    } // allows for faster checks.
                     else {
                         arr.splice(i, 1);
                     }
@@ -249,11 +249,12 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
                 }
                 eventObj = new Event(eventObj);
             }
+            // TODO: deprecated. Target param is deprecated, only use case is MouseEvent/mousemove, remove.
             try {
                 eventObj.target = target || this;
             }
             catch (e) {
-            }
+            } // allows redispatching of native events
             if (!eventObj.bubbles || !this.parent) {
                 this._dispatchEvent(eventObj, 2);
             }
@@ -263,9 +264,11 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
                     list.push(top = top.parent);
                 }
                 var i, l = list.length;
+                // capture & atTarget
                 for (i = l - 1; i >= 0 && !eventObj.propagationStopped; i--) {
                     list[i]._dispatchEvent(eventObj, 1 + ((i == 0) ? 1 : i));
                 }
+                // bubbling
                 for (i = 1; i < l && !eventObj.propagationStopped; i++) {
                     list[i]._dispatchEvent(eventObj, 3);
                 }

@@ -400,7 +400,7 @@ class Stage extends Container
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
 
-	constructor(element:HTMLBlockElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
+	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 

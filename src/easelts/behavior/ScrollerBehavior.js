@@ -15,9 +15,9 @@ define(["require", "exports", './AbstractBehavior', '../display/Container', '../
             this._mousedown = false;
             this.onMouseDown = function (e) {
                 _this._scroller.doTouchStart([{
-                    pageX: e.stageX,
-                    pageY: e.stageY
-                }], e.timeStamp);
+                        pageX: e.stageX,
+                        pageY: e.stageY
+                    }], e.timeStamp);
                 _this._mousedown = true;
             };
             this.onMouseMove = function (e) {
@@ -25,9 +25,9 @@ define(["require", "exports", './AbstractBehavior', '../display/Container', '../
                     return;
                 }
                 _this._scroller.doTouchMove([{
-                    pageX: e.stageX,
-                    pageY: e.stageY
-                }], e.timeStamp);
+                        pageX: e.stageX,
+                        pageY: e.stageY
+                    }], e.timeStamp);
                 _this._mousedown = true;
             };
             this.onMouseUp = function (e) {
@@ -44,7 +44,8 @@ define(["require", "exports", './AbstractBehavior', '../display/Container', '../
             _super.prototype.initialize.call(this, container);
             this.owner.enableMouseInteraction();
             this.owner.cursor = 'pointer';
-            if (this.owner.children.length == 0 || this.owner.children.length > 1) {
+            if (this.owner.children.length == 0
+                || this.owner.children.length > 1) {
                 throw new Error('owner can have only one child that holds all the gallery items');
             }
             this.holder = this.owner.children[0];

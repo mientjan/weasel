@@ -73,7 +73,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
-            this.type = 2 /* CONTAINER */;
+            this.type = DisplayType.CONTAINER;
             /**
              * The array of children in the display list. You should usually use the child management methods such as
              * {{#crossLink "Container/addChild"}}{{/crossLink}}, {{#crossLink "Container/removeChild"}}{{/crossLink}},
@@ -328,9 +328,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             }
             var l = index.length;
             if (l > 1) {
-                index.sort(function (a, b) {
-                    return b - a;
-                });
+                index.sort(function (a, b) { return b - a; });
                 var good = true;
                 for (var i = 0; i < l; i++) {
                     good = good && this.removeChildAt(index[i]);
@@ -680,7 +678,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
                     ctx.clearRect(0, 0, 2, 2);
                 }
                 // if a child container has a hitArea then we only need to check its hitArea, so we can treat it as a normal DO:
-                if (!hitArea && child.type == 2 /* CONTAINER */) {
+                if (!hitArea && child.type == DisplayType.CONTAINER) {
                     var result = child._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
                     if (!arr && result) {
                         return (mouse && !this.mouseChildren) ? this : result;

@@ -84,8 +84,8 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
             if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
             // public properties:
-            this.type = 7 /* BITMAP */;
-            this.bitmapType = 0 /* UNKNOWN */;
+            this.type = DisplayType.BITMAP;
+            this.bitmapType = BitmapType.UNKNOWN;
             this.loaded = false;
             /**
              * The image to render. This can be an Image, a Canvas, or a Video.
@@ -131,7 +131,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
                 case 'img':
                     {
                         this.image = image;
-                        this.bitmapType = 1 /* IMAGE */;
+                        this.bitmapType = BitmapType.IMAGE;
                         if (this.image.complete) {
                             this.onLoad();
                         }
@@ -143,14 +143,14 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum
                 case 'video':
                     {
                         this.image = image;
-                        this.bitmapType = 2 /* VIDEO */;
+                        this.bitmapType = BitmapType.VIDEO;
                         this.onLoad();
                         break;
                     }
                 case 'canvas':
                     {
                         this.image = image;
-                        this.bitmapType = 1 /* IMAGE */;
+                        this.bitmapType = BitmapType.IMAGE;
                         this.onLoad();
                         break;
                     }
