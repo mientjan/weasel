@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/Bitmap', '../display/DisplayObject', '../enum/DisplayType'], function (require, exports, Bitmap, DisplayObject, DisplayType) {
+define(["require", "exports", '../display/Bitmap', '../display/DisplayObject'], function (require, exports, Bitmap, DisplayObject) {
     var BitmapNinePatch = (function (_super) {
         __extends(BitmapNinePatch, _super);
         function BitmapNinePatch(ninePatch, width, height, x, y, regX, regY) {

@@ -1,7 +1,7 @@
 /**
  * @enum ValueType
  */
-enum DisplayType {
+const enum DisplayType {
 	UNKNOWN,
 	STAGE,
 	CONTAINER,

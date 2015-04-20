@@ -31,7 +31,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType'], function (require, exports, DisplayObject, DisplayType) {
+define(["require", "exports", './DisplayObject', '../util/Methods'], function (require, exports, DisplayObject, Methods) {
     /**
      * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
      * group arm, leg, torso and head {{#crossLink "Bitmap"}}{{/crossLink}} instances together into a Person Container, and
@@ -57,12 +57,12 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
         __extends(Container, _super);
         /**
          * @constructor
-         * @param width
-         * @param height
-         * @param x
-         * @param y
-         * @param regX
-         * @param regY
+         * @param width {string|number}
+         * @param height {string|number}
+         * @param x {string|number}
+         * @param y {string|number}
+         * @param regX {string|number}
+         * @param regY {string|number}
          */
         function Container(width, height, x, y, regX, regY) {
             if (width === void 0) { width = '100%'; }
@@ -102,9 +102,16 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
              * @default false
              **/
             this.tickChildren = true;
+            this.isRenderIsolated = false;
+            /**
+             *
+             * @type {HTMLCanvasElement}
+             * @private
+             */
+            this._renderIsolationCanvas = null;
         }
         /**
-         * Has something todo with the Tweents timeline and the createts toolset fro flash animations
+         * Has something to do with the Tweents timeline and the createts toolset fro flash animations
          * @method initialize
          */
         Container.prototype.initialize = function () {
@@ -120,6 +127,22 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
          **/
         Container.prototype.isVisible = function () {
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length));
+        };
+        /**
+         * All render calls done in this Container are done on a seperate canvas. This way you can add multiple COMPOSITE_OPERATIONS in you draw loops.
+         * @param value
+         * @returns {Container}
+         */
+        Container.prototype.setRenderIsolation = function (value) {
+            if (this.isRenderIsolated && !value) {
+                this.isRenderIsolated = value;
+                this._renderIsolationCanvas = null;
+            }
+            else if (!this.isRenderIsolated && value) {
+                this.isRenderIsolated = value;
+                this._renderIsolationCanvas = Methods.createCanvas();
+            }
+            return this;
         };
         /**
          *
@@ -145,17 +168,13 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
          * into itself).
          **/
         Container.prototype.draw = function (ctx, ignoreCache) {
-            var globalCtx = null;
-            if (!this.willDrawOnCache) {
-                if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
-                    return true;
-                }
+            var localCtx = ctx;
+            if (_super.prototype.draw.call(this, localCtx, ignoreCache)) {
+                return true;
             }
-            else {
-                if (this.cacheCanvas) {
-                    var globalCtx = ctx;
-                    var ctx = this.cacheCanvas.getContext('2d');
-                }
+            if (this.isRenderIsolated) {
+                var localCtx = this._renderIsolationCanvas.getContext('2d');
+                localCtx.clearRect(0, 0, this.width, this.height);
             }
             // this ensures we don't have issues with display list changes that occur during a draw:
             var list = this.children, child;
@@ -165,15 +184,14 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
                     continue;
                 }
                 // draw the child:
-                ctx.save();
-                child.updateContext(ctx);
-                child.draw(ctx);
-                ctx.restore();
+                localCtx.save();
+                child.updateContext(localCtx);
+                child.draw(localCtx);
+                localCtx.restore();
             }
-            if (this.willDrawOnCache) {
-                if (_super.prototype.draw.call(this, globalCtx, ignoreCache)) {
-                    return true;
-                }
+            if (this.isRenderIsolated) {
+                ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height, 0, 0, this.width, this.height);
+                return true;
             }
             return true;
         };
@@ -607,6 +625,10 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             _super.prototype.onResize.call(this, width, height);
             var newWidth = this.width;
             var newHeight = this.height;
+            if (this.isRenderIsolated) {
+                this._renderIsolationCanvas.width = newWidth;
+                this._renderIsolationCanvas.height = newHeight;
+            }
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
                 if (child.onResize) {

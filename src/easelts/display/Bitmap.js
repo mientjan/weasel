@@ -33,7 +33,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../enum/DisplayType', '../enum/BitmapType'], function (require, exports, DisplayObject, DisplayType, BitmapType) {
+define(["require", "exports", './DisplayObject', '../enum/BitmapType'], function (require, exports, DisplayObject, BitmapType) {
     /**
      * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
      * HTML element, or a string.

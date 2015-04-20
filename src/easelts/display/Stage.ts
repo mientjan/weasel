@@ -184,7 +184,7 @@ class Stage extends Container
 	 *
 	 * <h4>Example</h4>
 	 *
-	 *      var stage = new createjs.Stage("canvasId");
+	 *      var stage = new Stage("canvasId");
 	 *      stage.autoClear = false;
 	 *
 	 * @property autoClear

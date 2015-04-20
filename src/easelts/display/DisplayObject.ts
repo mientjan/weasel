@@ -143,7 +143,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	public static suppressCrossDomainErrors = false;
+	public static suppressCrossDomainErrors:boolean = false;
 
 	/**
 	 * @property _snapToPixelEnabled
@@ -152,7 +152,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	public static _snapToPixelEnabled = false; // stage.snapToPixelEnabled is temporarily copied here during a draw to provide global access.
+	public static _snapToPixelEnabled:boolean = false; // stage.snapToPixelEnabled is temporarily copied here during a draw to provide global access.
 
 	/**
 	 * @property _hitTestCanvas
@@ -270,9 +270,6 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public isDirty:boolean = false;
 
-	public willDrawOnCache:boolean = false;
-
-
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
@@ -377,7 +374,15 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	public _behaviorList:IBehavior[] = null;
 
+	/**
+	 *
+	 */
 	private _resizeSignal:Signal2<number, number>;
+
+	/**
+	 *
+	 * @returns {Signal2<number, number>}
+	 */
 	public get resizeSignal():Signal2<number, number>
 	{
 		if (this._resizeSignal === void 0)
@@ -707,7 +712,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 */
 	public setY(value:number|string):any
 	{
-		this.isDirty = true;
+
 
 		this._y_type = FluidCalculation.getCalculationTypeByValue(value);
 
@@ -729,6 +734,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 			}
 		}
 
+		this.isDirty = true;
 
 		return this;
 	}
@@ -751,22 +757,22 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		this.isDirty = true;
 
-		this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+		this._regX_type = FluidCalculation.getCalculationTypeByValue(value);
 
-		switch( this._y_type )
+		switch( this._regX_type )
 		{
 			case CalculationType.PERCENT:{
-				this._y_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				this._regX_percent = FluidCalculation.getPercentageParcedValue( <string> value);
 				break;
 			}
 
 			case CalculationType.CALC:{
-				this._y_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._regX_calc = FluidCalculation.dissolveCalcElements( <string> value);
 				break;
 			}
 
 			case CalculationType.STATIC:{
-				this.y = <number> value;
+				this.regX = <number> value;
 				break;
 			}
 		}
@@ -792,22 +798,22 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	{
 		this.isDirty = true;
 
-		this._x_type = FluidCalculation.getCalculationTypeByValue(value);
+		this._regY_type = FluidCalculation.getCalculationTypeByValue(value);
 
-		switch( this._regX_type )
+		switch( this._regY_type )
 		{
 			case CalculationType.PERCENT:{
-				this._regX_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+				this._regY_percent = FluidCalculation.getPercentageParcedValue( <string> value);
 				break;
 			}
 
 			case CalculationType.CALC:{
-				this._regX_calc = FluidCalculation.dissolveCalcElements( <string> value);
+				this._regY_calc = FluidCalculation.dissolveCalcElements( <string> value);
 				break;
 			}
 
 			case CalculationType.STATIC:{
-				this.regX = <number> value;
+				this.regY = <number> value;
 				break;
 			}
 		}
@@ -973,6 +979,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		{
 			ctx.globalCompositeOperation = o.compositeOperation;
 		}
+
 		if(o.shadow)
 		{
 			this._applyShadow(ctx, o.shadow);
@@ -1010,18 +1017,13 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 *    myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate
 	 *    cached elements with greater fidelity. Default is 1.
 	 **/
-	public cache(x:number|string = 0, y:number|string = 0, width:number|string = '100%', height:number|string = '100%', scale:number = 1):void
+	public cache(x:number = 0, y:number = 0, width:number = 100, height:number = 100, scale:number = 1):void
 	{
 		// draw to canvas.
 		if(!this.cacheCanvas)
 		{
 			this.cacheCanvas = Methods.createCanvas();
 		}
-
-		var xType = FluidCalculation.getCalculationTypeByValue(x);
-		var yType = FluidCalculation.getCalculationTypeByValue(y);
-		var wType = FluidCalculation.getCalculationTypeByValue(width);
-		var hType = FluidCalculation.getCalculationTypeByValue(height);
 
 		this._cacheWidth = <number> width;
 		this._cacheHeight = <number> height;
@@ -1820,7 +1822,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 		else if(this._regY_type == CalculationType.CALC)
 		{
-			this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+			this.regY = FluidCalculation.calcUnit(this.height, this._regY_calc);
 		}
 
 		if(this._x_type == CalculationType.PERCENT)
