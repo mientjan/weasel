@@ -28,7 +28,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Graphics', './DisplayObject', '../enum/DisplayType'], function (require, exports, Graphics, DisplayObject, DisplayType) {
+define(["require", "exports", './Graphics', './DisplayObject'], function (require, exports, Graphics, DisplayObject) {
     /**
      * @module easelts
      * @submodule display

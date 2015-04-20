@@ -33,7 +33,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../enum/DisplayType', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, DisplayType, PointerEvent, Signal) {
+define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../enum/QualityType', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, QualityType, PointerEvent, Signal) {
     /**
      * @module createts
      */
@@ -146,7 +146,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
              *
              * <h4>Example</h4>
              *
-             *      var stage = new createjs.Stage("canvasId");
+             *      var stage = new Stage("canvasId");
              *      stage.autoClear = false;
              *
              * @property autoClear
