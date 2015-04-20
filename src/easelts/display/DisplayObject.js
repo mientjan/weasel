@@ -335,6 +335,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this.setGeomTransform(width, height, x, y, regX, regY);
         }
         Object.defineProperty(DisplayObject.prototype, "resizeSignal", {
+            /**
+             *
+             * @returns {Signal2<number, number>}
+             */
             get: function () {
                 if (this._resizeSignal === void 0) {
                     this._resizeSignal = new Signal2();
@@ -1379,7 +1383,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this.regY = this._regY_percent * this.height;
             }
             else if (this._regY_type == 3 /* CALC */) {
-                this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+                this.regY = FluidCalculation.calcUnit(this.height, this._regY_calc);
             }
             if (this._x_type == 1 /* PERCENT */) {
                 this.x = Math.round(this._x_percent * width);

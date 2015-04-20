@@ -374,7 +374,15 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	public _behaviorList:IBehavior[] = null;
 
+	/**
+	 *
+	 */
 	private _resizeSignal:Signal2<number, number>;
+
+	/**
+	 *
+	 * @returns {Signal2<number, number>}
+	 */
 	public get resizeSignal():Signal2<number, number>
 	{
 		if (this._resizeSignal === void 0)
@@ -1814,7 +1822,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		}
 		else if(this._regY_type == CalculationType.CALC)
 		{
-			this.regY = FluidCalculation.calcUnit(this.height, this._height_calc);
+			this.regY = FluidCalculation.calcUnit(this.height, this._regY_calc);
 		}
 
 		if(this._x_type == CalculationType.PERCENT)
