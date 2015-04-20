@@ -27,6 +27,7 @@
  */
 
 import DisplayObject = require('./DisplayObject');
+import Methods = require('../util/Methods');
 import DisplayType = require('../enum/DisplayType');
 import Size = require('../geom/Size');
 import m2 = require('../geom/Matrix2');
@@ -79,7 +80,7 @@ class Container extends DisplayObject
 	 * @type Boolean
 	 * @default false
 	 **/
-	public mouseChildren = true;
+	public mouseChildren:boolean = true;
 
 	/**
 	 * If false, the tick will not be propagated to children of this Container. This can provide some performance benefits.
@@ -89,16 +90,25 @@ class Container extends DisplayObject
 	 * @type Boolean
 	 * @default false
 	 **/
-	public tickChildren = true;
+	public tickChildren:boolean = true;
+
+	public isRenderIsolated:boolean = false;
+
+	/**
+	 *
+	 * @type {HTMLCanvasElement}
+	 * @private
+	 */
+	protected _renderIsolationCanvas:HTMLCanvasElement = null;
 
 	/**
 	 * @constructor
-	 * @param width
-	 * @param height
-	 * @param x
-	 * @param y
-	 * @param regX
-	 * @param regY
+	 * @param width {string|number}
+	 * @param height {string|number}
+	 * @param x {string|number}
+	 * @param y {string|number}
+	 * @param regX {string|number}
+	 * @param regY {string|number}
 	 */
 	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
@@ -106,7 +116,7 @@ class Container extends DisplayObject
 	}
 
 	/**
-	 * Has something todo with the Tweents timeline and the createts toolset fro flash animations
+	 * Has something to do with the Tweents timeline and the createts toolset fro flash animations
 	 * @method initialize
 	 */
 	public initialize()
@@ -125,6 +135,25 @@ class Container extends DisplayObject
 	public isVisible()
 	{
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length) );
+	}
+
+	/**
+	 * All render calls done in this Container are done on a seperate canvas. This way you can add multiple COMPOSITE_OPERATIONS in you draw loops.
+	 * @param value
+	 * @returns {Container}
+	 */
+	public setRenderIsolation(value:boolean):Container
+	{
+		if(this.isRenderIsolated && !value)
+		{
+			this.isRenderIsolated = value;
+			this._renderIsolationCanvas = null;
+		} else if( !this.isRenderIsolated && value){
+			this.isRenderIsolated = value;
+			this._renderIsolationCanvas = Methods.createCanvas();
+		}
+
+		return this;
 	}
 
 	/**
@@ -156,24 +185,20 @@ class Container extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		var globalCtx:CanvasRenderingContext2D = null;
+		var localCtx:CanvasRenderingContext2D = ctx;
 
-		if( !this.willDrawOnCache )
+		if(super.draw(localCtx, ignoreCache))
 		{
-			if(super.draw(ctx, ignoreCache))
-			{
-				return true;
-			}
-		} else {
+			return true;
+		}
 
-			if( this.cacheCanvas ){
-				var globalCtx = ctx;
-				var ctx = this.cacheCanvas.getContext('2d');
-			}
+		if( this.isRenderIsolated ){
+			var localCtx = this._renderIsolationCanvas.getContext('2d');
+			localCtx.clearRect( 0, 0, this.width, this.height );
 		}
 
 		// this ensures we don't have issues with display list changes that occur during a draw:
-		var list = this.children, //.slice(0);
+		var list = this.children,
 			child;
 
 		for(var i = 0, l = list.length; i < l; i++)
@@ -186,19 +211,19 @@ class Container extends DisplayObject
 			}
 
 			// draw the child:
-			ctx.save();
-			child.updateContext(ctx);
-			child.draw(ctx);
-			ctx.restore();
+			localCtx.save();
+			child.updateContext(localCtx);
+			child.draw(localCtx);
+			localCtx.restore();
 		}
 
-		if( this.willDrawOnCache )
-		{
-			if(super.draw(globalCtx, ignoreCache))
-			{
-				return true;
-			}
+
+		if( this.isRenderIsolated ){
+
+			ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height, 0, 0, this.width, this.height);
+			return true;
 		}
+
 
 		return true;
 	}
@@ -270,7 +295,7 @@ class Container extends DisplayObject
 		{
 			var child = children[i];
 
-			if (child.stage != this.stage)
+			if(child.stage != this.stage)
 			{
 				child.stage = this.stage;
 
@@ -379,7 +404,10 @@ class Container extends DisplayObject
 		var l = index.length;
 		if(l > 1)
 		{
-			index.sort(function(a, b){ return b - a; });
+			index.sort(function(a, b)
+			{
+				return b - a;
+			});
 			var good = true;
 			for(var i = 0; i < l; i++)
 			{
@@ -475,7 +503,7 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction:(a: DisplayObject, b: DisplayObject) => number ):void
+	public sortChildren(sortFunction:(a:DisplayObject, b:DisplayObject) => number):void
 	{
 		this.children.sort(sortFunction);
 	}
@@ -720,6 +748,11 @@ class Container extends DisplayObject
 
 		var newWidth = this.width;
 		var newHeight = this.height;
+
+		if( this.isRenderIsolated ){
+			this._renderIsolationCanvas.width = newWidth;
+			this._renderIsolationCanvas.height = newHeight;
+		}
 
 		for(var i = 0; i < this.children.length; i++)
 		{
