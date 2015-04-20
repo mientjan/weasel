@@ -57,7 +57,7 @@ define(["require", "exports", './DisplayObject', '../enum/DisplayType'], functio
             if (width === void 0) { width = 0; }
             if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = DisplayType.BITMAP;
             this.loaded = true;
             /**
              * The image to render. This can be an Image, a Canvas, or a Video.

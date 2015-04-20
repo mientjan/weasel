@@ -29,7 +29,9 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
          * @static
          **/
         Touch.isSupported = function () {
-            return ('ontouchstart' in window) || (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) || (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0); // IE11+
+            return ('ontouchstart' in window) // iOS
+                || (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) // IE10
+                || (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0); // IE11+
         };
         /**
          * Enables touch interaction for the specified EaselJS {{#crossLink "Stage"}}{{/crossLink}}. Currently supports iOS
@@ -234,7 +236,8 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
                 if (type == "MSPointerMove" || type == "pointermove") {
                     this._handleMove(stage, id, e, e.pageX, e.pageY);
                 }
-                else if (type == "MSPointerUp" || type == "MSPointerCancel" || type == "pointerup" || type == "pointercancel") {
+                else if (type == "MSPointerUp" || type == "MSPointerCancel"
+                    || type == "pointerup" || type == "pointercancel") {
                     delete (ids[id]);
                     this._handleEnd(stage, id, e);
                 }

@@ -28,7 +28,7 @@ define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType',
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = DisplayType.BITMAP;
             this._bitmaps = {
                 idle: null,
                 over: null,
@@ -37,14 +37,14 @@ define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType',
             };
             this._bitmap = null;
             this.addBehavior(new ButtonBehavior());
-            if (data.idle)
-                this._bitmaps.idle = data.idle;
+            this._bitmaps.idle = data.idle;
             if (data.over)
                 this._bitmaps.over = data.over;
             if (data.down)
                 this._bitmaps.down = data.down;
             if (data.disabled)
                 this._bitmaps.disabled = data.disabled;
+            this._bitmap = this._bitmaps.idle;
             this.addEventListener(ImageButton.EVENT_MOUSE_CLICK, function (e) {
                 _this._bitmap = _this._bitmaps.idle;
             });
@@ -54,7 +54,7 @@ define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType',
                 });
             }
             if (this._bitmaps.down) {
-                this.addEventListener(ImageButton.EVENT_DISABLED, function (e) {
+                this.addEventListener(ImageButton.EVENT_MOUSE_DOWN, function (e) {
                     _this._bitmap = _this._bitmaps.down;
                 });
             }

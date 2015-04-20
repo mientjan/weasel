@@ -576,6 +576,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                     this._updateTargetProps(null, 1);
                 }
                 else if (this._steps.length > 0) {
+                    // find our new tween index:
                     for (var i = 0, l = this._steps.length; i < l; i++) {
                         if (this._steps[i].t > t) {
                             break;

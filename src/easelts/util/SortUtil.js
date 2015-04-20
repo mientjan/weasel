@@ -20,6 +20,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
         };
         SortUtil.random = function (list) {
             var currentIndex = list.length, temporaryValue, randomIndex;
+            // While there remain elements to shuffle...
             while (0 !== currentIndex) {
                 // Pick a remaining element...
                 randomIndex = Math.floor(Math.random() * currentIndex);

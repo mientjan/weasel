@@ -175,7 +175,11 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
             if (!this._isRunning)
                 return;
             if (this._isUsingRAF) {
-                var fn = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || window['oCancelAnimationFrame'] || window['msCancelAnimationFrame'];
+                var fn = window.cancelAnimationFrame
+                    || window['webkitCancelAnimationFrame']
+                    || window['mozCancelAnimationFrame']
+                    || window['oCancelAnimationFrame']
+                    || window['msCancelAnimationFrame'];
                 fn && fn(this._timerId);
             }
             else {

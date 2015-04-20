@@ -46,7 +46,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this);
-            this.type = 3 /* DISPLAYOBJECT */;
+            this.type = DisplayType.DISPLAYOBJECT;
             /**
              * If a cache is active, this returns the canvas that holds the cached version of this display object. See {{#crossLink "cache"}}{{/crossLink}}
              * for more information.
@@ -125,7 +125,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
              * @property isDirty
              * @type {boolean}
              * @description is set by Container, setWidth setHeight, setX, setY, setRegX, setRegY. When set true onTick will trigger a onResize event.
-             *  this is a better way to check if its been added to the stage because onTick is only triggered when added to the stage.
+             *  this is a better way to check if its been added to the stage because onTick is only triggerd when added to the stage.
              */
             this.isDirty = false;
             /**
@@ -135,7 +135,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
              * @default 0
              **/
             this.x = 0;
-            this._x_type = 2 /* STATIC */;
+            this._x_type = CalculationType.STATIC;
             this._x_percent = .0;
             /** The y (vertical) position of the display object, relative to its parent.
              * @property y
@@ -145,16 +145,16 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this.y = 0;
             this._y_percent = .0;
             this.width = 0;
-            this._width_type = 2 /* STATIC */;
+            this._width_type = CalculationType.STATIC;
             this._width_percent = .0;
             this.height = 0;
-            this._height_type = 2 /* STATIC */;
+            this._height_type = CalculationType.STATIC;
             this._height_percent = .0;
             this.regX = 0;
-            this._regX_type = 2 /* STATIC */;
+            this._regX_type = CalculationType.STATIC;
             this._regX_percent = .0;
             this.regY = 0;
-            this._regY_type = 2 /* STATIC */;
+            this._regY_type = CalculationType.STATIC;
             this._regY_percent = .0;
             /**
              * The rotation in degrees for this display object.
@@ -381,20 +381,19 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @param {string|number} width
          */
         DisplayObject.prototype.setWidth = function (value) {
-            this._width_type = FluidCalculation.getCalculationTypeByValue(value);
-            switch (this._width_type) {
-                case 1 /* PERCENT */: {
-                    this._width_percent = FluidCalculation.getPercentageParcedValue(value);
-                    break;
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    this._width_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
+                    this._width_type = CalculationType.PERCENT;
                 }
-                case 3 /* CALC */: {
+                else {
                     this._width_calc = FluidCalculation.dissolveCalcElements(value);
-                    break;
+                    this._width_type = CalculationType.CALC;
                 }
-                case 2 /* STATIC */: {
-                    this.width = value;
-                    break;
-                }
+            }
+            else {
+                this.width = value;
+                this._width_type = CalculationType.STATIC;
             }
             this.isDirty = true;
             return this;
@@ -412,20 +411,19 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @result DisplayObject
          */
         DisplayObject.prototype.setHeight = function (value) {
-            this._height_type = FluidCalculation.getCalculationTypeByValue(value);
-            switch (this._height_type) {
-                case 1 /* PERCENT */: {
-                    this._height_percent = FluidCalculation.getPercentageParcedValue(value);
-                    break;
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    this._height_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
+                    this._height_type = CalculationType.PERCENT;
                 }
-                case 3 /* CALC */: {
+                else {
                     this._height_calc = FluidCalculation.dissolveCalcElements(value);
-                    break;
+                    this._height_type = CalculationType.CALC;
                 }
-                case 2 /* STATIC */: {
-                    this.height = value;
-                    break;
-                }
+            }
+            else {
+                this.height = value;
+                this._height_type = CalculationType.STATIC;
             }
             this.isDirty = true;
             return this;
@@ -443,20 +441,19 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          * @return DisplayObject
          */
         DisplayObject.prototype.setX = function (value) {
-            this._x_type = FluidCalculation.getCalculationTypeByValue(value);
-            switch (this._x_type) {
-                case 1 /* PERCENT */: {
-                    this._x_percent = FluidCalculation.getPercentageParcedValue(value);
-                    break;
+            if (typeof (value) == 'string') {
+                if (value.substr(-1) == '%') {
+                    this._x_percent = parseFloat(value.substr(0, value.length - 1)) / 100;
+                    this._x_type = CalculationType.PERCENT;
                 }
-                case 3 /* CALC */: {
+                else {
                     this._x_calc = FluidCalculation.dissolveCalcElements(value);
-                    break;
+                    this._x_type = CalculationType.CALC;
                 }
-                case 2 /* STATIC */: {
-                    this.x = value;
-                    break;
-                }
+            }
+            else {
+                this.x = value;
+                this._x_type = CalculationType.STATIC;
             }
             this.isDirty = true;
             return this;
@@ -480,13 +477,9 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                     this._y_percent = FluidCalculation.getPercentageParcedValue(value);
                     break;
                 }
-                case 3 /* CALC */: {
+                else {
                     this._y_calc = FluidCalculation.dissolveCalcElements(value);
-                    break;
-                }
-                case 2 /* STATIC */: {
-                    this.y = value;
-                    break;
+                    this._y_type = CalculationType.CALC;
                 }
             }
             this.isDirty = true;
@@ -521,6 +514,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                     break;
                 }
             }
+            else {
+                this.regX = value;
+                this._regX_type = CalculationType.STATIC;
+            }
             return this;
         };
         /**
@@ -551,6 +548,10 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                     this.regY = value;
                     break;
                 }
+            }
+            else {
+                this.regY = value;
+                this._regY_type = CalculationType.STATIC;
             }
             return this;
         };
@@ -716,6 +717,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             if (height === void 0) { height = 100; }
             if (scale === void 0) { scale = 1; }
             // draw to canvas.
+            //		scale = scale||1;
             if (!this.cacheCanvas) {
                 this.cacheCanvas = Methods.createCanvas();
             }
@@ -957,7 +959,9 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
          **/
         DisplayObject.prototype.getMatrix = function (matrix) {
             var o = this;
-            return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0)).appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
+            return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
+                .appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
+                .appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
         };
         /**
          * Generates a concatenated Matrix2D object representing the combined transform of the display object and all of its
@@ -1356,45 +1360,44 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
             return this.cursor != null;
         };
-        DisplayObject.prototype.onStageSet = function () {
-        };
+        DisplayObject.prototype.onStageSet = function () { };
         DisplayObject.prototype.onResize = function (width, height) {
             // is no longer dirty
             this.isDirty = false;
-            if (this._width_type == 1 /* PERCENT */) {
+            if (this._width_type == CalculationType.PERCENT) {
                 this.width = this._width_percent * width;
             }
-            else if (this._width_type == 3 /* CALC */) {
+            else if (this._width_type == CalculationType.CALC) {
                 this.width = FluidCalculation.calcUnit(width, this._width_calc);
             }
-            if (this._height_type == 1 /* PERCENT */) {
+            if (this._height_type == CalculationType.PERCENT) {
                 this.height = this._height_percent * height;
             }
-            else if (this._height_type == 3 /* CALC */) {
+            else if (this._height_type == CalculationType.CALC) {
                 this.height = FluidCalculation.calcUnit(height, this._height_calc);
             }
-            if (this._regX_type == 1 /* PERCENT */) {
+            if (this._regX_type == CalculationType.PERCENT) {
                 this.regX = this._regX_percent * this.width;
             }
-            else if (this._regX_type == 3 /* CALC */) {
+            else if (this._regX_type == CalculationType.CALC) {
                 this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
             }
-            if (this._regY_type == 1 /* PERCENT */) {
+            if (this._regY_type == CalculationType.PERCENT) {
                 this.regY = this._regY_percent * this.height;
             }
             else if (this._regY_type == 3 /* CALC */) {
                 this.regY = FluidCalculation.calcUnit(this.height, this._regY_calc);
             }
-            if (this._x_type == 1 /* PERCENT */) {
+            if (this._x_type == CalculationType.PERCENT) {
                 this.x = Math.round(this._x_percent * width);
             }
-            else if (this._x_type == 3 /* CALC */) {
+            else if (this._x_type == CalculationType.CALC) {
                 this.x = Math.round(FluidCalculation.calcUnit(width, this._x_calc));
             }
-            if (this._y_type == 1 /* PERCENT */) {
+            if (this._y_type == CalculationType.PERCENT) {
                 this.y = Math.round(this._y_percent * height);
             }
-            else if (this._y_type == 3 /* CALC */) {
+            else if (this._y_type == CalculationType.CALC) {
                 this.y = Math.round(FluidCalculation.calcUnit(height, this._y_calc));
             }
             if (this._resizeSignal && this._resizeSignal.hasListeners()) {
@@ -1447,7 +1450,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             DisplayObject.EVENT_PRESS_UP,
             DisplayObject.EVENT_ROLL_OUT,
             DisplayObject.EVENT_ROLL_OVER,
-            "dblclick"
+            "dblclick" // @todo make depricated
         ];
         DisplayObject.COMPOSITE_OPERATION_SOURCE_ATOP = 'source-atop';
         DisplayObject.COMPOSITE_OPERATION_SOURCE_IN = 'source-in';
