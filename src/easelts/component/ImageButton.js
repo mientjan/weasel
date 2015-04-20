@@ -4,23 +4,9 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType', '../behavior/ButtonBehavior'], function (require, exports, DisplayObject, DisplayType, ButtonBehavior) {
-    /**
-     * @class ImageSequence
-     */
+define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBehavior'], function (require, exports, DisplayObject, ButtonBehavior) {
     var ImageButton = (function (_super) {
         __extends(ImageButton, _super);
-        /**
-         * idle, mouseover, mousedown, disabled
-         * @param {string[]} images
-         * @param {number} fps
-         * @param {string|number} width
-         * @param {string|number} height
-         * @param {string|number} x
-         * @param {string|number} y
-         * @param {string|number} regX
-         * @param {string|number} regY
-         */
         function ImageButton(data, width, height, x, y, regX, regY) {
             var _this = this;
             if (x === void 0) { x = 0; }
@@ -28,7 +14,7 @@ define(["require", "exports", '../display/DisplayObject', '../enum/DisplayType',
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = DisplayType.BITMAP;
+            this.type = 7 /* BITMAP */;
             this._bitmaps = {
                 idle: null,
                 over: null,

@@ -1,9 +1,3 @@
-/**
- * @author mikael emtinger / http://gomo.se/
- * @author alteredq / http://alteredqualia.com/
- * @author WestLangley / http://github.com/WestLangley
- * @author bhouston / http://exocortex.com
- */
 define(["require", "exports", './Vector3'], function (require, exports, Vector3) {
     var Quaternion = (function () {
         function Quaternion(x, y, z, w) {
@@ -82,9 +76,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromEuler = function (euler, update) {
-            // http://www.mathworks.com/matlabcentral/fileexchange/
-            // 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
-            //	content/SpinCalc.m
             if (update === void 0) { update = false; }
             var c1 = Math.cos(euler._x / 2);
             var c2 = Math.cos(euler._y / 2);
@@ -133,8 +124,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromAxisAngle = function (axis, angle) {
-            // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
-            // assumes axis is normalized
             var halfAngle = angle / 2, s = Math.sin(halfAngle);
             this._x = axis.x * s;
             this._y = axis.y * s;
@@ -144,8 +133,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromRotationMatrix = function (m) {
-            // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-            // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
             var te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33, s;
             if (trace > 0) {
                 s = 0.5 / Math.sqrt(trace + 1.0);
@@ -179,8 +166,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromUnitVectors = function (vFrom, vTo) {
-            // http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
-            // assumes direction vectors vFrom and vTo are normalized
             var v1 = this._setFromUnitVectors_v1, r = this._setFromUnitVectors_r;
             var EPS = 0.000001;
             r = vFrom.dot(vTo) + 1;
@@ -249,7 +234,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this.multiplyQuaternions(this, q);
         };
         Quaternion.prototype.multiplyQuaternions = function (a, b) {
-            // from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
             var qax = a._x, qay = a._y, qaz = a._z, qaw = a._w;
             var qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
             this._x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
@@ -265,7 +249,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             if (t === 1)
                 return this.copy(qb);
             var x = this._x, y = this._y, z = this._z, w = this._w;
-            // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
             var cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
             if (cosHalfTheta < 0) {
                 this._w = -qb._w;

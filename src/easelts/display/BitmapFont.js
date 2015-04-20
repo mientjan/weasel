@@ -1,43 +1,8 @@
-/*
- * BitmapFont
- *
- * Copyright (c) 2014 Vikram Kumar ( https://github.com/vikramarka )
- * Copyright (c) 2014-2015 Mient-jan Stelling. ( https://github.com/mientjan )
- * Copyright (c) 2015 mediamonks.com
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
 define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapChar', './bitmapfont/CharLocation', './bitmapfont/VAlign', './bitmapfont/HAlign', './Container'], function (require, exports, SpriteSheet, Sprite, BitmapChar, CharLocation, VAlign, HAlign, Container) {
-    /**
-     *
-     * @param    texture: png image of the font
-     * @param    fontXML: xml exported from bmFonts software
-     * @param    size: size of the font we exported using bmFonts, useful for a reference.
-     */
     var BitmapFont = (function () {
         function BitmapFont(texture, fontXML, size, _scaleFactor) {
             if (_scaleFactor === void 0) { _scaleFactor = 1; }
             this._scaleFactor = _scaleFactor;
-            //	mHelperImage:Bitmap;
             this.mCharLocationPool = [];
             this.textWidth = 0;
             this.textHeight = 0;
@@ -48,7 +13,6 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
             this.createSpriteBuffer = [];
             this.mName = 'unknown';
             this.mLineHeight = this.mSize = this.mBaseLine = size * this._scaleFactor;
-            //		this.mHelperImage = new Bitmap(texture);
             this.texture = texture;
             this.chars = [];
             this.mCharLocationPool = [];
@@ -94,10 +58,8 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 animations: animations
             });
             for (var k = 0; k < allChars.length; k++) {
-                //var texture = createjs.SpriteSheetUtils.extractFrame(spriteSheet,k);
                 var texture = new Sprite(spriteSheet);
                 texture.gotoAndStop(k);
-                //mStage.addChild(texture);
                 texture.x = Math.random() * 800;
                 texture.y = 100;
                 var bitmapChar = new BitmapChar(allChars[k].id, texture, allChars[k].xOffset, allChars[k].yOffset, allChars[k].xAdvance);
@@ -153,7 +115,7 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 for (var i = 0; i < numChars; i++) {
                     var charLocation = charLocations[i];
                     var char = charLocation.char.createImage();
-                    char.x = charLocation.x; // + (i * horizantalLetterSpacing);
+                    char.x = charLocation.x;
                     char.y = charLocation.y;
                     char.scaleX = char.scaleY = charLocation.scale;
                     container.addChild(char);
@@ -297,7 +259,6 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 var lastLocation = line[line.length - 1];
                 var right = lastLocation.x - (lastLocation.char.getXOffset() / 1) + (lastLocation.char.getXAdvance() / 1);
                 console.log(horizantalLetterSpacing);
-                // add letter spacing
                 right += numChars * horizantalLetterSpacing;
                 if (hAlign == HAlign.RIGHT) {
                     xOffset = containerWidth - right;
@@ -316,7 +277,6 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                     if (charLocation.char.getWidth() > 0 && charLocation.char.getHeight() > 0) {
                         finalLocations.push(charLocation);
                     }
-                    // return to pool for next call to "arrangeChars"
                     this.mCharLocationPool.push(charLocation);
                 }
                 this.previousWidth.push(this.width);
