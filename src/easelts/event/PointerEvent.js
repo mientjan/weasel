@@ -16,6 +16,8 @@ define(["require", "exports", '../../createts/event/Event'], function (require, 
             this.nativeEvent = null;
             this.pointerID = 0;
             this.primary = false;
+            this.getLocalX = this._get_localX;
+            this.getLocalY = this._get_localY;
             this.stageX = stageX;
             this.stageY = stageY;
             this.nativeEvent = nativeEvent;
