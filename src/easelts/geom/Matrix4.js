@@ -398,7 +398,7 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             te[15] = n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33;
             var det = n11 * te[0] + n21 * te[4] + n31 * te[8] + n41 * te[12];
             if (det == 0) {
-                var msg = "THREE.Matrix4.getInverse(): can't invert matrix, determinant is 0";
+                var msg = "Matrix4.getInverse(): can't invert matrix, determinant is 0";
                 if (throwOnInvertible || false) {
                     throw new Error(msg);
                 }
