@@ -81,6 +81,8 @@ class Bitmap extends DisplayObject
 	 * @type HTMLImageElement | HTMLCanvasElement | HTMLVideoElement
 	 **/
 	public image:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement = null;
+	private _imageNaturalWidth:number = null;
+	private _imageNaturalHeight:number = null;
 
 	/**
 	 * Specifies an area of the source image to draw. If omitted, the whole image will be drawn.
@@ -97,6 +99,7 @@ class Bitmap extends DisplayObject
 	 * @default null
 	 */
 	public destinationRect:Rectangle = null;
+	public loadDirect:boolean = false;
 
 	/**
 	 * @class Bitmap
@@ -111,7 +114,7 @@ class Bitmap extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(imageOrUri:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri?:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
@@ -125,7 +128,14 @@ class Bitmap extends DisplayObject
 			image = imageOrUri;
 		}
 
-		var tagName:string = image.tagName.toLowerCase();
+
+		var tagName:string = '';
+
+		if( image ){
+			tagName = image.tagName.toLowerCase();
+		}
+
+
 
 		switch(tagName)
 		{
@@ -134,7 +144,7 @@ class Bitmap extends DisplayObject
 				this.image = <HTMLImageElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
-				if( ( <HTMLImageElement> this.image).complete ){
+				if( this.image && (this.image['complete'] || this.image['getContext'] || this.image.readyState >= 2) ){
 					this.onLoad();
 				} else {
 					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad );
@@ -147,6 +157,10 @@ class Bitmap extends DisplayObject
 				this.image = <HTMLVideoElement> image;
 				this.bitmapType = BitmapType.VIDEO;
 
+				if( this.width == 0 || this.height == 0 ){
+					throw new Error('width and height must be set when using canvas / video');
+				}
+
 				this.onLoad();
 				break;
 			}
@@ -156,29 +170,49 @@ class Bitmap extends DisplayObject
 				this.image = <HTMLCanvasElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
+				if( this.width == 0 || this.height == 0 ){
+					throw new Error('width and height must be set when using canvas / video');
+				}
+
 				this.onLoad();
 				break;
 			}
 		}
+
 	}
 
 	public onLoad = ():void =>
 	{
-		this.loaded = true;
-
-		if(!this.width)
+		if(this.bitmapType == BitmapType.IMAGE )
 		{
-			this.width = this.image.width;
-		}
+			this._imageNaturalWidth = (<HTMLImageElement>this.image).naturalWidth;
+			this._imageNaturalHeight = (<HTMLImageElement>this.image).naturalHeight;
 
-		if(!this.height)
-		{
-			this.height = this.image.height;
+			if(!this.width)
+			{
+				this.width = this._imageNaturalWidth;
+			}
+
+			if(!this.height)
+			{
+				this.height = this._imageNaturalHeight;
+			}
+		} else {
+			if(!this.width)
+			{
+				this.width = this.image.width;
+			}
+
+			if(!this.height)
+			{
+				this.height = this.image.height;
+			}
 		}
 
 		this.isDirty = true;
-
 		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+
+		this.loaded = true;
 	}
 
 	/**
@@ -208,12 +242,8 @@ class Bitmap extends DisplayObject
 	 **/
 	public draw(ctx, ignoreCache):boolean
 	{
-		if(this.loaded && this.isVisible())
+		if(this.isVisible())
 		{
-
-
-			
-
 			if(super.draw(ctx, ignoreCache))
 			{
 				return true;
@@ -236,7 +266,11 @@ class Bitmap extends DisplayObject
 			}
 			else
 			{
-				ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
+				if( this.bitmapType == BitmapType.IMAGE ){
+					ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+				} else {
+					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height );
+				}
 			}
 
 
