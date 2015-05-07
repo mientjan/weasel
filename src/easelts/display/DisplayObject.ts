@@ -1184,7 +1184,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Point} A Point instance with x and y properties correlating to the transformed position in the
 	 * display object's coordinate space.
 	 **/
-	public globalToLocal(x:number, y:number)
+	public globalToLocal(x:number, y:number):Point
 	{
 		var mtx = this.getConcatenatedMatrix(this._matrix);
 		if(mtx == null)
@@ -1212,7 +1212,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Point} Returns a Point instance with x and y properties correlating to the transformed position
 	 * in the target's coordinate space.
 	 **/
-	public localToLocal(x, y, target)
+	public localToLocal(x:number, y:number, target:DisplayObject):Point
 	{
 		var pt = this.localToGlobal(x, y);
 		return target.globalToLocal(pt.x, pt.y);
@@ -1600,7 +1600,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {CanvasRenderingContext2D} ctx
 	 * @return {Boolean}
 	 **/
-	protected _testHit(ctx)
+	protected _testHit(ctx:CanvasRenderingContext2D):boolean
 	{
 		var hit = false;
 		if(this.isHitable){
