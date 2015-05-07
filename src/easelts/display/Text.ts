@@ -31,7 +31,6 @@
 import DisplayObject = require('./DisplayObject');
 import Rectangle = require('../geom/Rectangle');
 import Methods = require('../util/Methods');
-import Bounds = require('../geom/Bounds');
 
 /**
  * @module easelts
@@ -65,6 +64,8 @@ import Bounds = require('../geom/Bounds');
  */
 class Text extends DisplayObject
 {
+	public static EVENT_ON_TEXT_CHANGE = 'onTextChange';
+
 	/**
 	 *
 	 */
@@ -105,6 +106,8 @@ class Text extends DisplayObject
 
 	public static _workingContext:CanvasRenderingContext2D;
 
+	public isDebugMode:boolean = false;
+
 	// public properties:
 	/**
 	 * The text to display.
@@ -113,7 +116,6 @@ class Text extends DisplayObject
 	 **/
 	public set text(value:string)
 	{
-
 		// replace space before and after newlines
 		value = value.replace(/\s+\n|\n\s+/g, "\n");
 
@@ -131,6 +133,8 @@ class Text extends DisplayObject
 				this.setHeight('auto');
 			}
 		}
+
+		this.dispatchEvent(Text.EVENT_ON_TEXT_CHANGE);
 	}
 
 	public get text()
@@ -219,9 +223,9 @@ class Text extends DisplayObject
 	 * "#F00", "red", or "#FF0000").
 	 * @protected
 	 */
-	constructor(text:string, font:string = '10px sans-serif', color:string = '#000000')
+	constructor(text:string, font:string = '10px sans-serif', color:string = '#000000', width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
-		super(1, 1, 0, 0, 0, 0);
+		super(width, height, x, y, regX, regY);
 
 		// positioning is wrong when a text draw call has no text.
 		if(text.length == 0)
@@ -304,6 +308,19 @@ class Text extends DisplayObject
 		}
 
 		this._drawText(this._prepContext(ctx));
+
+		ctx.save();
+
+		if(this.isDebugMode)
+		{
+			ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = '#FFF';
+			ctx.rect(0, 0, this.width, this.height);
+			ctx.stroke();
+		}
+		ctx.restore();
+
 		return true;
 	}
 
@@ -324,76 +341,89 @@ class Text extends DisplayObject
 	 * @method getExactSize
 	 * @returns Bounds
 	 */
-	public getExactSize():Bounds
+	public getExactSize():Rectangle
 	{
 		var width = Math.ceil(this.getMeasuredWidth());
-		var height = Math.ceil(this.getMeasuredHeight() * 1.6);
+		var height = Math.ceil(this.getMeasuredHeight() * 1.4);
 		var rowHeight = Math.ceil(this._getMeasuredWidth('M') * 2);
 		var cacheArguments = null;
 
 		var color = this.color;
-		this.color = '#000';
+		this.color = '#00000';
 
 		var y = 0;
 		var x = 0;
 
-		switch( this.textAlign ){
-            case Text.TEXT_ALIGN_CENTER:{
-                x = -width / 2;
-                break;
-            }
+		switch(this.textAlign)
+		{
+			case Text.TEXT_ALIGN_CENTER:
+			{
+				x = -width / 2;
+				break;
+			}
 
-            case Text.TEXT_ALIGN_END:
-            case Text.TEXT_ALIGN_RIGHT:{
-                x = -width;
-                break;
-            }
+			case Text.TEXT_ALIGN_END:
+			case Text.TEXT_ALIGN_RIGHT:
+			{
+				x = -width;
+				break;
+			}
 		}
 
-		switch( this.textBaseline ){
+		switch(this.textBaseline)
+		{
 
-            case Text.TEXT_BASELINE_ALPHABETIC:{
-                y = -rowHeight;
-                break;
-            }
+			case Text.TEXT_BASELINE_ALPHABETIC:
+			{
+				y = -rowHeight;
+				break;
+			}
 
-            case Text.TEXT_BASELINE_BOTTOM:{
-                y = -rowHeight;
-                break;
-            }
+			case Text.TEXT_BASELINE_BOTTOM:
+			{
+				y = -rowHeight;
+				break;
+			}
 
-            case Text.TEXT_BASELINE_TOP:
-            case Text.TEXT_BASELINE_HANGING:{
-                //y = height;
-                break;
-            }
+			case Text.TEXT_BASELINE_TOP:
+			case Text.TEXT_BASELINE_HANGING:
+			{
+				//y = height;
+				break;
+			}
 
-            case Text.TEXT_BASELINE_IDEOGRAPHIC:{
-                y = -rowHeight;
-                break;
-            }
+			case Text.TEXT_BASELINE_IDEOGRAPHIC:
+			{
+				y = -rowHeight;
+				break;
+			}
 
-            case Text.TEXT_BASELINE_MIDDLE:{
-                y = -rowHeight / 2;
-                break;
-            }
+			case Text.TEXT_BASELINE_MIDDLE:
+			{
+				y = -rowHeight / 2;
+				break;
+			}
 
 		}
 
-        if(this.cacheCanvas)
-        {
-            cacheArguments = [ this._cacheX, this._cacheY, this._cacheWidth, this._cacheHeight, this._cacheScale ];
-        }
+		if(this.cacheCanvas)
+		{
+			cacheArguments = [this._cacheX, this._cacheY, this._cacheWidth, this._cacheHeight, this._cacheScale];
+		}
 
-        this.cache(x, y, width, height);
+		this.cache(x, y, width, height, 1);
+
 		var ctx = this.cacheCanvas.getContext('2d');
 		var img = ctx.getImageData(0, 0, width, height);
 
-        if(cacheArguments){
-            this.cache.apply(this, cacheArguments);
-        } else {
+		if(cacheArguments)
+		{
+			this.cache.apply(this, cacheArguments);
+		}
+		else
+		{
 			this.uncache();
-        }
+		}
 
 		var data = img.data,
 			x0 = width,
@@ -406,7 +436,7 @@ class Text extends DisplayObject
 			var px = p % width;
 			var py = Math.floor(p / width);
 
-			if( data[i - 3] > 0 ||
+			if(data[i - 3] > 0 ||
 				data[i - 2] > 0 ||
 				data[i - 1] > 0 ||
 				data[i] > 0)
@@ -420,12 +450,12 @@ class Text extends DisplayObject
 
 		this.color = color;
 
-        x0 += x;
-        y0 += y;
-        x1 += x;
-        y1 += y;
+		x0 += x;
+		y0 += y;
+		x1 += x;
+		y1 += y;
 
-		return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
+		return new Rectangle(x0, y0, x1 - x0, y1 - y0);
 	}
 
 	/**
@@ -449,7 +479,7 @@ class Text extends DisplayObject
 	 **/
 	public getMeasuredHeight():number
 	{
-		return  this._drawText(null, {}).height;
+		return this._drawText(null, {}).height;
 	}
 
 	/**
