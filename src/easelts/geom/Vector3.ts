@@ -25,15 +25,12 @@
 
 import m4 = require('./Matrix4');
 import m3 = require('./Matrix3');
+import Vector4 = require('./Vector4');
+import Quaternion = require('./Quaternion');
 import MathUtil = require('../util/MathUtil');
 
 // interface
 import IVertex3 = require('../interface/IVector3');
-
-/**
- * @module easelts
- */
-
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author *kile / http://kile.stravaganza.org/
@@ -41,41 +38,23 @@ import IVertex3 = require('../interface/IVector3');
  * @author mikael emtinger / http://gomo.se/
  * @author egraether / http://egraether.com/
  * @author WestLangley / http://github.com/WestLangley
- * @author Mient-jan Stelling
- *
- * @class Vector3
  */
-class Vector3 implements IVertex3
+
+class Vector3
 {
-	/**
-	 * X position.
-	 * @property x
-	 * @type Number
-	 **/
+	public x:number;
+	public y:number;
+	public z:number;
 
-	/**
-	 * Y position.
-	 * @property y
-	 * @type Number
-	 **/
-
-	/**
-	 * Z position.
-	 * @property z
-	 * @type Number
-	 **/
-
-	/**
-	 *
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 */
-	constructor(public x:number, public y:number, public z:number)
+	constructor(x:number = 0, y:number = 0, z:number = 0)
 	{
+
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
-	public set(x, y, z):Vector3
+	public set(x:number, y:number, z:number)
 	{
 
 		this.x = x;
@@ -86,31 +65,34 @@ class Vector3 implements IVertex3
 
 	}
 
-	public setX(x):Vector3
+	public setX(x)
 	{
 
 		this.x = x;
 
 		return this;
+
 	}
 
-	public setY(y):Vector3
+	public setY(y)
 	{
 
 		this.y = y;
 
 		return this;
+
 	}
 
-	public setZ(z):Vector3
+	public setZ(z)
 	{
 
 		this.z = z;
 
 		return this;
+
 	}
 
-	public setComponent(index:number, value:number):void
+	public setComponent(index, value)
 	{
 
 		switch(index)
@@ -132,7 +114,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public getComponent(index:number):number
+	public getComponent(index)
 	{
 
 		switch(index)
@@ -151,37 +133,25 @@ class Vector3 implements IVertex3
 
 	}
 
-	public copy(v):Vector3
+	public copy(v)
 	{
-
 		this.x = v.x;
 		this.y = v.y;
 		this.z = v.z;
 
 		return this;
-
 	}
 
-	public add(v, w):Vector3
+	public add(v:Vector3)
 	{
-
-		if(w !== undefined)
-		{
-
-			console.warn('THREE.Vector3: .add() now only accepts one argument. Use .addVectors( a, b ) instead.');
-			return this.addVectors(v, w);
-
-		}
-
 		this.x += v.x;
 		this.y += v.y;
 		this.z += v.z;
 
 		return this;
-
 	}
 
-	public addScalar(s):Vector3
+	public addScalar(s:number)
 	{
 
 		this.x += s;
@@ -192,29 +162,36 @@ class Vector3 implements IVertex3
 
 	}
 
-	public addVectors(a, b):Vector3
+	public addVectors(a:Vector3, b:Vector3):Vector3
 	{
-
 		this.x = a.x + b.x;
 		this.y = a.y + b.y;
 		this.z = a.z + b.z;
 
 		return this;
-
 	}
 
-	public sub(v)
+	public sub(v:Vector3):Vector3
 	{
-
 		this.x -= v.x;
 		this.y -= v.y;
 		this.z -= v.z;
 
 		return this;
+	}
+
+	public subScalar(s:number)
+	{
+
+		this.x -= s;
+		this.y -= s;
+		this.z -= s;
+
+		return this;
 
 	}
 
-	public subVectors(a, b):Vector3
+	public subVectors(a:Vector3, b:Vector3):Vector3
 	{
 
 		this.x = a.x - b.x;
@@ -225,7 +202,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public multiply(v)
+	public multiply(v:Vector3):Vector3
 	{
 
 		this.x *= v.x;
@@ -247,7 +224,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public multiplyVectors(a, b):Vector3
+	public multiplyVectors(a, b)
 	{
 
 		this.x = a.x * b.x;
@@ -258,33 +235,21 @@ class Vector3 implements IVertex3
 
 	}
 
-	//	private __quaternion0:Quaternion;
-	//	public applyEuler ( euler ) {
-	//
-	//			if ( euler instanceof Euler === false ) {
-	//
-	//				console.error( 'THREE.Vector3: .applyEuler() now expects a Euler rotation rather than a Vector3 and order.' );
-	//
-	//			}
-	//
-	//			if ( this.__quaternion0 === void 0 ) this.__quaternion0 = new THREE.Quaternion();
-	//
-	//			this.applyQuaternion( this.__quaternion0.setFromEuler( euler ) );
-	//
-	//			return this;
-	//
-	//		}
+	private _quaternionApplyEuler = new Quaternion();
 
-	//	private __quaternion1:Quaternion;
-	//	public applyAxisAngle ( axis, angle ) {
-	//
-	//		if ( this.__quaternion1 === undefined ) this.__quaternion1 = new Quaternion();
-	//
-	//		this.applyQuaternion( this.__quaternion1.setFromAxisAngle( axis, angle ) );
-	//
-	//		return this;
-	//
-	//	}
+	public applyEuler(euler)
+	{
+		this.applyQuaternion(this._quaternionApplyEuler.setFromEuler(euler));
+		return this;
+	}
+
+	private _quaternionApplyAxisAngle = new Quaternion();
+
+	public applyAxisAngle(axis:Vector4, angle:number):Vector3
+	{
+		this.applyQuaternion(this._quaternionApplyAxisAngle.setFromAxisAngle(axis, angle));
+		return this;
+	}
 
 	public applyMatrix3(m):Vector3
 	{
@@ -303,7 +268,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public applyMatrix4(m:m4.Matrix4):Vector3
+	public applyMatrix4(m):Vector3
 	{
 
 		// input: THREE.Matrix4 affine matrix
@@ -320,7 +285,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public applyProjection(m:m4.Matrix4):Vector3
+	public applyProjection(m):Vector3
 	{
 
 		// input: THREE.Matrix4 projection matrix
@@ -367,33 +332,22 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __projectMatrix:m4.Matrix4 = null;
-
-	public project(camera)
+	private _projectMatrix:m4.Matrix4 = new m4.Matrix4();
+	public project(camera:any):Vector3
 	{
-		if(!this.__projectMatrix){
-			this.__projectMatrix = new m4.Matrix4();
-		}
+		this._projectMatrix.multiplyMatrices(<m4.Matrix4> camera.projectionMatrix, <m4.Matrix4> this._projectMatrix.getInverse(camera.matrixWorld));
+		return this.applyProjection(this._projectMatrix);
+	}
 
-		var matrix = this.__projectMatrix;
-		matrix.multiplyMatrices(camera.projectionMatrix, matrix.getInverse(camera.matrixWorld));
-		return this.applyProjection(matrix);
+	private _unprojectMatrix:m4.Matrix4 = new m4.Matrix4();
+	public unproject(camera:any):Vector3
+	{
+		this._unprojectMatrix.multiplyMatrices(<m4.Matrix4> camera.matrixWorld, <m4.Matrix4> this._unprojectMatrix.getInverse(camera.projectionMatrix));
+		return this.applyProjection(this._unprojectMatrix);
 
 	}
 
-	private __unprojectMatrix:m4.Matrix4 = null;
-
-	public unproject(camera)
-	{
-		if(!this.__unprojectMatrix){
-			this.__unprojectMatrix = new m4.Matrix4();
-		}
-		var matrix = this.__unprojectMatrix;
-		matrix.multiplyMatrices(camera.matrixWorld, matrix.getInverse(camera.projectionMatrix));
-		return this.applyProjection(matrix);
-	}
-
-	public transformDirection(m:m4.Matrix4):Vector3
+	public transformDirection(m):Vector3
 	{
 
 		// input: THREE.Matrix4 affine matrix
@@ -450,9 +404,8 @@ class Vector3 implements IVertex3
 
 	}
 
-	public min(v):Vector3
+	public min(v:Vector3):Vector3
 	{
-
 		if(this.x > v.x)
 		{
 
@@ -506,7 +459,13 @@ class Vector3 implements IVertex3
 
 	}
 
-	public clamp(min, max):Vector3
+	/**
+	 *
+	 * @param {Vector3} min
+	 * @param {Vector3} max
+	 * @returns {Vector3}
+	 */
+	public clamp(min:Vector3, max:Vector3):Vector3
 	{
 
 		// This function assumes min < max, if this assumption isn't true it will not operate correctly
@@ -551,40 +510,27 @@ class Vector3 implements IVertex3
 		}
 
 		return this;
-
 	}
 
-	private __clampScalarMin:Vector3 = null;
-	private __clampScalarMax:Vector3 = null;
 
-	public clampScalar(minVal:number, maxVal:number)
+	private _minClampScalar = new Vector3();
+	private _maxClampScalar = new Vector3();
+
+	public clampScalar(minVal:number, maxVal)
 	{
-		if(!this.__clampScalarMin){
-			this.__clampScalarMin = new Vector3(0, 0, 0);
-		}
+		this._minClampScalar.set(minVal, minVal, minVal);
+		this._maxClampScalar.set(maxVal, maxVal, maxVal);
 
-		if(!this.__clampScalarMax){
-			this.__clampScalarMax = new Vector3(0, 0, 0);
-		}
-
-		var min = this.__clampScalarMin;
-		var max = this.__clampScalarMax;
-
-		min.set(minVal, minVal, minVal);
-		max.set(maxVal, maxVal, maxVal);
-
-		return this.clamp(min, max);
+		return this.clamp(this._minClampScalar, this._maxClampScalar);
 	}
 
 	public floor():Vector3
 	{
-
 		this.x = Math.floor(this.x);
 		this.y = Math.floor(this.y);
 		this.z = Math.floor(this.z);
 
 		return this;
-
 	}
 
 	public ceil():Vector3
@@ -666,7 +612,7 @@ class Vector3 implements IVertex3
 
 	}
 
-	public setLength(l:number):Vector3
+	public setLength(l):Vector3
 	{
 
 		var oldLength = this.length();
@@ -681,12 +627,21 @@ class Vector3 implements IVertex3
 
 	}
 
-	public lerp(v:Vector3, alpha:number):Vector3
+	public lerp(v, alpha):Vector3
 	{
 
 		this.x += ( v.x - this.x ) * alpha;
 		this.y += ( v.y - this.y ) * alpha;
 		this.z += ( v.z - this.z ) * alpha;
+
+		return this;
+
+	}
+
+	public lerpVectors(v1, v2, alpha):Vector3
+	{
+
+		this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
 
 		return this;
 
@@ -719,144 +674,111 @@ class Vector3 implements IVertex3
 
 	}
 
-	private __projectOnVector_v1:Vector3 = null;
-	private __projectOnVector_dot:Vector3 = null;
 
-	public projectOnVector(vector:Vector3)
+	private _v1ProjectOnVector:Vector3 = new Vector3();
+	private _dotProjectOnVector:number = null;
+
+	public projectOnVector(v:Vector3):Vector3
+		{
+			this._v1ProjectOnVector.copy(v).normalize();
+
+			this._dotProjectOnVector = this.dot(this._v1ProjectOnVector);
+
+			return this.copy(this._v1ProjectOnVector).multiplyScalar(this._dotProjectOnVector);
+
+		}
+
+	private _v1ProjectOnPlane = new Vector3();
+	public projectOnPlane(planeNormal:Vector3)
 	{
-		if(!this.__projectOnVector_v1){
-			this.__projectOnVector_v1 = new Vector3(0, 0, 0);
-		}
-
-		if(!this.__projectOnVector_dot){
-			this.__projectOnVector_dot = new Vector3(0, 0, 0);
-		}
-
-		var v1 = this.__projectOnVector_v1;
-
-		v1.copy(vector).normalize();
-
-		var dot = this.dot(v1);
-
-		return this.copy(v1).multiplyScalar(dot);
-
+		this._v1ProjectOnPlane.copy(this).projectOnVector(planeNormal);
+		return this.sub(this._v1ProjectOnPlane);
 	}
 
-	private __projectOnPlane_v1:Vector3 = null;
-
-	projectOnPlane(planeNormal:Vector3)
-	{
-		if(!this.__projectOnPlane_v1){
-			this.__projectOnPlane_v1 = new Vector3(0, 0, 0);
-		}
-		var v1 = this.__projectOnPlane_v1;
-
-
-		v1.copy(this).projectOnVector(planeNormal);
-
-		return this.sub(v1);
-
-	}
-
+	private _v1Reflect = new Vector3();
 
 	/**
 	 * reflect incident vector off plane orthogonal to normal
 	 * normal is assumed to have unit length
-	 *
-	 * @param {Vector3} normal
+	 * @param normal
 	 * @returns {Vector3}
 	 */
-	private __reflect_v1:Vector3 = null;
-
-	public reflect(normal:Vector3)
+	public reflect(normal:Vector3):Vector3
 	{
-		if(!this.__reflect_v1){
-			this.__reflect_v1 = new Vector3(0, 0, 0);
-		}
-		var v1 = this.__reflect_v1;
-		return this.sub(v1.copy(normal).multiplyScalar(2 * this.dot(normal)));
+
+		return this.sub(this._v1Reflect.copy(normal).multiplyScalar(2 * this.dot(normal)));
+
 	}
 
 
 	public angleTo(v:Vector3):number
 	{
-
 		var theta = this.dot(v) / ( this.length() * v.length() );
 
 		// clamp, to handle numerical problems
-
 		return Math.acos(MathUtil.clamp(theta, -1, 1));
-
 	}
 
-	public distanceTo(v:Vector3):number
+	public distanceTo(v:Vector3)
 	{
-
 		return Math.sqrt(this.distanceToSquared(v));
-
 	}
 
 	public distanceToSquared(v:Vector3):number
 	{
-
 		var dx = this.x - v.x;
 		var dy = this.y - v.y;
 		var dz = this.z - v.z;
 
 		return dx * dx + dy * dy + dz * dz;
-
 	}
 
+	//	public setEulerFromRotationMatrix( m, order ) {
 	//
-	//	public setEulerFromRotationMatrix ( m:Vector3, order):Vector3 {
+	//		THREE.error( 'THREE.Vector3: .setEulerFromRotationMatrix() has been removed. Use Euler.setFromRotationMatrix() instead.' );
 	//
-	//		console.error( 'THREE.Vector3: .setEulerFromRotationMatrix() has been removed. Use Euler.setFromRotationMatrix() instead.' );
+	//	}
+	//
+	//	public setEulerFromQuaternion( q, order ) {
+	//
+	//		THREE.error( 'THREE.Vector3: .setEulerFromQuaternion() has been removed. Use Euler.setFromQuaternion() instead.' );
 	//
 	//	}
 	//
-	//	public setEulerFromQuaternion ( q, order):Vector3 {
+	//	public getPositionFromMatrix( m ) {
 	//
-	//		console.error( 'THREE.Vector3: .setEulerFromQuaternion() has been removed. Use Euler.setFromQuaternion() instead.' );
-	//
-	//	}
-
-	//	public getPositionFromMatrix ( m):Vector3 {
-	//
-	//		console.warn( 'THREE.Vector3: .getPositionFromMatrix() has been renamed to .setFromMatrixPosition().' );
+	//		THREE.warn( 'THREE.Vector3: .getPositionFromMatrix() has been renamed to .setFromMatrixPosition().' );
 	//
 	//		return this.setFromMatrixPosition( m );
 	//
 	//	}
-
-	//	public getScaleFromMatrix ( m):Vector3 {
 	//
-	//		console.warn( 'THREE.Vector3: .getScaleFromMatrix() has been renamed to .setFromMatrixScale().' );
+	//	public getScaleFromMatrix( m ) {
+	//
+	//		THREE.warn( 'THREE.Vector3: .getScaleFromMatrix() has been renamed to .setFromMatrixScale().' );
 	//
 	//		return this.setFromMatrixScale( m );
 	//	}
 	//
-	//	public getColumnFromMatrix ( index, matrix):Vector3 {
+	//	public getColumnFromMatrix( index, matrix ) {
 	//
-	//		console.warn( 'THREE.Vector3: .getColumnFromMatrix() has been renamed to .setFromMatrixColumn().' );
+	//		THREE.warn( 'THREE.Vector3: .getColumnFromMatrix() has been renamed to .setFromMatrixColumn().' );
 	//
 	//		return this.setFromMatrixColumn( index, matrix );
 	//
 	//	}
 
-	public setFromMatrixPosition(m):Vector3
+	public setFromMatrixPosition(m:m4.Matrix4):Vector3
 	{
-
 		this.x = m.elements[ 12 ];
 		this.y = m.elements[ 13 ];
 		this.z = m.elements[ 14 ];
 
 		return this;
-
 	}
 
-	public setFromMatrixScale(m):Vector3
+	public setFromMatrixScale(m:m4.Matrix4):Vector3
 	{
-
 		var sx = this.set(m.elements[ 0 ], m.elements[ 1 ], m.elements[  2 ]).length();
 		var sy = this.set(m.elements[ 4 ], m.elements[ 5 ], m.elements[  6 ]).length();
 		var sz = this.set(m.elements[ 8 ], m.elements[ 9 ], m.elements[ 10 ]).length();
@@ -870,7 +792,6 @@ class Vector3 implements IVertex3
 
 	public setFromMatrixColumn(index, matrix):Vector3
 	{
-
 		var offset = index * 4;
 
 		var me = matrix.elements;
@@ -880,53 +801,52 @@ class Vector3 implements IVertex3
 		this.z = me[ offset + 2 ];
 
 		return this;
-
 	}
 
-	public equals(v:Vector3):boolean
+	public equals(v:Vector3)
 	{
-
 		return ( ( v.x === this.x ) && ( v.y === this.y ) && ( v.z === this.z ) );
-
 	}
 
-	public fromArray(array:number[], offset:number = 0):Vector3
+	public fromArray(array, offset):Vector3
 	{
+		if(offset === undefined)
+		{
+			offset = 0;
+		}
 
 		this.x = array[ offset ];
 		this.y = array[ offset + 1 ];
 		this.z = array[ offset + 2 ];
 
 		return this;
-
 	}
 
-	public toArray(array:number[] = [], offset:number = 0):number[]
+	public toArray(array = [], offset:number = 0)
 	{
-
 		array[ offset ] = this.x;
 		array[ offset + 1 ] = this.y;
 		array[ offset + 2 ] = this.z;
 
 		return array;
-
 	}
+
+//	public fromAttribute(attribute, index, offset:number = 0):Vector3
+//	{
+//		index = index * attribute.itemSize + offset;
+//
+//		this.x = attribute.array[ index ];
+//		this.y = attribute.array[ index + 1 ];
+//		this.z = attribute.array[ index + 2 ];
+//
+//		return this;
+//	}
 
 	public clone():Vector3
 	{
 		return new Vector3(this.x, this.y, this.z);
 	}
 
-
-	/**
-	 * Returns a string representation of this object.
-	 * @method toString
-	 * @return {String} a string representation of the instance.
-	 **/
-	public toString():string
-	{
-		return "[Vector3 (x=" + this.x + " y=" + this.y + "  z=" + this.z + ")]";
-	}
 }
 
 export = Vector3;
