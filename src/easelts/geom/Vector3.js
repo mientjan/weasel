@@ -1,5 +1,64 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 define(["require", "exports", './Matrix4', '../util/MathUtil'], function (require, exports, m4, MathUtil) {
+    /**
+     * @module easelts
+     */
+    /**
+     * @author mrdoob / http://mrdoob.com/
+     * @author *kile / http://kile.stravaganza.org/
+     * @author philogb / http://blog.thejit.org/
+     * @author mikael emtinger / http://gomo.se/
+     * @author egraether / http://egraether.com/
+     * @author WestLangley / http://github.com/WestLangley
+     * @author Mient-jan Stelling
+     *
+     * @class Vector3
+     */
     var Vector3 = (function () {
+        /**
+         * X position.
+         * @property x
+         * @type Number
+         **/
+        /**
+         * Y position.
+         * @property y
+         * @type Number
+         **/
+        /**
+         * Z position.
+         * @property z
+         * @type Number
+         **/
+        /**
+         *
+         * @param {number} x
+         * @param {number} y
+         * @param {number} z
+         */
         function Vector3(x, y, z) {
             this.x = x;
             this.y = y;
@@ -11,6 +70,13 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.__projectOnVector_v1 = null;
             this.__projectOnVector_dot = null;
             this.__projectOnPlane_v1 = null;
+            /**
+             * reflect incident vector off plane orthogonal to normal
+             * normal is assumed to have unit length
+             *
+             * @param {Vector3} normal
+             * @returns {Vector3}
+             */
             this.__reflect_v1 = null;
         }
         Vector3.prototype.set = function (x, y, z) {
@@ -116,6 +182,32 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.z = a.z * b.z;
             return this;
         };
+        //	private __quaternion0:Quaternion;
+        //	public applyEuler ( euler ) {
+        //
+        //			if ( euler instanceof Euler === false ) {
+        //
+        //				console.error( 'THREE.Vector3: .applyEuler() now expects a Euler rotation rather than a Vector3 and order.' );
+        //
+        //			}
+        //
+        //			if ( this.__quaternion0 === void 0 ) this.__quaternion0 = new THREE.Quaternion();
+        //
+        //			this.applyQuaternion( this.__quaternion0.setFromEuler( euler ) );
+        //
+        //			return this;
+        //
+        //		}
+        //	private __quaternion1:Quaternion;
+        //	public applyAxisAngle ( axis, angle ) {
+        //
+        //		if ( this.__quaternion1 === undefined ) this.__quaternion1 = new Quaternion();
+        //
+        //		this.applyQuaternion( this.__quaternion1.setFromAxisAngle( axis, angle ) );
+        //
+        //		return this;
+        //
+        //	}
         Vector3.prototype.applyMatrix3 = function (m) {
             var x = this.x;
             var y = this.y;
@@ -127,6 +219,7 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this;
         };
         Vector3.prototype.applyMatrix4 = function (m) {
+            // input: THREE.Matrix4 affine matrix
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
             this.x = e[0] * x + e[4] * y + e[8] * z + e[12];
@@ -135,9 +228,10 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this;
         };
         Vector3.prototype.applyProjection = function (m) {
+            // input: THREE.Matrix4 projection matrix
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
-            var d = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
+            var d = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]); // perspective divide
             this.x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * d;
             this.y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * d;
             this.z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * d;
@@ -151,10 +245,12 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             var qy = q.y;
             var qz = q.z;
             var qw = q.w;
+            // calculate quat * vector
             var ix = qw * x + qy * z - qz * y;
             var iy = qw * y + qz * x - qx * z;
             var iz = qw * z + qx * y - qy * x;
             var iw = -qx * x - qy * y - qz * z;
+            // calculate result * inverse quat
             this.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
             this.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
             this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
@@ -177,6 +273,8 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this.applyProjection(matrix);
         };
         Vector3.prototype.transformDirection = function (m) {
+            // input: THREE.Matrix4 affine matrix
+            // vector interpreted as a direction
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
             this.x = e[0] * x + e[4] * y + e[8] * z;
@@ -230,6 +328,7 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this;
         };
         Vector3.prototype.clamp = function (min, max) {
+            // This function assumes min < max, if this assumption isn't true it will not operate correctly
             if (this.x < min.x) {
                 this.x = min.x;
             }
@@ -365,6 +464,7 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
         };
         Vector3.prototype.angleTo = function (v) {
             var theta = this.dot(v) / (this.length() * v.length());
+            // clamp, to handle numerical problems
             return Math.acos(MathUtil.clamp(theta, -1, 1));
         };
         Vector3.prototype.distanceTo = function (v) {
@@ -376,6 +476,39 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             var dz = this.z - v.z;
             return dx * dx + dy * dy + dz * dz;
         };
+        //
+        //	public setEulerFromRotationMatrix ( m:Vector3, order):Vector3 {
+        //
+        //		console.error( 'THREE.Vector3: .setEulerFromRotationMatrix() has been removed. Use Euler.setFromRotationMatrix() instead.' );
+        //
+        //	}
+        //
+        //	public setEulerFromQuaternion ( q, order):Vector3 {
+        //
+        //		console.error( 'THREE.Vector3: .setEulerFromQuaternion() has been removed. Use Euler.setFromQuaternion() instead.' );
+        //
+        //	}
+        //	public getPositionFromMatrix ( m):Vector3 {
+        //
+        //		console.warn( 'THREE.Vector3: .getPositionFromMatrix() has been renamed to .setFromMatrixPosition().' );
+        //
+        //		return this.setFromMatrixPosition( m );
+        //
+        //	}
+        //	public getScaleFromMatrix ( m):Vector3 {
+        //
+        //		console.warn( 'THREE.Vector3: .getScaleFromMatrix() has been renamed to .setFromMatrixScale().' );
+        //
+        //		return this.setFromMatrixScale( m );
+        //	}
+        //
+        //	public getColumnFromMatrix ( index, matrix):Vector3 {
+        //
+        //		console.warn( 'THREE.Vector3: .getColumnFromMatrix() has been renamed to .setFromMatrixColumn().' );
+        //
+        //		return this.setFromMatrixColumn( index, matrix );
+        //
+        //	}
         Vector3.prototype.setFromMatrixPosition = function (m) {
             this.x = m.elements[12];
             this.y = m.elements[13];
@@ -420,6 +553,11 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
         Vector3.prototype.clone = function () {
             return new Vector3(this.x, this.y, this.z);
         };
+        /**
+         * Returns a string representation of this object.
+         * @method toString
+         * @return {String} a string representation of the instance.
+         **/
         Vector3.prototype.toString = function () {
             return "[Vector3 (x=" + this.x + " y=" + this.y + "  z=" + this.z + ")]";
         };

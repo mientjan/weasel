@@ -31,6 +31,10 @@ define(["require", "exports"], function (require, exports) {
             x = (x - min) / (max - min);
             return x * x * x * (x * (x * 6 - 15) + 10);
         };
+        MathUtil.lerp = function (fromValue, toValue, alpha) {
+            fromValue += (toValue - fromValue) * alpha;
+            return fromValue;
+        };
         MathUtil.random16 = function () {
             return (65280 * Math.random() + 255 * Math.random()) / 65535;
         };

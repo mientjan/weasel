@@ -104,6 +104,11 @@ class MathUtil
 	}
 
 
+	public static lerp(fromValue:number, toValue:number, alpha:number):number
+	{
+		fromValue += ( toValue - fromValue ) * alpha;
+		return fromValue;
+	}
 
 	/**
 	 * 	Random float from <0, 1> with 16 bits of randomness
