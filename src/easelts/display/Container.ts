@@ -92,7 +92,8 @@ class Container extends DisplayObject
 	 **/
 	public tickChildren:boolean = true;
 
-	public isRenderIsolated:boolean = false;
+	private _isRenderIsolated:boolean = false;
+	private _willUpdateRenderIsolation:boolean = true;
 
 	/**
 	 *
@@ -116,15 +117,6 @@ class Container extends DisplayObject
 	}
 
 	/**
-	 * Has something to do with the Tweents timeline and the createts toolset fro flash animations
-	 * @method initialize
-	 */
-	public initialize()
-	{
-		this['constructor'].call(this)
-	}
-
-	/**
 	 * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
 	 * This does not account for whether it would be visible within the boundaries of the stage.
 	 *
@@ -144,12 +136,14 @@ class Container extends DisplayObject
 	 */
 	public setRenderIsolation(value:boolean):Container
 	{
-		if(this.isRenderIsolated && !value)
+		if(this._isRenderIsolated && !value)
 		{
-			this.isRenderIsolated = value;
+			this._isRenderIsolated = value;
 			this._renderIsolationCanvas = null;
-		} else if( !this.isRenderIsolated && value){
-			this.isRenderIsolated = value;
+		}
+		else if(!this._isRenderIsolated && value)
+		{
+			this._isRenderIsolated = value;
 			this._renderIsolationCanvas = Methods.createCanvas();
 		}
 
@@ -157,16 +151,50 @@ class Container extends DisplayObject
 	}
 
 	/**
+	 * @method isRenderIsolated
+	 * @returns {boolean}
+	 */
+	public isRenderIsolated():boolean
+	{
+		return this._isRenderIsolated
+	}
+
+	/**
+	 * @method willUpdateRenderIsolation
+	 * @returns {boolean}
+	 */
+	public willUpdateRenderIsolation():boolean
+	{
+		return this._willUpdateRenderIsolation
+	}
+
+	/**
+	 * When set to false, no internal calls will be to update the view. Basicle it works like a cache'd container.
+	 *
+	 * @metho
+	 * @param {boolean} value
+	 */
+	public setUpdateRenderIsolation(value:boolean):void
+	{
+		if(!this._isRenderIsolated)
+		{
+			throw new Error('draw calls are not isolated, first call setRenderIsolation(true)')
+		}
+
+		this._willUpdateRenderIsolation = value;
+	}
+
+	/**
 	 *
 	 * @method enableMouseInteraction
 	 */
-	public enableMouseInteraction()
+	public enableMouseInteraction():void
 	{
 		this.mouseChildren = true;
 		super.enableMouseInteraction();
 	}
 
-	public disableMouseInteraction()
+	public disableMouseInteraction():void
 	{
 		this.mouseChildren = false;
 		super.disableMouseInteraction();
@@ -187,41 +215,49 @@ class Container extends DisplayObject
 	{
 		var localCtx:CanvasRenderingContext2D = ctx;
 
-		if(super.draw(localCtx, ignoreCache))
+		if(super.draw(ctx, ignoreCache))
 		{
 			return true;
 		}
 
-		if( this.isRenderIsolated ){
-			var localCtx = this._renderIsolationCanvas.getContext('2d');
-			localCtx.clearRect( 0, 0, this.width, this.height );
-		}
-
-		// this ensures we don't have issues with display list changes that occur during a draw:
-		var list = this.children,
-			child;
-
-		for(var i = 0, l = list.length; i < l; i++)
+		if(this._isRenderIsolated)
 		{
-			child = list[i];
+			localCtx = this._renderIsolationCanvas.getContext('2d');
 
-			if(!child.isVisible())
+			if(this._willUpdateRenderIsolation)
 			{
-				continue;
+				localCtx.clearRect(0, 0, this.width, this.height);
 			}
-
-			// draw the child:
-			localCtx.save();
-			child.updateContext(localCtx);
-			child.draw(localCtx);
-			localCtx.restore();
 		}
 
+		if(this._willUpdateRenderIsolation)
+		{
+			// this ensures we don't have issues with display list changes that occur during a draw:
+			var list = this.children,
+				child;
 
-		if( this.isRenderIsolated ){
+			for(var i = 0, l = list.length; i < l; i++)
+			{
+				child = list[i];
 
-			ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height, 0, 0, this.width, this.height);
-			return true;
+				if(!child.isVisible())
+				{
+					continue;
+				}
+
+				// draw the child:
+				localCtx.save();
+				child.updateContext(localCtx);
+				child.draw(localCtx);
+				localCtx.restore();
+			}
+		}
+
+		if(this._isRenderIsolated)
+		{
+
+			ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
+
 		}
 
 
@@ -343,7 +379,7 @@ class Container extends DisplayObject
 			}
 		}
 
-		child.parent = this;
+		child.parent = <Container> this;
 		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
@@ -744,12 +780,16 @@ class Container extends DisplayObject
 
 	public onResize(width:number, height:number):void
 	{
+		var oldWidth = this.width;
+		var oldHeight = this.height;
+
 		super.onResize(width, height);
 
 		var newWidth = this.width;
 		var newHeight = this.height;
 
-		if( this.isRenderIsolated ){
+		if(this._isRenderIsolated)
+		{
 			this._renderIsolationCanvas.width = newWidth;
 			this._renderIsolationCanvas.height = newHeight;
 		}
@@ -824,7 +864,7 @@ class Container extends DisplayObject
 			var mask = child.mask;
 
 
-			if(!child.visible || (!hitArea && !child.isVisible()) || (mouse && !child.mouseEnabled))
+			if(!child.visible || (!child.isVisible()) || (mouse && !child.mouseEnabled))
 			{
 				continue;
 			}
