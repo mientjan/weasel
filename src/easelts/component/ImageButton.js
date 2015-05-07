@@ -5,8 +5,22 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBehavior'], function (require, exports, DisplayObject, ButtonBehavior) {
+    /**
+     * @class ImageSequence
+     */
     var ImageButton = (function (_super) {
         __extends(ImageButton, _super);
+        /**
+         * idle, mouseover, mousedown, disabled
+         * @param {string[]} images
+         * @param {number} fps
+         * @param {string|number} width
+         * @param {string|number} height
+         * @param {string|number} x
+         * @param {string|number} y
+         * @param {string|number} regX
+         * @param {string|number} regY
+         */
         function ImageButton(data, width, height, x, y, regX, regY) {
             var _this = this;
             if (x === void 0) { x = 0; }

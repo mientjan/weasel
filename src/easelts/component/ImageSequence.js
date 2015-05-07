@@ -5,8 +5,22 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", '../display/Bitmap', '../util/Methods'], function (require, exports, Bitmap, Methods) {
+    /**
+     * @class ImageSequence
+     */
     var ImageSequence = (function (_super) {
         __extends(ImageSequence, _super);
+        /**
+         *
+         * @param {string[]} images
+         * @param {number} fps
+         * @param {string|number} width
+         * @param {string|number} height
+         * @param {string|number} x
+         * @param {string|number} y
+         * @param {string|number} regX
+         * @param {string|number} regY
+         */
         function ImageSequence(images, fps, width, height, x, y, regX, regY) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }

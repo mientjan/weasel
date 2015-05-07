@@ -41,11 +41,20 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./Text"],
                 if (this.width < 100 || this.height < 100) {
                     this._text.visible = false;
                 }
-                this._shape.graphics.clear().beginStroke(Graphics.getRGB(0, 0, 0)).setStrokeStyle(1).drawRect(0, 0, this.width, this.height).setStrokeStyle(1).moveTo(10, 10).lineTo(this.width - 10, this.height - 10).moveTo(this.width - 10, 10).lineTo(10, this.height - 10);
+                this._shape.graphics.clear()
+                    .beginStroke(Graphics.getRGB(0, 0, 0))
+                    .setStrokeStyle(1)
+                    .drawRect(0, 0, this.width, this.height)
+                    .setStrokeStyle(1)
+                    .moveTo(10, 10)
+                    .lineTo(this.width - 10, this.height - 10)
+                    .moveTo(this.width - 10, 10)
+                    .lineTo(10, this.height - 10);
                 if (this.width > 150 && this.height > 150) {
                     var w = this._text.getMeasuredWidth();
                     var h = this._text.getMeasuredHeight();
-                    this._shape.graphics.beginFill(Graphics.getRGB(0, 0, 0)).drawRect(this.width - w >> 1, this.height - h >> 1, w, h);
+                    this._shape.graphics.beginFill(Graphics.getRGB(0, 0, 0))
+                        .drawRect(this.width - w >> 1, this.height - h >> 1, w, h);
                 }
             }
         };
