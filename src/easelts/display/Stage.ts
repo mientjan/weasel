@@ -477,9 +477,9 @@ class Stage extends Container
 	 * and then render the display list to the canvas.
 	 *
 	 * @method update
-	 * @param {TimeEvent} timeEvent
+	 * @param {TimeEvent} [timeEvent=0]
 	 **/
-	public update = (delta:number) =>
+	public update = (delta:number = 0) =>
 	{
 		if(!this.canvas)
 		{
