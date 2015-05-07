@@ -289,7 +289,7 @@ class EventDispatcher
 	 *      this.dispatchEvent("complete");
 	 *
 	 *      // Use an Event instance
-	 *      var event = new createjs.Event("progress");
+	 *      var event = new Event("progress");
 	 *      this.dispatchEvent(event);
 	 *
 	 * @method dispatchEvent
