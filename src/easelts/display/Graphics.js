@@ -51,6 +51,32 @@ define(["require", "exports", '../util/Methods'], function (require, exports, Me
         };
         return RoundRect;
     })();
+    var Oval = (function () {
+        function Oval(x, y, xRadius, yRadius, rotationAngle, startAngle, endAngle) {
+            this.x = x;
+            this.y = y;
+            this.xRadius = xRadius;
+            this.yRadius = yRadius;
+            this.rotationAngle = rotationAngle;
+            this.startAngle = startAngle;
+            this.endAngle = endAngle;
+        }
+        Oval.prototype.exec = function (ctx) {
+            var x = this.x;
+            var y = this.y;
+            for (var i = this.startAngle * Math.PI; i < this.endAngle * Math.PI; i += 0.01) {
+                var xPos = x - (this.xRadius * Math.sin(i)) * Math.sin(this.rotationAngle * Math.PI) + (this.yRadius * Math.cos(i)) * Math.cos(this.rotationAngle * Math.PI);
+                var yPos = y + (this.yRadius * Math.cos(i)) * Math.sin(this.rotationAngle * Math.PI) + (this.xRadius * Math.sin(i)) * Math.cos(this.rotationAngle * Math.PI);
+                if (i == 0) {
+                    ctx.moveTo(xPos, yPos);
+                }
+                else {
+                    ctx.lineTo(xPos, yPos);
+                }
+            }
+        };
+        return Oval;
+    })();
     var LineTo = (function () {
         function LineTo(x, y) {
             this.x = x;
@@ -393,6 +419,9 @@ define(["require", "exports", '../util/Methods'], function (require, exports, Me
         Graphics.prototype.lineTo = function (x, y) {
             return this.append(new Graphics.LineTo(x, y));
         };
+        Graphics.prototype.oval = function (x, y, xRadius, yRadius, rotationAngle, startAngle, endAngle) {
+            return this.append(new Graphics.Oval(x, y, xRadius, yRadius, rotationAngle, startAngle, endAngle));
+        };
         Graphics.prototype.arcTo = function (x1, y1, x2, y2, radius) {
             return this.append(new Graphics.ArcTo(x1, y1, x2, y2, radius));
         };
@@ -598,11 +627,77 @@ define(["require", "exports", '../util/Methods'], function (require, exports, Me
         Graphics.Fill = Fill;
         Graphics.Stroke = Stroke;
         Graphics.StrokeStyle = StrokeStyle;
+        Graphics.Oval = Oval;
         Graphics.Circle = Circle;
         Graphics.Ellipse = Ellipse;
         Graphics.PolyStar = PolyStar;
         Graphics.beginCmd = new BeginPath();
-        Graphics.BASE_64 = { "A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9, "K": 10, "L": 11, "M": 12, "N": 13, "O": 14, "P": 15, "Q": 16, "R": 17, "S": 18, "T": 19, "U": 20, "V": 21, "W": 22, "X": 23, "Y": 24, "Z": 25, "a": 26, "b": 27, "c": 28, "d": 29, "e": 30, "f": 31, "g": 32, "h": 33, "i": 34, "j": 35, "k": 36, "l": 37, "m": 38, "n": 39, "o": 40, "p": 41, "q": 42, "r": 43, "s": 44, "t": 45, "u": 46, "v": 47, "w": 48, "x": 49, "y": 50, "z": 51, "0": 52, "1": 53, "2": 54, "3": 55, "4": 56, "5": 57, "6": 58, "7": 59, "8": 60, "9": 61, "+": 62, "/": 63 };
+        Graphics.BASE_64 = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+            "L": 11,
+            "M": 12,
+            "N": 13,
+            "O": 14,
+            "P": 15,
+            "Q": 16,
+            "R": 17,
+            "S": 18,
+            "T": 19,
+            "U": 20,
+            "V": 21,
+            "W": 22,
+            "X": 23,
+            "Y": 24,
+            "Z": 25,
+            "a": 26,
+            "b": 27,
+            "c": 28,
+            "d": 29,
+            "e": 30,
+            "f": 31,
+            "g": 32,
+            "h": 33,
+            "i": 34,
+            "j": 35,
+            "k": 36,
+            "l": 37,
+            "m": 38,
+            "n": 39,
+            "o": 40,
+            "p": 41,
+            "q": 42,
+            "r": 43,
+            "s": 44,
+            "t": 45,
+            "u": 46,
+            "v": 47,
+            "w": 48,
+            "x": 49,
+            "y": 50,
+            "z": 51,
+            "0": 52,
+            "1": 53,
+            "2": 54,
+            "3": 55,
+            "4": 56,
+            "5": 57,
+            "6": 58,
+            "7": 59,
+            "8": 60,
+            "9": 61,
+            "+": 62,
+            "/": 63
+        };
         Graphics.STROKE_CAPS_MAP = ["butt", "round", "square"];
         Graphics.STROKE_JOINTS_MAP = ["miter", "round", "bevel"];
         Graphics._canvas = Methods.createCanvas();
