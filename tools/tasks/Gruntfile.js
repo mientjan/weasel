@@ -1,9 +1,9 @@
-module.exports = function(grunt) {
-
-
+module.exports = function(grunt)
+{
+	
 	grunt.initConfig({
 		ts: {
-			options:{
+			options: {
 				comments: false,
 				compile: true,
 				module: 'amd',
@@ -11,14 +11,14 @@ module.exports = function(grunt) {
 				sourceMap: false
 
 			},
-			default : {
+			default: {
 
 				src: [
-					"!../../**/webgl.d.ts","../../src/**/*.ts"
-]
-}
-}
-});
-grunt.loadNpmTasks("grunt-ts");
-grunt.registerTask("default", ["ts"]);
+					"!../../**/webgl.d.ts", "../../src/**/*.ts"
+				]
+			}
+		}
+	});
+	grunt.loadNpmTasks("grunt-ts");
+	grunt.registerTask("default", ["ts"]);
 };
