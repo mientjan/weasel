@@ -497,11 +497,6 @@ class Stage extends Container
 			// update this logic in SpriteStage when necessary
 			this.onTick.call(this, delta);
 		}
-		//
-		//		if(this.dispatchEvent("drawstart"))
-		//		{
-		//			return;
-		//		}
 
 		this.drawstartSignal.emit();
 
@@ -537,8 +532,6 @@ class Stage extends Container
 		ctx.restore();
 
 		this.drawendSignal.emit();
-		//		this.dispatchEvent("drawend");
-		//		console.timeEnd('stage:update');
 	}
 
 	/**
