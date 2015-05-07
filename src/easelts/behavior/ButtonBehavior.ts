@@ -29,6 +29,7 @@ class ButtonBehavior extends AbstractBehavior
 
 		if(typeof(this.owner['onClick']) == 'function')
 		{
+
 			this._onClickInstance = this.owner['onClick'].bind(this.owner);
 			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_CLICK, this._onClickInstance );
 		}
@@ -44,6 +45,7 @@ class ButtonBehavior extends AbstractBehavior
 			this._onPointerOutInstance = this.owner['onPointerOut'].bind(this.owner);
 			this.owner.addEventListener(DisplayObject.EVENT_MOUSE_OUT, this._onPointerOutInstance  );
 		}
+
 	}
 
 	public destruct():void
