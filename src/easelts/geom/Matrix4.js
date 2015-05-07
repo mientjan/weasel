@@ -1,45 +1,10 @@
 define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], function (require, exports, Vector3, Euler, MathUtil) {
-    /**
-     * @author mrdoob / http://mrdoob.com/
-     * @author supereggbert / http://www.paulbrunt.co.uk/
-     * @author philogb / http://blog.thejit.org/
-     * @author jordi_ros / http://plattsoft.com
-     * @author D1plo1d / http://github.com/D1plo1d
-     * @author alteredq / http://alteredqualia.com/
-     * @author mikael emtinger / http://gomo.se/
-     * @author timknip / http://www.floorplanner.com/
-     * @author bhouston / http://exocortex.com
-     * @author WestLangley / http://github.com/WestLangley
-     */
     var Matrix4 = (function () {
         function Matrix4() {
             this.__extractRotation_v1 = null;
             this.__lookAt_x = null;
             this.__lookAt_y = null;
             this.__lookAt_z = null;
-            //	public multiplyVector3(vector)
-            //	{
-            //
-            //		console.warn('THREE.Matrix4: .multiplyVector3() has been removed. Use vector.applyMatrix4( matrix ) or vector.applyProjection( matrix ) instead.');
-            //		return vector.applyProjection(this);
-            //
-            //	}
-            //
-            //	public multiplyVector4(vector)
-            //	{
-            //
-            //		console.warn('THREE.Matrix4: .multiplyVector4() has been removed. Use vector.applyMatrix4( matrix ) instead.');
-            //		return vector.applyMatrix4(this);
-            //
-            //	}
-            //
-            //	public multiplyVector3Array(a)
-            //	{
-            //
-            //		console.warn('THREE.Matrix4: .multiplyVector3Array() has been renamed. Use matrix.applyToVector3Array( array ) instead.');
-            //		return this.applyToVector3Array(a);
-            //
-            //	}
             this.__applyToVector3Array_v1 = null;
             this.__decompose_vector = null;
             this.__decompose_matrix = null;
@@ -62,26 +27,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
                 1
             ]);
         }
-        /**
-         *
-         * @param n11
-         * @param n12
-         * @param n13
-         * @param n14
-         * @param n21
-         * @param n22
-         * @param n23
-         * @param n24
-         * @param n31
-         * @param n32
-         * @param n33
-         * @param n34
-         * @param n41
-         * @param n42
-         * @param n43
-         * @param n44
-         * @returns {Matrix4}
-         */
         Matrix4.prototype.set = function (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
             var te = this.elements;
             te[0] = n11;
@@ -224,11 +169,9 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
                 te[6] = b * e;
                 te[10] = bd * f + ac;
             }
-            // last column
             te[3] = 0;
             te[7] = 0;
             te[11] = 0;
-            // bottom row
             te[12] = 0;
             te[13] = 0;
             te[14] = 0;
@@ -255,11 +198,9 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             te[2] = xz - wy;
             te[6] = yz + wx;
             te[10] = 1 - (xx + yy);
-            // last column
             te[3] = 0;
             te[7] = 0;
             te[11] = 0;
-            // bottom row
             te[12] = 0;
             te[13] = 0;
             te[14] = 0;
@@ -397,30 +338,12 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             }
             return array;
         };
-        //	public rotateAxis(v)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .rotateAxis() has been removed. Use Vector3.transformDirection( matrix ) instead.');
-        //
-        //		v.transformDirection(this);
-        //
-        //	}
-        //
-        //	public crossVector(vector)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .crossVector() has been removed. Use vector.applyMatrix4( matrix ) instead.');
-        //		return vector.applyMatrix4(this);
-        //
-        //	}
         Matrix4.prototype.determinant = function () {
             var te = this.elements;
             var n11 = te[0], n12 = te[4], n13 = te[8], n14 = te[12];
             var n21 = te[1], n22 = te[5], n23 = te[9], n24 = te[13];
             var n31 = te[2], n32 = te[6], n33 = te[10], n34 = te[14];
             var n41 = te[3], n42 = te[7], n43 = te[11], n44 = te[15];
-            //TODO: make this more efficient
-            //( based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm )
             return (n41 * (+n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34) + n42 * (+n11 * n23 * n34 - n11 * n24 * n33 + n14 * n21 * n33 - n13 * n21 * n34 + n13 * n24 * n31 - n14 * n23 * n31) + n43 * (+n11 * n24 * n32 - n11 * n22 * n34 - n14 * n21 * n32 + n12 * n21 * n34 + n14 * n22 * n31 - n12 * n24 * n31) + n44 * (-n13 * n22 * n31 - n11 * n23 * n32 + n11 * n22 * n33 + n13 * n21 * n32 - n12 * n21 * n33 + n12 * n23 * n31));
         };
         Matrix4.prototype.transpose = function () {
@@ -466,21 +389,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             array[offset + 15] = te[15];
             return array;
         };
-        //	public getPosition()
-        //	{
-        //
-        //		var v1 = new THREE.Vector3();
-        //
-        //		return function()
-        //		{
-        //
-        //			console.warn('THREE.Matrix4: .getPosition() has been removed. Use Vector3.setFromMatrixPosition( matrix ) instead.');
-        //
-        //			var te = this.elements;
-        //			return v1.set(te[ 12 ], te[ 13 ], te[ 14 ]);
-        //
-        //		};
-        //	}
         Matrix4.prototype.setPosition = function (v) {
             var te = this.elements;
             te[12] = v.x;
@@ -490,7 +398,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
         };
         Matrix4.prototype.getInverse = function (m, throwOnInvertible) {
             if (throwOnInvertible === void 0) { throwOnInvertible = false; }
-            // based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
             var te = this.elements;
             var me = m.elements;
             var n11 = me[0], n12 = me[4], n13 = me[8], n14 = me[12];
@@ -528,41 +435,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             this.multiplyScalar(1 / det);
             return this;
         };
-        //
-        //	public translate(v)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .translate() has been removed.');
-        //
-        //	}
-        //
-        //	public rotateX(angle)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .rotateX() has been removed.');
-        //
-        //	}
-        //
-        //	public rotateY(angle)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .rotateY() has been removed.');
-        //
-        //	}
-        //
-        //	public rotateZ(angle)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .rotateZ() has been removed.');
-        //
-        //	}
-        //
-        //	public rotateByAxis(axis, angle)
-        //	{
-        //
-        //		console.warn('THREE.Matrix4: .rotateByAxis() has been removed.');
-        //
-        //	}
         Matrix4.prototype.scale = function (v) {
             var te = this.elements;
             var x = v.x, y = v.y, z = v.z;
@@ -607,7 +479,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.makeRotationAxis = function (axis, angle) {
-            // Based on http://www.gamedev.net/reference/articles/article1199.asp
             var c = Math.cos(angle);
             var s = Math.sin(angle);
             var t = 1 - c;
@@ -639,7 +510,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             var sx = vector.set(te[0], te[1], te[2]).length();
             var sy = vector.set(te[4], te[5], te[6]).length();
             var sz = vector.set(te[8], te[9], te[10]).length();
-            // if determine is negative, we need to invert one scale
             var det = this.determinant();
             if (det < 0) {
                 sx = -sx;
@@ -647,8 +517,7 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             position.x = te[12];
             position.y = te[13];
             position.z = te[14];
-            // scale the rotation part
-            matrix.elements.set(this.elements); // at this point matrix is incomplete so we can't use .copy()
+            matrix.elements.set(this.elements);
             var invSX = 1 / sx;
             var invSY = 1 / sy;
             var invSZ = 1 / sz;
@@ -667,16 +536,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             scale.z = sz;
             return this;
         };
-        /**
-         *
-         * @param left
-         * @param right
-         * @param bottom
-         * @param top
-         * @param near
-         * @param far
-         * @returns {Matrix4}
-         */
         Matrix4.prototype.makeFrustum = function (left, right, bottom, top, near, far) {
             var te = this.elements;
             var x = 2 * near / (right - left);
