@@ -211,7 +211,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	public mouseEnabled:boolean = false;
+	public mouseEnabled:boolean = true;
 
 	/**
 	 * If false, the tick will not run on this display object (or its children). This can provide some performance benefits.
@@ -269,6 +269,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 *  this is a better way to check if its been added to the stage because onTick is only triggered when added to the stage.
 	 */
 	public isDirty:boolean = false;
+	public isHitable:boolean = true;
 
 
 	/**
@@ -546,9 +547,14 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		this.setGeomTransform(width, height, x, y, regX, regY);
 	}
 
-	public initialize()
+	/**
+	 * has something to do with the createjs toolkit needing to call initialize.
+	 * @method initialize
+	 * @param args
+	 */
+	public initialize(...args:any[])
 	{
-		// has something to do with the createjs toolkit needing to call initialize.
+		this['constructor'].apply(this, args);
 	}
 
 	/**
@@ -941,7 +947,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return true;
 	}
 
-	public DisplayObject_draw = this.draw;
+	public DisplayObject_draw:(ctx:CanvasRenderingContext2D, ignoreCache?:boolean) => boolean = this.draw;
 
 	/**
 	 * Applies this display object's transformation, alpha, globalCompositeOperation, clipping path (mask), and shadow
@@ -1232,17 +1238,17 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @param {Number} [regY=0] The vertical registration point in pixels
 	 * @return {DisplayObject} Returns this instance. Useful for chaining commands.
 	 */
-	public setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
+	public setTransform(x:number = 0, y:number = 0, scaleX:number = 1, scaleY:number = 1, rotation:number = 0, skewX:number = 0, skewY:number = 0, regX:number = 0, regY:number = 0)
 	{
-		this.x = x || 0;
-		this.y = y || 0;
-		this.scaleX = scaleX == null ? 1 : scaleX;
-		this.scaleY = scaleY == null ? 1 : scaleY;
-		this.rotation = rotation || 0;
-		this.skewX = skewX || 0;
-		this.skewY = skewY || 0;
-		this.regX = regX || 0;
-		this.regY = regY || 0;
+		this.x = x;
+		this.y = y;
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.rotation = rotation;
+		this.skewX = skewX;
+		this.skewY = skewY;
+		this.regX = regX;
+		this.regY = regY;
 
 		return this;
 	}
@@ -1351,17 +1357,21 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Boolean} A Boolean indicting whether a visible portion of the DisplayObject intersect the specified
 	 * local Point.
 	 */
-	public hitTest(x:number, y:number)
+	public hitTest(x:number, y:number):boolean
 	{
-		// TODO: update with support for .hitArea & .mask and update hitArea / mask docs?
-		var ctx = DisplayObject._hitTestContext;
-		ctx.setTransform(1, 0, 0, 1, -x, -y);
-		this.draw(ctx);
+		if(this.isHitable){
+			// TODO: update with support for .hitArea & .mask and update hitArea / mask docs?
+			var ctx = DisplayObject._hitTestContext;
+			ctx.setTransform(1, 0, 0, 1, -x, -y);
+			this.draw(ctx);
 
-		var hit = this._testHit(ctx);
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.clearRect(0, 0, 2, 2);
-		return hit;
+			var hit = this._testHit(ctx);
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.clearRect(0, 0, 2, 2);
+			return hit;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1577,8 +1587,10 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	public onTick(delta:number)
 	{
-		if(this.isDirty && this.parent){
-			this.onResize(this.parent.width, this.parent.height);
+		if(this.isDirty ){
+			if( this.parent){
+				this.onResize(this.parent.width, this.parent.height);
+			}
 		}
 	}
 
@@ -1590,15 +1602,18 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 **/
 	protected _testHit(ctx)
 	{
-		try
-		{
-			var hit = ctx.getImageData(0, 0, 1, 1).data[3] > 1;
-		} catch(e)
-		{
-			if(!DisplayObject.suppressCrossDomainErrors)
-			{
-				throw new Error('An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.');
-			}
+		var hit = false;
+		if(this.isHitable){
+			hit = ctx.getImageData(0, 0, 1, 1).data[3] > 1;
+			//try
+			//{
+			//} catch(e)
+			//{
+			//	if(!DisplayObject.suppressCrossDomainErrors)
+			//	{
+			//		throw new Error('An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.');
+			//	}
+			//}
 		}
 
 		return hit;
