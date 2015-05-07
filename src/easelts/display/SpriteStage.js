@@ -532,21 +532,8 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
          * @protected
          **/
         SpriteStage.prototype._createShaderProgram = function (ctx) {
-            var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER, "precision mediump float;" +
-                "uniform sampler2D uSampler0;" +
-                "varying vec3 vTextureCoord;" +
-                "void main(void) {" +
-                "vec4 color = texture2D(uSampler0, vTextureCoord.st);" +
-                "gl_FragColor = vec4(color.rgb, color.a * vTextureCoord.z);" +
-                "}");
-            var vertexShader = this._createShader(ctx, ctx.VERTEX_SHADER, "attribute vec2 aVertexPosition;" +
-                "attribute vec3 aTextureCoord;" +
-                "uniform mat3 uPMatrix;" +
-                "varying vec3 vTextureCoord;" +
-                "void main(void) {" +
-                "vTextureCoord = aTextureCoord;" +
-                "gl_Position = vec4((uPMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);" +
-                "}");
+            var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER, "precision mediump float;" + "uniform sampler2D uSampler0;" + "varying vec3 vTextureCoord;" + "void main(void) {" + "vec4 color = texture2D(uSampler0, vTextureCoord.st);" + "gl_FragColor = vec4(color.rgb, color.a * vTextureCoord.z);" + "}");
+            var vertexShader = this._createShader(ctx, ctx.VERTEX_SHADER, "attribute vec2 aVertexPosition;" + "attribute vec3 aTextureCoord;" + "uniform mat3 uPMatrix;" + "varying vec3 vTextureCoord;" + "void main(void) {" + "vTextureCoord = aTextureCoord;" + "gl_Position = vec4((uPMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);" + "}");
             if (this._webGLErrorDetected || !fragmentShader || !vertexShader) {
                 return;
             }
@@ -684,8 +671,7 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
                 }
                 mtx = kid._matrix;
                 // Get the kid's global matrix (relative to the stage):
-                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity())
-                    .appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
+                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity()).appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
                 // Set default texture coordinates:
                 var uStart = 0, uEnd = 1, vStart = 0, vEnd = 1;
                 // Define the untransformed bounding box sides and get the kid's image to use for textures:
