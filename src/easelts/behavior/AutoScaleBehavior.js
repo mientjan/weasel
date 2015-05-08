@@ -13,6 +13,8 @@ define(["require", "exports", './AbstractBehavior', '../geom/Size'], function (r
             this._downScaleLimit = null;
             this._upScaleBreakPoint = null;
             this._upScaleLimit = null;
+            this._alwaysCover = false;
+            this._alwaysVisible = false;
             this._downScaleBreakPoint = downScaleBreakPoint;
             this._downScaleLimit = downScaleLimit;
             this._upScaleBreakPoint = upScaleBreakPoint;
@@ -22,6 +24,12 @@ define(["require", "exports", './AbstractBehavior', '../geom/Size'], function (r
             _super.prototype.initialize.call(this, owner);
             this._resizeSignalConnection = this.owner.resizeSignal.connect(this.updateScale.bind(this));
             this.updateScale();
+        };
+        AutoScaleBehavior.prototype.setAwaysVisible = function (value) {
+            this._alwaysVisible = value;
+        };
+        AutoScaleBehavior.prototype.setAlwaysCover = function (value) {
+            this._alwaysCover = value;
         };
         AutoScaleBehavior.prototype.setDownScaleBreakPoint = function (width, height) {
             if (!this._downScaleBreakPoint) {
@@ -136,10 +144,22 @@ define(["require", "exports", './AbstractBehavior', '../geom/Size'], function (r
             this.updateScale();
         };
         AutoScaleBehavior.prototype.updateScale = function (width, height) {
-            if (!this.owner || !this.owner.parent)
+            if (!this.owner || !this.owner.parent) {
                 return;
+            }
             width = width || this.owner.parent.width;
             height = height || this.owner.parent.height;
+            if (this._alwaysCover || this._alwaysVisible) {
+                var ownerWidth = this.owner.width;
+                var ownerHeight = this.owner.height;
+                if (this._alwaysCover) {
+                    this.owner.scaleX = this.owner.scaleY = Math.max(width / ownerWidth, height / ownerHeight);
+                }
+                else if (this._alwaysVisible) {
+                    this.owner.scaleX = this.owner.scaleY = Math.min(width / ownerWidth, height / ownerHeight);
+                }
+                return true;
+            }
             if (this._downScaleBreakPoint || this._upScaleBreakPoint) {
                 if (this._downScaleBreakPoint && (width < this._downScaleBreakPoint.width || height < this._downScaleBreakPoint.height)) {
                     if (this._downScaleLimit) {
@@ -159,6 +179,7 @@ define(["require", "exports", './AbstractBehavior', '../geom/Size'], function (r
                     this.owner.scaleX = this.owner.scaleY = 1;
                 }
             }
+            return true;
         };
         AutoScaleBehavior.prototype.destruct = function () {
             if (this._resizeSignalConnection) {

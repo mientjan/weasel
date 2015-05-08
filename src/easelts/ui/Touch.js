@@ -8,15 +8,16 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
         };
         Touch.enable = function (stage, singleTouch, allowDefault) {
             if (singleTouch === void 0) { singleTouch = true; }
-            if (allowDefault === void 0) { allowDefault = true; }
+            if (allowDefault === void 0) { allowDefault = false; }
             if (!stage || !stage.canvas || !Touch.isSupported()) {
                 return false;
             }
             stage.__touch = new TouchInjectProperties();
             stage.__touch.multitouch = singleTouch;
-            stage.__touch.preventDefault = allowDefault;
+            stage.__touch.preventDefault = !allowDefault;
             stage.__touch.count = 0;
             if ('ontouchstart' in window) {
+                stage.enableDOMEvents(false);
                 Touch._IOS_enable(stage);
             }
             else if (window.navigator['msPointerEnabled'] || window.navigator["pointerEnabled"]) {

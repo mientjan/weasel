@@ -4,7 +4,7 @@ import Size = require('../geom/Size');
 /**
  * @class BackgroundColor
  */
-class SquareColor extends Shape
+class RectangleColor extends Shape
 {
 	public set color(value:string)
 	{
@@ -29,7 +29,7 @@ class SquareColor extends Shape
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-		constructor(color:string = '#000000', width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(color:string = '#000000', width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(undefined, width, height, x, y, regX, regY);
 
@@ -48,4 +48,4 @@ class SquareColor extends Shape
 	}
 }
 
-export  = SquareColor;
+export = RectangleColor;

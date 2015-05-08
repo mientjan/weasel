@@ -16,18 +16,33 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             this.bitmapType = 0 /* UNKNOWN */;
             this.loaded = false;
             this.image = null;
+            this._imageNaturalWidth = null;
+            this._imageNaturalHeight = null;
             this.sourceRect = null;
             this.destinationRect = null;
+            this.loadDirect = false;
             this.onLoad = function () {
-                _this.loaded = true;
-                if (!_this.width) {
-                    _this.width = _this.image.width;
+                if (_this.bitmapType == 1 /* IMAGE */) {
+                    _this._imageNaturalWidth = _this.image.naturalWidth;
+                    _this._imageNaturalHeight = _this.image.naturalHeight;
+                    if (!_this.width) {
+                        _this.width = _this._imageNaturalWidth;
+                    }
+                    if (!_this.height) {
+                        _this.height = _this._imageNaturalHeight;
+                    }
                 }
-                if (!_this.height) {
-                    _this.height = _this.image.height;
+                else {
+                    if (!_this.width) {
+                        _this.width = _this.image.width;
+                    }
+                    if (!_this.height) {
+                        _this.height = _this.image.height;
+                    }
                 }
                 _this.isDirty = true;
                 _this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+                _this.loaded = true;
             };
             var image;
             if (typeof imageOrUri == "string") {
@@ -37,13 +52,16 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             else {
                 image = imageOrUri;
             }
-            var tagName = image.tagName.toLowerCase();
+            var tagName = '';
+            if (image) {
+                tagName = image.tagName.toLowerCase();
+            }
             switch (tagName) {
                 case 'img':
                     {
                         this.image = image;
                         this.bitmapType = 1 /* IMAGE */;
-                        if (this.image.complete) {
+                        if (this.image && (this.image['complete'] || this.image['getContext'] || this.image.readyState >= 2)) {
                             this.onLoad();
                         }
                         else {
@@ -55,6 +73,9 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     {
                         this.image = image;
                         this.bitmapType = 2 /* VIDEO */;
+                        if (this.width == 0 || this.height == 0) {
+                            throw new Error('width and height must be set when using canvas / video');
+                        }
                         this.onLoad();
                         break;
                     }
@@ -62,6 +83,9 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     {
                         this.image = image;
                         this.bitmapType = 1 /* IMAGE */;
+                        if (this.width == 0 || this.height == 0) {
+                            throw new Error('width and height must be set when using canvas / video');
+                        }
                         this.onLoad();
                         break;
                     }
@@ -72,7 +96,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
         };
         Bitmap.prototype.draw = function (ctx, ignoreCache) {
-            if (this.loaded && this.isVisible()) {
+            if (this.isVisible()) {
                 if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
                     return true;
                 }
@@ -88,7 +112,12 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
                 }
                 else {
-                    ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
+                    if (this.bitmapType == 1 /* IMAGE */) {
+                        ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+                    }
+                    else {
+                        ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
+                    }
                 }
             }
             return true;

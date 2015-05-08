@@ -4,11 +4,11 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Tween'], function (require, exports, Tween) {
+define(["require", "exports", '../createts/event/EventDispatcher', './Tween'], function (require, exports, EventDispatcher, Tween) {
     var Timeline = (function (_super) {
         __extends(Timeline, _super);
         function Timeline(tweens, labels, props) {
-            _super.call(this, tweens, props, null);
+            _super.call(this);
             this.ignoreGlobalPause = false;
             this.duration = 0;
             this.loop = false;
@@ -20,6 +20,7 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             this._prevPosition = 0;
             this._prevPos = -1;
             this._useTicks = false;
+            this._registered = false;
             if (props) {
                 this._useTicks = props.useTicks;
                 this.loop = props.loop;
@@ -102,8 +103,7 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             }
         };
         Timeline.prototype.setLabels = function (o) {
-            if (o === void 0) { o = {}; }
-            this._labels = o;
+            this._labels = o ? o : {};
         };
         Timeline.prototype.getLabels = function () {
             var list = this._labelList;
@@ -136,7 +136,6 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
         Timeline.prototype.gotoAndPlay = function (positionOrLabel) {
             this.setPaused(false);
             this._goto(positionOrLabel);
-            return this;
         };
         Timeline.prototype.gotoAndStop = function (positionOrLabel) {
             this.setPaused(true);
@@ -165,6 +164,10 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             this.dispatchEvent("change");
             return end;
         };
+        Timeline.prototype.setPaused = function (value) {
+            this._paused = !!value;
+            Tween._register(this, !value);
+        };
         Timeline.prototype.updateDuration = function () {
             this.duration = 0;
             for (var i = 0, l = this._tweens.length; i < l; i++) {
@@ -174,8 +177,11 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
                 }
             }
         };
+        Timeline.prototype.onTick = function (delta) {
+            this.setPosition(this._prevPosition + delta);
+        };
         Timeline.prototype.resolve = function (positionOrLabel) {
-            var pos = parseFloat(positionOrLabel);
+            var pos = Number(positionOrLabel);
             if (isNaN(pos)) {
                 pos = this._labels[positionOrLabel];
             }
@@ -194,6 +200,6 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             }
         };
         return Timeline;
-    })(Tween);
+    })(EventDispatcher);
     return Timeline;
 });

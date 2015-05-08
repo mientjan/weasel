@@ -18,13 +18,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this.type = 3 /* DISPLAYOBJECT */;
             this.cacheCanvas = null;
             this.id = UID.get();
-            this.mouseEnabled = false;
+            this.mouseEnabled = true;
             this.tickEnabled = true;
             this.name = null;
             this.parent = null;
             this.visible = true;
             this.alpha = 1;
             this.isDirty = false;
+            this.isHitable = true;
             this.x = 0;
             this._x_type = 2 /* STATIC */;
             this._x_percent = .0;
@@ -81,6 +82,11 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             configurable: true
         });
         DisplayObject.prototype.initialize = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            this['constructor'].apply(this, args);
         };
         DisplayObject.prototype.dot = function (v) {
             return this.x * v.x + this.y * v.y;
@@ -383,15 +389,24 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return target.globalToLocal(pt.x, pt.y);
         };
         DisplayObject.prototype.setTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
-            this.x = x || 0;
-            this.y = y || 0;
-            this.scaleX = scaleX == null ? 1 : scaleX;
-            this.scaleY = scaleY == null ? 1 : scaleY;
-            this.rotation = rotation || 0;
-            this.skewX = skewX || 0;
-            this.skewY = skewY || 0;
-            this.regX = regX || 0;
-            this.regY = regY || 0;
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (scaleX === void 0) { scaleX = 1; }
+            if (scaleY === void 0) { scaleY = 1; }
+            if (rotation === void 0) { rotation = 0; }
+            if (skewX === void 0) { skewX = 0; }
+            if (skewY === void 0) { skewY = 0; }
+            if (regX === void 0) { regX = 0; }
+            if (regY === void 0) { regY = 0; }
+            this.x = x;
+            this.y = y;
+            this.scaleX = scaleX;
+            this.scaleY = scaleY;
+            this.rotation = rotation;
+            this.skewX = skewX;
+            this.skewY = skewY;
+            this.regX = regX;
+            this.regY = regY;
             return this;
         };
         DisplayObject.prototype.setGeomTransform = function (w, h, x, y, rx, ry) {
@@ -440,13 +455,16 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return matrix;
         };
         DisplayObject.prototype.hitTest = function (x, y) {
-            var ctx = DisplayObject._hitTestContext;
-            ctx.setTransform(1, 0, 0, 1, -x, -y);
-            this.draw(ctx);
-            var hit = this._testHit(ctx);
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, 2, 2);
-            return hit;
+            if (this.isHitable) {
+                var ctx = DisplayObject._hitTestContext;
+                ctx.setTransform(1, 0, 0, 1, -x, -y);
+                this.draw(ctx);
+                var hit = this._testHit(ctx);
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, 2, 2);
+                return hit;
+            }
+            return false;
         };
         DisplayObject.prototype.set = function (props) {
             for (var n in props) {
@@ -508,18 +526,16 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             ctx.shadowBlur = shadow.blur;
         };
         DisplayObject.prototype.onTick = function (delta) {
-            if (this.isDirty && this.parent) {
-                this.onResize(this.parent.width, this.parent.height);
+            if (this.isDirty) {
+                if (this.parent) {
+                    this.onResize(this.parent.width, this.parent.height);
+                }
             }
         };
         DisplayObject.prototype._testHit = function (ctx) {
-            try {
-                var hit = ctx.getImageData(0, 0, 1, 1).data[3] > 1;
-            }
-            catch (e) {
-                if (!DisplayObject.suppressCrossDomainErrors) {
-                    throw new Error('An error has occurred. This is most likely due to security restrictions on reading canvas pixel data with local or cross-domain images.');
-                }
+            var hit = false;
+            if (this.isHitable) {
+                hit = ctx.getImageData(0, 0, 1, 1).data[3] > 1;
             }
             return hit;
         };

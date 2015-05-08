@@ -4,13 +4,20 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bounds'], function (require, exports, DisplayObject, Methods, Bounds) {
+define(["require", "exports", './DisplayObject', '../geom/Rectangle', '../util/Methods'], function (require, exports, DisplayObject, Rectangle, Methods) {
     var Text = (function (_super) {
         __extends(Text, _super);
-        function Text(text, font, color) {
+        function Text(text, font, color, width, height, x, y, regX, regY) {
             if (font === void 0) { font = '10px sans-serif'; }
             if (color === void 0) { color = '#000000'; }
-            _super.call(this, 1, 1, 0, 0, 0, 0);
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (regX === void 0) { regX = 0; }
+            if (regY === void 0) { regY = 0; }
+            _super.call(this, width, height, x, y, regX, regY);
+            this.isDebugMode = false;
             this._text = "";
             this.font = null;
             this.color = null;
@@ -44,6 +51,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
                         this.setHeight('auto');
                     }
                 }
+                this.dispatchEvent(Text.EVENT_ON_TEXT_CHANGE);
             },
             enumerable: true,
             configurable: true
@@ -85,6 +93,15 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
                 ctx.fillStyle = col;
             }
             this._drawText(this._prepContext(ctx));
+            ctx.save();
+            if (this.isDebugMode) {
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#FFF';
+                ctx.rect(0, 0, this.width, this.height);
+                ctx.stroke();
+            }
+            ctx.restore();
             return true;
         };
         Text.prototype.getMeasuredWidth = function () {
@@ -92,50 +109,57 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
         };
         Text.prototype.getExactSize = function () {
             var width = Math.ceil(this.getMeasuredWidth());
-            var height = Math.ceil(this.getMeasuredHeight() * 1.6);
+            var height = Math.ceil(this.getMeasuredHeight() * 1.4);
             var rowHeight = Math.ceil(this._getMeasuredWidth('M') * 2);
             var cacheArguments = null;
             var color = this.color;
-            this.color = '#000';
+            this.color = '#00000';
             var y = 0;
             var x = 0;
             switch (this.textAlign) {
-                case Text.TEXT_ALIGN_CENTER: {
-                    x = -width / 2;
-                    break;
-                }
+                case Text.TEXT_ALIGN_CENTER:
+                    {
+                        x = -width / 2;
+                        break;
+                    }
                 case Text.TEXT_ALIGN_END:
-                case Text.TEXT_ALIGN_RIGHT: {
-                    x = -width;
-                    break;
-                }
+                case Text.TEXT_ALIGN_RIGHT:
+                    {
+                        x = -width;
+                        break;
+                    }
             }
             switch (this.textBaseline) {
-                case Text.TEXT_BASELINE_ALPHABETIC: {
-                    y = -rowHeight;
-                    break;
-                }
-                case Text.TEXT_BASELINE_BOTTOM: {
-                    y = -rowHeight;
-                    break;
-                }
+                case Text.TEXT_BASELINE_ALPHABETIC:
+                    {
+                        y = -rowHeight;
+                        break;
+                    }
+                case Text.TEXT_BASELINE_BOTTOM:
+                    {
+                        y = -rowHeight;
+                        break;
+                    }
                 case Text.TEXT_BASELINE_TOP:
-                case Text.TEXT_BASELINE_HANGING: {
-                    break;
-                }
-                case Text.TEXT_BASELINE_IDEOGRAPHIC: {
-                    y = -rowHeight;
-                    break;
-                }
-                case Text.TEXT_BASELINE_MIDDLE: {
-                    y = -rowHeight / 2;
-                    break;
-                }
+                case Text.TEXT_BASELINE_HANGING:
+                    {
+                        break;
+                    }
+                case Text.TEXT_BASELINE_IDEOGRAPHIC:
+                    {
+                        y = -rowHeight;
+                        break;
+                    }
+                case Text.TEXT_BASELINE_MIDDLE:
+                    {
+                        y = -rowHeight / 2;
+                        break;
+                    }
             }
             if (this.cacheCanvas) {
                 cacheArguments = [this._cacheX, this._cacheY, this._cacheWidth, this._cacheHeight, this._cacheScale];
             }
-            this.cache(x, y, width, height);
+            this.cache(x, y, width, height, 1);
             var ctx = this.cacheCanvas.getContext('2d');
             var img = ctx.getImageData(0, 0, width, height);
             if (cacheArguments) {
@@ -160,7 +184,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
             y0 += y;
             x1 += x;
             y1 += y;
-            return new Bounds(x0, y0, x1, y1, x1 - x0, y1 - y0);
+            return new Rectangle(x0, y0, x1 - x0, y1 - y0);
         };
         Text.prototype.getMeasuredLineHeight = function () {
             return this._getMeasuredWidth("M") * 1.2;
@@ -289,6 +313,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods', '../geom/Bou
             ctx.restore();
             return w;
         };
+        Text.EVENT_ON_TEXT_CHANGE = 'onTextChange';
         Text.TEXT_BASELINE_TOP = 'top';
         Text.TEXT_BASELINE_HANGING = 'hanging';
         Text.TEXT_BASELINE_MIDDLE = 'middle';

@@ -19,25 +19,35 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             this.children = [];
             this.mouseChildren = true;
             this.tickChildren = true;
-            this.isRenderIsolated = false;
+            this._isRenderIsolated = false;
+            this._willUpdateRenderIsolation = true;
             this._renderIsolationCanvas = null;
         }
-        Container.prototype.initialize = function () {
-            this['constructor'].call(this);
-        };
         Container.prototype.isVisible = function () {
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length));
         };
         Container.prototype.setRenderIsolation = function (value) {
-            if (this.isRenderIsolated && !value) {
-                this.isRenderIsolated = value;
+            if (this._isRenderIsolated && !value) {
+                this._isRenderIsolated = value;
                 this._renderIsolationCanvas = null;
             }
-            else if (!this.isRenderIsolated && value) {
-                this.isRenderIsolated = value;
+            else if (!this._isRenderIsolated && value) {
+                this._isRenderIsolated = value;
                 this._renderIsolationCanvas = Methods.createCanvas();
             }
             return this;
+        };
+        Container.prototype.isRenderIsolated = function () {
+            return this._isRenderIsolated;
+        };
+        Container.prototype.willUpdateRenderIsolation = function () {
+            return this._willUpdateRenderIsolation;
+        };
+        Container.prototype.setUpdateRenderIsolation = function (value) {
+            if (!this._isRenderIsolated) {
+                throw new Error('draw calls are not isolated, first call setRenderIsolation(true)');
+            }
+            this._willUpdateRenderIsolation = value;
         };
         Container.prototype.enableMouseInteraction = function () {
             this.mouseChildren = true;
@@ -49,27 +59,30 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         };
         Container.prototype.draw = function (ctx, ignoreCache) {
             var localCtx = ctx;
-            if (_super.prototype.draw.call(this, localCtx, ignoreCache)) {
+            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
                 return true;
             }
-            if (this.isRenderIsolated) {
-                var localCtx = this._renderIsolationCanvas.getContext('2d');
-                localCtx.clearRect(0, 0, this.width, this.height);
-            }
-            var list = this.children, child;
-            for (var i = 0, l = list.length; i < l; i++) {
-                child = list[i];
-                if (!child.isVisible()) {
-                    continue;
+            if (this._isRenderIsolated) {
+                localCtx = this._renderIsolationCanvas.getContext('2d');
+                if (this._willUpdateRenderIsolation) {
+                    localCtx.clearRect(0, 0, this.width, this.height);
                 }
-                localCtx.save();
-                child.updateContext(localCtx);
-                child.draw(localCtx);
-                localCtx.restore();
             }
-            if (this.isRenderIsolated) {
-                ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height, 0, 0, this.width, this.height);
-                return true;
+            if (this._willUpdateRenderIsolation) {
+                var list = this.children, child;
+                for (var i = 0, l = list.length; i < l; i++) {
+                    child = list[i];
+                    if (!child.isVisible()) {
+                        continue;
+                    }
+                    localCtx.save();
+                    child.updateContext(localCtx);
+                    child.draw(localCtx);
+                    localCtx.restore();
+                }
+            }
+            if (this._isRenderIsolated) {
+                ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
             }
             return true;
         };
@@ -289,10 +302,12 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return "[Container (name=" + this.name + ")]";
         };
         Container.prototype.onResize = function (width, height) {
+            var oldWidth = this.width;
+            var oldHeight = this.height;
             _super.prototype.onResize.call(this, width, height);
             var newWidth = this.width;
             var newHeight = this.height;
-            if (this.isRenderIsolated) {
+            if (this._isRenderIsolated) {
                 this._renderIsolationCanvas.width = newWidth;
                 this._renderIsolationCanvas.height = newHeight;
             }
@@ -325,7 +340,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                 var child = children[i];
                 var hitArea = child.hitArea;
                 var mask = child.mask;
-                if (!child.visible || (!hitArea && !child.isVisible()) || (mouse && !child.mouseEnabled)) {
+                if (!child.visible || (!child.isVisible()) || (mouse && !child.mouseEnabled)) {
                     continue;
                 }
                 if (!hitArea && mask && mask.graphics && !mask.graphics.isEmpty()) {

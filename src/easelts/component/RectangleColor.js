@@ -5,9 +5,9 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", '../display/Shape'], function (require, exports, Shape) {
-    var SquareColor = (function (_super) {
-        __extends(SquareColor, _super);
-        function SquareColor(color, width, height, x, y, regX, regY) {
+    var RectangleColor = (function (_super) {
+        __extends(RectangleColor, _super);
+        function RectangleColor(color, width, height, x, y, regX, regY) {
             if (color === void 0) { color = '#000000'; }
             if (width === void 0) { width = '100%'; }
             if (height === void 0) { height = '100%'; }
@@ -18,7 +18,7 @@ define(["require", "exports", '../display/Shape'], function (require, exports, S
             _super.call(this, undefined, width, height, x, y, regX, regY);
             this._color = color;
         }
-        Object.defineProperty(SquareColor.prototype, "color", {
+        Object.defineProperty(RectangleColor.prototype, "color", {
             get: function () {
                 return this._color;
             },
@@ -29,14 +29,14 @@ define(["require", "exports", '../display/Shape'], function (require, exports, S
             enumerable: true,
             configurable: true
         });
-        SquareColor.prototype.setColor = function () {
+        RectangleColor.prototype.setColor = function () {
             this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
         };
-        SquareColor.prototype.onResize = function (width, height) {
+        RectangleColor.prototype.onResize = function (width, height) {
             _super.prototype.onResize.call(this, width, height);
             this.setColor();
         };
-        return SquareColor;
+        return RectangleColor;
     })(Shape);
-    return SquareColor;
+    return RectangleColor;
 });

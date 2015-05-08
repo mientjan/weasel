@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/event/EventDispatcher', '../createts/util/Ticker'], function (require, exports, EventDispatcher, Ticker) {
+define(["require", "exports", '../createts/event/EventDispatcher', '../createts/util/Ticker', '../tweents/Ease'], function (require, exports, EventDispatcher, Ticker, Ease) {
     var Tween = (function (_super) {
         __extends(Tween, _super);
         function Tween(target, props, pluginData) {
@@ -13,25 +13,28 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             this.ignoreGlobalPause = false;
             this.loop = false;
             this.duration = 0;
-            this.pluginData = null;
             this.target = null;
             this.position = null;
             this.passive = false;
             this._paused = false;
-            this._curQueueProps = null;
-            this._initQueueProps = null;
-            this._steps = null;
-            this._actions = null;
+            this._curQueueProps = {};
+            this._initQueueProps = {};
+            this._steps = [];
+            this._actions = [];
             this._prevPosition = 0;
             this._stepPosition = 0;
             this._prevPos = -1;
+            this._target = null;
             this._useTicks = false;
-            this._linearEase = null;
+            this._inited = false;
+            this._registered = false;
             this.w = this.wait;
             this.t = this.to;
             this.c = this.call;
             this.s = this.set;
+            this._target = target;
             this.target = target;
+            this.pluginData = pluginData;
             if (props) {
                 this._useTicks = props.useTicks;
                 this.ignoreGlobalPause = props.ignoreGlobalPause;
@@ -41,11 +44,6 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                     Tween.removeTweens(target);
                 }
             }
-            this.pluginData = pluginData;
-            this._curQueueProps = {};
-            this._initQueueProps = {};
-            this._steps = [];
-            this._actions = [];
             if (props && props.paused) {
                 this._paused = true;
             }
@@ -57,15 +55,13 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             }
         }
         Tween.get = function (target, props, pluginData, override) {
-            if (pluginData === void 0) { pluginData = {}; }
-            if (override === void 0) { override = false; }
             if (override) {
                 Tween.removeTweens(target);
             }
             return new Tween(target, props, pluginData);
         };
-        Tween.tick = function (delta, paused) {
-            var tweens = Tween._tweens.slice(0);
+        Tween.onTick = function (delta, paused) {
+            var tweens = Tween._tweens.slice();
             for (var i = tweens.length - 1; i >= 0; i--) {
                 var tween = tweens[i];
                 if ((paused && !tween.ignoreGlobalPause) || tween._paused) {
@@ -81,7 +77,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             var tweens = Tween._tweens;
             for (var i = tweens.length - 1; i >= 0; i--) {
                 var tween = tweens[i];
-                if (tween.target == target) {
+                if (tween._target == target) {
                     tween._paused = true;
                     tweens.splice(i, 1);
                 }
@@ -93,13 +89,13 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             for (var i = 0, l = tweens.length; i < l; i++) {
                 var tween = tweens[i];
                 tween._paused = true;
-                tween.target.tweenjs_count = 0;
+                tween.target && (tween.target.tweenjs_count = 0);
             }
             tweens.length = 0;
         };
         Tween.hasActiveTweens = function (target) {
             if (target) {
-                return target.tweenjs_count;
+                return target.tweenjs_count != null && !!target.tweenjs_count;
             }
             return Tween._tweens && !!Tween._tweens.length;
         };
@@ -125,19 +121,19 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             }
         };
         Tween._register = function (tween, value) {
-            var target = tween.target;
+            var target = tween._target;
             var tweens = Tween._tweens;
-            if (value) {
+            if (value && !tween._registered) {
                 if (target) {
                     target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count + 1 : 1;
                 }
                 tweens.push(tween);
                 if (!Tween._inited && Ticker) {
-                    Ticker.getInstance().addTickListener(function (e) { return Tween.tick(e.delta, e.paused); });
+                    Ticker.getInstance().addTickListener(Tween.onTick.bind(Tween));
                     Tween._inited = true;
                 }
             }
-            else {
+            else if (!value && tween._registered) {
                 if (target) {
                     target.tweenjs_count--;
                 }
@@ -145,33 +141,36 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                 while (i--) {
                     if (tweens[i] == tween) {
                         tweens.splice(i, 1);
-                        return;
+                        break;
                     }
                 }
             }
+            tween._registered = value;
         };
         Tween.prototype.wait = function (duration, passive) {
-            if (duration === void 0) { duration = null; }
-            if (passive === void 0) { passive = 0; }
+            if (passive === void 0) { passive = false; }
             if (duration == null || duration <= 0) {
                 return this;
             }
             var o = this._cloneProps(this._curQueueProps);
-            return this._addStep({ d: duration, p0: o, e: this._linearEase, p1: o, v: passive });
+            return this._addStep({ d: duration, p0: o, e: Ease.linear, p1: o, v: passive });
         };
         Tween.prototype.to = function (props, duration, ease) {
-            if (duration === void 0) { duration = 0; }
-            if (ease === void 0) { ease = null; }
             if (isNaN(duration) || duration < 0) {
                 duration = 0;
             }
-            return this._addStep({ d: duration || 0, p0: this._cloneProps(this._curQueueProps), e: ease, p1: this._cloneProps(this._appendQueueProps(props)) });
+            return this._addStep({
+                d: duration || 0,
+                p0: this._cloneProps(this._curQueueProps),
+                e: ease,
+                p1: this._cloneProps(this._appendQueueProps(props))
+            });
         };
         Tween.prototype.call = function (callback, params, scope) {
-            return this._addAction({ f: callback, p: params ? params : [this], o: scope ? scope : this.target });
+            return this._addAction({ f: callback, p: params ? params : [this], o: scope ? scope : this._target });
         };
         Tween.prototype.set = function (props, target) {
-            return this._addAction({ f: this._set, o: this, p: [props, target ? target : this.target] });
+            return this._addAction({ f: this._set, o: this, p: [props, target ? target : this._target] });
         };
         Tween.prototype.play = function (tween) {
             if (!tween) {
@@ -186,9 +185,11 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             return this.call(tween.setPaused, [true], tween);
         };
         Tween.prototype.setPosition = function (value, actionsMode) {
-            if (actionsMode === void 0) { actionsMode = 1; }
             if (value < 0) {
                 value = 0;
+            }
+            if (actionsMode == null) {
+                actionsMode = 1;
             }
             var t = value;
             var end = false;
@@ -207,7 +208,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             var prevPos = this._prevPos;
             this.position = this._prevPos = t;
             this._prevPosition = value;
-            if (this.target) {
+            if (this._target) {
                 if (end) {
                     this._updateTargetProps(null, 1);
                 }
@@ -241,7 +242,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             this.dispatchEvent("change");
             return end;
         };
-        Tween.prototype.tick = function (delta) {
+        Tween.prototype.onTick = function (delta) {
             if (this._paused) {
                 return;
             }
@@ -304,16 +305,15 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                     }
                 }
                 if (!ignore) {
-                    this.target[n] = v;
+                    this._target[n] = v;
                 }
             }
         };
         Tween.prototype._runActions = function (startPos, endPos, includeStart) {
-            if (includeStart === void 0) { includeStart = false; }
             var sPos = startPos;
             var ePos = endPos;
             var i = -1;
-            var j = this._actions ? this._actions.length : 0;
+            var j = this._actions.length;
             var k = 1;
             if (startPos > endPos) {
                 sPos = endPos;
@@ -333,7 +333,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             var arr, oldValue, i, l, injectProps;
             for (var n in o) {
                 if (this._initQueueProps[n] === undefined) {
-                    oldValue = this.target[n];
+                    oldValue = this._target[n];
                     if (arr = Tween._plugins[n]) {
                         for (i = 0, l = arr.length; i < l; i++) {
                             oldValue = arr[i].init(this, n, oldValue);
@@ -387,13 +387,13 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                 o[n] = props[n];
             }
         };
+        Tween._inited = false;
         Tween.NONE = 0;
         Tween.LOOP = 1;
         Tween.REVERSE = 2;
         Tween.IGNORE = {};
         Tween._tweens = [];
         Tween._plugins = {};
-        Tween._inited = false;
         return Tween;
     })(EventDispatcher);
     return Tween;

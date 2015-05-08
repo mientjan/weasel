@@ -20,6 +20,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this._tickSignalConnection = null;
             this._fps = 60;
             this._eventListeners = null;
+            this._onResizeEventListener = null;
             this.autoClear = true;
             this.canvas = null;
             this.ctx = null;
@@ -39,6 +40,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this._nextStage = null;
             this._prevStage = null;
             this.update = function (delta) {
+                if (delta === void 0) { delta = 0; }
                 if (!_this.canvas) {
                     return;
                 }
@@ -93,6 +95,9 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(1 /* LOW */);
             this.stage = this;
+            if (triggerResizeOnWindowResize) {
+                this.enableAutoResize();
+            }
             this.onResize(size.width, size.height);
         }
         Object.defineProperty(Stage.prototype, "nextStage", {
@@ -216,10 +221,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 eventListeners["mousedown"] = {
                     window: this.canvas,
                     fn: function (e) { return _this._handleMouseDown(e); }
-                };
-                eventListeners["resize"] = {
-                    window: windowsObject,
-                    fn: function (e) { return _this._handleWindowResize(e); }
                 };
                 for (name in eventListeners) {
                     o = eventListeners[name];
@@ -426,9 +427,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             nextStage && nextStage._handleDoubleClick(e, owner || target && this);
         };
         Stage.prototype._handleWindowResize = function (e) {
-            if (this.triggerResizeOnWindowResize) {
-                this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
-            }
+            this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
         };
         Stage.prototype._dispatchMouseEvent = function (target, type, bubbles, pointerId, o, nativeEvent) {
             if (!target || (!bubbles && !target.hasEventListener(type))) {
@@ -443,6 +442,14 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
         };
         Stage.prototype.getFps = function () {
             return this._fps;
+        };
+        Stage.prototype.enableAutoResize = function () {
+            var _this = this;
+            this._onResizeEventListener = function (e) { return _this._handleWindowResize(e); };
+            window.addEventListener('resize', this._onResizeEventListener);
+        };
+        Stage.prototype.disableAutoResize = function () {
+            window.removeEventListener('resize', this._onResizeEventListener);
         };
         Stage.prototype.start = function () {
             if (!this._isRunning) {

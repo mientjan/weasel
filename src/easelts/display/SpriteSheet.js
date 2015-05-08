@@ -12,8 +12,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../geom/R
             this.complete = true;
             this.framerate = 0;
             this._animations = null;
-            this._frames = [];
-            this._images = [];
+            this._frames = null;
+            this._images = null;
             this._data = null;
             this._loadCount = 0;
             this._frameHeight = 0;
@@ -170,25 +170,32 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../geom/R
                 return;
             }
             this._frames = [];
-            var ttlFrames = 0;
-            var fw = this._frameWidth;
-            var fh = this._frameHeight;
-            for (var i = 0, imgs = this._images; i < imgs.length; i++) {
-                var img = imgs[i];
-                var cols = img.width / fw | 0;
-                var rows = img.height / fh | 0;
-                var ttl = this._numFrames > 0 ? Math.min(this._numFrames - ttlFrames, cols * rows) : cols * rows;
-                for (var j = 0; j < ttl; j++) {
-                    this._frames.push({
-                        image: img,
-                        rect: new Rectangle(j % cols * fw, (j / cols | 0) * fh, fw, fh),
-                        regX: this._regX,
-                        regY: this._regY
-                    });
+            var maxFrames = this._numFrames || 100000;
+            var frameCount = 0, frameWidth = this._frameWidth, frameHeight = this._frameHeight;
+            var spacing = 0;
+            var margin = 0;
+            imgLoop: for (var i = 0, imgs = this._images; i < imgs.length; i++) {
+                var img = imgs[i], imgW = img.width, imgH = img.height;
+                var y = margin;
+                while (y <= imgH - margin - frameHeight) {
+                    var x = margin;
+                    while (x <= imgW - margin - frameWidth) {
+                        if (frameCount >= maxFrames) {
+                            break imgLoop;
+                        }
+                        frameCount++;
+                        this._frames.push({
+                            image: img,
+                            rect: new Rectangle(x, y, frameWidth, frameHeight),
+                            regX: this._regX,
+                            regY: this._regY
+                        });
+                        x += frameWidth + spacing;
+                    }
+                    y += frameHeight + spacing;
                 }
-                ttlFrames += ttl;
             }
-            this._numFrames = ttlFrames;
+            this._numFrames = frameCount;
         };
         return SpriteSheet;
     })(EventDispatcher);

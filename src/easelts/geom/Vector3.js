@@ -1,17 +1,22 @@
-define(["require", "exports", './Matrix4', '../util/MathUtil'], function (require, exports, m4, MathUtil) {
+define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], function (require, exports, m4, Quaternion, MathUtil) {
     var Vector3 = (function () {
         function Vector3(x, y, z) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (z === void 0) { z = 0; }
+            this._quaternionApplyEuler = new Quaternion();
+            this._quaternionApplyAxisAngle = new Quaternion();
+            this._projectMatrix = new m4.Matrix4();
+            this._unprojectMatrix = new m4.Matrix4();
+            this._minClampScalar = new Vector3();
+            this._maxClampScalar = new Vector3();
+            this._v1ProjectOnVector = new Vector3();
+            this._dotProjectOnVector = null;
+            this._v1ProjectOnPlane = new Vector3();
+            this._v1Reflect = new Vector3();
             this.x = x;
             this.y = y;
             this.z = z;
-            this.__projectMatrix = null;
-            this.__unprojectMatrix = null;
-            this.__clampScalarMin = null;
-            this.__clampScalarMax = null;
-            this.__projectOnVector_v1 = null;
-            this.__projectOnVector_dot = null;
-            this.__projectOnPlane_v1 = null;
-            this.__reflect_v1 = null;
         }
         Vector3.prototype.set = function (x, y, z) {
             this.x = x;
@@ -64,11 +69,7 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.z = v.z;
             return this;
         };
-        Vector3.prototype.add = function (v, w) {
-            if (w !== undefined) {
-                console.warn('THREE.Vector3: .add() now only accepts one argument. Use .addVectors( a, b ) instead.');
-                return this.addVectors(v, w);
-            }
+        Vector3.prototype.add = function (v) {
             this.x += v.x;
             this.y += v.y;
             this.z += v.z;
@@ -90,6 +91,12 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.x -= v.x;
             this.y -= v.y;
             this.z -= v.z;
+            return this;
+        };
+        Vector3.prototype.subScalar = function (s) {
+            this.x -= s;
+            this.y -= s;
+            this.z -= s;
             return this;
         };
         Vector3.prototype.subVectors = function (a, b) {
@@ -114,6 +121,14 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.x = a.x * b.x;
             this.y = a.y * b.y;
             this.z = a.z * b.z;
+            return this;
+        };
+        Vector3.prototype.applyEuler = function (euler) {
+            this.applyQuaternion(this._quaternionApplyEuler.setFromEuler(euler));
+            return this;
+        };
+        Vector3.prototype.applyAxisAngle = function (axis, angle) {
+            this.applyQuaternion(this._quaternionApplyAxisAngle.setFromAxisAngle(axis, angle));
             return this;
         };
         Vector3.prototype.applyMatrix3 = function (m) {
@@ -161,20 +176,12 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this;
         };
         Vector3.prototype.project = function (camera) {
-            if (!this.__projectMatrix) {
-                this.__projectMatrix = new m4.Matrix4();
-            }
-            var matrix = this.__projectMatrix;
-            matrix.multiplyMatrices(camera.projectionMatrix, matrix.getInverse(camera.matrixWorld));
-            return this.applyProjection(matrix);
+            this._projectMatrix.multiplyMatrices(camera.projectionMatrix, this._projectMatrix.getInverse(camera.matrixWorld));
+            return this.applyProjection(this._projectMatrix);
         };
         Vector3.prototype.unproject = function (camera) {
-            if (!this.__unprojectMatrix) {
-                this.__unprojectMatrix = new m4.Matrix4();
-            }
-            var matrix = this.__unprojectMatrix;
-            matrix.multiplyMatrices(camera.matrixWorld, matrix.getInverse(camera.projectionMatrix));
-            return this.applyProjection(matrix);
+            this._unprojectMatrix.multiplyMatrices(camera.matrixWorld, this._unprojectMatrix.getInverse(camera.projectionMatrix));
+            return this.applyProjection(this._unprojectMatrix);
         };
         Vector3.prototype.transformDirection = function (m) {
             var x = this.x, y = this.y, z = this.z;
@@ -251,17 +258,9 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return this;
         };
         Vector3.prototype.clampScalar = function (minVal, maxVal) {
-            if (!this.__clampScalarMin) {
-                this.__clampScalarMin = new Vector3(0, 0, 0);
-            }
-            if (!this.__clampScalarMax) {
-                this.__clampScalarMax = new Vector3(0, 0, 0);
-            }
-            var min = this.__clampScalarMin;
-            var max = this.__clampScalarMax;
-            min.set(minVal, minVal, minVal);
-            max.set(maxVal, maxVal, maxVal);
-            return this.clamp(min, max);
+            this._minClampScalar.set(minVal, minVal, minVal);
+            this._maxClampScalar.set(maxVal, maxVal, maxVal);
+            return this.clamp(this._minClampScalar, this._maxClampScalar);
         };
         Vector3.prototype.floor = function () {
             this.x = Math.floor(this.x);
@@ -321,6 +320,10 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.z += (v.z - this.z) * alpha;
             return this;
         };
+        Vector3.prototype.lerpVectors = function (v1, v2, alpha) {
+            this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
+            return this;
+        };
         Vector3.prototype.cross = function (v) {
             var x = this.x, y = this.y, z = this.z;
             this.x = y * v.z - z * v.y;
@@ -336,32 +339,17 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             this.z = ax * by - ay * bx;
             return this;
         };
-        Vector3.prototype.projectOnVector = function (vector) {
-            if (!this.__projectOnVector_v1) {
-                this.__projectOnVector_v1 = new Vector3(0, 0, 0);
-            }
-            if (!this.__projectOnVector_dot) {
-                this.__projectOnVector_dot = new Vector3(0, 0, 0);
-            }
-            var v1 = this.__projectOnVector_v1;
-            v1.copy(vector).normalize();
-            var dot = this.dot(v1);
-            return this.copy(v1).multiplyScalar(dot);
+        Vector3.prototype.projectOnVector = function (v) {
+            this._v1ProjectOnVector.copy(v).normalize();
+            this._dotProjectOnVector = this.dot(this._v1ProjectOnVector);
+            return this.copy(this._v1ProjectOnVector).multiplyScalar(this._dotProjectOnVector);
         };
         Vector3.prototype.projectOnPlane = function (planeNormal) {
-            if (!this.__projectOnPlane_v1) {
-                this.__projectOnPlane_v1 = new Vector3(0, 0, 0);
-            }
-            var v1 = this.__projectOnPlane_v1;
-            v1.copy(this).projectOnVector(planeNormal);
-            return this.sub(v1);
+            this._v1ProjectOnPlane.copy(this).projectOnVector(planeNormal);
+            return this.sub(this._v1ProjectOnPlane);
         };
         Vector3.prototype.reflect = function (normal) {
-            if (!this.__reflect_v1) {
-                this.__reflect_v1 = new Vector3(0, 0, 0);
-            }
-            var v1 = this.__reflect_v1;
-            return this.sub(v1.copy(normal).multiplyScalar(2 * this.dot(normal)));
+            return this.sub(this._v1Reflect.copy(normal).multiplyScalar(2 * this.dot(normal)));
         };
         Vector3.prototype.angleTo = function (v) {
             var theta = this.dot(v) / (this.length() * v.length());
@@ -403,7 +391,9 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
             return ((v.x === this.x) && (v.y === this.y) && (v.z === this.z));
         };
         Vector3.prototype.fromArray = function (array, offset) {
-            if (offset === void 0) { offset = 0; }
+            if (offset === undefined) {
+                offset = 0;
+            }
             this.x = array[offset];
             this.y = array[offset + 1];
             this.z = array[offset + 2];
@@ -419,9 +409,6 @@ define(["require", "exports", './Matrix4', '../util/MathUtil'], function (requir
         };
         Vector3.prototype.clone = function () {
             return new Vector3(this.x, this.y, this.z);
-        };
-        Vector3.prototype.toString = function () {
-            return "[Vector3 (x=" + this.x + " y=" + this.y + "  z=" + this.z + ")]";
         };
         return Vector3;
     })();

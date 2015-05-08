@@ -177,6 +177,8 @@ class Stage extends Container
 		}
 	} = null;
 
+	public _onResizeEventListener:Function = null;
+
 	/**
 	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
 	 * to manually control clearing (for generative art, or when pointing multiple stages at the same canvas for
@@ -437,6 +439,10 @@ class Stage extends Container
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
+		if( triggerResizeOnWindowResize ){
+			this.enableAutoResize();
+		}
+
 		this.onResize(size.width, size.height);
 	}
 
@@ -477,9 +483,9 @@ class Stage extends Container
 	 * and then render the display list to the canvas.
 	 *
 	 * @method update
-	 * @param {TimeEvent} timeEvent
+	 * @param {TimeEvent} [timeEvent=0]
 	 **/
-	public update = (delta:number) =>
+	public update = (delta:number = 0) =>
 	{
 		if(!this.canvas)
 		{
@@ -491,11 +497,6 @@ class Stage extends Container
 			// update this logic in SpriteStage when necessary
 			this.onTick.call(this, delta);
 		}
-		//
-		//		if(this.dispatchEvent("drawstart"))
-		//		{
-		//			return;
-		//		}
 
 		this.drawstartSignal.emit();
 
@@ -531,8 +532,6 @@ class Stage extends Container
 		ctx.restore();
 
 		this.drawendSignal.emit();
-		//		this.dispatchEvent("drawend");
-		//		console.timeEnd('stage:update');
 	}
 
 	/**
@@ -751,11 +750,6 @@ class Stage extends Container
 			//				}
 			//			};
 
-			eventListeners["resize"] = {
-				window: windowsObject,
-				fn: e => this._handleWindowResize(e)
-			};
-
 
 			for(name in eventListeners)
 			{
@@ -887,6 +881,7 @@ class Stage extends Container
 		{
 			return;
 		}
+
 
 		var nextStage = this._nextStage;
 		var pointerData = this._getPointerData(id);
@@ -1026,8 +1021,6 @@ class Stage extends Container
 	 **/
 	public _handlePointerDown(id, e, pageX, pageY, owner?:Stage):void
 	{
-
-
 		if(pageY != null)
 		{
 			this._updatePointerPosition(id, e, pageX, pageY);
@@ -1046,6 +1039,7 @@ class Stage extends Container
 		if(!owner)
 		{
 			target = pointerData.target = this._getObjectsUnderPoint(pointerData.x, pointerData.y, null, true);
+
 			this._dispatchMouseEvent(pointerData.target, "mousedown", true, id, pointerData, e);
 		}
 
@@ -1170,14 +1164,10 @@ class Stage extends Container
 	/**
 	 * @method _handleWindowResize
 	 * @protected
-	 * @param {Event} e
 	 **/
 	public _handleWindowResize(e)
 	{
-		if(this.triggerResizeOnWindowResize)
-		{
-			this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
-		}
+		this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
 	}
 
 	/**
@@ -1235,6 +1225,17 @@ class Stage extends Container
 	public getFps():number
 	{
 		return this._fps;
+	}
+
+	public enableAutoResize()
+	{
+		this._onResizeEventListener = (e) => this._handleWindowResize(e)
+		window.addEventListener('resize', <any> this._onResizeEventListener);
+	}
+
+	public disableAutoResize()
+	{
+		window.removeEventListener('resize', <any> this._onResizeEventListener);
 	}
 
 	/**

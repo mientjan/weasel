@@ -10,34 +10,61 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
         function MovieClip(mode, startPosition, loop, labels) {
             if (mode === void 0) { mode = MovieClip.INDEPENDENT; }
             if (startPosition === void 0) { startPosition = 0; }
-            if (loop === void 0) { loop = false; }
+            if (loop === void 0) { loop = true; }
             _super.call(this);
+            this.mode = MovieClip.INDEPENDENT;
             this.startPosition = 0;
-            this.loop = true;
+            this.loop = false;
             this.currentFrame = 0;
             this.timeline = null;
             this.paused = false;
             this.actionsEnabled = true;
             this.autoReset = true;
-            this.frameBounds = null;
+            this.frameBounds = this.frameBounds || null;
             this.framerate = null;
-            this._framerate = null;
             this._synchOffset = 0;
             this._prevPos = -1;
             this._prevPosition = 0;
             this._t = 0;
-            this.parent = null;
-            this.mode = mode;
-            this.startPosition = startPosition || 0;
-            this.loop = loop;
-            var props = { paused: true, position: startPosition, useTicks: true };
-            this.timeline = new Timeline(null, labels, props);
             this._managed = {};
+            !MovieClip.inited && MovieClip.init();
+            this.mode = mode;
+            this.startPosition = startPosition;
+            this.loop = loop;
+            this.timeline = new Timeline(null, labels, { paused: true, position: startPosition, useTicks: true });
         }
-        MovieClip.prototype.draw = function (ctx, ignoreCache) {
-            if (this.DisplayObject_draw(ctx, ignoreCache)) {
-                return true;
+        MovieClip.init = function () {
+            if (MovieClip.inited) {
+                return;
             }
+            MovieClipPlugin.install();
+            MovieClip.inited = true;
+        };
+        MovieClip.prototype.getLabels = function () {
+            return this.timeline.getLabels();
+        };
+        MovieClip.prototype.getCurrentLabel = function () {
+            this._updateTimeline();
+            return this.timeline.getCurrentLabel();
+        };
+        Object.defineProperty(MovieClip.prototype, "labels", {
+            get: function () {
+                return this.getLabels();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(MovieClip.prototype, "currentLabel", {
+            get: function () {
+                return this.getCurrentLabel();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MovieClip.prototype.isVisible = function () {
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
+        };
+        MovieClip.prototype.draw = function (ctx, ignoreCache) {
             this._updateTimeline();
             _super.prototype.draw.call(this, ctx, ignoreCache);
             return true;
@@ -56,7 +83,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
             this.paused = true;
             this._goto(positionOrLabel);
         };
-        MovieClip.prototype.advance = function (delta) {
+        MovieClip.prototype.advance = function (time) {
             var independent = MovieClip.INDEPENDENT;
             if (this.mode != independent) {
                 return;
@@ -68,28 +95,25 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
                 }
             }
             this._framerate = fps;
-            var t = (fps != null && fps != -1 && delta != null) ? delta / (1000 / fps) + this._t : 1;
+            var t = (fps != null && fps != -1 && time != null) ? time / (1000 / fps) + this._t : 1;
             var frames = t | 0;
             this._t = t - frames;
-            while (frames--) {
-                if (!this.paused) {
-                    this._prevPosition = (this._prevPos < 0) ? 0 : this._prevPosition + 1;
-                    this._updateTimeline();
-                }
+            while (!this.paused && frames--) {
+                this._prevPosition = (this._prevPos < 0) ? 0 : this._prevPosition + 1;
+                this._updateTimeline();
             }
         };
-        MovieClip.prototype.getLabels = function () {
-            return this.timeline.getLabels();
-        };
-        MovieClip.prototype.getCurrentLabel = function () {
-            this._updateTimeline();
-            return this.timeline.getCurrentLabel();
-        };
-        MovieClip.prototype.clone = function (recursive) {
+        MovieClip.prototype.clone = function () {
             throw ("MovieClip cannot be cloned.");
+            return this;
         };
         MovieClip.prototype.toString = function () {
             return "[MovieClip (name=" + this.name + ")]";
+        };
+        MovieClip.prototype._tick = function (evtObj) {
+            debugger;
+            this.advance(evtObj && evtObj.delta);
+            this.onTick(evtObj);
         };
         MovieClip.prototype.onTick = function (delta) {
             this.advance(delta);
@@ -109,8 +133,8 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
         };
         MovieClip.prototype._reset = function () {
             this._prevPos = -1;
-            this._t = 0;
-            this.currentFrame = 0;
+            this._t = this.currentFrame = 0;
+            this.paused = false;
         };
         MovieClip.prototype._updateTimeline = function () {
             var tl = this.timeline;
@@ -197,7 +221,29 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
         MovieClip.INDEPENDENT = "independent";
         MovieClip.SINGLE_FRAME = "single";
         MovieClip.SYNCHED = "synched";
+        MovieClip.inited = false;
         return MovieClip;
     })(Container);
+    var MovieClipPlugin = (function () {
+        function MovieClipPlugin() {
+            throw ("MovieClipPlugin cannot be instantiated.");
+        }
+        MovieClipPlugin.install = function () {
+            Tween.installPlugin(MovieClipPlugin, ["startPosition"]);
+        };
+        MovieClipPlugin.init = function (tween, prop, value) {
+            return value;
+        };
+        MovieClipPlugin.step = function () {
+        };
+        MovieClipPlugin.tween = function (tween, prop, value, startValues, endValues, ratio, wait, end) {
+            if (!(tween.target instanceof MovieClip)) {
+                return value;
+            }
+            return (ratio == 1 ? endValues[prop] : startValues[prop]);
+        };
+        MovieClipPlugin.priority = 100;
+        return MovieClipPlugin;
+    })();
     return MovieClip;
 });
