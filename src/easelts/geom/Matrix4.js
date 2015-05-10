@@ -55,10 +55,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             this.elements.set(m.elements);
             return this;
         };
-        Matrix4.prototype.extractPosition = function (m) {
-            console.warn('THREE.Matrix4: .extractPosition() has been renamed to .copyPosition().');
-            return this.copyPosition(m);
-        };
         Matrix4.prototype.copyPosition = function (m) {
             var te = this.elements;
             var me = m.elements;
@@ -177,10 +173,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             te[14] = 0;
             te[15] = 1;
             return this;
-        };
-        Matrix4.prototype.setRotationFromQuaternion = function (q) {
-            console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
-            return this.makeRotationFromQuaternion(q);
         };
         Matrix4.prototype.makeRotationFromQuaternion = function (q) {
             var te = this.elements;

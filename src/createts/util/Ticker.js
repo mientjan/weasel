@@ -115,7 +115,7 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
         Ticker.TIMING_MODE_RAFSYNCHED = 'raf_synched';
         Ticker.TIMING_MODE_RAF = 'raf';
         Ticker.TIMING_MODE_TIMEOUT = 'timeout';
-        Ticker.now = window.performance && (performance.now || performance['mozNow'] || performance['msNow'] || performance['oNow'] || performance['webkitNow']);
+        Ticker.now = window.performance && (window.performance.now || window.performance['mozNow'] || window.performance['msNow'] || window.performance['oNow'] || window.performance['webkitNow']);
         Ticker._instance = null;
         Ticker.maxDelta = 0;
         return Ticker;

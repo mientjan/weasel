@@ -80,7 +80,6 @@ export class Matrix4
 
 	public identity()
 	{
-
 		this.set(
 
 			1, 0, 0, 0,
@@ -91,29 +90,16 @@ export class Matrix4
 		);
 
 		return this;
-
 	}
 
-	public copy(m)
+	public copy(m:Matrix4)
 	{
-
 		this.elements.set(m.elements);
-
 		return this;
-
 	}
 
-	public extractPosition(m)
+	public copyPosition(m:Matrix4)
 	{
-
-		console.warn('THREE.Matrix4: .extractPosition() has been renamed to .copyPosition().');
-		return this.copyPosition(m);
-
-	}
-
-	public copyPosition(m)
-	{
-
 		var te = this.elements;
 		var me = m.elements;
 
@@ -122,7 +108,6 @@ export class Matrix4
 		te[ 14 ] = me[ 14 ];
 
 		return this;
-
 	}
 
 	private __extractRotation_v1:Vector3 = null;
@@ -297,13 +282,6 @@ export class Matrix4
 		te[ 15 ] = 1;
 
 		return this;
-
-	}
-
-	public setRotationFromQuaternion(q:Quaternion)
-	{
-		console.warn('THREE.Matrix4: .setRotationFromQuaternion() has been renamed to .makeRotationFromQuaternion().');
-		return this.makeRotationFromQuaternion(q);
 	}
 
 	public makeRotationFromQuaternion(q:Quaternion)
