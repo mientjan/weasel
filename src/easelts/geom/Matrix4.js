@@ -1,13 +1,6 @@
-define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], function (require, exports, Vector3, Euler, MathUtil) {
+define(["require", "exports", './Vector3', '../util/MathUtil'], function (require, exports, Vector3, MathUtil) {
     var Matrix4 = (function () {
         function Matrix4() {
-            this.__extractRotation_v1 = null;
-            this.__lookAt_x = null;
-            this.__lookAt_y = null;
-            this.__lookAt_z = null;
-            this.__applyToVector3Array_v1 = null;
-            this.__decompose_vector = null;
-            this.__decompose_matrix = null;
             this.elements = new Float32Array([
                 1,
                 0,
@@ -26,6 +19,13 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
                 0,
                 1
             ]);
+            this._v1ExtractRotation = new Vector3();
+            this._xLookAt = new Vector3();
+            this._yLookAt = new Vector3();
+            this._zLookAt = new Vector3();
+            this._v1ApplyToVector3Array = new Vector3();
+            this._decomposeVector = new Vector3();
+            this._decomposeMatrix = new Matrix4();
         }
         Matrix4.prototype.set = function (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
             var te = this.elements;
@@ -63,16 +63,23 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             te[14] = me[14];
             return this;
         };
+        Matrix4.prototype.extractBasis = function (xAxis, yAxis, zAxis) {
+            var te = this.elements;
+            xAxis.set(te[0], te[1], te[2]);
+            yAxis.set(te[4], te[5], te[6]);
+            zAxis.set(te[8], te[9], te[10]);
+            return this;
+        };
+        Matrix4.prototype.makeBasis = function (xAxis, yAxis, zAxis) {
+            this.set(xAxis.x, yAxis.x, zAxis.x, 0, xAxis.y, yAxis.y, zAxis.y, 0, xAxis.z, yAxis.z, zAxis.z, 0, 0, 0, 0, 1);
+            return this;
+        };
         Matrix4.prototype.extractRotation = function (m) {
-            if (!this.__extractRotation_v1) {
-                this.__extractRotation_v1 = new Vector3(0, 0, 0);
-            }
-            var v1 = this.__extractRotation_v1;
             var te = this.elements;
             var me = m.elements;
-            var scaleX = 1 / v1.set(me[0], me[1], me[2]).length();
-            var scaleY = 1 / v1.set(me[4], me[5], me[6]).length();
-            var scaleZ = 1 / v1.set(me[8], me[9], me[10]).length();
+            var scaleX = 1 / this._v1ExtractRotation.set(me[0], me[1], me[2]).length();
+            var scaleY = 1 / this._v1ExtractRotation.set(me[4], me[5], me[6]).length();
+            var scaleZ = 1 / this._v1ExtractRotation.set(me[8], me[9], me[10]).length();
             te[0] = me[0] * scaleX;
             te[1] = me[1] * scaleX;
             te[2] = me[2] * scaleX;
@@ -85,9 +92,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.makeRotationFromEuler = function (euler) {
-            if (euler instanceof Euler === false) {
-                console.error('THREE.Matrix: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.');
-            }
             var te = this.elements;
             var x = euler.x, y = euler.y, z = euler.z;
             var a = Math.cos(x), b = Math.sin(x);
@@ -200,38 +204,26 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.lookAt = function (eye, target, up) {
-            if (!this.__lookAt_x) {
-                this.__lookAt_x = new Vector3(0, 0, 0);
-            }
-            if (!this.__lookAt_y) {
-                this.__lookAt_y = new Vector3(0, 0, 0);
-            }
-            if (!this.__lookAt_z) {
-                this.__lookAt_z = new Vector3(0, 0, 0);
-            }
-            var x = this.__lookAt_x;
-            var y = this.__lookAt_y;
-            var z = this.__lookAt_z;
             var te = this.elements;
-            z.subVectors(eye, target).normalize();
-            if (z.length() === 0) {
-                z.z = 1;
+            this._zLookAt.subVectors(eye, target).normalize();
+            if (this._zLookAt.length() === 0) {
+                this._zLookAt.z = 1;
             }
-            x.crossVectors(up, z).normalize();
-            if (x.length() === 0) {
-                z.x += 0.0001;
-                x.crossVectors(up, z).normalize();
+            this._xLookAt.crossVectors(up, this._zLookAt).normalize();
+            if (this._xLookAt.length() === 0) {
+                this._zLookAt.x += 0.0001;
+                this._xLookAt.crossVectors(up, this._zLookAt).normalize();
             }
-            y.crossVectors(z, x);
-            te[0] = x.x;
-            te[4] = y.x;
-            te[8] = z.x;
-            te[1] = x.y;
-            te[5] = y.y;
-            te[9] = z.y;
-            te[2] = x.z;
-            te[6] = y.z;
-            te[10] = z.z;
+            this._yLookAt.crossVectors(this._zLookAt, this._xLookAt);
+            te[0] = this._xLookAt.x;
+            te[4] = this._yLookAt.x;
+            te[8] = this._zLookAt.x;
+            te[1] = this._xLookAt.y;
+            te[5] = this._yLookAt.y;
+            te[9] = this._zLookAt.y;
+            te[2] = this._xLookAt.z;
+            te[6] = this._yLookAt.z;
+            te[10] = this._zLookAt.z;
             return this;
         };
         Matrix4.prototype.multiply = function (m) {
@@ -309,24 +301,16 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.applyToVector3Array = function (array, offset, length) {
-            if (!this.__applyToVector3Array_v1) {
-                this.__applyToVector3Array_v1 = new Vector3(0, 0, 0);
-            }
-            var v1 = this.__applyToVector3Array_v1;
-            if (offset === undefined) {
-                offset = 0;
-            }
-            if (length === undefined) {
-                length = array.length;
-            }
-            for (var i = 0, j = offset, il; i < length; i += 3, j += 3) {
-                v1.x = array[j];
-                v1.y = array[j + 1];
-                v1.z = array[j + 2];
-                v1.applyMatrix4(this);
-                array[j] = v1.x;
-                array[j + 1] = v1.y;
-                array[j + 2] = v1.z;
+            if (offset === void 0) { offset = 0; }
+            if (length === void 0) { length = array.length; }
+            for (var i = 0, j = offset; i < length; i += 3, j += 3) {
+                this._v1ApplyToVector3Array.x = array[j];
+                this._v1ApplyToVector3Array.y = array[j + 1];
+                this._v1ApplyToVector3Array.z = array[j + 2];
+                this._v1ApplyToVector3Array.applyMatrix4(this);
+                array[j] = this._v1ApplyToVector3Array.x;
+                array[j + 1] = this._v1ApplyToVector3Array.y;
+                array[j + 2] = this._v1ApplyToVector3Array.z;
             }
             return array;
         };
@@ -419,7 +403,6 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
                     throw new Error(msg);
                 }
                 else {
-                    console.warn(msg);
                 }
                 this.identity();
                 return this;
@@ -465,12 +448,12 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             this.set(c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1);
             return this;
         };
-        Matrix4.prototype.makeRotationZ = function (theta) {
+        Matrix4.prototype.makeRotationZfunction = function (theta) {
             var c = Math.cos(theta), s = Math.sin(theta);
             this.set(c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
             return this;
         };
-        Matrix4.prototype.makeRotationAxis = function (axis, angle) {
+        Matrix4.prototype.makeRotationAxisfunction = function (axis, angle) {
             var c = Math.cos(angle);
             var s = Math.sin(angle);
             var t = 1 - c;
@@ -490,18 +473,10 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             return this;
         };
         Matrix4.prototype.decompose = function (position, quaternion, scale) {
-            if (!this.__decompose_vector) {
-                this.__decompose_vector = new Vector3(0, 0, 0);
-            }
-            if (!this.__decompose_matrix) {
-                this.__decompose_matrix = new Matrix4();
-            }
-            var vector = this.__decompose_vector;
-            var matrix = this.__decompose_matrix;
             var te = this.elements;
-            var sx = vector.set(te[0], te[1], te[2]).length();
-            var sy = vector.set(te[4], te[5], te[6]).length();
-            var sz = vector.set(te[8], te[9], te[10]).length();
+            var sx = this._decomposeVector.set(te[0], te[1], te[2]).length();
+            var sy = this._decomposeVector.set(te[4], te[5], te[6]).length();
+            var sz = this._decomposeVector.set(te[8], te[9], te[10]).length();
             var det = this.determinant();
             if (det < 0) {
                 sx = -sx;
@@ -509,20 +484,20 @@ define(["require", "exports", './Vector3', './Euler', '../util/MathUtil'], funct
             position.x = te[12];
             position.y = te[13];
             position.z = te[14];
-            matrix.elements.set(this.elements);
+            this._decomposeMatrix.elements.set(this.elements);
             var invSX = 1 / sx;
             var invSY = 1 / sy;
             var invSZ = 1 / sz;
-            matrix.elements[0] *= invSX;
-            matrix.elements[1] *= invSX;
-            matrix.elements[2] *= invSX;
-            matrix.elements[4] *= invSY;
-            matrix.elements[5] *= invSY;
-            matrix.elements[6] *= invSY;
-            matrix.elements[8] *= invSZ;
-            matrix.elements[9] *= invSZ;
-            matrix.elements[10] *= invSZ;
-            quaternion.setFromRotationMatrix(matrix);
+            this._decomposeMatrix.elements[0] *= invSX;
+            this._decomposeMatrix.elements[1] *= invSX;
+            this._decomposeMatrix.elements[2] *= invSX;
+            this._decomposeMatrix.elements[4] *= invSY;
+            this._decomposeMatrix.elements[5] *= invSY;
+            this._decomposeMatrix.elements[6] *= invSY;
+            this._decomposeMatrix.elements[8] *= invSZ;
+            this._decomposeMatrix.elements[9] *= invSZ;
+            this._decomposeMatrix.elements[10] *= invSZ;
+            quaternion.setFromRotationMatrix(this._decomposeMatrix);
             scale.x = sx;
             scale.y = sy;
             scale.z = sz;

@@ -119,8 +119,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
                 this._z = c1 * c2 * s3 + s1 * s2 * c3;
                 this._w = c1 * c2 * c3 + s1 * s2 * s3;
             }
-            if (update !== false)
+            if (update !== false) {
                 this.onChangeCallback();
+            }
             return this;
         };
         Quaternion.prototype.setFromAxisAngle = function (axis, angle) {
@@ -244,10 +245,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.slerp = function (qb, t) {
-            if (t === 0)
+            if (t === 0) {
                 return this;
-            if (t === 1)
+            }
+            if (t === 1) {
                 return this.copy(qb);
+            }
             var x = this._x, y = this._y, z = this._z, w = this._w;
             var cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
             if (cosHalfTheta < 0) {
@@ -288,8 +291,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return (quaternion._x === this._x) && (quaternion._y === this._y) && (quaternion._z === this._z) && (quaternion._w === this._w);
         };
         Quaternion.prototype.fromArray = function (array, offset) {
-            if (offset === undefined)
+            if (offset === undefined) {
                 offset = 0;
+            }
             this._x = array[offset];
             this._y = array[offset + 1];
             this._z = array[offset + 2];
@@ -298,10 +302,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.toArray = function (array, offset) {
-            if (array === undefined)
+            if (array === undefined) {
                 array = [];
-            if (offset === undefined)
+            }
+            if (offset === undefined) {
                 offset = 0;
+            }
             array[offset] = this._x;
             array[offset + 1] = this._y;
             array[offset + 2] = this._z;
