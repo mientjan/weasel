@@ -60,7 +60,7 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
             else {
                 clearTimeout(this._timerId);
             }
-            this._timerId = null;
+            this._timerId = -1;
             this._isRunning = false;
             if (this.signals.stopped) {
                 this.signals.stopped.emit();

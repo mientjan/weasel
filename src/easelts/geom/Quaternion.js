@@ -1,11 +1,18 @@
-define(["require", "exports", './Vector3'], function (require, exports, Vector3) {
-    var Quaternion = (function () {
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", './math3d/AbstractMath3d'], function (require, exports, AbstractMath3d) {
+    var Quaternion = (function (_super) {
+        __extends(Quaternion, _super);
         function Quaternion(x, y, z, w) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
             if (w === void 0) { w = 1; }
-            this._setFromUnitVectors_v1 = new Vector3(0, 0, 0);
+            _super.call(this);
             this._setFromUnitVectors_r = 0;
             this._x = x;
             this._y = y;
@@ -167,7 +174,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromUnitVectors = function (vFrom, vTo) {
-            var v1 = this._setFromUnitVectors_v1, r = this._setFromUnitVectors_r;
+            var v1 = this.getVector3('_setFromUnitVectors_v1'), r = this._setFromUnitVectors_r;
             var EPS = 0.000001;
             r = vFrom.dot(vTo) + 1;
             if (r < EPS) {
@@ -227,11 +234,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             this.onChangeCallback();
             return this;
         };
-        Quaternion.prototype.multiply = function (q, p) {
-            if (p !== undefined) {
-                console.warn('THREE.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.');
-                return this.multiplyQuaternions(q, p);
-            }
+        Quaternion.prototype.multiply = function (q) {
             return this.multiplyQuaternions(this, q);
         };
         Quaternion.prototype.multiplyQuaternions = function (a, b) {
@@ -324,6 +327,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return new Quaternion(this._x, this._y, this._z, this._w);
         };
         return Quaternion;
-    })();
-    return Quaternion;
+    })(AbstractMath3d);
+    exports.Quaternion = Quaternion;
 });

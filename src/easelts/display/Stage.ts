@@ -487,7 +487,7 @@ class Stage extends Container
 	 * @method update
 	 * @param {TimeEvent} [timeEvent=0]
 	 **/
-	public update = (delta:number = 0) =>
+	public update = (delta:number) =>
 	{
 		if(!this.canvas)
 		{

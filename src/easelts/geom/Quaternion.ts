@@ -1,19 +1,7 @@
-/**
- * @author mikael emtinger / http://gomo.se/
- * @author alteredq / http://alteredqualia.com/
- * @author WestLangley / http://github.com/WestLangley
- * @author bhouston / http://exocortex.com
- */
+import AbstractMath3d = require('./math3d/AbstractMath3d');
 
-import Vector3 = require('./Vector3');
-import Vector4 = require('./Vector4');
-import Euler = require('./Euler');
-import m3 = require('./Matrix3');
-import m4 = require('./Matrix4');
-
-class Quaternion
+export class Quaternion extends AbstractMath3d
 {
-
 	public static slerp(qa:Quaternion, qb, qm, t)
 	{
 
@@ -27,7 +15,7 @@ class Quaternion
 
 	constructor(x:number = 0, y:number = 0, z:number = 0, w:number = 1)
 	{
-
+		super();
 		this._x = x;
 		this._y = y;
 		this._z = z;
@@ -117,7 +105,7 @@ class Quaternion
 
 	}
 
-	public setFromEuler(euler:Euler, update:boolean = false):Quaternion
+	public setFromEuler(euler:any, update:boolean = false):Quaternion
 	{
 
 		// http://www.mathworks.com/matlabcentral/fileexchange/
@@ -195,7 +183,7 @@ class Quaternion
 
 	}
 
-	public setFromAxisAngle(axis:Vector4, angle:number)
+	public setFromAxisAngle(axis:any, angle:number)
 	{
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
@@ -215,7 +203,8 @@ class Quaternion
 
 	}
 
-	public setFromRotationMatrix(m:m4.Matrix4)
+	// m4.Matrix4
+	public setFromRotationMatrix(m:any)
 	{
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
@@ -282,15 +271,17 @@ class Quaternion
 
 	}
 
-	private _setFromUnitVectors_v1:Vector3 = new Vector3(0, 0, 0);
 	private _setFromUnitVectors_r:number = 0;
 
 	public setFromUnitVectors(vFrom, vTo)
 	{
+
+
 		// http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
 		// assumes direction vectors vFrom and vTo are normalized
-		var v1 = this._setFromUnitVectors_v1,
+		var v1 = this.getVector3('_setFromUnitVectors_v1'),
 			r = this._setFromUnitVectors_r;
+
 		var EPS = 0.000001;
 		r = vFrom.dot(vTo) + 1;
 
@@ -406,17 +397,8 @@ class Quaternion
 
 	}
 
-	public multiply(q, p)
+	public multiply(q)
 	{
-
-		if(p !== undefined)
-		{
-
-			console.warn('THREE.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.');
-			return this.multiplyQuaternions(q, p);
-
-		}
-
 		return this.multiplyQuaternions(this, q);
 
 	}
@@ -583,5 +565,3 @@ class Quaternion
 	}
 
 }
-
-export = Quaternion;

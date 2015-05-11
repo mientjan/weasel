@@ -1,6 +1,14 @@
-define(["require", "exports", './Vector3', '../util/MathUtil'], function (require, exports, Vector3, MathUtil) {
-    var Matrix4 = (function () {
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", './math3d/AbstractMath3d', './Vector3', '../util/MathUtil'], function (require, exports, AbstractMath3d, v3, MathUtil) {
+    var Matrix4 = (function (_super) {
+        __extends(Matrix4, _super);
         function Matrix4() {
+            _super.call(this);
             this.elements = new Float32Array([
                 1,
                 0,
@@ -19,13 +27,7 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
                 0,
                 1
             ]);
-            this._v1ExtractRotation = new Vector3();
-            this._xLookAt = new Vector3();
-            this._yLookAt = new Vector3();
-            this._zLookAt = new Vector3();
-            this._v1ApplyToVector3Array = new Vector3();
-            this._decomposeVector = new Vector3();
-            this._decomposeMatrix = new Matrix4();
+            this._v1ExtractRotation = new v3.Vector3();
         }
         Matrix4.prototype.set = function (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
             var te = this.elements;
@@ -204,26 +206,29 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             return this;
         };
         Matrix4.prototype.lookAt = function (eye, target, up) {
+            var xLookAt = this.getVector3('xLookAt');
+            var yLookAt = this.getVector3('yLookAt');
+            var zLookAt = this.getVector3('zLookAt');
             var te = this.elements;
-            this._zLookAt.subVectors(eye, target).normalize();
-            if (this._zLookAt.length() === 0) {
-                this._zLookAt.z = 1;
+            zLookAt.subVectors(eye, target).normalize();
+            if (zLookAt.length() === 0) {
+                zLookAt.z = 1;
             }
-            this._xLookAt.crossVectors(up, this._zLookAt).normalize();
-            if (this._xLookAt.length() === 0) {
-                this._zLookAt.x += 0.0001;
-                this._xLookAt.crossVectors(up, this._zLookAt).normalize();
+            xLookAt.crossVectors(up, zLookAt).normalize();
+            if (xLookAt.length() === 0) {
+                zLookAt.x += 0.0001;
+                xLookAt.crossVectors(up, zLookAt).normalize();
             }
-            this._yLookAt.crossVectors(this._zLookAt, this._xLookAt);
-            te[0] = this._xLookAt.x;
-            te[4] = this._yLookAt.x;
-            te[8] = this._zLookAt.x;
-            te[1] = this._xLookAt.y;
-            te[5] = this._yLookAt.y;
-            te[9] = this._zLookAt.y;
-            te[2] = this._xLookAt.z;
-            te[6] = this._yLookAt.z;
-            te[10] = this._zLookAt.z;
+            yLookAt.crossVectors(zLookAt, xLookAt);
+            te[0] = xLookAt.x;
+            te[4] = yLookAt.x;
+            te[8] = zLookAt.x;
+            te[1] = xLookAt.y;
+            te[5] = yLookAt.y;
+            te[9] = zLookAt.y;
+            te[2] = xLookAt.z;
+            te[6] = yLookAt.z;
+            te[10] = zLookAt.z;
             return this;
         };
         Matrix4.prototype.multiply = function (m) {
@@ -303,14 +308,15 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
         Matrix4.prototype.applyToVector3Array = function (array, offset, length) {
             if (offset === void 0) { offset = 0; }
             if (length === void 0) { length = array.length; }
+            var v1 = this.getVector3('v1ApplyToVector3Array');
             for (var i = 0, j = offset; i < length; i += 3, j += 3) {
-                this._v1ApplyToVector3Array.x = array[j];
-                this._v1ApplyToVector3Array.y = array[j + 1];
-                this._v1ApplyToVector3Array.z = array[j + 2];
-                this._v1ApplyToVector3Array.applyMatrix4(this);
-                array[j] = this._v1ApplyToVector3Array.x;
-                array[j + 1] = this._v1ApplyToVector3Array.y;
-                array[j + 2] = this._v1ApplyToVector3Array.z;
+                v1.x = array[j];
+                v1.y = array[j + 1];
+                v1.z = array[j + 2];
+                v1.applyMatrix4(this);
+                array[j] = v1.x;
+                array[j + 1] = v1.y;
+                array[j + 2] = v1.z;
             }
             return array;
         };
@@ -448,12 +454,12 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             this.set(c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1);
             return this;
         };
-        Matrix4.prototype.makeRotationZfunction = function (theta) {
+        Matrix4.prototype.makeRotationZ = function (theta) {
             var c = Math.cos(theta), s = Math.sin(theta);
             this.set(c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
             return this;
         };
-        Matrix4.prototype.makeRotationAxisfunction = function (axis, angle) {
+        Matrix4.prototype.makeRotationAxis = function (axis, angle) {
             var c = Math.cos(angle);
             var s = Math.sin(angle);
             var t = 1 - c;
@@ -473,10 +479,12 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             return this;
         };
         Matrix4.prototype.decompose = function (position, quaternion, scale) {
+            var decomposeVector = this.getVector3('decomposeVector');
+            var decomposeMatrix = this.getMatrix4('decomposeMatrix');
             var te = this.elements;
-            var sx = this._decomposeVector.set(te[0], te[1], te[2]).length();
-            var sy = this._decomposeVector.set(te[4], te[5], te[6]).length();
-            var sz = this._decomposeVector.set(te[8], te[9], te[10]).length();
+            var sx = decomposeVector.set(te[0], te[1], te[2]).length();
+            var sy = decomposeVector.set(te[4], te[5], te[6]).length();
+            var sz = decomposeVector.set(te[8], te[9], te[10]).length();
             var det = this.determinant();
             if (det < 0) {
                 sx = -sx;
@@ -484,20 +492,20 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             position.x = te[12];
             position.y = te[13];
             position.z = te[14];
-            this._decomposeMatrix.elements.set(this.elements);
+            decomposeMatrix.elements.set(this.elements);
             var invSX = 1 / sx;
             var invSY = 1 / sy;
             var invSZ = 1 / sz;
-            this._decomposeMatrix.elements[0] *= invSX;
-            this._decomposeMatrix.elements[1] *= invSX;
-            this._decomposeMatrix.elements[2] *= invSX;
-            this._decomposeMatrix.elements[4] *= invSY;
-            this._decomposeMatrix.elements[5] *= invSY;
-            this._decomposeMatrix.elements[6] *= invSY;
-            this._decomposeMatrix.elements[8] *= invSZ;
-            this._decomposeMatrix.elements[9] *= invSZ;
-            this._decomposeMatrix.elements[10] *= invSZ;
-            quaternion.setFromRotationMatrix(this._decomposeMatrix);
+            decomposeMatrix.elements[0] *= invSX;
+            decomposeMatrix.elements[1] *= invSX;
+            decomposeMatrix.elements[2] *= invSX;
+            decomposeMatrix.elements[4] *= invSY;
+            decomposeMatrix.elements[5] *= invSY;
+            decomposeMatrix.elements[6] *= invSY;
+            decomposeMatrix.elements[8] *= invSZ;
+            decomposeMatrix.elements[9] *= invSZ;
+            decomposeMatrix.elements[10] *= invSZ;
+            quaternion.setFromRotationMatrix(decomposeMatrix);
             scale.x = sx;
             scale.y = sy;
             scale.z = sz;
@@ -591,6 +599,6 @@ define(["require", "exports", './Vector3', '../util/MathUtil'], function (requir
             return new Matrix4().fromArray(this.elements);
         };
         return Matrix4;
-    })();
+    })(AbstractMath3d);
     exports.Matrix4 = Matrix4;
 });

@@ -40,7 +40,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this._nextStage = null;
             this._prevStage = null;
             this.update = function (delta) {
-                if (delta === void 0) { delta = 0; }
                 if (!_this.canvas) {
                     return;
                 }
