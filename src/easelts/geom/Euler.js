@@ -1,11 +1,11 @@
-define(["require", "exports", './Quaternion', '../util/MathUtil'], function (require, exports, Quaternion, MathUtil) {
+define(["require", "exports", './Quaternion', '../util/MathUtil'], function (require, exports, q, MathUtil) {
     var Euler = (function () {
         function Euler(x, y, z, order) {
             this._x = 0;
             this._y = 0;
             this._z = 0;
             this._order = Euler.DefaultOrder;
-            this._reorder_q = new Quaternion(0, 0, 0);
+            this._reorder_q = new q.Quaternion(0, 0, 0);
             this._x = x || 0;
             this._y = y || 0;
             this._z = z || 0;

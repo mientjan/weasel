@@ -1,11 +1,18 @@
-define(["require", "exports", './Vector3'], function (require, exports, Vector3) {
-    var Quaternion = (function () {
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", './math3d/AbstractMath3d'], function (require, exports, AbstractMath3d) {
+    var Quaternion = (function (_super) {
+        __extends(Quaternion, _super);
         function Quaternion(x, y, z, w) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
             if (w === void 0) { w = 1; }
-            this._setFromUnitVectors_v1 = new Vector3(0, 0, 0);
+            _super.call(this);
             this._setFromUnitVectors_r = 0;
             this._x = x;
             this._y = y;
@@ -119,8 +126,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
                 this._z = c1 * c2 * s3 + s1 * s2 * c3;
                 this._w = c1 * c2 * c3 + s1 * s2 * s3;
             }
-            if (update !== false)
+            if (update !== false) {
                 this.onChangeCallback();
+            }
             return this;
         };
         Quaternion.prototype.setFromAxisAngle = function (axis, angle) {
@@ -166,7 +174,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.setFromUnitVectors = function (vFrom, vTo) {
-            var v1 = this._setFromUnitVectors_v1, r = this._setFromUnitVectors_r;
+            var v1 = this.getVector3('_setFromUnitVectors_v1'), r = this._setFromUnitVectors_r;
             var EPS = 0.000001;
             r = vFrom.dot(vTo) + 1;
             if (r < EPS) {
@@ -226,11 +234,7 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             this.onChangeCallback();
             return this;
         };
-        Quaternion.prototype.multiply = function (q, p) {
-            if (p !== undefined) {
-                console.warn('THREE.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.');
-                return this.multiplyQuaternions(q, p);
-            }
+        Quaternion.prototype.multiply = function (q) {
             return this.multiplyQuaternions(this, q);
         };
         Quaternion.prototype.multiplyQuaternions = function (a, b) {
@@ -244,10 +248,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.slerp = function (qb, t) {
-            if (t === 0)
+            if (t === 0) {
                 return this;
-            if (t === 1)
+            }
+            if (t === 1) {
                 return this.copy(qb);
+            }
             var x = this._x, y = this._y, z = this._z, w = this._w;
             var cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
             if (cosHalfTheta < 0) {
@@ -288,8 +294,9 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return (quaternion._x === this._x) && (quaternion._y === this._y) && (quaternion._z === this._z) && (quaternion._w === this._w);
         };
         Quaternion.prototype.fromArray = function (array, offset) {
-            if (offset === undefined)
+            if (offset === undefined) {
                 offset = 0;
+            }
             this._x = array[offset];
             this._y = array[offset + 1];
             this._z = array[offset + 2];
@@ -298,10 +305,12 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return this;
         };
         Quaternion.prototype.toArray = function (array, offset) {
-            if (array === undefined)
+            if (array === undefined) {
                 array = [];
-            if (offset === undefined)
+            }
+            if (offset === undefined) {
                 offset = 0;
+            }
             array[offset] = this._x;
             array[offset + 1] = this._y;
             array[offset + 2] = this._z;
@@ -318,6 +327,6 @@ define(["require", "exports", './Vector3'], function (require, exports, Vector3)
             return new Quaternion(this._x, this._y, this._z, this._w);
         };
         return Quaternion;
-    })();
-    return Quaternion;
+    })(AbstractMath3d);
+    exports.Quaternion = Quaternion;
 });

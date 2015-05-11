@@ -40,7 +40,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this._nextStage = null;
             this._prevStage = null;
             this.update = function (delta) {
-                if (delta === void 0) { delta = 0; }
                 if (!_this.canvas) {
                     return;
                 }
@@ -465,7 +464,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             if (this._isRunning) {
                 this._tickSignalConnection.dispose();
                 this._tickSignalConnection = null;
-                Ticker.getInstance().stop();
                 setTimeout(this.update, 1000 / this._fps);
                 this._isRunning = false;
                 return true;
@@ -476,6 +474,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             return this._isRunning;
         };
         Stage.prototype.onResize = function (width, height) {
+            this.ctx.translate(0.5, 0.5);
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {

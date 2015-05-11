@@ -2,14 +2,14 @@ import Shape = require('../display/Shape');
 import Size = require('../geom/Size');
 
 /**
- * @class RectangleColor
+ * @class BackgroundColor
  */
 class RectangleColor extends Shape
 {
 	public set color(value:string)
 	{
 		this._color = value;
-		this.updateColor();
+		this.setColor();
 	}
 
 	public get color()
@@ -31,12 +31,12 @@ class RectangleColor extends Shape
 	 */
 	constructor(color:string = '#000000', width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
-		super(void 0, width, height, x, y, regX, regY);
+		super(undefined, width, height, x, y, regX, regY);
 
 		this._color = color;
 	}
 
-	private updateColor():void
+	private setColor():void
 	{
 		this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
 	}
@@ -44,9 +44,8 @@ class RectangleColor extends Shape
 	public onResize(width:number, height:number):void
 	{
 		super.onResize(width, height);
-
-		this.updateColor();
+		this.setColor();
 	}
 }
 
-export  = RectangleColor;
+export = RectangleColor;

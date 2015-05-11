@@ -138,6 +138,8 @@ class Stage extends Container
 	 * @event tickstart
 	 * @since 0.7.0
 	 */
+//	protected _ticker:Ticker = new Ticker();
+
 	public tickstartSignal:Signal = new Signal();
 
 	/**
@@ -485,7 +487,7 @@ class Stage extends Container
 	 * @method update
 	 * @param {TimeEvent} [timeEvent=0]
 	 **/
-	public update = (delta:number = 0) =>
+	public update = (delta:number) =>
 	{
 		if(!this.canvas)
 		{
@@ -1251,6 +1253,7 @@ class Stage extends Container
 			this.update(0);
 			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
 			Ticker.getInstance().start();
+
 			this._isRunning = true;
 			return true;
 		}
@@ -1271,7 +1274,6 @@ class Stage extends Container
 			// remove Signal connection
 			this._tickSignalConnection.dispose();
 			this._tickSignalConnection = null;
-			Ticker.getInstance().stop();
 
 			// update stage for a last tick, solves rendering
 			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
@@ -1304,6 +1306,8 @@ class Stage extends Container
 	 */
 	public onResize(width:number, height:number):void
 	{
+
+		this.ctx.translate(0.5, 0.5);
 		// anti-half pixel fix
 		width = width + 1 >> 1 << 1;
 		height = height + 1 >> 1 << 1;
