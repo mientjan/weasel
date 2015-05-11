@@ -1,14 +1,9 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define(["require", "exports", './math3d/AbstractMath3d', './Vector3', '../util/MathUtil'], function (require, exports, AbstractMath3d, v3, MathUtil) {
-    var Matrix4 = (function (_super) {
-        __extends(Matrix4, _super);
+define(["require", "exports", '../util/MathUtil', './Vector3', './Quaternion'], function (require, exports, MathUtil, v3, q) {
+    var Matrix4 = (function () {
         function Matrix4() {
-            _super.call(this);
+            this._quaternion = {};
+            this._vector3 = {};
+            this._matrix4 = {};
             this.elements = new Float32Array([
                 1,
                 0,
@@ -27,8 +22,25 @@ define(["require", "exports", './math3d/AbstractMath3d', './Vector3', '../util/M
                 0,
                 1
             ]);
-            this._v1ExtractRotation = new v3.Vector3();
         }
+        Matrix4.prototype.getQuaternion = function (value) {
+            if (!this._quaternion[value]) {
+                this._quaternion[value] = new q.Quaternion();
+            }
+            return this._quaternion[value];
+        };
+        Matrix4.prototype.getVector3 = function (value) {
+            if (!this._vector3[value]) {
+                this._vector3[value] = new v3.Vector3();
+            }
+            return this._vector3[value];
+        };
+        Matrix4.prototype.getMatrix4 = function (value) {
+            if (!this._matrix4[value]) {
+                this._matrix4[value] = new Matrix4();
+            }
+            return this._matrix4[value];
+        };
         Matrix4.prototype.set = function (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
             var te = this.elements;
             te[0] = n11;
@@ -77,11 +89,12 @@ define(["require", "exports", './math3d/AbstractMath3d', './Vector3', '../util/M
             return this;
         };
         Matrix4.prototype.extractRotation = function (m) {
+            var v1 = this.getVector3('v1ExtractRotation');
             var te = this.elements;
             var me = m.elements;
-            var scaleX = 1 / this._v1ExtractRotation.set(me[0], me[1], me[2]).length();
-            var scaleY = 1 / this._v1ExtractRotation.set(me[4], me[5], me[6]).length();
-            var scaleZ = 1 / this._v1ExtractRotation.set(me[8], me[9], me[10]).length();
+            var scaleX = 1 / v1.set(me[0], me[1], me[2]).length();
+            var scaleY = 1 / v1.set(me[4], me[5], me[6]).length();
+            var scaleZ = 1 / v1.set(me[8], me[9], me[10]).length();
             te[0] = me[0] * scaleX;
             te[1] = me[1] * scaleX;
             te[2] = me[2] * scaleX;
@@ -599,6 +612,6 @@ define(["require", "exports", './math3d/AbstractMath3d', './Vector3', '../util/M
             return new Matrix4().fromArray(this.elements);
         };
         return Matrix4;
-    })(AbstractMath3d);
+    })();
     exports.Matrix4 = Matrix4;
 });

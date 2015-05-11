@@ -1,24 +1,37 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define(["require", "exports", './math3d/AbstractMath3d'], function (require, exports, AbstractMath3d) {
-    var Quaternion = (function (_super) {
-        __extends(Quaternion, _super);
+define(["require", "exports", './Matrix4', './Vector3'], function (require, exports, m4, v3) {
+    var Quaternion = (function () {
         function Quaternion(x, y, z, w) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
             if (w === void 0) { w = 1; }
-            _super.call(this);
+            this._quaternion = {};
+            this._vector3 = {};
+            this._matrix4 = {};
             this._setFromUnitVectors_r = 0;
             this._x = x;
             this._y = y;
             this._z = z;
             this._w = w;
         }
+        Quaternion.prototype.getQuaternion = function (value) {
+            if (!this._quaternion[value]) {
+                this._quaternion[value] = new Quaternion();
+            }
+            return this._quaternion[value];
+        };
+        Quaternion.prototype.getVector3 = function (value) {
+            if (!this._vector3[value]) {
+                this._vector3[value] = new v3.Vector3();
+            }
+            return this._vector3[value];
+        };
+        Quaternion.prototype.getMatrix4 = function (value) {
+            if (!this._matrix4[value]) {
+                this._matrix4[value] = new m4.Matrix4();
+            }
+            return this._matrix4[value];
+        };
         Quaternion.slerp = function (qa, qb, qm, t) {
             return qm.copy(qa).slerp(qb, t);
         };
@@ -327,6 +340,6 @@ define(["require", "exports", './math3d/AbstractMath3d'], function (require, exp
             return new Quaternion(this._x, this._y, this._z, this._w);
         };
         return Quaternion;
-    })(AbstractMath3d);
+    })();
     exports.Quaternion = Quaternion;
 });

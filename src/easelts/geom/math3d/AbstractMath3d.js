@@ -25,5 +25,5 @@ define(["require", "exports", '../Quaternion', '../Vector3', '../Matrix4'], func
         };
         return AbstractMath3d;
     })();
-    return AbstractMath3d;
+    exports.AbstractMath3d = AbstractMath3d;
 });
