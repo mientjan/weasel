@@ -20,7 +20,6 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             this._imageNaturalHeight = null;
             this.sourceRect = null;
             this.destinationRect = null;
-            this.loadDirect = false;
             this.onLoad = function () {
                 if (_this.bitmapType == 1 /* IMAGE */) {
                     _this._imageNaturalWidth = _this.image.naturalWidth;

@@ -73,6 +73,10 @@ class Bitmap extends DisplayObject
 	public type:DisplayType = DisplayType.BITMAP;
 	public bitmapType:BitmapType = BitmapType.UNKNOWN;
 
+	/**
+	 * is Bitmap Loaded
+	 * @type {boolean}
+	 */
 	public loaded:boolean = false;
 
 	/**
@@ -81,8 +85,9 @@ class Bitmap extends DisplayObject
 	 * @type HTMLImageElement | HTMLCanvasElement | HTMLVideoElement
 	 **/
 	public image:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement = null;
-	private _imageNaturalWidth:number = null;
-	private _imageNaturalHeight:number = null;
+
+	protected _imageNaturalWidth:number = null;
+	protected _imageNaturalHeight:number = null;
 
 	/**
 	 * Specifies an area of the source image to draw. If omitted, the whole image will be drawn.
@@ -99,7 +104,6 @@ class Bitmap extends DisplayObject
 	 * @default null
 	 */
 	public destinationRect:Rectangle = null;
-	public loadDirect:boolean = false;
 
 	/**
 	 * @class Bitmap
@@ -240,7 +244,7 @@ class Bitmap extends DisplayObject
 	 * into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx, ignoreCache):boolean
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
 		if(this.isVisible())
 		{
@@ -325,6 +329,7 @@ class Bitmap extends DisplayObject
 		this.image = null;
 		this.sourceRect = null;
 		this.destinationRect = null;
+
 		super.destruct();
 	}
 
