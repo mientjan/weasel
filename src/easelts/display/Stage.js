@@ -49,7 +49,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
                 var r = _this.drawRect, ctx = _this.ctx;
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
                 if (_this.autoClear) {
                     if (r) {
                         ctx.clearRect(r.x, r.y, r.width, r.height);
@@ -235,12 +235,12 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
         Stage.prototype.toString = function () {
             return "[Stage (name=" + this.name + ")]";
         };
-        Stage.prototype._getElementRect = function (e) {
+        Stage.prototype._getElementRect = function (element) {
             var bounds;
-            bounds = e.getBoundingClientRect();
+            bounds = element.getBoundingClientRect();
             var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
             var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
-            var styles = window.getComputedStyle ? getComputedStyle(e, null) : e.currentStyle;
+            var styles = window.getComputedStyle ? getComputedStyle(element, null) : element.currentStyle;
             var padL = parseInt(styles.paddingLeft) + parseInt(styles.borderLeftWidth);
             var padT = parseInt(styles.paddingTop) + parseInt(styles.borderTopWidth);
             var padR = parseInt(styles.paddingRight) + parseInt(styles.borderRightWidth);
@@ -474,7 +474,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             return this._isRunning;
         };
         Stage.prototype.onResize = function (width, height) {
-            this.ctx.translate(0.5, 0.5);
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {
