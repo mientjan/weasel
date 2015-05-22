@@ -81,7 +81,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                 case 'canvas':
                     {
                         this.image = image;
-                        this.bitmapType = 1 /* IMAGE */;
+                        this.bitmapType = 3 /* CANVAS */;
                         if (this.width == 0 || this.height == 0) {
                             throw new Error('width and height must be set when using canvas / video');
                         }

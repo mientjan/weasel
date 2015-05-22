@@ -172,7 +172,7 @@ class Bitmap extends DisplayObject
 			case 'canvas':
 			{
 				this.image = <HTMLCanvasElement> image;
-				this.bitmapType = BitmapType.IMAGE;
+				this.bitmapType = BitmapType.CANVAS;
 
 				if( this.width == 0 || this.height == 0 ){
 					throw new Error('width and height must be set when using canvas / video');
