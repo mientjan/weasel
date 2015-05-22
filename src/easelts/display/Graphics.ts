@@ -1816,7 +1816,7 @@ class Graphics
 	 * @method curveTo
 	 * @type {Function}
 	 **/
-	public curveTo:(cpx:number, cpy:number, x:number, y:number) => void = this.quadraticCurveTo;
+	public curveTo:(cpx:number, cpy:number, x:number, y:number) => Graphics = this.quadraticCurveTo;
 
 	/**
 	 * Maps the familiar ActionScript <code>drawRect()</code> method to the functionally similar {{#crossLink "Graphics/rect"}}{{/crossLink}}
@@ -1824,7 +1824,7 @@ class Graphics
 	 * @method drawRect
 	 * @type {Function}
 	 **/
-	public drawRect:(x:number, y:number, width:number, height:number) => void = this.rect;
+	public drawRect:(x:number, y:number, width:number, height:number) => Graphics = this.rect;
 
 	/**
 	 * Draws a rounded rectangle with all corners with the specified radius.
