@@ -251,14 +251,16 @@ class Bitmap extends DisplayObject
 
 			var sourceRect = this.sourceRect;
 			var destRect = this.destinationRect;
+			var width = this.width;
+			var height = this.height;
 
 			if(sourceRect && !destRect)
 			{
-				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, this.width, this.height);
+				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
 			}
 			else if(!sourceRect && destRect)
 			{
-				ctx.drawImage(this.image, 0, 0, this.width, this.height, destRect.x, destRect.y, destRect.width, destRect.height);
+				ctx.drawImage(this.image, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
 			}
 			else if(sourceRect && destRect)
 			{
@@ -273,11 +275,18 @@ class Bitmap extends DisplayObject
 						this._imageNaturalHeight = ( <HTMLImageElement> this.image).naturalHeight;
 					}
 
-					if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0){
-						ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+					if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0)
+					{
+						if( width == 0 || height == 0 )
+						{
+							this.width = width = this._imageNaturalWidth;
+							this.height = height = this._imageNaturalHeight;
+						}
+
+						ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
 					}
 				} else {
-					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height );
+					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height );
 				}
 			}
 
