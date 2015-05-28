@@ -277,9 +277,12 @@ class Bitmap extends DisplayObject
 
 					if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0)
 					{
-						if( width == 0 || height == 0 )
+						if( width == 0 )
 						{
 							this.width = width = this._imageNaturalWidth;
+						}
+
+						if( height == 0 ){
 							this.height = height = this._imageNaturalHeight;
 						}
 

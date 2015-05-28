@@ -119,8 +119,10 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                             this._imageNaturalHeight = this.image.naturalHeight;
                         }
                         if (this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0) {
-                            if (width == 0 || height == 0) {
+                            if (width == 0) {
                                 this.width = width = this._imageNaturalWidth;
+                            }
+                            if (height == 0) {
                                 this.height = height = this._imageNaturalHeight;
                             }
                             ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
