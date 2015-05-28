@@ -132,14 +132,11 @@ class Bitmap extends DisplayObject
 			image = imageOrUri;
 		}
 
-
 		var tagName:string = '';
 
 		if( image ){
 			tagName = image.tagName.toLowerCase();
 		}
-
-
 
 		switch(tagName)
 		{
@@ -148,7 +145,7 @@ class Bitmap extends DisplayObject
 				this.image = <HTMLImageElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
-				if( this.image && (this.image['complete'] || this.image['getContext'] || this.image.readyState >= 2) ){
+				if( this.image && (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2) ){
 					this.onLoad();
 				} else {
 					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad );
@@ -182,7 +179,6 @@ class Bitmap extends DisplayObject
 				break;
 			}
 		}
-
 	}
 
 	public onLoad = ():void =>
@@ -271,7 +267,15 @@ class Bitmap extends DisplayObject
 			else
 			{
 				if( this.bitmapType == BitmapType.IMAGE ){
-					ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+					if( this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0)
+					{
+						this._imageNaturalWidth = ( <HTMLImageElement> this.image).naturalWidth;
+						this._imageNaturalHeight = ( <HTMLImageElement> this.image).naturalHeight;
+					}
+
+					if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0){
+						ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+					}
 				} else {
 					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height );
 				}
@@ -329,6 +333,8 @@ class Bitmap extends DisplayObject
 		this.image = null;
 		this.sourceRect = null;
 		this.destinationRect = null;
+		this._imageNaturalWidth = null;
+		this._imageNaturalHeight = null;
 
 		super.destruct();
 	}

@@ -60,7 +60,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     {
                         this.image = image;
                         this.bitmapType = 1 /* IMAGE */;
-                        if (this.image && (this.image['complete'] || this.image['getContext'] || this.image.readyState >= 2)) {
+                        if (this.image && (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2)) {
                             this.onLoad();
                         }
                         else {
@@ -112,7 +112,13 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                 }
                 else {
                     if (this.bitmapType == 1 /* IMAGE */) {
-                        ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+                        if (this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0) {
+                            this._imageNaturalWidth = this.image.naturalWidth;
+                            this._imageNaturalHeight = this.image.naturalHeight;
+                        }
+                        if (this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0) {
+                            ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, this.width, this.height);
+                        }
                     }
                     else {
                         ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
@@ -145,6 +151,8 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             this.image = null;
             this.sourceRect = null;
             this.destinationRect = null;
+            this._imageNaturalWidth = null;
+            this._imageNaturalHeight = null;
             _super.prototype.destruct.call(this);
         };
         Bitmap.EVENT_ONLOAD = 'onload';
