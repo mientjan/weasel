@@ -67,7 +67,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._rectangle = new Rectangle(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
-            this.DisplayObject_draw = this.draw;
             this.DisplayObject_getBounds = this._getBounds;
             this.setGeomTransform(width, height, x, y, regX, regY);
         }
@@ -267,6 +266,22 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
         };
         DisplayObject.prototype.draw = function (ctx, ignoreCache) {
+            var cacheCanvas = this.cacheCanvas;
+            if (ignoreCache || !cacheCanvas) {
+                return false;
+            }
+            var scale = this._cacheScale;
+            var offX = this._cacheOffsetX;
+            var offY = this._cacheOffsetY;
+            var fBounds;
+            if (fBounds = this._applyFilterBounds(offX, offY, 0, 0)) {
+                offX = fBounds.x;
+                offY = fBounds.y;
+            }
+            ctx.drawImage(cacheCanvas, offX, offY, cacheCanvas.width / scale, cacheCanvas.height / scale);
+            return true;
+        };
+        DisplayObject.prototype.DisplayObject_draw = function (ctx, ignoreCache) {
             var cacheCanvas = this.cacheCanvas;
             if (ignoreCache || !cacheCanvas) {
                 return false;

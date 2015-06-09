@@ -938,16 +938,41 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		var offX = this._cacheOffsetX;
 		var offY = this._cacheOffsetY;
 		var fBounds;
+
 		if(fBounds = this._applyFilterBounds(offX, offY, 0, 0))
 		{
 			offX = fBounds.x;
 			offY = fBounds.y;
 		}
+
 		ctx.drawImage(cacheCanvas, offX, offY, cacheCanvas.width / scale, cacheCanvas.height / scale);
+
 		return true;
 	}
 
-	public DisplayObject_draw:(ctx:CanvasRenderingContext2D, ignoreCache?:boolean) => boolean = this.draw;
+	public DisplayObject_draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	{
+		var cacheCanvas = this.cacheCanvas;
+		if(ignoreCache || !cacheCanvas)
+		{
+			return false;
+		}
+
+		var scale = this._cacheScale;
+		var offX = this._cacheOffsetX;
+		var offY = this._cacheOffsetY;
+		var fBounds;
+
+		if(fBounds = this._applyFilterBounds(offX, offY, 0, 0))
+		{
+			offX = fBounds.x;
+			offY = fBounds.y;
+		}
+
+		ctx.drawImage(cacheCanvas, offX, offY, cacheCanvas.width / scale, cacheCanvas.height / scale);
+
+		return true;
+	}
 
 	/**
 	 * Applies this display object's transformation, alpha, globalCompositeOperation, clipping path (mask), and shadow

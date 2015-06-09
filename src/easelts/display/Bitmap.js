@@ -20,29 +20,6 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
             this._imageNaturalHeight = null;
             this.sourceRect = null;
             this.destinationRect = null;
-            this.onLoad = function () {
-                if (_this.bitmapType == 1 /* IMAGE */) {
-                    _this._imageNaturalWidth = _this.image.naturalWidth;
-                    _this._imageNaturalHeight = _this.image.naturalHeight;
-                    if (!_this.width) {
-                        _this.width = _this._imageNaturalWidth;
-                    }
-                    if (!_this.height) {
-                        _this.height = _this._imageNaturalHeight;
-                    }
-                }
-                else {
-                    if (!_this.width) {
-                        _this.width = _this.image.width;
-                    }
-                    if (!_this.height) {
-                        _this.height = _this.image.height;
-                    }
-                }
-                _this.isDirty = true;
-                _this.dispatchEvent(Bitmap.EVENT_ONLOAD);
-                _this.loaded = true;
-            };
             var image;
             if (typeof imageOrUri == "string") {
                 image = document.createElement("img");
@@ -64,7 +41,7 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                             this.onLoad();
                         }
                         else {
-                            this.image.addEventListener('load', this.onLoad);
+                            this.image.addEventListener('load', function () { return _this.onLoad(); });
                         }
                         break;
                     }
@@ -90,15 +67,38 @@ define(["require", "exports", './DisplayObject'], function (require, exports, Di
                     }
             }
         }
+        Bitmap.prototype.onLoad = function () {
+            if (this.bitmapType == 1 /* IMAGE */) {
+                this._imageNaturalWidth = this.image.naturalWidth;
+                this._imageNaturalHeight = this.image.naturalHeight;
+                if (!this.width) {
+                    this.width = this._imageNaturalWidth;
+                }
+                if (!this.height) {
+                    this.height = this._imageNaturalHeight;
+                }
+            }
+            else {
+                if (!this.width) {
+                    this.width = this.image.width;
+                }
+                if (!this.height) {
+                    this.height = this.image.height;
+                }
+            }
+            this.isDirty = true;
+            this.dispatchEvent(Bitmap.EVENT_ONLOAD);
+            this.loaded = true;
+        };
         Bitmap.prototype.isVisible = function () {
             var hasContent = this.cacheCanvas || this.loaded;
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
         };
         Bitmap.prototype.draw = function (ctx, ignoreCache) {
+            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+                return true;
+            }
             if (this.isVisible()) {
-                if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
-                    return true;
-                }
                 var sourceRect = this.sourceRect;
                 var destRect = this.destinationRect;
                 var width = this.width;

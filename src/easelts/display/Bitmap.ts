@@ -148,7 +148,7 @@ class Bitmap extends DisplayObject
 				if( this.image && (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2) ){
 					this.onLoad();
 				} else {
-					( <HTMLImageElement> this.image).addEventListener('load', this.onLoad );
+					( <HTMLImageElement> this.image).addEventListener('load', () => this.onLoad() );
 				}
 				break;
 			}
@@ -181,12 +181,12 @@ class Bitmap extends DisplayObject
 		}
 	}
 
-	public onLoad = ():void =>
+	public onLoad()
 	{
 		if(this.bitmapType == BitmapType.IMAGE )
 		{
-			this._imageNaturalWidth = (<HTMLImageElement>this.image).naturalWidth;
-			this._imageNaturalHeight = (<HTMLImageElement>this.image).naturalHeight;
+			this._imageNaturalWidth = ( <HTMLImageElement> this.image ).naturalWidth;
+			this._imageNaturalHeight = ( <HTMLImageElement> this.image ).naturalHeight;
 
 			if(!this.width)
 			{
@@ -242,13 +242,13 @@ class Bitmap extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
+		if(super.draw(ctx, ignoreCache))
+		{
+			return true;
+		}
+
 		if(this.isVisible())
 		{
-			if(super.draw(ctx, ignoreCache))
-			{
-				return true;
-			}
-
 			var sourceRect = this.sourceRect;
 			var destRect = this.destinationRect;
 			var width = this.width;
@@ -292,8 +292,6 @@ class Bitmap extends DisplayObject
 					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height );
 				}
 			}
-
-
 		}
 
 		return true;

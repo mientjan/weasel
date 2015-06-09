@@ -963,6 +963,101 @@ class PolyStar
 	}
 }
 
+/**
+ * The Graphics class exposes an easy to use API for generating vector drawing instructions and drawing them to a
+ * specified context. Note that you can use Graphics without any dependency on the Easel framework by calling {{#crossLink "Graphics/draw"}}{{/crossLink}}
+ * directly, or it can be used with the {{#crossLink "Shape"}}{{/crossLink}} object to draw vector graphics within the
+ * context of an EaselJS display list.
+ *
+ * There are two approaches to working with Graphics object: calling methods on a Graphics instance (the "Graphics API"), or
+ * instantiating Graphics command objects and adding them to the graphics queue via {{#crossLink "Graphics/append"}}{{/crossLink}}.
+ * The former abstracts the latter, simplifying beginning and ending paths, fills, and strokes.
+ *
+ *      var g = new createjs.Graphics();
+ *      g.setStrokeStyle(1);
+ *      g.beginStroke("#000000");
+ *      g.beginFill("red");
+ *      g.drawCircle(0,0,30);
+ *
+ * All drawing methods in Graphics return the Graphics instance, so they can be chained together. For example,
+ * the following line of code would generate the instructions to draw a rectangle with a red stroke and blue fill:
+ *
+ *      myGraphics.beginStroke("red").beginFill("blue").drawRect(20, 20, 100, 50);
+ *
+ * Each graphics API call generates a command object (see below). The last command to be created can be accessed via
+ * {{#crossLink "Graphics/command:property"}}{{/crossLink}}:
+ *
+ *      var fillCommand = myGraphics.beginFill("red").command;
+ *      // ... later, update the fill style/color:
+ *      fillCommand.style = "blue";
+ *      // or change it to a bitmap fill:
+ *      fillCommand.bitmap(myImage);
+ *
+ * For more direct control of rendering, you can instantiate and append command objects to the graphics queue directly. In this case, you
+ * need to manage path creation manually, and ensure that fill/stroke is applied to a defined path:
+ *
+ *      // start a new path. Graphics.beginPath is a reusable BeginPath instance:
+ *      myGraphics.append(Graphics.beginPath);
+ *      // we need to define the path before applying the fill:
+ *      var circle = new Graphics.Circle(0,0,30);
+ *      myGraphics.append(circle);
+ *      // fill the path we just defined:
+ *      var fill = new Graphics.Fill("red");
+ *      myGraphics.append(fill);
+ *
+ * These approaches can be used together, for example to insert a custom command:
+ *
+ *      myGraphics.beginFill("red");
+ *      var customCommand = new CustomSpiralCommand(etc);
+ *      myGraphics.append(customCommand);
+ *      myGraphics.beginFill("blue");
+ *      myGraphics.drawCircle(0, 0, 30);
+ *
+ * See {{#crossLink "Graphics/append"}}{{/crossLink}} for more info on creating custom commands.
+ *
+ * <h4>Tiny API</h4>
+ * The Graphics class also includes a "tiny API", which is one or two-letter methods that are shortcuts for all of the
+ * Graphics methods. These methods are great for creating compact instructions, and is used by the Toolkit for CreateJS
+ * to generate readable code. All tiny methods are marked as protected, so you can view them by enabling protected
+ * descriptions in the docs.
+ *
+ * <table>
+ *     <tr><td><b>Tiny</b></td><td><b>Method</b></td><td><b>Tiny</b></td><td><b>Method</b></td></tr>
+ *     <tr><td>mt</td><td>{{#crossLink "Graphics/moveTo"}}{{/crossLink}} </td>
+ *     <td>lt</td> <td>{{#crossLink "Graphics/lineTo"}}{{/crossLink}}</td></tr>
+ *     <tr><td>a/at</td><td>{{#crossLink "Graphics/arc"}}{{/crossLink}} / {{#crossLink "Graphics/arcTo"}}{{/crossLink}} </td>
+ *     <td>bt</td><td>{{#crossLink "Graphics/bezierCurveTo"}}{{/crossLink}} </td></tr>
+ *     <tr><td>qt</td><td>{{#crossLink "Graphics/quadraticCurveTo"}}{{/crossLink}} (also curveTo)</td>
+ *     <td>r</td><td>{{#crossLink "Graphics/rect"}}{{/crossLink}} </td></tr>
+ *     <tr><td>cp</td><td>{{#crossLink "Graphics/closePath"}}{{/crossLink}} </td>
+ *     <td>c</td><td>{{#crossLink "Graphics/clear"}}{{/crossLink}} </td></tr>
+ *     <tr><td>f</td><td>{{#crossLink "Graphics/beginFill"}}{{/crossLink}} </td>
+ *     <td>lf</td><td>{{#crossLink "Graphics/beginLinearGradientFill"}}{{/crossLink}} </td></tr>
+ *     <tr><td>rf</td><td>{{#crossLink "Graphics/beginRadialGradientFill"}}{{/crossLink}} </td>
+ *     <td>bf</td><td>{{#crossLink "Graphics/beginBitmapFill"}}{{/crossLink}} </td></tr>
+ *     <tr><td>ef</td><td>{{#crossLink "Graphics/endFill"}}{{/crossLink}} </td>
+ *     <td>ss</td><td>{{#crossLink "Graphics/setStrokeStyle"}}{{/crossLink}} </td></tr>
+ *     <tr><td>s</td><td>{{#crossLink "Graphics/beginStroke"}}{{/crossLink}} </td>
+ *     <td>ls</td><td>{{#crossLink "Graphics/beginLinearGradientStroke"}}{{/crossLink}} </td></tr>
+ *     <tr><td>rs</td><td>{{#crossLink "Graphics/beginRadialGradientStroke"}}{{/crossLink}} </td>
+ *     <td>bs</td><td>{{#crossLink "Graphics/beginBitmapStroke"}}{{/crossLink}} </td></tr>
+ *     <tr><td>es</td><td>{{#crossLink "Graphics/endStroke"}}{{/crossLink}} </td>
+ *     <td>dr</td><td>{{#crossLink "Graphics/drawRect"}}{{/crossLink}} </td></tr>
+ *     <tr><td>rr</td><td>{{#crossLink "Graphics/drawRoundRect"}}{{/crossLink}} </td>
+ *     <td>rc</td><td>{{#crossLink "Graphics/drawRoundRectComplex"}}{{/crossLink}} </td></tr>
+ *     <tr><td>dc</td><td>{{#crossLink "Graphics/drawCircle"}}{{/crossLink}} </td>
+ *     <td>de</td><td>{{#crossLink "Graphics/drawEllipse"}}{{/crossLink}} </td></tr>
+ *     <tr><td>dp</td><td>{{#crossLink "Graphics/drawPolyStar"}}{{/crossLink}} </td>
+ *     <td>p</td><td>{{#crossLink "Graphics/decodePath"}}{{/crossLink}} </td></tr>
+ * </table>
+ *
+ * Here is the above example, using the tiny API instead.
+ *
+ *      myGraphics.s("red").f("blue").r(20, 20, 100, 50);
+ *
+ * @class Graphics
+ * @constructor
+ **/
 class Graphics
 {
 
@@ -988,109 +1083,7 @@ class Graphics
 	// above.
 	public static beginCmd = new BeginPath(); // so we don't have to instantiate multiples.
 
-	/**
-	 * The Graphics class exposes an easy to use API for generating vector drawing instructions and drawing them to a
-	 * specified context. Note that you can use Graphics without any dependency on the Easel framework by calling {{#crossLink "Graphics/draw"}}{{/crossLink}}
-	 * directly, or it can be used with the {{#crossLink "Shape"}}{{/crossLink}} object to draw vector graphics within the
-	 * context of an EaselJS display list.
-	 *
-	 * There are two approaches to working with Graphics object: calling methods on a Graphics instance (the "Graphics API"), or
-	 * instantiating Graphics command objects and adding them to the graphics queue via {{#crossLink "Graphics/append"}}{{/crossLink}}.
-	 * The former abstracts the latter, simplifying beginning and ending paths, fills, and strokes.
-	 *
-	 *      var g = new createjs.Graphics();
-	 *      g.setStrokeStyle(1);
-	 *      g.beginStroke("#000000");
-	 *      g.beginFill("red");
-	 *      g.drawCircle(0,0,30);
-	 *
-	 * All drawing methods in Graphics return the Graphics instance, so they can be chained together. For example,
-	 * the following line of code would generate the instructions to draw a rectangle with a red stroke and blue fill:
-	 *
-	 *      myGraphics.beginStroke("red").beginFill("blue").drawRect(20, 20, 100, 50);
-	 *
-	 * Each graphics API call generates a command object (see below). The last command to be created can be accessed via
-	 * {{#crossLink "Graphics/command:property"}}{{/crossLink}}:
-	 *
-	 *      var fillCommand = myGraphics.beginFill("red").command;
-	 *      // ... later, update the fill style/color:
-	 *      fillCommand.style = "blue";
-	 *      // or change it to a bitmap fill:
-	 *      fillCommand.bitmap(myImage);
-	 *
-	 * For more direct control of rendering, you can instantiate and append command objects to the graphics queue directly. In this case, you
-	 * need to manage path creation manually, and ensure that fill/stroke is applied to a defined path:
-	 *
-	 *      // start a new path. Graphics.beginPath is a reusable BeginPath instance:
-	 *      myGraphics.append(Graphics.beginPath);
-	 *      // we need to define the path before applying the fill:
-	 *      var circle = new Graphics.Circle(0,0,30);
-	 *      myGraphics.append(circle);
-	 *      // fill the path we just defined:
-	 *      var fill = new Graphics.Fill("red");
-	 *      myGraphics.append(fill);
-	 *
-	 * These approaches can be used together, for example to insert a custom command:
-	 *
-	 *      myGraphics.beginFill("red");
-	 *      var customCommand = new CustomSpiralCommand(etc);
-	 *      myGraphics.append(customCommand);
-	 *      myGraphics.beginFill("blue");
-	 *      myGraphics.drawCircle(0, 0, 30);
-	 *
-	 * See {{#crossLink "Graphics/append"}}{{/crossLink}} for more info on creating custom commands.
-	 *
-	 * <h4>Tiny API</h4>
-	 * The Graphics class also includes a "tiny API", which is one or two-letter methods that are shortcuts for all of the
-	 * Graphics methods. These methods are great for creating compact instructions, and is used by the Toolkit for CreateJS
-	 * to generate readable code. All tiny methods are marked as protected, so you can view them by enabling protected
-	 * descriptions in the docs.
-	 *
-	 * <table>
-	 *     <tr><td><b>Tiny</b></td><td><b>Method</b></td><td><b>Tiny</b></td><td><b>Method</b></td></tr>
-	 *     <tr><td>mt</td><td>{{#crossLink "Graphics/moveTo"}}{{/crossLink}} </td>
-	 *     <td>lt</td> <td>{{#crossLink "Graphics/lineTo"}}{{/crossLink}}</td></tr>
-	 *     <tr><td>a/at</td><td>{{#crossLink "Graphics/arc"}}{{/crossLink}} / {{#crossLink "Graphics/arcTo"}}{{/crossLink}} </td>
-	 *     <td>bt</td><td>{{#crossLink "Graphics/bezierCurveTo"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>qt</td><td>{{#crossLink "Graphics/quadraticCurveTo"}}{{/crossLink}} (also curveTo)</td>
-	 *     <td>r</td><td>{{#crossLink "Graphics/rect"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>cp</td><td>{{#crossLink "Graphics/closePath"}}{{/crossLink}} </td>
-	 *     <td>c</td><td>{{#crossLink "Graphics/clear"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>f</td><td>{{#crossLink "Graphics/beginFill"}}{{/crossLink}} </td>
-	 *     <td>lf</td><td>{{#crossLink "Graphics/beginLinearGradientFill"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>rf</td><td>{{#crossLink "Graphics/beginRadialGradientFill"}}{{/crossLink}} </td>
-	 *     <td>bf</td><td>{{#crossLink "Graphics/beginBitmapFill"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>ef</td><td>{{#crossLink "Graphics/endFill"}}{{/crossLink}} </td>
-	 *     <td>ss</td><td>{{#crossLink "Graphics/setStrokeStyle"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>s</td><td>{{#crossLink "Graphics/beginStroke"}}{{/crossLink}} </td>
-	 *     <td>ls</td><td>{{#crossLink "Graphics/beginLinearGradientStroke"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>rs</td><td>{{#crossLink "Graphics/beginRadialGradientStroke"}}{{/crossLink}} </td>
-	 *     <td>bs</td><td>{{#crossLink "Graphics/beginBitmapStroke"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>es</td><td>{{#crossLink "Graphics/endStroke"}}{{/crossLink}} </td>
-	 *     <td>dr</td><td>{{#crossLink "Graphics/drawRect"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>rr</td><td>{{#crossLink "Graphics/drawRoundRect"}}{{/crossLink}} </td>
-	 *     <td>rc</td><td>{{#crossLink "Graphics/drawRoundRectComplex"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>dc</td><td>{{#crossLink "Graphics/drawCircle"}}{{/crossLink}} </td>
-	 *     <td>de</td><td>{{#crossLink "Graphics/drawEllipse"}}{{/crossLink}} </td></tr>
-	 *     <tr><td>dp</td><td>{{#crossLink "Graphics/drawPolyStar"}}{{/crossLink}} </td>
-	 *     <td>p</td><td>{{#crossLink "Graphics/decodePath"}}{{/crossLink}} </td></tr>
-	 * </table>
-	 *
-	 * Here is the above example, using the tiny API instead.
-	 *
-	 *      myGraphics.s("red").f("blue").r(20, 20, 100, 50);
-	 *
-	 * @class Graphics
-	 * @constructor
-	 **/
-	//var Graphics = function() {
-	//	this.initialize();
-	//};
-	//var p = Graphics.prototype;
-	//var G = Graphics;
-
 	// static public methods:
-
 
 	/**
 	 * Returns a CSS compatible color string based on the specified RGB numeric color values in the format
@@ -1114,7 +1107,7 @@ class Graphics
 	 * @return {String} A CSS compatible color string based on the specified RGB numeric color values in the format
 	 * "rgba(255,255,255,1.0)", or if alpha is null then in the format "rgb(255,255,255)".
 	 **/
-	public static getRGB(r, g, b, alpha = null)
+	public static getRGB(r:number, g:number, b:number, alpha = null)
 	{
 		if(r != null && b == null)
 		{
@@ -1149,7 +1142,7 @@ class Graphics
 	 * @return {String} A CSS compatible color string based on the specified HSL numeric color values in the format
 	 * "hsla(360,100,100,1.0)", or if alpha is null then in the format "hsl(360,100,100)".
 	 **/
-	public static getHSL(hue, saturation, lightness, alpha)
+	public static getHSL(hue:number, saturation:number, lightness:number, alpha:number)
 	{
 		if(alpha == null)
 		{
@@ -1300,7 +1293,7 @@ class Graphics
 	 * @property command
 	 * @type Object
 	 **/
-	command = null;
+	public command = null;
 
 	// private properties
 	/**
@@ -1308,35 +1301,35 @@ class Graphics
 	 * @protected
 	 * @type {Array}
 	 **/
-	_stroke = null;
+	protected _stroke = null;
 
 	/**
 	 * @property _strokeStyle
 	 * @protected
 	 * @type {Array}
 	 **/
-	_strokeStyle = null;
+	protected _strokeStyle = null;
 
 	/**
 	 * @property _strokeIgnoreScale
 	 * @protected
 	 * @type Boolean
 	 **/
-	_strokeIgnoreScale = false;
+	protected _strokeIgnoreScale = false;
 
 	/**
 	 * @property _fill
 	 * @protected
 	 * @type {Array}
 	 **/
-	_fill = null;
+	protected _fill = null;
 
 	/**
 	 * @property _instructions
 	 * @protected
 	 * @type {Array}
 	 **/
-	_instructions:any[] = null;
+	protected _instructions:any[] = null;
 
 	/**
 	 * Indicates the last instruction index that was committed.
@@ -1344,7 +1337,7 @@ class Graphics
 	 * @protected
 	 * @type {Number}
 	 **/
-	_commitIndex = 0;
+	protected _commitIndex = 0;
 
 	/**
 	 * Uncommitted instructions.
@@ -1352,7 +1345,7 @@ class Graphics
 	 * @protected
 	 * @type {Array}
 	 **/
-	_activeInstructions:Array<any> = null;
+	protected _activeInstructions:Array<any> = null;
 
 	/**
 	 * This indicates that there have been changes to the activeInstruction list since the last updateInstructions call.
@@ -1361,10 +1354,9 @@ class Graphics
 	 * @type {Boolean}
 	 * @default false
 	 **/
-	_dirty = false;
+	protected _dirty = false;
 
-
-	public _ctx:CanvasRenderingContext2D = Graphics._ctx;
+	protected _ctx:CanvasRenderingContext2D = Graphics._ctx;
 
 	/**
 	 * @constructor
