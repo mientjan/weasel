@@ -33,17 +33,21 @@ import Bitmap = require('./Bitmap');
 import DisplayType = require('../enum/DisplayType');
 import Rectangle = require('../geom/Rectangle');
 import IVector2 = require('../interface/IVector2');
+import Vector2 = require('../geom/Vector2');
 import Signal = require('../../createts/event/Signal');
 import Size = require('../geom/Size');
 
+/**
+ * @author Mient-jan Stelling
+ * @class BitmapProjective
+ */
 class BitmapProjective extends Bitmap
 {
-
 	protected options:any = {
-		subdivisionLimit:64,
-		patchSize:4,
+		subdivisionLimit:5,
+		patchSize:32,
 		wireframe:false
-	}
+	};
 
 	protected _points:Array<Array<number>>;
 	protected _willUpdateRender:boolean = false;
@@ -71,11 +75,33 @@ class BitmapProjective extends Bitmap
 
 	public setPoints(points:Array<Array<number>>):void
 	{
-		this._points = points;
-
-		if( this.loaded )
+		if(points.length == 4)
 		{
-			this.cache(0, 0, this.width, this.height);
+			// calculate crossing vector points
+			var v2:Array<Vector2> = [];
+			for(var i = 0; i < points.length; i++)
+			{
+				var v = new Vector2(points[i][0],points[i][1]);
+				v2.push(v);
+			}
+
+			for(var i = 0; i < v2.length; i++)
+			{
+				var v = v2[i];
+			}
+
+
+			this._points = points;
+			var rect = this.getPointsRectangle(this._points);
+
+			if( this.loaded )
+			{
+				this.cache(rect.x, rect.y, rect.width, rect.height);
+
+			}
+
+		} else {
+			throw new Error('points have to be 4 long')
 		}
 	}
 
@@ -88,13 +114,17 @@ class BitmapProjective extends Bitmap
 	{
 		super.onLoad();
 
-		var rect = this.getPointsRectangle(this._points);
-
-		this.cache(rect.x, rect.x, rect.width, rect.height);
+		// can be that onload
+		if(this._points)
+		{
+			var rect = this.getPointsRectangle(this._points);
+			this.cache(rect.x, rect.x, rect.width, rect.height);
+		}
 	}
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
+
 		if(super.DisplayObject_draw(ctx, ignoreCache))
 		{
 			return true;
@@ -109,6 +139,14 @@ class BitmapProjective extends Bitmap
 
 	protected getPointsRectangle(points:Array<Array<number>>):Rectangle
 	{
+		if(!points || !points.length)
+		{
+			console.log(points);
+			debugger;
+			//throw new Error('points is empty or not a array');
+			return;
+		}
+
 		// Get extents.
 		var minX = Infinity,
 			maxX = -Infinity,
@@ -131,46 +169,51 @@ class BitmapProjective extends Bitmap
 	public updatePoints(ctx:CanvasRenderingContext2D)
 	{
 		var points:Array<Array<number>> = this._points;
-		var rect = this.getPointsRectangle(points);
 
-		var width = rect.width; // maxX - minX;
-		var height = rect.height; // maxY - minY;
+		if( points.length == 4 )
+		{
+			var rect = this.getPointsRectangle(points);
 
-		// Measure texture.
-		var imageWidth = this.image.width;
-		var imageHeight = this.image.height;
+			var width = rect.width; // maxX - minX;
+			var height = rect.height; // maxY - minY;
 
-		var transform = this.getProjectiveTransform(points);
+			var imageWidth = this.image.width;
+			var imageHeight = this.image.height;
 
-		// Begin subdivision process.
-		var ptl = transform.transformProjectiveVector([0, 0, 1]);
-		var ptr = transform.transformProjectiveVector([1, 0, 1]);
-		var pbl = transform.transformProjectiveVector([0, 1, 1]);
-		var pbr = transform.transformProjectiveVector([1, 1, 1]);
+			var transform = this.getProjectiveTransform(points);
 
-		ctx.beginPath();
-		ctx.moveTo(ptl[0], ptl[1]);
-		ctx.lineTo(ptr[0], ptr[1]);
-		ctx.lineTo(pbr[0], pbr[1]);
-		ctx.lineTo(pbl[0], pbl[1]);
-		ctx.closePath();
-		ctx.clip();
+			// Begin subdivision process.
+			var ptl = transform.transformProjectiveVector([0, 0, 1]);
+			var ptr = transform.transformProjectiveVector([1, 0, 1]);
+			var pbl = transform.transformProjectiveVector([0, 1, 1]);
+			var pbr = transform.transformProjectiveVector([1, 1, 1]);
 
-		this.divide(ctx, transform, imageWidth, imageHeight, 0, 0, 1, 1, ptl, ptr, pbl, pbr, this.options.subdivisionLimit);
-
-		if (this.options.wireframe) {
 			ctx.beginPath();
 			ctx.moveTo(ptl[0], ptl[1]);
 			ctx.lineTo(ptr[0], ptr[1]);
 			ctx.lineTo(pbr[0], pbr[1]);
 			ctx.lineTo(pbl[0], pbl[1]);
 			ctx.closePath();
-			ctx.stroke();
+			ctx.clip();
+
+			this.divide(ctx, transform, imageWidth, imageHeight, 0, 0, 1, 1, ptl, ptr, pbl, pbr, this.options.subdivisionLimit);
+
+			if (this.options.wireframe) {
+				ctx.beginPath();
+				ctx.moveTo(ptl[0], ptl[1]);
+				ctx.lineTo(ptr[0], ptr[1]);
+				ctx.lineTo(pbr[0], pbr[1]);
+				ctx.lineTo(pbl[0], pbl[1]);
+				ctx.closePath();
+				ctx.stroke();
+			}
+		} else {
+			debugger;
 		}
 
 	}
 
-	public getProjectiveTransform(points:Array<Array<number>>)
+	protected getProjectiveTransform(points:Array<Array<number>>)
 	{
 		var m = new Matrix(9, 8, [
 			[ 1, 1, 1, 0, 0, 0, -points[3][0],-points[3][0],-points[3][0] ],
@@ -194,7 +237,7 @@ class BitmapProjective extends Bitmap
 		return transform;
 	}
 
-	public divide(ctx, transform, width, height, u1:number, v1:number, u4:number, v4:number, p1:Array<number>, p2:Array<number>, p3:Array<number>, p4:Array<number>, limit:number)
+	protected divide(ctx:CanvasRenderingContext2D, transform:Matrix, width:number, height:number, u1:number, v1:number, u4:number, v4:number, p1:Array<number>, p2:Array<number>, p3:Array<number>, p4:Array<number>, limit:number)
 	{
 		// See if we can still divide.
 		if(limit)
@@ -308,8 +351,12 @@ class BitmapProjective extends Bitmap
 			{
 				// Calculate 1.05 pixel padding on vector basis.
 				ctx.transform(-d43[0], -d43[1], -d31[0], -d31[1], p3[0], p3[1]);
-				if (u4 != 1) padx = 1.05 / Math.sqrt(d43[0] * d43[0] + d43[1] * d43[1]);
-				if (v4 != 1) pady = 1.05 / Math.sqrt(d31[0] * d31[0] + d31[1] * d31[1]);
+				if (u4 != 1){
+					padx = 1.05 / Math.sqrt(d43[0] * d43[0] + d43[1] * d43[1]);
+				}
+				if (v4 != 1){
+					pady = 1.05 / Math.sqrt(d31[0] * d31[0] + d31[1] * d31[1]);
+				}
 				dy = -1;
 				break;
 			}
@@ -334,44 +381,13 @@ class BitmapProjective extends Bitmap
 	}
 
 	/**
-	 * Docced in superclass.
-	 */
-	public getBounds():Rectangle
-	{
-		var rect = super.getBounds();
-		if(rect)
-		{
-			return rect;
-		}
-		var o = <{width:number;height:number;}> this.sourceRect || this.image;
-		return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
-	}
-
-	/**
-	 * Returns a clone of the Bitmap instance.
-	 * @method clone
-	 * @return {Bitmap} a clone of the Bitmap instance.
-	 **/
-	public clone():Bitmap
-	{
-		var o = new Bitmap(this.image);
-
-		if(this.sourceRect) o.sourceRect = this.sourceRect.clone();
-		if(this.destinationRect) o.destinationRect = this.destinationRect.clone();
-
-		this.cloneProps(o);
-
-		return o;
-	}
-
-	/**
 	 * Returns a string representation of this object.
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 **/
 	public toString():string
 	{
-		return "[Bitmap (name=" + this.name + ")]";
+		return "[BitmapProjective (name=" + this.name + ")]";
 	}
 
 	public destruct():void
