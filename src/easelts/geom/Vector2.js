@@ -1,39 +1,4 @@
-/*
- * The MIT License
- *
- * Copyright &copy; 2010-2014 three.js authors
- * Copyright &copy; 2014-2015 easelts
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 define(["require", "exports"], function (require, exports) {
-    /**
-     * @module easelts
-     */
-    /**
-     * @class Vector2
-     * @author mrdoob / http://mrdoob.com/
-     * @author philogb / http://blog.thejit.org/
-     * @author egraether / http://egraether.com/
-     * @author zz85 / http://www.lab4games.net/zz85/blog
-     * @author Mient-jan Stelling
-     */
     var Vector2 = (function () {
         function Vector2(x, y) {
             this.x = x;
@@ -122,8 +87,6 @@ define(["require", "exports"], function (require, exports) {
         };
         Vector2.prototype.rotateByVector2 = function (a, radians) {
             var v = this.clone();
-            //		radians = 1;
-            //		console.log(radians);
             v.x = a.x + (((this.x - a.x) * Math.cos(radians)) - ((this.y - a.y) * Math.sin(radians)));
             v.y = a.y + (((this.x - a.x) * Math.sin(radians)) + ((this.y - a.y) * Math.cos(radians)));
             return v;
@@ -193,7 +156,6 @@ define(["require", "exports"], function (require, exports) {
         };
         Vector2.prototype.clamp = function (min, max) {
             var v = this.clone();
-            // This function assumes min < max, if this assumption isn't true it will not operate correctly
             if (v.x < min.x) {
                 v.x = min.x;
             }
