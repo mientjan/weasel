@@ -1,9 +1,7 @@
 /*
  * BitmapProjective
  *
- * Copyright (c) 2010 gskinner.com, inc.
- * Copyright (c) 2014-2015 Mient-jan Stelling.
- * Copyright (c) 2015 MediaMonks.com
+ * Copyright (c) 2015 Mient-jan Stelling.
  * Copyright (c) 2012 Steven Wittens.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -45,7 +43,7 @@ class BitmapProjective extends Bitmap
 {
 	protected options:any = {
 		subdivisionLimit:5,
-		patchSize:32,
+		patchSize:8,
 		wireframe:false
 	};
 
@@ -99,8 +97,9 @@ class BitmapProjective extends Bitmap
 				this.cache(rect.x, rect.y, rect.width, rect.height);
 
 			}
-
-		} else {
+		}
+		else
+		{
 			throw new Error('points have to be 4 long')
 		}
 	}
@@ -124,7 +123,6 @@ class BitmapProjective extends Bitmap
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
-
 		if(super.DisplayObject_draw(ctx, ignoreCache))
 		{
 			return true;

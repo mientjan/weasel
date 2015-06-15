@@ -511,7 +511,10 @@ class Stage extends Container
 		/**
 		 *
 		 */
-		ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
+		ctx.setTransform(
+			1, 0, 0,
+			1, 0.5, 0.5
+		);
 		//ctx.translate(0.5, 0.5);
 
 		if(this.autoClear)
