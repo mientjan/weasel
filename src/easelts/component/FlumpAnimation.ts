@@ -26,7 +26,7 @@ class FlumpAnimation extends Container
 	{
 		super();
 
-		this._library = new FlumpLibrary(libraryFilepathOrLibraryJsonObject)
+		this._library = new FlumpLibrary(libraryFilepathOrLibraryJsonObject);
 	}
 
 	public onTick(delta:number):void

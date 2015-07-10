@@ -24,3 +24,5 @@ class FlumpLibrary
 
 	}
 }
+
+export = FlumpLibrary;
