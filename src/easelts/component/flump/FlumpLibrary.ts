@@ -1,19 +1,29 @@
 import IFlumpLibrary = require('./IFlumpLibrary');
 import Signal = require('../../../createts/event/Signal');
+import MovieSymbol = require('./MovieSymbol');
+import BitmapSymbol = require('./BitmapSymbol');
 
 class FlumpLibrary
 {
 	private _rawLibrary:IFlumpLibrary.ILibrary = null;
 	private _atlas:Array<HTMLImageElement|HTMLCanvasElement> = [];
+	private _movies:IFlumpLibrary.IMovie;
+	private _groups:Array<IFlumpLibrary.ITextureGroup> = [];
+	private _baseDir:string = '';
 
+	private _map:{[name:string]:any} = {};
+
+	public fps:number = 0;
 	public loaded:boolean = false;
 	public signalLoad:Signal = new Signal();
 
-	constructor(libraryFilepathOrLibraryJsonObject:string|IFlumpLibrary.ILibrary)
+	constructor(libraryFilepathOrLibraryJsonObject:string|IFlumpLibrary.ILibrary, baseDir:string = '')
 	{
+		this._baseDir = baseDir;
+
 		if(typeof libraryFilepathOrLibraryJsonObject == 'string')
 		{
-			this.loadJSON( <string> libraryFilepathOrLibraryJsonObject);
+			this.loadJSON( <string> libraryFilepathOrLibraryJsonObject );
 		}
 		else
 		{
@@ -41,6 +51,40 @@ class FlumpLibrary
 
 	public parse(complete:() => void):void
 	{
+		var data = this._rawLibrary;
+		this.fps = data.frameRate;
+		this._groups = data.textureGroups;
+		var map = {};
+
+		var movies = [];
+		for(var i = 0; i < data.movies.length; i++)
+		{
+			var movie = new MovieSymbol.MovieSymbol(this, data.movies[i]);
+			movies.push(movie);
+			map[movie.name] = movie;
+		}
+
+		var groups = data.textureGroups;
+		if (groups[0].scaleFactor != 1 || groups.length > 1) {
+			// multiple texture sizes
+		}
+
+		var atlases = groups[0].atlases;
+		for(var i = 0; i < atlases.length; i++)
+		{
+			var atlasObj = atlases[i];
+
+			var atlas = this._loadAtlas(this._baseDir + "/" + atlasObj.file);
+
+			for(var j = 0; j < atlasObj.textures.length; j++)
+			{
+				var textureObject = atlasObj.textures[j];
+
+				var bitmap = new MovieSymbol.BitmapSymbol(textureObject, atlas);
+				map[bitmap.name] = bitmap;
+			}
+		}
+
 
 	}
 
@@ -52,6 +96,13 @@ class FlumpLibrary
 		};
 		xhr.open("get", path, true);
 		xhr.send();
+	}
+
+	private _loadAtlas(path:string):HTMLImageElement
+	{
+		var img = document.createElement('img');
+		img.src = path;
+		return img;
 	}
 }
 

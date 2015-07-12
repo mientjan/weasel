@@ -18,6 +18,7 @@ class FlumpAnimation extends Container
 	private _paused:boolean = false;
 	private _animationQueu:Array<string> = [];
 	private _library:FlumpLibrary = null;
+	private _time:number = 0;
 
 	constructor(
 		libraryFilepathOrLibraryJsonObject:string|IFlumpLibrary.ILibrary,
@@ -32,6 +33,11 @@ class FlumpAnimation extends Container
 	public onTick(delta:number):void
 	{
 		super.onTick(delta);
+
+		if(!this._paused)
+		{
+			this._time += delta;
+		}
 	}
 
 	private preloadAssets( assets:Array<string>, complete:() => void ):void
