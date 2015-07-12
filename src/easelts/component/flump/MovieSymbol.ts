@@ -22,29 +22,31 @@ export class MovieSymbol
 	 */
 	public duration:number;
 
-
 	constructor(lib:FlumpLibrary, data:IFlumpLibrary.IMovie)
 	{
+		var layers;
+
 		this.name = data.id;
 		this.fps = lib.fps;
 		this.frames = 0.0;
 
-		var layers = new Array(data.layers.length);
+		this.layers = layers = new Array(data.layers.length);
+
 		for(var i = 0; i < layers.length; i++)
 		{
 			var layer = new MovieLayer(data.layers[i]);
-			frames = Math.max(layer.frames, frames);
-			layers[i] = layer;
+			this.frames = Math.max(layer.frames, this.frames);
+			this.layers[i] = layer;
 
 		}
 
 		this.duration = this.frames / this.fps;
 	}
 
-	public createSprite():MovieSprite
-	{
-		return new MovieSprite(this);
-	}
+	//public createSprite():MovieSprite
+	//{
+	//	return new MovieSprite(this);
+	//}
 }
 
 export class MovieLayer
@@ -56,7 +58,7 @@ export class MovieLayer
 	/** Whether this layer has no symbol instances. */
 	public isEmpty:boolean = true;
 
-	constructor(json:LayerFormat)
+	constructor(json:IFlumpLibrary.ILayer)
 	{
 		this.name = json.name;
 
@@ -65,7 +67,7 @@ export class MovieLayer
 		for(var i = 0; i < this.keyframes.length; i++)
 		{
 			prevKf = new MovieKeyframe(json.keyframes[i], prevKf);
-			keyframes[i] = prevKf;
+			this.keyframes[i] = prevKf;
 
 			this.isEmpty = this.isEmpty && prevKf.symbolName == null;
 			this.frames = (prevKf != null) ? prevKf.index + prevKf.duration : 0;
@@ -81,7 +83,7 @@ export class MovieKeyframe
 	public duration:number;
 
 	symbolName:string = '';
-	public symbol:Symbol = null;
+	public symbol:any = null;
 
 	public label:string = '';
 
@@ -105,7 +107,7 @@ export class MovieKeyframe
 	/** Easing amount, if tweened is true. */
 	public ease:number = 0;
 
-	constructor(json:KeyframeFormat, prevKf:MovieKeyframe)
+	constructor(json:IFlumpLibrary.IKeyframe, prevKf:MovieKeyframe)
 	{
 		this.index = (prevKf != null) ? prevKf.index + prevKf.duration : 0;
 

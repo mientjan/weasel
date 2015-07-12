@@ -15,6 +15,7 @@ export interface ITextureGroup {
 }
 
 export interface IKeyframe {
+	symbolName:string;
 	ease: number;
 	pivot: number[];
 	loc: number[];
@@ -23,6 +24,7 @@ export interface IKeyframe {
 	ref: string;
 	skew: number[];
 	alpha?: number;
+	visible?: boolean;
 	scale: number[];
 	tweened?: boolean;
 	label: string;

@@ -2,17 +2,17 @@
 // Flambe - Rapid game development
 // https://github.com/aduros/flambe/blob/master/LICENSE.txt
 
-package flambe.swf;
-
-import flambe.animation.AnimatedFloat;
-import flambe.display.Sprite;
-import flambe.math.FMath;
-import flambe.swf.MovieSymbol;
-import flambe.util.Signal0;
-
-using flambe.util.Arrays;
-using flambe.util.BitSets;
-using flambe.util.Strings;
+//package flambe.swf;
+//
+//import flambe.animation.AnimatedFloat;
+//import flambe.display.Sprite;
+//import flambe.math.FMath;
+//import flambe.swf.MovieSymbol;
+//import flambe.util.Signal0;
+//
+//using flambe.util.Arrays;
+//using flambe.util.BitSets;
+//using flambe.util.Strings;
 
 /**
  * An instanced Flump animation.
@@ -203,16 +203,16 @@ class MovieSprite extends Sprite
     private var _looped :Signal0 = null;
 }
 
-private class LayerAnimator
+class LayerAnimator
 {
-    public var content (default, null) :Entity;
+    //public var content (default, null) :Entity;
 
-    public var needsKeyframeUpdate :Bool = false;
-    public var keyframeIdx :Int = 0;
+    public needsKeyframeUpdate :Bool = false;
+    public keyframeIdx :Int = 0;
 
-    public var layer :MovieLayer;
+    public layer :MovieLayer;
 
-    public function new (layer :MovieLayer)
+    constructor(layer:MovieLayer)
     {
         this.layer = layer;
 
@@ -237,7 +237,7 @@ private class LayerAnimator
         }
     }
 
-    public function composeFrame (frame :Float)
+    public composeFrame(frame:number)
     {
         if (_sprites == null) {
             // TODO(bruno): Test this code path
@@ -340,7 +340,7 @@ private class LayerAnimator
         sprite.alpha._ = alpha;
     }
 
-    public function setPixelSnapping (pixelSnapping :Bool) :Void
+    public setPixelSnapping (pixelSnapping :Bool) :Void
     {
         if (_sprites != null) {        
             for (sprite in _sprites) {
@@ -350,5 +350,5 @@ private class LayerAnimator
     }
 
     // The sprite to show at each keyframe index, or null if this layer has no symbol instances
-    private var _sprites :Array<Sprite>;
+    private _sprites:Array<Sprite>;
 }

@@ -1,25 +1,30 @@
+import IFlumpLibrary = require('./IFlumpLibrary');
+
 class BitmapSymbol
 {
 	public name:string;
-	public texture:SubTexture;
-	public anchorX:number = 0;
-	public anchorY:number = 0;
+	public atlas:HTMLImageElement;
+	public rect:Array<number>;
 
-	constructor(json :TextureFormat, atlas :Texture)
+	public texture:any;
+	public regX:number;
+	public regY:number;
+
+	constructor(json:IFlumpLibrary.ITexture, atlas:HTMLImageElement)
 	{
-		_name = json.symbol;
 		this.name = json.symbol;
-
 		var rect = json.rect;
-		texture = atlas.subTexture(rect[0], rect[1], rect[2], rect[3]);
+		this.rect = [rect[0], rect[1], rect[2], rect[3]];
+		this.atlas = atlas;
+		//this.texture = atlas.subTexture(rect[0], rect[1], rect[2], rect[3]);
 
 		var origin = json.origin;
 		if (origin != null) {
-			this.anchorX = origin[0];
-			this.anchorY = origin[1];
+			this.regX = origin[0];
+			this.regY = origin[1];
 		} else {
-			this.anchorX = 0;
-			this.anchorY = 0;
+			this.regX = 0;
+			this.regY = 0;
 		}
 	}
 

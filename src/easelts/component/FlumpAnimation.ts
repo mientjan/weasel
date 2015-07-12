@@ -3,8 +3,6 @@ import AssetTypeEnum = require('./flump/AssetTypeEnum');
 import FlumpLibrary = require('./flump/FlumpLibrary');
 import IFlumpLibrary = require('./flump/IFlumpLibrary');
 
-var type
-
 class FlumpAnimation extends Container
 {
 	public static EVENT_ONLOAD = 'flumpAnimation.load'
@@ -21,13 +19,20 @@ class FlumpAnimation extends Container
 	private _time:number = 0;
 
 	constructor(
-		libraryFilepathOrLibraryJsonObject:string|IFlumpLibrary.ILibrary,
+		libraryFilepathOrLibraryJsonObject:string|IFlumpLibrary.ILibrary|FlumpLibrary,
 		autoload:boolean = false
 	)
 	{
 		super();
 
-		this._library = new FlumpLibrary(libraryFilepathOrLibraryJsonObject);
+		if( typeof libraryFilepathOrLibraryJsonObject === 'object' && libraryFilepathOrLibraryJsonObject instanceof FlumpLibrary )
+		{
+			this._library = libraryFilepathOrLibraryJsonObject;
+		}
+		else
+		{
+			this._library = new FlumpLibrary( <string|IFlumpLibrary.ILibrary> libraryFilepathOrLibraryJsonObject);
+		}
 	}
 
 	public onTick(delta:number):void
