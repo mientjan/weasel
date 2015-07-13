@@ -31,6 +31,7 @@ export interface IKeyframe {
 }
 
 export interface ILayer {
+	flipbook?: boolean;
 	keyframes: IKeyframe[];
 	name: string;
 }
