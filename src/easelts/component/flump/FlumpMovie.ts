@@ -24,10 +24,13 @@ class FlumpMovie extends DisplayObject {
 		this._flumpLibrary = flumpLibrary;
 		this.flumpMovieData = flumpLibrary.getFlumpMovieData(name);
 
-		for(var i = 0; i < this.flumpMovieData.length; i++)
+		
+
+		var layers = this.flumpMovieData.flumpLayerDatas;
+		for(var i = 0; i < layers.length; i++)
 		{
-			var movieData = this.flumpMovieData[i];
-			var flashMovieLayer = new FlumpMovieLayer(flumpLibrary, movieData.flumpLayerData);
+			var layerData = layers[i];
+			var flashMovieLayer = new FlumpMovieLayer(flumpLibrary, layerData);
 			this.flumpMovieLayers.push(flashMovieLayer);
 
 		}
@@ -38,7 +41,11 @@ class FlumpMovie extends DisplayObject {
 
 	public onTick(delta:number)
 	{
-		this.time += delta;
+		super.onTick(delta);
+
+		var nDelta = delta / 1000;
+
+		this.time += nDelta;
 
 		var frameTime = this.time % this.duration;
 		//this.frame = Math.min(this.frames * frameTime ~/ this.duration, this.frames - 1);
@@ -47,7 +54,7 @@ class FlumpMovie extends DisplayObject {
 		for(var i = 0; i < this.flumpMovieLayers.length; i++)
 		{
 			var layer = this.flumpMovieLayers[i];
-			layer.advanceTime(this.time);
+			layer.onTick(nDelta);
 			layer.setFrame(this.frame);
 
 		}
@@ -55,16 +62,25 @@ class FlumpMovie extends DisplayObject {
 		return true;
 	}
 
-	//void render(RenderState renderState) {
-	////	for(var flumpMovieLayer in _flumpMovieLayers) {
-	////		if (flumpMovieLayer.visible) {
-	////			renderState.renderObject(flumpMovieLayer);
-	////		}
-	////	}
-	//}
-
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
+		//console.time('draw');
+		var layers = this.flumpMovieLayers;
+		for(var i = 0; i < layers.length; i++)
+		{
+			var layer:FlumpMovieLayer = layers[i];
+
+			if(layer.visible)
+			{
+				ctx.save();
+				//layer.updateContext(ctx);
+				ctx.transform(layer._storedMtx.a,layer._storedMtx.b,layer._storedMtx.c,layer._storedMtx.d,layer._storedMtx.tx,layer._storedMtx.ty)
+				layer.draw(ctx);
+				ctx.restore();
+			}
+		}
+		//console.timeEnd('draw');
+
 		return true;
 	}
 

@@ -1,13 +1,36 @@
 import IFlumpLibrary = require('./IFlumpLibrary');
 import FlumpTexture = require('./FlumpTexture');
 import FlumpLibrary = require('./FlumpLibrary');
+import IHashMap = require('../../interface/IHashMap');
+import Promise = require('../../../createts/util/Promise');
 
-class FlumpTextureGroupAtlas {
+class FlumpTextureGroupAtlas
+{
+	public static load(flumpLibrary:FlumpLibrary, json:IFlumpLibrary.IAtlas):Promise<FlumpTextureGroupAtlas>
+	{
+		var file = json.file;
+		var url = flumpLibrary.url + '/' + file;
 
-	public renderTexture;
-	public flumpTextures = {};
+		return new Promise(function(resolve, reject){
+			var img = <HTMLImageElement> document.createElement('img');
+			img.onload = () => {
+				resolve(img);
+			};
 
-	constructor( renderTexture, json:IFlumpLibrary.IAtlas)
+			img.onerror = () => {
+				reject();
+			};
+
+			img.src = url;
+		}).then((data:HTMLImageElement) => {
+			return new FlumpTextureGroupAtlas(data, json);
+		});
+	}
+
+	public renderTexture:HTMLImageElement;
+	public flumpTextures:IHashMap<FlumpTexture> = {};
+
+	constructor( renderTexture:HTMLImageElement, json:IFlumpLibrary.IAtlas)
 	{
 		this.renderTexture = renderTexture;
 
@@ -15,27 +38,9 @@ class FlumpTextureGroupAtlas {
 		for(var i = 0; i < textures.length; i++)
 		{
 			var texture = textures[i];
-			this.flumpTextures[texture.symbol] = new FlumpTexture(texture);
+			this.flumpTextures[texture.symbol] = new FlumpTexture(renderTexture, texture);
 		}
 	}
-
-//	this.renderTexture = renderTexture,
-//	this.flumpTextures = new Map.fromIterable(json["textures"],
-//	key: (jsonTexture) => _ensureString(jsonTexture["symbol"]),
-//	value: (jsonTexture) => new _FlumpTexture(renderTexture, jsonTexture));
-//
-	public static load(flumpLibrary:FlumpLibrary, json:IFlumpLibrary.IAtlas):Promise<FlumpTextureGroupAtlas>
-	{
-		//var file = json.file;
-		//var regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))");
-		//var match = regex.firstMatch(flumpLibrary.url);
-		//var path = match.group(1);
-		//var url = (path == null) ? file : "$path$file";
-		//
-		//return BitmapData.load(url).then((bitmapData) => {
-		//	var renderTexture = bitmapData.renderTexture;
-		//	return new FlumpTextureGroupAtlas(renderTexture, json);
-		//});
-	}
-
 }
+
+export = FlumpTextureGroupAtlas;

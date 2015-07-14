@@ -2,6 +2,7 @@ import DisplayObject = require('../../display/DisplayObject');
 import FlumpLibrary = require('./FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
+import FlumpTexture = require('./FlumpTexture');
 
 class FlumpMovieLayer extends DisplayObject
 {
@@ -10,6 +11,14 @@ class FlumpMovieLayer extends DisplayObject
 
 	_symbol; // BitmapDrawable
 	_symbols = {};
+	_storedMtx = {
+		a:0,
+		b:0,
+		c:0,
+		d:0,
+		tx:0,
+		ty:0
+	};
 	//Matrix _transformationMatrix = new Matrix.fromIdentity();
 
 	constructor(flumpLibrary:FlumpLibrary, flumpLayerData:FlumpLayerData)
@@ -22,7 +31,8 @@ class FlumpMovieLayer extends DisplayObject
 		for(var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++)
 		{
 			var keyframe = flumpLayerData.flumpKeyframeDatas[i];
-			if (keyframe.ref != null && ( keyframe.ref in this._symbols ) == false)
+
+			if(keyframe.ref != null && ( keyframe.ref in this._symbols ) == false)
 			{
 				this._symbols[keyframe.ref] = flumpLibrary.createSymbol(keyframe.ref);
 			}
@@ -31,13 +41,17 @@ class FlumpMovieLayer extends DisplayObject
 		this.setFrame(0);
 	}
 
-//Matrix get transformationMatrix => _transformationMatrix;
+	//Matrix get transformationMatrix => _transformationMatrix;
 
-	public advanceTime(time):boolean {
-		if (this._symbol) {
+	public onTick(delta:number):boolean
+	{
+		if( this._symbol != null && !(this._symbol instanceof FlumpTexture))
+		{
 			//var animatable = this._symbol as Animatable;
-			return this._symbol.advanceTime(time);
-		} else {
+			return this._symbol.onTick(delta);
+		}
+		else
+		{
 			return false;
 		}
 	}
@@ -45,7 +59,10 @@ class FlumpMovieLayer extends DisplayObject
 	public setFrame(frame:number)
 	{
 		var keyframe = this.flumpLayerData.getKeyframeForFrame(frame);
-		if (!(keyframe instanceof FlumpKeyframeData)) return;
+		if(!(keyframe instanceof FlumpKeyframeData))
+		{
+			return;
+		}
 
 		var x:number = keyframe.x;
 		var y:number = keyframe.y;
@@ -57,23 +74,28 @@ class FlumpMovieLayer extends DisplayObject
 		var pivotY:number = keyframe.pivotY;
 		var alpha:number = keyframe.alpha;
 
-		if (keyframe.index != frame && keyframe.tweened) {
+		if(keyframe.index != frame && keyframe.tweened)
+		{
 
 			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
-			if (nextKeyframe instanceof FlumpKeyframeData)
+
+			
+			if(nextKeyframe instanceof FlumpKeyframeData)
 			{
 				var interped = (frame - keyframe.index) / keyframe.duration;
 				var ease = keyframe.ease;
 
-				if (ease != 0)
+				if(ease != 0)
 				{
 					var t = 0.0;
-					if (ease < 0)
+					if(ease < 0)
 					{
 						var inv = 1 - interped;
 						t = 1 - inv * inv;
 						ease = 0 - ease;
-					} else {
+					}
+					else
+					{
 						t = interped * interped;
 					}
 					interped = ease * t + (1 - ease) * interped;
@@ -97,13 +119,17 @@ class FlumpMovieLayer extends DisplayObject
 		 _transformationMatrixPrivate.translate(x, y);
 		 */
 
-		var a =   scaleX * Math.cos(skewY);
-		var b =   scaleX * Math.sin(skewY);
-		var c = - scaleY * Math.sin(skewX);
-		var d =   scaleY * Math.cos(skewX);
-		var tx =  x - (pivotX * a + pivotY * c);
-		var ty =  y - (pivotX * b + pivotY * d);
+		this._storedMtx.a =   scaleX * Math.cos(skewY);
+		this._storedMtx.b =   scaleX * Math.sin(skewY);
+		this._storedMtx.c = - scaleY * Math.sin(skewX);
+		this._storedMtx.d =   scaleY * Math.cos(skewX);
+		this._storedMtx.tx =  x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
+		this._storedMtx.ty =  y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
 
+
+		//this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY);
+		//console.log(frame, x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY);
+		
 		//_transformationMatrix.setTo(a, b, c, d, tx, ty);
 
 		this.alpha = alpha;
@@ -115,7 +141,11 @@ class FlumpMovieLayer extends DisplayObject
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		//if (_symbol != null) _symbol.render(renderState);
+		//console.log(this._symbol);
+
+		if (this._symbol != null){
+			this._symbol.draw(ctx);
+		}
 		return true;
 	}
 }

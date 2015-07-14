@@ -8,7 +8,7 @@ class FlumpLayerData {
 
 	public name:string;
 	public flipbook:boolean;
-	public flumpKeyframeDatas:Array<FlumpKeyframeData>;
+	public flumpKeyframeDatas:Array<FlumpKeyframeData> = [];
 
 	public frames:number;
 
@@ -16,31 +16,33 @@ class FlumpLayerData {
 	{
 		this.name = json.name;
 		this.flipbook = 'flipbook' in json ? !!json.flipbook : false;
-
+		//
 		var keyframes = json.keyframes;
 		var keyFrameData:FlumpKeyframeData = null;
 		for(var i = 0; i < keyframes.length; i++)
 		{
 			var keyframe = keyframes[i];
 			keyFrameData = new FlumpKeyframeData(keyframe);
-			this.flumpKeyframeDatas.push(keyFrameData );
+			this.flumpKeyframeDatas.push( keyFrameData );
 		}
 
 		this.frames = keyFrameData.index + keyFrameData.duration;
 	}
 
-	public getKeyframeForFrame(frame:number)
+	public getKeyframeForFrame(frame:number):FlumpKeyframeData
 	{
-		for(var i = 1; i < this.flumpKeyframeDatas.length; i++)
+		var datas = this.flumpKeyframeDatas;
+		for(var i = 1; i < datas.length; i++)
 		{
-			if (this.flumpKeyframeDatas[i].index > frame) {
-				return this.flumpKeyframeDatas[i - 1];
+			if (datas[i].index > frame) {
+				return datas[i - 1];
 			}
 		}
-		return this.flumpKeyframeDatas[this.flumpKeyframeDatas.length - 1];
+
+		return datas[datas.length - 1];
 	}
 
-	public getKeyframeAfter( flumpKeyframeData:FlumpKeyframeData)
+	public getKeyframeAfter( flumpKeyframeData:FlumpKeyframeData):FlumpKeyframeData
 	{
 		for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
 			if (this.flumpKeyframeDatas[i] === flumpKeyframeData)

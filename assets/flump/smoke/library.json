@@ -3,7 +3,6 @@
   "isNamespaced": false,
   "textureGroups": [
     {
-      "scaleFactor": 1,
       "atlases": [
         {
           "textures": [
@@ -49,7 +48,8 @@
           ],
           "file": "atlas0.png"
         }
-      ]
+      ],
+      "scaleFactor": 1
     }
   ],
   "movies": [
@@ -57,9 +57,10 @@
       "id": "SmokeAnimation01",
       "layers": [
         {
+          "name": "SmokeSprite",
           "keyframes": [
             {
-              "ease": 1,
+              "duration": 46,
               "pivot": [
                 100,
                 100
@@ -68,16 +69,17 @@
                 -1,
                 0
               ],
-              "duration": 46,
               "index": 0,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.2821,
                 -2.2821
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -90,13 +92,12 @@
                 -27.0204,
                 -282.1132
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 46,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
-              "ease": 1,
+              "duration": 46,
               "pivot": [
                 100,
                 100
@@ -105,16 +106,17 @@
                 -1,
                 0
               ],
-              "duration": 46,
               "index": 47,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.2821,
                 -2.2821
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -127,26 +129,25 @@
                 -27.0204,
                 -282.1132
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 93,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "SmokeSprite"
+          ]
         },
         {
+          "name": "Layer 3",
           "keyframes": [
             {
               "index": 0,
               "duration": 11
             },
             {
+              "duration": 35,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -159,16 +160,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 35,
               "index": 11,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.3086,
+              "duration": 1,
               "skew": [
                 2.5818,
                 2.5818
               ],
-              "alpha": 0.3086,
               "pivot": [
                 100.05,
                 100.1
@@ -181,16 +183,16 @@
                 9.2513,
                 -78.2181
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2617,
+              "duration": 10,
               "skew": [
                 2.6259,
                 2.6259
               ],
-              "alpha": 0.2617,
               "pivot": [
                 100,
                 100.1
@@ -203,16 +205,16 @@
                 9.0665,
                 -86.5003
               ],
-              "duration": 10,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 2.8497,
                 2.8497
               ],
-              "alpha": 0,
               "pivot": [
                 99.85,
                 100.2
@@ -225,17 +227,16 @@
                 8.0916,
                 -128.1073
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 57,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 35,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -248,16 +249,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 35,
               "index": 58,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.3086,
+              "duration": 1,
               "skew": [
                 2.5818,
                 2.5818
               ],
-              "alpha": 0.3086,
               "pivot": [
                 100.05,
                 100.1
@@ -270,16 +272,16 @@
                 9.2513,
                 -78.2181
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2617,
+              "duration": 10,
               "skew": [
                 2.6259,
                 2.6259
               ],
-              "alpha": 0.2617,
               "pivot": [
                 100,
                 100.1
@@ -292,16 +294,16 @@
                 9.0665,
                 -86.5003
               ],
-              "duration": 10,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 2.8497,
                 2.8497
               ],
-              "alpha": 0,
               "pivot": [
                 99.85,
                 100.2
@@ -314,26 +316,25 @@
                 8.0916,
                 -128.1073
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 104,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 3"
+          ]
         },
         {
+          "name": "SmokeSprite",
           "keyframes": [
             {
               "index": 0,
               "duration": 16
             },
             {
+              "duration": 30,
               "skew": [
                 -3.1157,
                 -3.1157
               ],
-              "ease": 1,
               "pivot": [
                 99.95,
                 99.95
@@ -342,16 +343,17 @@
                 -0.9783,
                 -0.0046
               ],
-              "duration": 30,
               "index": 16,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5313,
+              "duration": 1,
               "skew": [
                 -4.3101,
                 -4.3101
               ],
-              "alpha": 0.5313,
               "pivot": [
                 100,
                 100
@@ -364,16 +366,16 @@
                 -13.2773,
                 -132.5843
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.4805,
+              "duration": 15,
               "skew": [
                 -4.4327,
                 -4.4327
               ],
-              "alpha": 0.4805,
               "pivot": [
                 100,
                 99.95
@@ -386,16 +388,16 @@
                 -14.4632,
                 -146.135
               ],
-              "duration": 15,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -5.6549,
                 -5.6549
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -408,17 +410,16 @@
                 -27.0184,
                 -282.0807
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 62,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 30,
               "skew": [
                 -3.1157,
                 -3.1157
               ],
-              "ease": 1,
               "pivot": [
                 99.95,
                 99.95
@@ -427,16 +428,17 @@
                 -0.9783,
                 -0.0046
               ],
-              "duration": 30,
               "index": 63,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5313,
+              "duration": 1,
               "skew": [
                 -4.3101,
                 -4.3101
               ],
-              "alpha": 0.5313,
               "pivot": [
                 100,
                 100
@@ -449,16 +451,16 @@
                 -13.2773,
                 -132.5843
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.4805,
+              "duration": 15,
               "skew": [
                 -4.4327,
                 -4.4327
               ],
-              "alpha": 0.4805,
               "pivot": [
                 100,
                 99.95
@@ -471,16 +473,16 @@
                 -14.4632,
                 -146.135
               ],
-              "duration": 15,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -5.6549,
                 -5.6549
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -493,26 +495,25 @@
                 -27.0184,
                 -282.0807
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 109,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "SmokeSprite"
+          ]
         },
         {
+          "name": "Layer 1",
           "keyframes": [
             {
               "index": 0,
               "duration": 21
             },
             {
+              "duration": 25,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -525,16 +526,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 25,
               "index": 21,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7109,
+              "duration": 1,
               "skew": [
                 2.245,
                 2.245
               ],
-              "alpha": 0.7109,
               "pivot": [
                 100.05,
                 100
@@ -547,16 +549,16 @@
                 7.8997,
                 -24.7401
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.6602,
+              "duration": 20,
               "skew": [
                 2.2836,
                 2.2836
               ],
-              "alpha": 0.6602,
               "pivot": [
                 100.05,
                 100
@@ -569,16 +571,16 @@
                 7.3026,
                 -33.0409
               ],
-              "duration": 20,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 2.8497,
                 2.8497
               ],
-              "alpha": 0,
               "pivot": [
                 99.85,
                 100.2
@@ -591,17 +593,16 @@
                 -1.9035,
                 -158.1854
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 67,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 25,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -614,16 +615,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 25,
               "index": 68,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7109,
+              "duration": 1,
               "skew": [
                 2.245,
                 2.245
               ],
-              "alpha": 0.7109,
               "pivot": [
                 100.05,
                 100
@@ -636,16 +638,16 @@
                 7.8997,
                 -24.7401
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.6602,
+              "duration": 20,
               "skew": [
                 2.2836,
                 2.2836
               ],
-              "alpha": 0.6602,
               "pivot": [
                 100.05,
                 100
@@ -658,16 +660,16 @@
                 7.3026,
                 -33.0409
               ],
-              "duration": 20,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 2.8497,
                 2.8497
               ],
-              "alpha": 0,
               "pivot": [
                 99.85,
                 100.2
@@ -680,26 +682,25 @@
                 -1.9035,
                 -158.1854
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 114,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "SmokeSprite",
           "keyframes": [
             {
               "index": 0,
               "duration": 26
             },
             {
+              "duration": 20,
               "skew": [
                 -2.5618,
                 -2.5618
               ],
-              "ease": 1,
               "pivot": [
                 100,
                 100
@@ -708,16 +709,17 @@
                 -1.0196,
                 0.007
               ],
-              "duration": 20,
               "index": 26,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8398,
+              "duration": 1,
               "skew": [
                 -2.9663,
                 -2.9663
               ],
-              "alpha": 0.8398,
               "pivot": [
                 100,
                 100
@@ -730,16 +732,16 @@
                 -5.1618,
                 -45.1605
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8008,
+              "duration": 25,
               "skew": [
                 -3.0672,
                 -3.0672
               ],
-              "alpha": 0.8008,
               "pivot": [
                 99.95,
                 100.05
@@ -752,16 +754,16 @@
                 -6.1758,
                 -56.5686
               ],
-              "duration": 25,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -5.0789,
                 -5.0789
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -774,17 +776,16 @@
                 -27.0009,
                 -282.1036
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 72,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 20,
               "skew": [
                 -2.5618,
                 -2.5618
               ],
-              "ease": 1,
               "pivot": [
                 100,
                 100
@@ -793,16 +794,17 @@
                 -1.0196,
                 0.007
               ],
-              "duration": 20,
               "index": 73,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8398,
+              "duration": 1,
               "skew": [
                 -2.9663,
                 -2.9663
               ],
-              "alpha": 0.8398,
               "pivot": [
                 100,
                 100
@@ -815,16 +817,16 @@
                 -5.1618,
                 -45.1605
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8008,
+              "duration": 25,
               "skew": [
                 -3.0672,
                 -3.0672
               ],
-              "alpha": 0.8008,
               "pivot": [
                 99.95,
                 100.05
@@ -837,16 +839,16 @@
                 -6.1758,
                 -56.5686
               ],
-              "duration": 25,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -5.0789,
                 -5.0789
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -859,26 +861,25 @@
                 -27.0009,
                 -282.1036
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 119,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "SmokeSprite"
+          ]
         },
         {
+          "name": "Layer 6",
           "keyframes": [
             {
               "index": 0,
               "duration": 31
             },
             {
+              "duration": 15,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -891,16 +892,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 15,
               "index": 31,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9297,
+              "duration": 1,
               "skew": [
                 2.1528,
                 2.1528
               ],
-              "alpha": 0.9297,
               "pivot": [
                 100.1,
                 100
@@ -913,16 +915,16 @@
                 11.0856,
                 20.5022
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8984,
+              "duration": 30,
               "skew": [
                 2.2399,
                 2.2399
               ],
-              "alpha": 0.8984,
               "pivot": [
                 100,
                 100
@@ -935,16 +937,16 @@
                 10.6384,
                 14.7909
               ],
-              "duration": 30,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 4.4069,
                 4.4069
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.2
@@ -957,17 +959,16 @@
                 -1.9495,
                 -128.2146
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 77,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 15,
               "skew": [
                 1.9945,
                 1.9945
               ],
-              "ease": 1,
               "pivot": [
                 100.05,
                 100
@@ -980,16 +981,17 @@
                 11.9946,
                 31.0111
               ],
-              "duration": 15,
               "index": 78,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9297,
+              "duration": 1,
               "skew": [
                 2.1528,
                 2.1528
               ],
-              "alpha": 0.9297,
               "pivot": [
                 100.1,
                 100
@@ -1002,16 +1004,16 @@
                 11.0856,
                 20.5022
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.8984,
+              "duration": 30,
               "skew": [
                 2.2399,
                 2.2399
               ],
-              "alpha": 0.8984,
               "pivot": [
                 100,
                 100
@@ -1024,16 +1026,16 @@
                 10.6384,
                 14.7909
               ],
-              "duration": 30,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 4.4069,
                 4.4069
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.2
@@ -1046,22 +1048,21 @@
                 -1.9495,
                 -128.2146
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 124,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 6"
+          ]
         },
         {
+          "name": "SmokeSprite",
           "keyframes": [
             {
               "index": 0,
               "duration": 36
             },
             {
-              "ease": 1,
+              "duration": 10,
               "pivot": [
                 100,
                 100
@@ -1070,16 +1071,17 @@
                 -1,
                 0
               ],
-              "duration": 10,
               "index": 36,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9883,
+              "duration": 1,
               "skew": [
                 -0.0271,
                 -0.0271
               ],
-              "alpha": 0.9883,
               "pivot": [
                 100,
                 100.05
@@ -1092,16 +1094,16 @@
                 -1.3575,
                 -3.6848
               ],
-              "duration": 1,
               "index": 46,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9609,
+              "duration": 35,
               "skew": [
                 -0.097,
                 -0.097
               ],
-              "alpha": 0.9609,
               "pivot": [
                 100,
                 100.05
@@ -1114,16 +1116,16 @@
                 -2.22,
                 -12.6542
               ],
-              "duration": 35,
               "index": 47,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.2821,
                 -2.2821
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -1136,13 +1138,12 @@
                 -27.0204,
                 -282.1132
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 82,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
-              "ease": 1,
+              "duration": 10,
               "pivot": [
                 100,
                 100
@@ -1151,16 +1152,17 @@
                 -1,
                 0
               ],
-              "duration": 10,
               "index": 83,
+              "ease": 1,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9883,
+              "duration": 1,
               "skew": [
                 -0.0271,
                 -0.0271
               ],
-              "alpha": 0.9883,
               "pivot": [
                 100,
                 100.05
@@ -1173,16 +1175,16 @@
                 -1.3575,
                 -3.6848
               ],
-              "duration": 1,
               "index": 93,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.9609,
+              "duration": 35,
               "skew": [
                 -0.097,
                 -0.097
               ],
-              "alpha": 0.9609,
               "pivot": [
                 100,
                 100.05
@@ -1195,16 +1197,16 @@
                 -2.22,
                 -12.6542
               ],
-              "duration": 35,
               "index": 94,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.2821,
                 -2.2821
               ],
-              "alpha": 0,
               "pivot": [
                 100.1,
                 100.05
@@ -1217,15 +1219,14 @@
                 -27.0204,
                 -282.1132
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 129,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "SmokeSprite"
+          ]
         },
         {
+          "name": "Layer 2",
           "keyframes": [
             {
               "label": "start",
@@ -1242,8 +1243,7 @@
               "index": 94,
               "duration": 36
             }
-          ],
-          "name": "Layer 2"
+          ]
         }
       ]
     },
@@ -1251,8 +1251,10 @@
       "id": "SmokeAnimation02",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
+              "duration": 21,
               "skew": [
                 0,
                 -0.7617
@@ -1269,12 +1271,11 @@
                 -1.0099,
                 -1.0004
               ],
-              "duration": 21,
               "index": 0,
               "ref": "Smoke01Sprite"
             },
             {
-              "ease": -0.33,
+              "duration": 19,
               "pivot": [
                 100.05,
                 100
@@ -1287,16 +1288,17 @@
                 -0.9825,
                 -188.95
               ],
-              "duration": 19,
               "index": 21,
+              "ease": -0.33,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 25,
               "skew": [
                 0,
                 0.1871
               ],
-              "alpha": 0,
               "pivot": [
                 99.85,
                 100
@@ -1309,17 +1311,17 @@
                 -1.2639,
                 -328.9669
               ],
-              "tweened": false,
-              "duration": 25,
               "index": 40,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "Layer 2",
           "keyframes": [
             {
+              "duration": 22,
               "skew": [
                 -3.1416,
                 -2.2715
@@ -1336,16 +1338,15 @@
                 -0.9993,
                 -0.975
               ],
-              "duration": 22,
               "index": 0,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 18,
               "skew": [
                 -3.1416,
                 -3.105
               ],
-              "ease": -0.33,
               "pivot": [
                 100,
                 100
@@ -1358,16 +1359,17 @@
                 -0.9993,
                 -207.3747
               ],
-              "duration": 18,
               "index": 22,
+              "ease": -0.33,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 25,
               "skew": [
                 -3.1416,
                 -3.3579
               ],
-              "alpha": 0,
               "pivot": [
                 100.05,
                 99.95
@@ -1380,13 +1382,11 @@
                 -1.0092,
                 -363.2629
               ],
-              "tweened": false,
-              "duration": 25,
               "index": 40,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 2"
+          ]
         }
       ]
     },
@@ -1394,8 +1394,10 @@
       "id": "SmokeAnimation03",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
+              "duration": 38,
               "pivot": [
                 100,
                 100
@@ -1408,16 +1410,16 @@
                 -1.0013,
                 -0.0013
               ],
-              "duration": 38,
               "index": 0,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.2699,
                 0.2699
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1430,12 +1432,12 @@
                 -0.9724,
                 -210.0248
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 38,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 38,
               "pivot": [
                 100,
                 100
@@ -1448,16 +1450,16 @@
                 -1.0013,
                 -0.0013
               ],
-              "duration": 38,
               "index": 39,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.2699,
                 0.2699
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1470,21 +1472,21 @@
                 -0.9724,
                 -210.0248
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 77,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "Layer 2",
           "keyframes": [
             {
               "index": 0,
               "duration": 10
             },
             {
+              "duration": 28,
               "skew": [
                 -2.1992,
                 -2.1992
@@ -1501,16 +1503,16 @@
                 -1.0145,
                 -0.0087
               ],
-              "duration": 28,
               "index": 10,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2617,
+              "duration": 1,
               "skew": [
                 -3.4963,
                 -3.4963
               ],
-              "alpha": 0.2617,
               "pivot": [
                 100,
                 100
@@ -1523,16 +1525,16 @@
                 -30.5462,
                 -154.9797
               ],
-              "duration": 1,
               "index": 38,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2305,
+              "duration": 9,
               "skew": [
                 -3.5402,
                 -3.5402
               ],
-              "alpha": 0.2305,
               "pivot": [
                 100,
                 100
@@ -1545,16 +1547,16 @@
                 -31.5274,
                 -160.5493
               ],
-              "duration": 9,
               "index": 39,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -3.9624,
                 -3.9624
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1567,12 +1569,12 @@
                 -41.0755,
                 -210.1989
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 48,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 28,
               "skew": [
                 -2.1992,
                 -2.1992
@@ -1589,16 +1591,16 @@
                 -1.0145,
                 -0.0087
               ],
-              "duration": 28,
               "index": 49,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2617,
+              "duration": 1,
               "skew": [
                 -3.4963,
                 -3.4963
               ],
-              "alpha": 0.2617,
               "pivot": [
                 100,
                 100
@@ -1611,16 +1613,16 @@
                 -30.5462,
                 -154.9797
               ],
-              "duration": 1,
               "index": 77,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.2305,
+              "duration": 9,
               "skew": [
                 -3.5402,
                 -3.5402
               ],
-              "alpha": 0.2305,
               "pivot": [
                 100,
                 100
@@ -1633,16 +1635,16 @@
                 -31.5274,
                 -160.5493
               ],
-              "duration": 9,
               "index": 78,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -3.9624,
                 -3.9624
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1655,21 +1657,21 @@
                 -41.0755,
                 -210.1989
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 87,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 2"
+          ]
         },
         {
+          "name": "Layer 3",
           "keyframes": [
             {
               "index": 0,
               "duration": 20
             },
             {
+              "duration": 18,
               "skew": [
                 -0.6284,
                 -0.6284
@@ -1686,16 +1688,16 @@
                 -0.9913,
                 -0.0145
               ],
-              "duration": 18,
               "index": 20,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5313,
+              "duration": 1,
               "skew": [
                 -1.4654,
                 -1.4654
               ],
-              "alpha": 0.5313,
               "pivot": [
                 100,
                 100
@@ -1708,16 +1710,16 @@
                 -19.8745,
                 -99.6818
               ],
-              "duration": 1,
               "index": 38,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5,
+              "duration": 19,
               "skew": [
                 -1.5135,
                 -1.5135
               ],
-              "alpha": 0.5,
               "pivot": [
                 100,
                 100
@@ -1730,16 +1732,16 @@
                 -20.9366,
                 -105.2655
               ],
-              "duration": 19,
               "index": 39,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.3916,
                 -2.3916
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1752,12 +1754,12 @@
                 -41.0511,
                 -210.2255
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 58,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 18,
               "skew": [
                 -0.6284,
                 -0.6284
@@ -1774,16 +1776,16 @@
                 -0.9913,
                 -0.0145
               ],
-              "duration": 18,
               "index": 59,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5313,
+              "duration": 1,
               "skew": [
                 -1.4654,
                 -1.4654
               ],
-              "alpha": 0.5313,
               "pivot": [
                 100,
                 100
@@ -1796,16 +1798,16 @@
                 -19.8745,
                 -99.6818
               ],
-              "duration": 1,
               "index": 77,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5,
+              "duration": 19,
               "skew": [
                 -1.5135,
                 -1.5135
               ],
-              "alpha": 0.5,
               "pivot": [
                 100,
                 100
@@ -1818,16 +1820,16 @@
                 -20.9366,
                 -105.2655
               ],
-              "duration": 19,
               "index": 78,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.3916,
                 -2.3916
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1840,21 +1842,21 @@
                 -41.0511,
                 -210.2255
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 97,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 3"
+          ]
         },
         {
+          "name": "Layer 4",
           "keyframes": [
             {
               "index": 0,
               "duration": 30
             },
             {
+              "duration": 8,
               "skew": [
                 2.5132,
                 2.5132
@@ -1871,16 +1873,16 @@
                 -1.0087,
                 0.0145
               ],
-              "duration": 8,
               "index": 30,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7891,
+              "duration": 1,
               "skew": [
                 2.14,
                 2.14
               ],
-              "alpha": 0.7891,
               "pivot": [
                 99.95,
                 100
@@ -1893,16 +1895,16 @@
                 -9.358,
                 -44.2851
               ],
-              "duration": 1,
               "index": 38,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7617,
+              "duration": 29,
               "skew": [
                 2.0917,
                 2.0917
               ],
-              "alpha": 0.7617,
               "pivot": [
                 100,
                 100
@@ -1915,16 +1917,16 @@
                 -10.4151,
                 -49.6181
               ],
-              "duration": 29,
               "index": 39,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.75,
                 0.75
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -1937,12 +1939,12 @@
                 -41.0489,
                 -210.1745
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 68,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             },
             {
+              "duration": 8,
               "skew": [
                 2.5132,
                 2.5132
@@ -1959,16 +1961,16 @@
                 -1.0087,
                 0.0145
               ],
-              "duration": 8,
               "index": 69,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7891,
+              "duration": 1,
               "skew": [
                 2.14,
                 2.14
               ],
-              "alpha": 0.7891,
               "pivot": [
                 99.95,
                 100
@@ -1981,16 +1983,16 @@
                 -9.358,
                 -44.2851
               ],
-              "duration": 1,
               "index": 77,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.7617,
+              "duration": 29,
               "skew": [
                 2.0917,
                 2.0917
               ],
-              "alpha": 0.7617,
               "pivot": [
                 100,
                 100
@@ -2003,16 +2005,16 @@
                 -10.4151,
                 -49.6181
               ],
-              "duration": 29,
               "index": 78,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.75,
                 0.75
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100
@@ -2025,15 +2027,14 @@
                 -41.0489,
                 -210.1745
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 107,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 4"
+          ]
         },
         {
+          "name": "Layer 5",
           "keyframes": [
             {
               "label": "start",
@@ -2050,8 +2051,7 @@
               "index": 78,
               "duration": 30
             }
-          ],
-          "name": "Layer 5"
+          ]
         }
       ]
     },
@@ -2059,6 +2059,7 @@
       "id": "SmokePipeAnimation",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
               "loc": [
@@ -2074,11 +2075,12 @@
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5391,
+              "duration": 16,
               "skew": [
                 -1.3996,
                 -1.3996
               ],
-              "alpha": 0.5352,
               "pivot": [
                 26.45,
                 26
@@ -2091,16 +2093,16 @@
                 10.8403,
                 -59.7075
               ],
-              "duration": 16,
               "index": 14,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.9938,
                 -2.9938
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.05
@@ -2113,9 +2115,8 @@
                 7.1007,
                 -128.1925
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 30,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
@@ -2132,11 +2133,12 @@
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5391,
+              "duration": 16,
               "skew": [
                 -1.3996,
                 -1.3996
               ],
-              "alpha": 0.5391,
               "pivot": [
                 26.45,
                 26
@@ -2149,16 +2151,16 @@
                 -5.1597,
                 -59.7075
               ],
-              "duration": 16,
               "index": 45,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.9938,
                 -2.9938
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.05
@@ -2171,9 +2173,8 @@
                 -8.8993,
                 -128.1925
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 61,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
@@ -2190,11 +2191,12 @@
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5391,
+              "duration": 16,
               "skew": [
                 -1.3996,
                 -1.3996
               ],
-              "alpha": 0.5391,
               "pivot": [
                 26.45,
                 26
@@ -2207,16 +2209,16 @@
                 10.8403,
                 -59.7075
               ],
-              "duration": 16,
               "index": 76,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -2.9938,
                 -2.9938
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.05
@@ -2229,22 +2231,22 @@
                 7.1007,
                 -128.1925
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 92,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "Layer 2",
           "keyframes": [
             {
+              "alpha": 0.1289,
+              "duration": 4,
               "skew": [
                 -1.024,
                 -1.024
               ],
-              "alpha": 0.1289,
               "pivot": [
                 26.45,
                 25.8
@@ -2257,16 +2259,16 @@
                 3.6462,
                 -111.0556
               ],
-              "duration": 4,
               "index": 0,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -1.423,
                 -1.423
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2279,12 +2281,12 @@
                 7.1025,
                 -128.1574
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 4,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 1.5708,
                 1.5708
@@ -2297,16 +2299,16 @@
                 -0.9,
                 0.2
               ],
-              "duration": 16,
               "index": 5,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 9,
               "skew": [
                 -0.0228,
                 -0.0228
               ],
-              "alpha": 0.4648,
               "pivot": [
                 26.45,
                 25.95
@@ -2319,16 +2321,16 @@
                 -4.6316,
                 -68.2476
               ],
-              "duration": 9,
               "index": 21,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.1719,
+              "duration": 1,
               "skew": [
                 -0.9233,
                 -0.9233
               ],
-              "alpha": 0.168,
               "pivot": [
                 26.4,
                 25.85
@@ -2341,16 +2343,16 @@
                 2.8307,
                 -106.7455
               ],
-              "duration": 1,
               "index": 30,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.1289,
+              "duration": 4,
               "skew": [
                 -1.024,
                 -1.024
               ],
-              "alpha": 0.1289,
               "pivot": [
                 26.45,
                 25.8
@@ -2363,16 +2365,16 @@
                 3.6462,
                 -111.0556
               ],
-              "duration": 4,
               "index": 31,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -1.423,
                 -1.423
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2385,12 +2387,12 @@
                 7.1025,
                 -128.1574
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 35,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 1.5708,
                 1.5708
@@ -2403,16 +2405,16 @@
                 -0.9,
                 0.2
               ],
-              "duration": 16,
               "index": 36,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 14,
               "skew": [
                 -0.0228,
                 -0.0228
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.45,
                 25.95
@@ -2425,16 +2427,16 @@
                 11.3684,
                 -68.2476
               ],
-              "duration": 14,
               "index": 52,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -1.423,
                 -1.423
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2447,12 +2449,12 @@
                 23.1025,
                 -128.1574
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 66,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 1.5708,
                 1.5708
@@ -2465,16 +2467,16 @@
                 -0.9,
                 0.2
               ],
-              "duration": 16,
               "index": 67,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 9,
               "skew": [
                 -0.0228,
                 -0.0228
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.45,
                 25.95
@@ -2487,16 +2489,16 @@
                 -4.6316,
                 -68.2476
               ],
-              "duration": 9,
               "index": 83,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.1719,
+              "duration": 1,
               "skew": [
                 -0.9233,
                 -0.9233
               ],
-              "alpha": 0.1719,
               "pivot": [
                 26.4,
                 25.85
@@ -2509,21 +2511,21 @@
                 2.8307,
                 -106.7455
               ],
-              "duration": 1,
               "index": 92,
               "ref": "Smoke03Sprite"
             }
-          ],
-          "name": "Layer 2"
+          ]
         },
         {
+          "name": "Layer 4",
           "keyframes": [
             {
+              "alpha": 0.3008,
+              "duration": 9,
               "skew": [
                 -0.368,
                 -0.368
               ],
-              "alpha": 0.3008,
               "pivot": [
                 26.35,
                 26.05
@@ -2536,16 +2538,16 @@
                 9.6926,
                 -89.5426
               ],
-              "duration": 9,
               "index": 0,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.2691,
                 0.2691
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2558,12 +2560,12 @@
                 7.1024,
                 -128.0993
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 9,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 -1.8678,
                 -1.8678
@@ -2576,16 +2578,16 @@
                 -0.8926,
                 0.202
               ],
-              "duration": 16,
               "index": 10,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 4,
               "skew": [
                 -0.7267,
                 -0.7267
               ],
-              "alpha": 0.4648,
               "pivot": [
                 26.5,
                 25.95
@@ -2598,16 +2600,16 @@
                 11.3011,
                 -68.317
               ],
-              "duration": 4,
               "index": 26,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.3281,
+              "duration": 1,
               "skew": [
                 -0.4417,
                 -0.4417
               ],
-              "alpha": 0.332,
               "pivot": [
                 26.4,
                 26
@@ -2620,16 +2622,16 @@
                 10.0521,
                 -85.3118
               ],
-              "duration": 1,
               "index": 30,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.3008,
+              "duration": 9,
               "skew": [
                 -0.368,
                 -0.368
               ],
-              "alpha": 0.3008,
               "pivot": [
                 26.35,
                 26.05
@@ -2642,16 +2644,16 @@
                 9.6926,
                 -89.5426
               ],
-              "duration": 9,
               "index": 31,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.2691,
                 0.2691
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2664,12 +2666,12 @@
                 7.1024,
                 -128.0993
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 40,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 -1.8678,
                 -1.8678
@@ -2682,16 +2684,16 @@
                 -0.8926,
                 0.202
               ],
-              "duration": 16,
               "index": 41,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 14,
               "skew": [
                 -0.7267,
                 -0.7267
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.5,
                 25.95
@@ -2704,16 +2706,16 @@
                 15.3011,
                 -68.317
               ],
-              "duration": 14,
               "index": 57,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.2691,
                 0.2691
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -2726,12 +2728,12 @@
                 15.1024,
                 -128.0993
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 71,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 -1.8678,
                 -1.8678
@@ -2744,16 +2746,16 @@
                 -0.8926,
                 0.202
               ],
-              "duration": 16,
               "index": 72,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 4,
               "skew": [
                 -0.7267,
                 -0.7267
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.5,
                 25.95
@@ -2766,16 +2768,16 @@
                 11.3011,
                 -68.317
               ],
-              "duration": 4,
               "index": 88,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.3281,
+              "duration": 1,
               "skew": [
                 -0.4417,
                 -0.4417
               ],
-              "alpha": 0.3281,
               "pivot": [
                 26.4,
                 26
@@ -2788,21 +2790,21 @@
                 10.0521,
                 -85.3118
               ],
-              "duration": 1,
               "index": 92,
               "ref": "Smoke03Sprite"
             }
-          ],
-          "name": "Layer 4"
+          ]
         },
         {
+          "name": "Layer 5",
           "keyframes": [
             {
+              "alpha": 0.5,
+              "duration": 2,
               "skew": [
                 1.1897,
                 1.1897
               ],
-              "alpha": 0.5,
               "pivot": [
                 26.5,
                 26
@@ -2815,16 +2817,16 @@
                 -0.4362,
                 -63.9937
               ],
-              "duration": 2,
               "index": 0,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4297,
+              "duration": 13,
               "skew": [
                 1.0412,
                 1.0412
               ],
-              "alpha": 0.4297,
               "pivot": [
                 26.5,
                 26.05
@@ -2837,16 +2839,16 @@
                 -0.3547,
                 -72.5453
               ],
-              "duration": 13,
               "index": 2,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.096,
                 0.096
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.1
@@ -2859,12 +2861,12 @@
                 7.0867,
                 -128.2995
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 15,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 14,
               "skew": [
                 2.2738,
                 2.2738
@@ -2877,16 +2879,16 @@
                 -0.8856,
                 0.2192
               ],
-              "duration": 14,
               "index": 16,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5391,
+              "duration": 1,
               "skew": [
                 1.2601,
                 1.2601
               ],
-              "alpha": 0.5352,
               "pivot": [
                 26.45,
                 26.05
@@ -2899,16 +2901,16 @@
                 -0.437,
                 -59.7038
               ],
-              "duration": 1,
               "index": 30,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5,
+              "duration": 2,
               "skew": [
                 1.1897,
                 1.1897
               ],
-              "alpha": 0.5,
               "pivot": [
                 26.5,
                 26
@@ -2921,16 +2923,16 @@
                 -0.4362,
                 -63.9937
               ],
-              "duration": 2,
               "index": 31,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4297,
+              "duration": 13,
               "skew": [
                 1.0412,
                 1.0412
               ],
-              "alpha": 0.4297,
               "pivot": [
                 26.5,
                 26.05
@@ -2943,16 +2945,16 @@
                 -0.3547,
                 -72.5453
               ],
-              "duration": 13,
               "index": 33,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.096,
                 0.096
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.1
@@ -2965,12 +2967,12 @@
                 7.0867,
                 -128.2995
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 46,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 17,
               "skew": [
                 2.2738,
                 2.2738
@@ -2983,16 +2985,16 @@
                 -0.8856,
                 0.2192
               ],
-              "duration": 17,
               "index": 47,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4297,
+              "duration": 13,
               "skew": [
                 1.0412,
                 1.0412
               ],
-              "alpha": 0.4297,
               "pivot": [
                 26.5,
                 26.05
@@ -3005,16 +3007,16 @@
                 13.2453,
                 -72.5453
               ],
-              "duration": 13,
               "index": 64,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.096,
                 0.096
               ],
-              "alpha": 0,
               "pivot": [
                 26.55,
                 26.1
@@ -3027,12 +3029,12 @@
                 9.4867,
                 -128.2995
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 77,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 14,
               "skew": [
                 2.2738,
                 2.2738
@@ -3045,16 +3047,16 @@
                 -0.8856,
                 0.2192
               ],
-              "duration": 14,
               "index": 78,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.5391,
+              "duration": 1,
               "skew": [
                 1.2601,
                 1.2601
               ],
-              "alpha": 0.5391,
               "pivot": [
                 26.45,
                 26.05
@@ -3067,21 +3069,21 @@
                 -0.437,
                 -59.7038
               ],
-              "duration": 1,
               "index": 92,
               "ref": "Smoke03Sprite"
             }
-          ],
-          "name": "Layer 5"
+          ]
         },
         {
+          "name": "Layer 6",
           "keyframes": [
             {
+              "alpha": 0.6992,
+              "duration": 7,
               "skew": [
                 2.4107,
                 2.4107
               ],
-              "alpha": 0.6992,
               "pivot": [
                 26.45,
                 25.95
@@ -3094,16 +3096,16 @@
                 3.7557,
                 -38.4267
               ],
-              "duration": 7,
               "index": 0,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 14,
               "skew": [
                 2.739,
                 2.739
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.55,
                 26
@@ -3116,16 +3118,16 @@
                 7.2873,
                 -68.3443
               ],
-              "duration": 14,
               "index": 7,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 3.3932,
                 3.3932
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -3138,12 +3140,12 @@
                 7.0955,
                 -128.0923
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 21,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 8,
               "skew": [
                 1.9884,
                 1.9884
@@ -3156,16 +3158,16 @@
                 -0.9169,
                 0.1995
               ],
-              "duration": 8,
               "index": 22,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.7305,
+              "duration": 1,
               "skew": [
                 2.363,
                 2.363
               ],
-              "alpha": 0.7344,
               "pivot": [
                 26.45,
                 25.95
@@ -3178,16 +3180,16 @@
                 3.2174,
                 -34.109
               ],
-              "duration": 1,
               "index": 30,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.6992,
+              "duration": 7,
               "skew": [
                 2.4107,
                 2.4107
               ],
-              "alpha": 0.6992,
               "pivot": [
                 26.45,
                 25.95
@@ -3200,16 +3202,16 @@
                 3.7557,
                 -38.4267
               ],
-              "duration": 7,
               "index": 31,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 14,
               "skew": [
                 2.739,
                 2.739
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.55,
                 26
@@ -3222,16 +3224,16 @@
                 7.2873,
                 -68.3443
               ],
-              "duration": 14,
               "index": 38,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 3.3932,
                 3.3932
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -3244,12 +3246,12 @@
                 7.0955,
                 -128.0923
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 52,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 16,
               "skew": [
                 1.9884,
                 1.9884
@@ -3262,16 +3264,16 @@
                 -0.9169,
                 0.1995
               ],
-              "duration": 16,
               "index": 53,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.4609,
+              "duration": 14,
               "skew": [
                 2.739,
                 2.739
               ],
-              "alpha": 0.4609,
               "pivot": [
                 26.55,
                 26
@@ -3284,16 +3286,16 @@
                 3.2873,
                 -68.3443
               ],
-              "duration": 14,
               "index": 69,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 3.3932,
                 3.3932
               ],
-              "alpha": 0,
               "pivot": [
                 26.5,
                 26
@@ -3306,12 +3308,12 @@
                 -0.9045,
                 -128.0923
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 83,
+              "tweened": false,
               "ref": "Smoke03Sprite"
             },
             {
+              "duration": 8,
               "skew": [
                 1.9884,
                 1.9884
@@ -3324,16 +3326,16 @@
                 -0.9169,
                 0.1995
               ],
-              "duration": 8,
               "index": 84,
               "ref": "Smoke03Sprite"
             },
             {
+              "alpha": 0.7305,
+              "duration": 1,
               "skew": [
                 2.363,
                 2.363
               ],
-              "alpha": 0.7305,
               "pivot": [
                 26.45,
                 25.95
@@ -3346,14 +3348,13 @@
                 3.2174,
                 -34.109
               ],
-              "duration": 1,
               "index": 92,
               "ref": "Smoke03Sprite"
             }
-          ],
-          "name": "Layer 6"
+          ]
         },
         {
+          "name": "Layer 7",
           "keyframes": [
             {
               "label": "loop",
@@ -3365,8 +3366,7 @@
               "index": 31,
               "duration": 62
             }
-          ],
-          "name": "Layer 7"
+          ]
         }
       ]
     },
@@ -3374,9 +3374,11 @@
       "id": "SteamAmbience01",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
               "alpha": 0,
+              "duration": 24,
               "pivot": [
                 0.65,
                 -2.05
@@ -3385,12 +3387,12 @@
                 -0.35,
                 -2.55
               ],
-              "duration": 24,
               "index": 0,
               "ref": "SteamAmbiencePuff"
             },
             {
               "alpha": 0.4492,
+              "duration": 50,
               "pivot": [
                 0.65,
                 -2.05
@@ -3399,27 +3401,25 @@
                 -7.65,
                 -53.65
               ],
-              "duration": 50,
               "index": 24,
               "ref": "SteamAmbiencePuff"
             },
             {
               "alpha": 0,
-              "tweened": false,
+              "duration": 1,
               "pivot": [
                 0.65,
                 -2.05
               ],
+              "tweened": false,
               "loc": [
                 -22.85,
                 -160.05
               ],
-              "duration": 1,
               "index": 74,
               "ref": "SteamAmbiencePuff"
             }
-          ],
-          "name": "Layer 1"
+          ]
         }
       ]
     },
@@ -3427,10 +3427,11 @@
       "id": "SteamAmbiencePuff",
       "layers": [
         {
+          "name": "Layer 11",
           "keyframes": [
             {
               "alpha": 0.5,
-              "ease": 0.5,
+              "duration": 74,
               "pivot": [
                 100,
                 100
@@ -3443,16 +3444,17 @@
                 1.1494,
                 -1.1506
               ],
-              "duration": 74,
               "index": 0,
+              "ease": 0.5,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5,
+              "duration": 1,
               "skew": [
                 -1.6674,
                 -1.6674
               ],
-              "alpha": 0.5,
               "pivot": [
                 100,
                 100
@@ -3465,22 +3467,22 @@
                 1.1697,
                 -1.1445
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 74,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 11"
+          ]
         },
         {
+          "name": "Layer 12",
           "keyframes": [
             {
+              "alpha": 0.5,
+              "duration": 74,
               "skew": [
                 -2.1342,
                 -2.1342
               ],
-              "alpha": 0.5,
               "pivot": [
                 100.05,
                 100
@@ -3493,17 +3495,17 @@
                 1.0694,
                 -1.1479
               ],
-              "ease": 0.5,
-              "duration": 74,
               "index": 0,
+              "ease": 0.5,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.5,
+              "duration": 1,
               "skew": [
                 -0.3901,
                 -0.3901
               ],
-              "alpha": 0.5,
               "pivot": [
                 100,
                 100.05
@@ -3516,13 +3518,11 @@
                 1.0807,
                 -1.125
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 74,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 12"
+          ]
         }
       ]
     },
@@ -3530,13 +3530,15 @@
       "id": "SteamAnimation01",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -3549,12 +3551,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 0,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -3571,16 +3573,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 2,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -3593,17 +3595,17 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 8,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0912,
                 0.0907
               ],
-              "alpha": 0.25,
               "pivot": [
                 98.6,
                 100.6
@@ -3616,12 +3618,12 @@
                 0.1507,
                 -15.1503
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 9,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0597,
                 0.0597
@@ -3638,16 +3640,16 @@
                 6.1481,
                 -93.3351
               ],
-              "duration": 6,
               "index": 11,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0784,
                 0.0783
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.65
@@ -3660,17 +3662,17 @@
                 19.5502,
                 -193.9509
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 17,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -3683,12 +3685,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 18,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -3705,16 +3707,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 20,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -3727,17 +3729,17 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 26,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -3750,12 +3752,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 27,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -3772,16 +3774,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 29,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -3794,26 +3796,26 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 35,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "Layer 21",
           "keyframes": [
             {
               "index": 0,
               "duration": 16
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -3826,12 +3828,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 16,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -3848,16 +3850,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 18,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -3870,17 +3872,17 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 24,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -3893,12 +3895,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 25,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -3915,16 +3917,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 27,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -3937,30 +3939,30 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 33,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
               "index": 34,
               "duration": 2
             }
-          ],
-          "name": "Layer 21"
+          ]
         },
         {
+          "name": "Layer 27",
           "keyframes": [
             {
               "index": 0,
               "duration": 5
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -3973,12 +3975,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 5,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -3995,16 +3997,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 7,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -4017,17 +4019,17 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 13,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -4040,12 +4042,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 14,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -4062,16 +4064,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 16,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -4084,17 +4086,17 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 22,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.3,
                 100.55
@@ -4107,12 +4109,12 @@
                 0.1505,
                 -15.1551
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 23,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 -0.0228,
                 -0.0229
@@ -4129,16 +4131,16 @@
                 -1.8525,
                 -93.3351
               ],
-              "duration": 6,
               "index": 25,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 -0.0258,
                 -0.026
               ],
-              "alpha": 0,
               "pivot": [
                 99.95,
                 100.6
@@ -4151,30 +4153,30 @@
                 -4.4473,
                 -193.9661
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 31,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
               "index": 32,
               "duration": 4
             }
-          ],
-          "name": "Layer 27"
+          ]
         },
         {
+          "name": "Layer 28",
           "keyframes": [
             {
               "index": 0,
               "duration": 12
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -4187,12 +4189,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 12,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -4209,16 +4211,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 14,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -4231,17 +4233,17 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 20,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -4254,12 +4256,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 21,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -4276,16 +4278,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 23,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -4298,30 +4300,30 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 29,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
               "index": 30,
               "duration": 6
             }
-          ],
-          "name": "Layer 28"
+          ]
         },
         {
+          "name": "Layer 29",
           "keyframes": [
             {
               "index": 0,
               "duration": 10
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -4334,12 +4336,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 10,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -4356,16 +4358,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 12,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -4378,17 +4380,17 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 18,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0.25,
+              "duration": 2,
               "skew": [
                 0.0395,
                 -3.1024
               ],
-              "alpha": 0.25,
               "pivot": [
                 99.25,
                 100.6
@@ -4401,12 +4403,12 @@
                 0.1506,
                 -15.1546
               ],
-              "ease": -1,
-              "duration": 2,
               "index": 19,
+              "ease": -1,
               "ref": "Smoke02Sprite"
             },
             {
+              "duration": 6,
               "skew": [
                 0.0403,
                 -3.1014
@@ -4423,16 +4425,16 @@
                 -1.8544,
                 -81.3406
               ],
-              "duration": 6,
               "index": 21,
               "ref": "Smoke02Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.0481,
                 -3.0937
               ],
-              "alpha": 0,
               "pivot": [
                 100,
                 100.6
@@ -4445,22 +4447,21 @@
                 -4.4571,
                 -166.4515
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 27,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             },
             {
               "index": 28,
               "duration": 8
             }
-          ],
-          "name": "Layer 29"
+          ]
         },
         {
+          "name": "Layer 14",
           "keyframes": [
             {
-              "label": "intro",
+              "label": "start",
               "index": 0,
               "duration": 18
             },
@@ -4470,21 +4471,20 @@
               "duration": 9
             },
             {
-              "label": "outro",
+              "label": "end",
               "index": 27,
               "duration": 9
             }
-          ],
-          "name": "Layer 14"
+          ]
         },
         {
+          "name": "Layer 18",
           "keyframes": [
             {
               "index": 0,
               "duration": 36
             }
-          ],
-          "name": "Layer 18"
+          ]
         }
       ]
     },
@@ -4492,8 +4492,10 @@
       "id": "SteamAnimation02",
       "layers": [
         {
+          "name": "Layer 1",
           "keyframes": [
             {
+              "duration": 8,
               "pivot": [
                 78.5,
                 80
@@ -4506,13 +4508,12 @@
                 -1.0005,
                 -22.0004
               ],
-              "duration": 8,
               "index": 0,
               "ref": "Smoke02Sprite"
             },
             {
               "alpha": 0,
-              "tweened": false,
+              "duration": 4,
               "pivot": [
                 78.5,
                 80
@@ -4525,17 +4526,18 @@
                 -1.0017,
                 -172.6444
               ],
-              "duration": 4,
               "index": 8,
+              "tweened": false,
               "ref": "Smoke02Sprite"
             }
-          ],
-          "name": "Layer 1"
+          ]
         },
         {
+          "name": "Layer 2",
           "keyframes": [
             {
               "alpha": 0,
+              "duration": 7,
               "pivot": [
                 99.75,
                 99.95
@@ -4548,16 +4550,16 @@
                 1.6982,
                 1.5522
               ],
-              "duration": 7,
               "index": 0,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.3789,
+              "duration": 4,
               "skew": [
                 0.5033,
                 0.5033
               ],
-              "alpha": 0.3789,
               "pivot": [
                 99.75,
                 99.9
@@ -4570,16 +4572,16 @@
                 1.7875,
                 -145.4935
               ],
-              "duration": 4,
               "index": 7,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 1,
               "skew": [
                 0.7933,
                 0.7933
               ],
-              "alpha": 0,
               "pivot": [
                 99.8,
                 99.95
@@ -4592,18 +4594,18 @@
                 1.7495,
                 -229.5305
               ],
-              "tweened": false,
-              "duration": 1,
               "index": 11,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 2"
+          ]
         },
         {
+          "name": "Layer 3",
           "keyframes": [
             {
               "alpha": 0,
+              "duration": 6,
               "pivot": [
                 99.75,
                 99.95
@@ -4616,16 +4618,16 @@
                 1.6982,
                 1.5522
               ],
-              "duration": 6,
               "index": 0,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0.1914,
+              "duration": 4,
               "skew": [
                 1.3562,
                 1.3562
               ],
-              "alpha": 0.1914,
               "pivot": [
                 99.8,
                 99.95
@@ -4638,16 +4640,16 @@
                 1.6965,
                 -145.5538
               ],
-              "duration": 4,
               "index": 6,
               "ref": "Smoke01Sprite"
             },
             {
+              "alpha": 0,
+              "duration": 2,
               "skew": [
                 2.1286,
                 2.1286
               ],
-              "alpha": 0,
               "pivot": [
                 99.8,
                 99.95
@@ -4660,16 +4662,165 @@
                 1.7861,
                 -229.5981
               ],
-              "tweened": false,
-              "duration": 2,
               "index": 10,
+              "tweened": false,
               "ref": "Smoke01Sprite"
             }
-          ],
-          "name": "Layer 3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TestAnimation",
+      "layers": [
+        {
+          "name": "Layer 1",
+          "keyframes": [
+            {
+              "duration": 25,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.5,
+                26
+              ],
+              "index": 0,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 8,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "scale": [
+                2.6538,
+                2.6538
+              ],
+              "loc": [
+                26.4767,
+                25.9998
+              ],
+              "index": 25,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 16,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.5,
+                26
+              ],
+              "index": 33,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 11,
+              "skew": [
+                -2.8239,
+                -2.8239
+              ],
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.4985,
+                26.0229
+              ],
+              "index": 49,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 17,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.5,
+                26
+              ],
+              "index": 60,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 13,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.5,
+                -94
+              ],
+              "index": 77,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 14,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "loc": [
+                26.5,
+                26
+              ],
+              "index": 90,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "duration": 12,
+              "skew": [
+                1.1071,
+                0
+              ],
+              "pivot": [
+                26.5,
+                26
+              ],
+              "scale": [
+                1,
+                2.2361
+              ],
+              "loc": [
+                26.5,
+                26
+              ],
+              "index": 104,
+              "ease": 1,
+              "ref": "Smoke03Sprite"
+            },
+            {
+              "loc": [
+                26.5,
+                26
+              ],
+              "duration": 1,
+              "index": 116,
+              "pivot": [
+                26.5,
+                26
+              ],
+              "ref": "Smoke03Sprite"
+            }
+          ]
         }
       ]
     }
   ],
-  "md5": "f6f6868213e8348f44eee41a89af5c31"
+  "md5": "1e5c156416e27fac5255933dabe3888d"
 }

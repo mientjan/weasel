@@ -1,37 +1,45 @@
-define(["require", "exports", '../../../createts/util/HttpRequest', './FlumpMovieData', './FlumpTextureGroup', './FlumpMovie'], function (require, exports, HttpRequest, FlumpMovieData, FlumpTextureGroup, FlumpMovie) {
+define(["require", "exports", '../../../createts/util/HttpRequest', '../../../createts/util/Promise', './FlumpMovieData', './FlumpTextureGroup', './FlumpMovie'], function (require, exports, HttpRequest, Promise, FlumpMovieData, FlumpTextureGroup, FlumpMovie) {
     var FlumpLibrary = (function () {
-        function FlumpLibrary(library, url) {
-            var _this = this;
+        function FlumpLibrary(library, basePath) {
             this.movieData = [];
             this.textureGroups = [];
-            this._maxExtensionLength = 5;
-            this._baseDir = '';
             this.fps = 0;
             this.loaded = false;
-            this.url = url;
+            this.url = basePath;
             this.md5 = library.md5;
             this.frameRate = library.frameRate;
-            var textureGroupLoaders = [];
-            for (var i = 0; i < library.movies.length; i++) {
-                var flumpMovieData = new FlumpMovieData(this, library.movies[i]);
-                this.movieData.push(flumpMovieData);
-            }
-            var textureGroups = library.textureGroups;
-            for (var i = 0; i < textureGroups.length; i++) {
-                var textureGroup = textureGroups[i];
-                var promise = FlumpTextureGroup.load(this, textureGroup);
-                textureGroupLoaders.push(promise);
-            }
-            HttpRequest.wait(textureGroupLoaders).then(function (textureGroups) {
-                _this.textureGroups.concat(textureGroups);
-            });
         }
         FlumpLibrary.load = function (url) {
+            var baseDir = url;
+            if (url.indexOf('.json') > -1) {
+                baseDir = url.substr(0, url.lastIndexOf('/'));
+            }
+            else {
+                url += (url.substr(url.length - 1) != '/' ? '/' : '') + 'library.json';
+            }
             return HttpRequest.getString(url).then(function (response) {
                 return JSON.parse(response);
             }).then(function (json) {
-                var flumpLibrary = new FlumpLibrary(json, url);
-                return flumpLibrary;
+                console.log(json);
+                var flumpLibrary = new FlumpLibrary(json, baseDir);
+                var textureGroupLoaders = [];
+                for (var i = 0; i < json.movies.length; i++) {
+                    var flumpMovieData = new FlumpMovieData(flumpLibrary, json.movies[i]);
+                    flumpLibrary.movieData.push(flumpMovieData);
+                }
+                var textureGroups = json.textureGroups;
+                for (var i = 0; i < textureGroups.length; i++) {
+                    var textureGroup = textureGroups[i];
+                    var promise = FlumpTextureGroup.load(flumpLibrary, textureGroup);
+                    textureGroupLoaders.push(promise);
+                }
+                return Promise.all(textureGroupLoaders).then(function (textureGroups) {
+                    for (var i = 0; i < textureGroups.length; i++) {
+                        var textureGroup = textureGroups[i];
+                        flumpLibrary.textureGroups.push(textureGroup);
+                    }
+                    return flumpLibrary;
+                });
             });
         };
         FlumpLibrary.prototype.getFlumpMovieData = function (name) {

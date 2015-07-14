@@ -13,6 +13,7 @@ class FlumpTexture {
 
 	constructor( renderTexture:HTMLImageElement|HTMLCanvasElement, json:IFlumpLibrary.ITexture)
 	{
+		this.renderTexture = renderTexture;
 		this.originX = json.origin[0];
 		this.originY = json.origin[1];
 		this.x = json.rect[0];
@@ -35,3 +36,5 @@ class FlumpTexture {
 		return true;
 	}
 }
+
+export = FlumpTexture;

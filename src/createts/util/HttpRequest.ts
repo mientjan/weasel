@@ -1,11 +1,11 @@
-/// <reference path="../../polyfill/promise.d.ts" />
+import PromiseTs = require('./Promise');
 
 class HttpRequest
 {
-	private static request(method:string, url:string, args:{[name:string]:string}):Promise<string>
+	private static request(method:string, url:string, args:{[name:string]:string}):PromiseTs<any>
 	{
 		// Creating a promise
-		var promise = new Promise<string>(function(resolve:Function, reject:Function) {
+		var promise = new PromiseTs(function(resolve:Function, reject:Function) {
 
 			// Instantiates the XMLHttpRequest
 			var client = new XMLHttpRequest();
@@ -47,29 +47,9 @@ class HttpRequest
 		return promise;
 	}
 
-	public static getString(url:string):Promise<string>
+	public static getString(url:string, query:{[name:string]:any} = {}):PromiseTs<string>
 	{
-		return HttpRequest.request('GET', url, {});
-	}
-
-	public static wait(list:Array<Promise<any>>):Promise<Array<any>>
-	{
-		return new Promise(function(resolve:Function, reject:Function)
-		{
-			var newList = [];
-			var then = function(result){
-				newList.push(result);
-				if( newList.length == list.length )
-				{
-					resolve(newList);
-				}
-			};
-
-			for(var i = 0; i < list.length; i++)
-			{
-				list[i].then(then)
-			}
-		});
+		return HttpRequest.request('GET', url, query);
 	}
 }
 
