@@ -29,7 +29,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.frames = this.flumpMovieData.frames;
             flumpLibrary.frameRate = 25;
             this.duration = (this.frames / flumpLibrary.frameRate) * 1000;
-            console.log(this.duration, this.frames, flumpLibrary.frameRate);
         }
         FlumpMovie.prototype.play = function (times, label, addToQeue) {
             if (times === void 0) { times = 1; }
@@ -55,7 +54,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
         };
         FlumpMovie.prototype.gotoNextLabel = function () {
             this.currentLabel = this.labelQueue.shift();
-            console.log(this.currentLabel);
             this.time = 0;
             return this.currentLabel;
         };

@@ -52,8 +52,6 @@ class FlumpMovie extends DisplayObject {
 
 		// convert to milliseconds
 		this.duration = ( this.frames / flumpLibrary.frameRate ) * 1000;
-		console.log(this.duration, this.frames, flumpLibrary.frameRate);
-		
 	}
 
 	public play(times:number = 1, label:string = null, addToQeue:boolean = true):void
@@ -89,7 +87,6 @@ class FlumpMovie extends DisplayObject {
 	{
 
 		this.currentLabel = this.labelQueue.shift();
-		console.log(this.currentLabel);
 		this.time = 0;
 
 		return this.currentLabel;
