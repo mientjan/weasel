@@ -4,10 +4,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpTexture'], function (require, exports, DisplayObject, FlumpKeyframeData, FlumpTexture) {
+define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpTexture', './FlumpLabelData'], function (require, exports, DisplayObject, FlumpKeyframeData, FlumpTexture, FlumpLabelData) {
     var FlumpMovieLayer = (function (_super) {
         __extends(FlumpMovieLayer, _super);
-        function FlumpMovieLayer(flumpLibrary, flumpLayerData) {
+        function FlumpMovieLayer(flumpMove, flumpLayerData) {
             _super.call(this);
             this._symbols = {};
             this._storedMtx = {
@@ -18,12 +18,15 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
                 tx: 0,
                 ty: 0
             };
-            this.flumpLibrary = flumpLibrary;
             this.flumpLayerData = flumpLayerData;
+            var flumpLibrary = flumpMove.flumpLibrary;
             for (var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++) {
                 var keyframe = flumpLayerData.flumpKeyframeDatas[i];
+                if (keyframe.label) {
+                    flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+                }
                 if (keyframe.ref != null && (keyframe.ref in this._symbols) == false) {
-                    this._symbols[keyframe.ref] = flumpLibrary.createSymbol(keyframe.ref);
+                    this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref);
                 }
             }
             this.setFrame(0);
@@ -39,6 +42,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
         FlumpMovieLayer.prototype.setFrame = function (frame) {
             var keyframe = this.flumpLayerData.getKeyframeForFrame(frame);
             if (!(keyframe instanceof FlumpKeyframeData)) {
+                this._symbol = null;
                 return;
             }
             var x = keyframe.x;

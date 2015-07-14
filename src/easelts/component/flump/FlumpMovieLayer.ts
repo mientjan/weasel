@@ -3,10 +3,11 @@ import FlumpLibrary = require('./FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
 import FlumpTexture = require('./FlumpTexture');
+import FlumpMovie = require('./FlumpMovie');
+import FlumpLabelData = require('./FlumpLabelData');
 
 class FlumpMovieLayer extends DisplayObject
 {
-	public flumpLibrary:FlumpLibrary;
 	public flumpLayerData:FlumpLayerData;
 
 	_symbol; // BitmapDrawable
@@ -21,20 +22,25 @@ class FlumpMovieLayer extends DisplayObject
 	};
 	//Matrix _transformationMatrix = new Matrix.fromIdentity();
 
-	constructor(flumpLibrary:FlumpLibrary, flumpLayerData:FlumpLayerData)
+	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
 	{
 		super();
 
-		this.flumpLibrary = flumpLibrary;
 		this.flumpLayerData = flumpLayerData;
+		var flumpLibrary = flumpMove.flumpLibrary;
 
 		for(var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++)
 		{
 			var keyframe = flumpLayerData.flumpKeyframeDatas[i];
 
+			if( keyframe.label )
+			{
+				flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+			}
+
 			if(keyframe.ref != null && ( keyframe.ref in this._symbols ) == false)
 			{
-				this._symbols[keyframe.ref] = flumpLibrary.createSymbol(keyframe.ref);
+				this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref);
 			}
 		}
 
@@ -56,11 +62,12 @@ class FlumpMovieLayer extends DisplayObject
 		}
 	}
 
-	public setFrame(frame:number)
+	public setFrame(frame:number):void
 	{
 		var keyframe = this.flumpLayerData.getKeyframeForFrame(frame);
 		if(!(keyframe instanceof FlumpKeyframeData))
 		{
+			this._symbol = null;
 			return;
 		}
 
@@ -76,9 +83,7 @@ class FlumpMovieLayer extends DisplayObject
 
 		if(keyframe.index != frame && keyframe.tweened)
 		{
-
 			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
-
 			
 			if(nextKeyframe instanceof FlumpKeyframeData)
 			{
@@ -141,8 +146,6 @@ class FlumpMovieLayer extends DisplayObject
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		//console.log(this._symbol);
-
 		if (this._symbol != null){
 			this._symbol.draw(ctx);
 		}

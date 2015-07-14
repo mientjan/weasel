@@ -1,5 +1,6 @@
 import FlumpLibrary = require('./FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
+import FlumpLabelData = require('./FlumpLabelData');
 import IFlumpLibrary = require('./IFlumpLibrary');
 
 class FlumpMovieData {
@@ -23,10 +24,6 @@ class FlumpMovieData {
 			this.flumpLayerDatas[i] = layer;
 			this.frames = Math.max(this.frames, layer.frames)
 		}
-
-		//this.flumpLayerDatas = json["layers"].map((layer) => new FlumpLayerData(layer)).toList() {
-
-		//this.frames = flumpLayerDatas.fold(0, (f, data) => max(f, data.frames));
 	}
 }
 

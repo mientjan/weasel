@@ -4,8 +4,8 @@ class FlumpKeyframeData
 {
 	index:number;
 	duration:number;
-	ref:string;
 	label:string;
+	ref:string;
 
 	x:number;
 	y:number;
@@ -41,10 +41,6 @@ class FlumpKeyframeData
 		this.alpha = 'alpha' in json ? json.alpha : 1.0;
 		this.tweened = 'tweened' in json ? json.tweened : true;
 		this.ease = 'ease' in json ? json.ease : 0.0;
-		
-		console.log(json);
-		
-
 	}
 }
 

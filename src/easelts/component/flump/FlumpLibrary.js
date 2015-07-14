@@ -1,13 +1,11 @@
 define(["require", "exports", '../../../createts/util/HttpRequest', '../../../createts/util/Promise', './FlumpMovieData', './FlumpTextureGroup', './FlumpMovie'], function (require, exports, HttpRequest, Promise, FlumpMovieData, FlumpTextureGroup, FlumpMovie) {
     var FlumpLibrary = (function () {
-        function FlumpLibrary(library, basePath) {
+        function FlumpLibrary(basePath) {
             this.movieData = [];
             this.textureGroups = [];
             this.fps = 0;
             this.loaded = false;
             this.url = basePath;
-            this.md5 = library.md5;
-            this.frameRate = library.frameRate;
         }
         FlumpLibrary.load = function (url) {
             var baseDir = url;
@@ -20,8 +18,9 @@ define(["require", "exports", '../../../createts/util/HttpRequest', '../../../cr
             return HttpRequest.getString(url).then(function (response) {
                 return JSON.parse(response);
             }).then(function (json) {
-                console.log(json);
-                var flumpLibrary = new FlumpLibrary(json, baseDir);
+                var flumpLibrary = new FlumpLibrary(baseDir);
+                flumpLibrary.md5 = json.md5;
+                flumpLibrary.frameRate = json.frameRate;
                 var textureGroupLoaders = [];
                 for (var i = 0; i < json.movies.length; i++) {
                     var flumpMovieData = new FlumpMovieData(flumpLibrary, json.movies[i]);

@@ -25,7 +25,6 @@ class FlumpLibrary
 		} else {
 			url += ( url.substr(url.length-1) != '/' ? '/' : '' ) +  'library.json';
 		}
-
 		
 		return HttpRequest
 			.getString(url)
@@ -35,9 +34,9 @@ class FlumpLibrary
 			})
 			.then((json:IFlumpLibrary.ILibrary) =>
 			{
-				console.log(json);
-				
-				var flumpLibrary = new FlumpLibrary(json, baseDir);
+				var flumpLibrary = new FlumpLibrary(baseDir);
+				flumpLibrary.md5 = json.md5;
+				flumpLibrary.frameRate = json.frameRate;
 
 				var textureGroupLoaders:Array<Promise<FlumpTextureGroup>> = [];
 				for(var i = 0; i < json.movies.length; i++)
@@ -45,7 +44,6 @@ class FlumpLibrary
 					var flumpMovieData = new FlumpMovieData(flumpLibrary, json.movies[i]);
 					flumpLibrary.movieData.push(flumpMovieData);
 				}
-
 
 				var textureGroups = json.textureGroups;
 				for(var i = 0; i < textureGroups.length; i++)
@@ -79,12 +77,16 @@ class FlumpLibrary
 	public fps:number = 0;
 	public loaded:boolean = false;
 
-	constructor(library:IFlumpLibrary.ILibrary, basePath:string)
+	constructor(basePath:string)
 	{
 		this.url = basePath;
-		this.md5 = library.md5;
-		this.frameRate = library.frameRate;
+
 	}
+
+	//public load(onComplete:() => any, onProgress:(progress:number) => any):void
+	//{
+	//	library:IFlumpLibrary.ILibrary
+	//}
 
 	public getFlumpMovieData(name:string):FlumpMovieData
 	{

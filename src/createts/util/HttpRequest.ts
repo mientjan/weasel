@@ -1,11 +1,11 @@
-import PromiseTs = require('./Promise');
+import Promise = require('./Promise');
 
 class HttpRequest
 {
-	private static request(method:string, url:string, args:{[name:string]:string}):PromiseTs<any>
+	private static request(method:string, url:string, args:{[name:string]:string}):Promise<any>
 	{
 		// Creating a promise
-		var promise = new PromiseTs(function(resolve:Function, reject:Function) {
+		var promise = new Promise(function(resolve:Function, reject:Function) {
 
 			// Instantiates the XMLHttpRequest
 			var client = new XMLHttpRequest();
@@ -47,9 +47,31 @@ class HttpRequest
 		return promise;
 	}
 
-	public static getString(url:string, query:{[name:string]:any} = {}):PromiseTs<string>
+	public static getString(url:string, query:{[name:string]:any} = {}):Promise<string>
 	{
 		return HttpRequest.request('GET', url, query);
+	}
+
+	public static wait(list:Array<Promise<any>>, onProgress:(progress:number) => any = (progress:number) => {} ):Promise<Array<any>>
+	{
+		return new Promise(function(resolve:(response:any) => any){
+			var newList = [];
+
+			var then = function(response)
+			{
+				list.push(response);
+				onProgress( newList.length / list.length);
+
+				if(newList.length == list.length){
+					resolve(newList);
+				}
+			}
+
+			for(var i = 0; i < list.length; i++)
+			{
+				list[i].then(then);
+			}
+		});
 	}
 }
 
