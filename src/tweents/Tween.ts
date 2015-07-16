@@ -235,7 +235,7 @@ class Tween extends EventDispatcher
 			{
 				continue;
 			}
-			tween.tick(tween._useTicks ? 1 : delta);
+			tween.onTick(tween._useTicks ? 1 : delta);
 		}
 	}
 

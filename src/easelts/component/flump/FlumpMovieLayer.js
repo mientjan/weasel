@@ -23,7 +23,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             for (var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++) {
                 var keyframe = flumpLayerData.flumpKeyframeDatas[i];
                 if (keyframe.label) {
-                    flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+                    flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
                 }
                 if (keyframe.ref != null && (keyframe.ref in this._symbols) == false) {
                     this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref);

@@ -1,4 +1,4 @@
-import FlumpLibrary = require('./FlumpLibrary');
+import Flump = require('../FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpLabelData = require('./FlumpLabelData');
 import IFlumpLibrary = require('./IFlumpLibrary');
@@ -11,7 +11,7 @@ class FlumpMovieData {
 
 	public frames:number = 0;
 
-	constructor(flumpLibrary:FlumpLibrary, json:IFlumpLibrary.IMovie)
+	constructor(flumpLibrary:Flump, json:IFlumpLibrary.IMovie)
 	{
 		this.flumpLibrary = flumpLibrary;
 		this.id = json.id;

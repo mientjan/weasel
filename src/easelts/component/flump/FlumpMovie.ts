@@ -1,6 +1,6 @@
 import DisplayObject = require('../../display/DisplayObject');
 import IHashMap = require('../../interface/IHashMap');
-import FlumpLibrary = require('./FlumpLibrary');
+import Flump = require('../FlumpLibrary');
 import FlumpMovieLayer = require('./FlumpMovieLayer');
 import FlumpLabelData = require('./FlumpLabelData');
 import FlumpLabelQueueData = require('./FlumpLabelQueueData');
@@ -11,13 +11,13 @@ class FlumpMovie extends DisplayObject {
 
 	public static EVENT_COMPLETE = 'FlumpMovie.Complete';
 
-	public flumpLibrary:FlumpLibrary;
+	public flumpLibrary:Flump;
 	public flumpMovieData;
 	public flumpMovieLayers:Array<FlumpMovieLayer> = [];
 
-	public labels:IHashMap<FlumpLabelData> = {};
-	public labelQueue:Array<FlumpLabelQueueData> = [];
-	public currentLabel:FlumpLabelQueueData = null;
+	private _labels:IHashMap<FlumpLabelData> = {};
+	private _labelQueue:Array<FlumpLabelQueueData> = [];
+	private _currentLabel:FlumpLabelQueueData = null;
 
 	public paused:boolean = true;
 
@@ -30,7 +30,7 @@ class FlumpMovie extends DisplayObject {
 
 	// ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
 
-	constructor( flumpLibrary:FlumpLibrary, name:string)
+	constructor( flumpLibrary:Flump, name:string)
 	{
 		super();
 
@@ -59,37 +59,47 @@ class FlumpMovie extends DisplayObject {
 		this.time = 0;
 		this.frame = 0;
 
-		if( label == null )
+		if( label == null || label == '*' )
 		{
-			this.labelQueue.push(new FlumpLabelQueueData(label, 0, this.frames, times))
+			this._labelQueue.push(new FlumpLabelQueueData(label, 0, this.frames, times))
 		}
 		else
 		{
-			var queue = this.labels[label];
-			this.labelQueue.push(new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times))
+			var queue = this._labels[label];
+			this._labelQueue.push(new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times))
 
 		}
 
 		if(!addToQeue){
 			this.gotoNextLabel();
-			this.labelQueue.length = 0;
+			this._labelQueue.length = 0;
 		}
 
-		if(!this.currentLabel){
+		if(!this._currentLabel){
 			this.gotoNextLabel();
 		}
-
 
 		this.paused = false;
 	}
 
+	public setCurrentLabelLoop(times:number = 1):void
+	{
+		this._currentLabel.times = times;
+	}
+
+	public endLoop():void
+	{
+		this._currentLabel
+	}
+
+
 	private gotoNextLabel():FlumpLabelQueueData
 	{
 
-		this.currentLabel = this.labelQueue.shift();
+		this._currentLabel = this._labelQueue.shift();
 		this.time = 0;
 
-		return this.currentLabel;
+		return this._currentLabel;
 	}
 
 	public stop():void
@@ -105,7 +115,7 @@ class FlumpMovie extends DisplayObject {
 
 		if(!this.paused)
 		{
-			var label = this.currentLabel;
+			var label = this._currentLabel;
 			this.time += delta;
 			var frame = Math.floor((this.frames * this.time) / this.duration);
 
@@ -113,7 +123,7 @@ class FlumpMovie extends DisplayObject {
 			{
 				if( label.times - Math.ceil((frame+2) / label.duration) == -1 )
 				{
-					if( this.labelQueue.length > 0 )
+					if( this._labelQueue.length > 0 )
 					{
 						this.gotoNextLabel();
 					} else {

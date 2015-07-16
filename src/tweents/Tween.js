@@ -67,7 +67,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                 if ((paused && !tween.ignoreGlobalPause) || tween._paused) {
                     continue;
                 }
-                tween.tick(tween._useTicks ? 1 : delta);
+                tween.onTick(tween._useTicks ? 1 : delta);
             }
         };
         Tween.removeTweens = function (target) {

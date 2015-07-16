@@ -1,6 +1,6 @@
 import IFlumpLibrary = require('./IFlumpLibrary');
 import FlumpTexture = require('./FlumpTexture');
-import FlumpLibrary = require('./FlumpLibrary');
+import FlumpLibrary = require('../FlumpLibrary');
 import IHashMap = require('../../interface/IHashMap');
 import Promise = require('../../../createts/util/Promise');
 

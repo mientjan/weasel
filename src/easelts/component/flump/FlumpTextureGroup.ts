@@ -1,5 +1,5 @@
 import IFlumpLibrary = require('./IFlumpLibrary');
-import FlumpLibrary = require('./FlumpLibrary');
+import FlumpLibrary = require('../FlumpLibrary');
 import IHashMap = require('../../interface/IHashMap');
 import FlumpTextureGroupAtlas = require('./FlumpTextureGroupAtlas');
 import FlumpTexture = require('./FlumpTexture');

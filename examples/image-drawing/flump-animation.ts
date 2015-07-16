@@ -13,6 +13,7 @@ FlumpLibrary.load('../../assets/flump/smoke').then((fl:FlumpLibrary) => {
 	movie.setX('50%').setY('50%');
 	movie.play(1, 'start');
 	movie.play(-1, 'loop');
+	movie.play(1, 'end');
 
 	stage.addChild(movie);
 }).catch( error => console.log(error) );

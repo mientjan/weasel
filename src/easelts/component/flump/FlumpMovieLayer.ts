@@ -1,5 +1,5 @@
 import DisplayObject = require('../../display/DisplayObject');
-import FlumpLibrary = require('./FlumpLibrary');
+import FlumpLibrary = require('../FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
 import FlumpTexture = require('./FlumpTexture');
@@ -20,7 +20,6 @@ class FlumpMovieLayer extends DisplayObject
 		tx:0,
 		ty:0
 	};
-	//Matrix _transformationMatrix = new Matrix.fromIdentity();
 
 	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
 	{
@@ -35,7 +34,7 @@ class FlumpMovieLayer extends DisplayObject
 
 			if( keyframe.label )
 			{
-				flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+				flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
 			}
 
 			if(keyframe.ref != null && ( keyframe.ref in this._symbols ) == false)

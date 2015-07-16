@@ -1,5 +1,5 @@
 import DisplayObject = require('../../display/DisplayObject');
-import FlumpLibrary = require('./FlumpLibrary');
+import Flump = require('../FlumpLibrary');
 import FlumpMovieLayer = require('./FlumpMovieLayer');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
 import IFlumpLibrary = require('./IFlumpLibrary');

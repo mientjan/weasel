@@ -10,9 +10,9 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
         function FlumpMovie(flumpLibrary, name) {
             _super.call(this);
             this.flumpMovieLayers = [];
-            this.labels = {};
-            this.labelQueue = [];
-            this.currentLabel = null;
+            this._labels = {};
+            this._labelQueue = [];
+            this._currentLabel = null;
             this.paused = true;
             this.time = 0.0;
             this.duration = 0.0;
@@ -36,26 +36,33 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             if (addToQeue === void 0) { addToQeue = true; }
             this.time = 0;
             this.frame = 0;
-            if (label == null) {
-                this.labelQueue.push(new FlumpLabelQueueData(label, 0, this.frames, times));
+            if (label == null || label == '*') {
+                this._labelQueue.push(new FlumpLabelQueueData(label, 0, this.frames, times));
             }
             else {
-                var queue = this.labels[label];
-                this.labelQueue.push(new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times));
+                var queue = this._labels[label];
+                this._labelQueue.push(new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times));
             }
             if (!addToQeue) {
                 this.gotoNextLabel();
-                this.labelQueue.length = 0;
+                this._labelQueue.length = 0;
             }
-            if (!this.currentLabel) {
+            if (!this._currentLabel) {
                 this.gotoNextLabel();
             }
             this.paused = false;
         };
+        FlumpMovie.prototype.setCurrentLabelLoop = function (times) {
+            if (times === void 0) { times = 1; }
+            this._currentLabel.times = times;
+        };
+        FlumpMovie.prototype.endLoop = function () {
+            this._currentLabel;
+        };
         FlumpMovie.prototype.gotoNextLabel = function () {
-            this.currentLabel = this.labelQueue.shift();
+            this._currentLabel = this._labelQueue.shift();
             this.time = 0;
-            return this.currentLabel;
+            return this._currentLabel;
         };
         FlumpMovie.prototype.stop = function () {
             this.paused = true;
@@ -64,12 +71,12 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
         FlumpMovie.prototype.onTick = function (delta) {
             _super.prototype.onTick.call(this, delta);
             if (!this.paused) {
-                var label = this.currentLabel;
+                var label = this._currentLabel;
                 this.time += delta;
                 var frame = Math.floor((this.frames * this.time) / this.duration);
                 if (label.times != -1) {
                     if (label.times - Math.ceil((frame + 2) / label.duration) == -1) {
-                        if (this.labelQueue.length > 0) {
+                        if (this._labelQueue.length > 0) {
                             this.gotoNextLabel();
                         }
                         else {
