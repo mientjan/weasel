@@ -698,6 +698,9 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
         };
         DisplayObject.prototype.destruct = function () {
+            if (this.parent) {
+                this.parent.removeChild(this);
+            }
             this.parent = null;
             this.destructAllBehaviors();
             _super.prototype.destruct.call(this);

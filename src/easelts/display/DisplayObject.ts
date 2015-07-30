@@ -1892,6 +1892,11 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 
 	public destruct():void
 	{
+		if(this.parent)
+		{
+			this.parent.removeChild(this);
+		}
+
 		this.parent = null;
 		this.destructAllBehaviors();
 
