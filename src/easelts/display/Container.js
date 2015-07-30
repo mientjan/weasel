@@ -423,13 +423,13 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return (maxX == null) ? null : this._rectangle.setProperies(minX, minY, maxX - minX, maxY - minY);
         };
         Container.prototype.destruct = function () {
+            this.removeAllChildren();
             for (var i = 0; i < this.children.length; i++) {
                 if (typeof this.children[i].destruct == 'function') {
                     this.children[i].destruct();
                 }
             }
             this.disableMouseInteraction();
-            this.removeAllChildren();
             _super.prototype.destruct.call(this);
         };
         return Container;

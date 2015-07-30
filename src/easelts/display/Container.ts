@@ -1005,6 +1005,7 @@ class Container extends DisplayObject
 
 	public destruct():void
 	{
+		this.removeAllChildren();
 
 		for(var i = 0; i < this.children.length; i++)
 		{
@@ -1015,7 +1016,6 @@ class Container extends DisplayObject
 		}
 
 		this.disableMouseInteraction();
-		this.removeAllChildren();
 
 		super.destruct();
 	}
