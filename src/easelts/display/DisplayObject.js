@@ -743,6 +743,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         DisplayObject.COMPOSITE_OPERATION_DARKER = 'darker';
         DisplayObject.COMPOSITE_OPERATION_XOR = 'xor';
         DisplayObject.COMPOSITE_OPERATION_COPY = 'copy';
+        DisplayObject.COMPOSITE_OPERATION_SCREEN = 'screen';
         DisplayObject.suppressCrossDomainErrors = false;
         DisplayObject._snapToPixelEnabled = false;
         DisplayObject._hitTestCanvas = Methods.createCanvas();

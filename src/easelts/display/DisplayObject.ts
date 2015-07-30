@@ -134,6 +134,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	public static COMPOSITE_OPERATION_DARKER = 'darker';
 	public static COMPOSITE_OPERATION_XOR = 'xor';
 	public static COMPOSITE_OPERATION_COPY = 'copy';
+	public static COMPOSITE_OPERATION_SCREEN = 'screen';
 
 	/**
 	 * Suppresses errors generated when using features like hitTest, mouse events, and {{#crossLink "getObjectsUnderPoint"}}{{/crossLink}}

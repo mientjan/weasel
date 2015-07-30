@@ -10,15 +10,34 @@ class NinePatch {
 	public bitmap:Bitmap;
 	public rectangle:Rectangle;
 
-	constructor(imageOrString:HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|string, rectangle:Rectangle)
+	/**
+	 *
+	 * @param imageOrString
+	 * @param rectangle
+	 */
+	constructor(imageOrString:HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|string, rectangle:Rectangle|Array<number>)
 	{
 		this.bitmap = new Bitmap(imageOrString);
-		this.rectangle = rectangle;
+
+		if( !(rectangle instanceof Rectangle) ){
+
+			this.rectangle = new Rectangle(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+		}
+		else
+		{
+			this.rectangle = rectangle;
+		}
 	}
 
+	/**
+	 *
+	 * @param width
+	 * @param height
+	 * @returns {NinePatchCoordinates}
+	 */
 	public getCoordinates(width:number, height:number):NinePatchCoordinates
 	{
-		var image = this.bitmap.image;
+		var image = this.bitmap.getImageSize();
 		var iw = image.width;
 		var ih = image.height;
 		var rx = this.rectangle.x;

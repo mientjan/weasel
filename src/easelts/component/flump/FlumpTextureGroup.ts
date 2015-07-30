@@ -1,4 +1,5 @@
-import IFlumpLibrary = require('./IFlumpLibrary');
+import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+import ILoadable = require('../../interface/ILoadable');
 import FlumpLibrary = require('../FlumpLibrary');
 import IHashMap = require('../../interface/IHashMap');
 import FlumpTextureGroupAtlas = require('./FlumpTextureGroupAtlas');
@@ -8,10 +9,10 @@ import Promise = require('../../../createts/util/Promise');
 
 class FlumpTextureGroup
 {
-	public static load(flumpLibrary:FlumpLibrary, json:IFlumpLibrary.ITextureGroup)
+	public static load(flumpLibrary:FlumpLibrary, json:IFlumpLibrary.ITextureGroup):Promise<FlumpTextureGroup>
 	{
 		var atlases = json.atlases;
-		var loaders = [];
+		var loaders:Array<Promise<any>> = [];
 		for(var i = 0; i < atlases.length; i++)
 		{
 			var atlas:IFlumpLibrary.IAtlas = atlases[i];
@@ -35,6 +36,9 @@ class FlumpTextureGroup
 			}
 
 			return new FlumpTextureGroup(atlases, flumpTextures);
+		}).catch((err) => {
+			console.warn('could not load textureGroup', err)
+			throw new Error('could not load textureGroup');
 		});
 	}
 

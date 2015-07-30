@@ -2,14 +2,15 @@
 
 // Use polyfill for setImmediate for performance gains
 var asap = (typeof setImmediate === 'function' && setImmediate) ||
-	function(fn) { setTimeout(fn, 1); };
-
-// Polyfill for Function.prototype.bind
-function bind(fn, thisArg) {
-	return function() {
-		fn.apply(thisArg, arguments);
-	}
-}
+	function(fn) { setTimeout(fn, 1);
+};
+//
+//// Polyfill for Function.prototype.bind
+//function bind(fn, thisArg) {
+//	return function() {
+//		fn.apply(thisArg, arguments);
+//	}
+//}
 
 var isArray = Array.isArray || function(value) { return Object.prototype.toString.call(value) === "[object Array]" };
 
@@ -43,14 +44,16 @@ function resolve(newValue) {
 		if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
 			var then = newValue.then;
 			if (typeof then === 'function') {
-				doResolve(bind(then, newValue), bind(resolve, this), bind(reject, this));
+				doResolve(then.bind(newValue), resolve.bind(this), reject.bind(this));
 				return;
 			}
 		}
 		this._state = true;
 		this._value = newValue;
 		finale.call(this);
-	} catch (e) { reject.call(this, e); }
+	} catch (e) { 
+		reject.call(this, e);
+	}
 }
 
 function reject(newValue) {
@@ -100,11 +103,9 @@ function doResolve(fn, onFulfilled, onRejected) {
 
 class Promise<T>
 {
-	public static all(
-		...args:Array<
-				Array<Promise<any>>|Promise<any>
-			>)
+	public static all(...args:Array<Array<Promise<any>>|Array<Promise<any>>>)
 	{
+
 		//var args = Array.prototype.slice.call(arguments.length === 1 && isArray(arguments[0]) ? arguments[0] : arguments);
 		var args = (args.length === 1 && isArray(args[0]) ? args[0] : args );
 
@@ -198,7 +199,7 @@ class Promise<T>
 		if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new');
 		if (typeof init !== 'function') throw new TypeError('not a function');
 
-		doResolve(init, bind(resolve, this), bind(reject, this))
+		doResolve(init, resolve.bind(this), reject.bind(this));
 	}
 
 	public catch(onRejected)

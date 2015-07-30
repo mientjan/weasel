@@ -1,30 +1,38 @@
+import ILoadable = require('../interface/ILoadable');
+import IPlayable = require('../interface/IPlayable');
+
 import DisplayObject = require('../display/DisplayObject');
 import SpriteSheet = require('../display/SpriteSheet');
 import DisplayType = require('../enum/DisplayType');
 import Methods = require('../util/Methods');
 import TimeEvent = require('../../createts/event/TimeEvent');
+import Promise = require('../../createts/util/Promise');
 import Signal = require('../../createts/event/Signal');
 import SignalConnection = require('../../createts/event/SignalConnection');
 
 /**
  * @class ImageSequence
  */
-class ImageSequence extends DisplayObject
+class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, IPlayable
 {
 	public type:DisplayType = DisplayType.BITMAP;
 
 	public _playing = false;
 	public _timeIndex:number = -1;
 	public _frame:number = 0;
-	public _fps:number = 0;
+	public _frameTime:number = 0;
 	public _length:number = 0;
+
 	private _times:number = 1;
 	private _loopInfinite:boolean = false;
 
 	private _onComplete:Function = null;
 
-	public images:Array<HTMLImageElement> = null;
+	public paused:boolean = true;
+	public fps:number;
 	public spriteSheet:SpriteSheet = null;
+
+	public isLoaded:boolean = false;
 
 	/**
 	 *
@@ -37,102 +45,92 @@ class ImageSequence extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(images:string[]|SpriteSheet, fps:number, width:any, height:any, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(spriteSheet:SpriteSheet, fps:number, width:any, height:any, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
 
-		if( images instanceof Array )
+		this.spriteSheet = spriteSheet;
+		this.fps = fps;
+
+		if(this.isLoaded)
 		{
-			var imageList = <string[]> images;
-			this.images = [];
-			for(var i = 0; i < imageList.length; i++)
-			{
-				var image = document.createElement('img');
-				image.src = images[i];
-
-				//			this._images.push( images[i] );
-				this.images.push( image );
-			}
-
-			this._length = this.images.length;
+			this.parseLoad();
 		}
-		else if( images instanceof SpriteSheet )
+	}
+
+	private parseLoad(){
+
+		var animations = this.spriteSheet.getAnimations();
+
+		if( animations.length > 1 )
 		{
-			var spriteSheet = <SpriteSheet> images;
-			var animations = spriteSheet.getAnimations();
-
-			if( animations.length > 1 )
-			{
-				throw new Error('SpriteSheet not compatible with ImageSequence, has multiple animations. Only supports one')
-			}
-
-			this._length = spriteSheet.getNumFrames(animations[0]);
-			this.spriteSheet = spriteSheet;
+			throw new Error('SpriteSheet not compatible with ImageSequence, has multiple animations. Only supports one')
 		}
 
-		this._fps = 1000 / fps;
+		this._length = this.spriteSheet.getNumFrames(animations[0]);
+
+		this._frameTime = 1000 / this.fps;
+	}
+
+	public load( onProgress?:(progress:number) => any):Promise<ImageSequence>
+	{
+		if( this.isLoaded)
+		{
+			onProgress(1);
+
+			return new Promise<ImageSequence>((resolve:Function, reject:Function) => {
+				resolve(this);
+			});
+		}
+
+		return this.spriteSheet.load(onProgress).then(spriteSheet => {
+			this.isLoaded = true;
+			this.parseLoad();
+
+			return this;
+		}).catch(() => {
+			throw new Error('could not load library');
+		});
 	}
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
-		if( this._frame > -1 )
+		var frame = this._frame;
+		var width = this.width;
+		var height = this.height;
+
+		if( this._frame > -1 && this.isLoaded )
 		{
-			var frame = this._frame;
+			var frameObject = this.spriteSheet.getFrame(frame);
 
-			if(this.images)
+			if(!frameObject)
 			{
-				var images = this.images;
-				var image = images[frame];
-
-				if( !image.complete ){
-					if( images[frame - 1] && images[frame - 1].complete ){
-						image = images[frame - 1];
-					} else if( images[frame - 2] && images[frame - 2].complete ){
-						image = images[frame - 2];
-					} else if( images[frame - 3] && images[frame - 3].complete ){
-						image = images[frame - 3];
-					}
-				}
-
-				var width = image.naturalWidth;
-				var height = image.naturalHeight;
-
-				if( width > 0 && height > 0 )
-				{
-					ctx.drawImage(image, 0, 0, width, height, 0, 0, this.width, this.height);
-				}
+				return false;
 			}
-			else if(this.spriteSheet)
+
+			var rect = frameObject.rect;
+
+			if(rect.width && rect.height)
 			{
-				var frameObject = this.spriteSheet.getFrame(this._frame);
-
-				if(!frameObject)
-				{
-					return false;
-				}
-
-				var rect = frameObject.rect;
-
-				if(rect.width && rect.height)
-				{
-					ctx.drawImage(frameObject.image, rect.x, rect.y, rect.width, rect.height, 0, 0, this.width, this.height);
-				}
+				ctx.drawImage(frameObject.image, rect.x, rect.y, rect.width, rect.height, 0, 0, width, height);
 			}
 		}
 
 		return true;
 	}
 
-	public play(times = 1, onComplete:Function = null):void
+	public play(times = 1, onComplete:Function = null):ImageSequence
 	{
 		this._frame = 0;
 		this._times = times;
 		this._loopInfinite = times == -1 ? true : false;
 		this._onComplete = onComplete;
 		this._playing = true;
+
+		return this;
 	}
 
-	public stop(triggerOnComplete:boolean = true):void
+	public stop(triggerOnComplete:boolean = true):ImageSequence
 	{
 		this._playing = false;
 		this._loopInfinite = false;
@@ -144,6 +142,8 @@ class ImageSequence extends DisplayObject
 		}
 
 		this._onComplete = null;
+
+		return this;
 	}
 
 	public onTick(delta:number):void
@@ -158,10 +158,10 @@ class ImageSequence extends DisplayObject
 			}
 
 			var time = this._timeIndex += delta;
-			var fps = this._fps;
+			var frameTime = this._frameTime;
 			var length = this._length;
 			var times = this._times;
-			var frame = Math.floor(time / fps);
+			var frame = Math.floor(time / frameTime);
 			var currentFrame = this._frame;
 			var playedLeft = times - Math.floor(frame / length);
 

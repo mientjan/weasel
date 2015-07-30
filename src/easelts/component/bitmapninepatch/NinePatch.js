@@ -1,11 +1,16 @@
-define(["require", "exports", '../../display/Bitmap', './NinePatchCoordinates'], function (require, exports, Bitmap, NinePatchCoordinates) {
+define(["require", "exports", '../../display/Bitmap', '../../geom/Rectangle', './NinePatchCoordinates'], function (require, exports, Bitmap, Rectangle, NinePatchCoordinates) {
     var NinePatch = (function () {
         function NinePatch(imageOrString, rectangle) {
             this.bitmap = new Bitmap(imageOrString);
-            this.rectangle = rectangle;
+            if (!(rectangle instanceof Rectangle)) {
+                this.rectangle = new Rectangle(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+            }
+            else {
+                this.rectangle = rectangle;
+            }
         }
         NinePatch.prototype.getCoordinates = function (width, height) {
-            var image = this.bitmap.image;
+            var image = this.bitmap.getImageSize();
             var iw = image.width;
             var ih = image.height;
             var rx = this.rectangle.x;

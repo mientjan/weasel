@@ -304,7 +304,7 @@ class Container extends DisplayObject
 			child.parent.removeChild(child);
 		}
 
-		child.parent = this;
+		child.parent = <Container> this;
 		child.isDirty = true;
 
 		if(this.stage)
@@ -317,6 +317,8 @@ class Container extends DisplayObject
 		}
 
 		this.children.push(child);
+		child.onResize(child.parent.width, child.parent.height);
+
 		return child;
 	}
 
@@ -383,6 +385,8 @@ class Container extends DisplayObject
 		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
+		child.onResize(this.width, this.height);
+
 		return child;
 	}
 

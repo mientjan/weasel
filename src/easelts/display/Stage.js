@@ -7,10 +7,12 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, PointerEvent, Signal) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
-        function Stage(element, triggerResizeOnWindowResize) {
+        function Stage(element, triggerResizeOnWindowResize, pixelRatio) {
             var _this = this;
             if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
+            if (pixelRatio === void 0) { pixelRatio = 2; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
+            this.pixelRatio = pixelRatio;
             this.tickstartSignal = new Signal();
             this.tickendSignal = new Signal();
             this.drawstartSignal = new Signal();
@@ -49,7 +51,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
                 var r = _this.drawRect, ctx = _this.ctx;
-                ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
+                ctx.setTransform(_this.pixelRatio, 0, 0, _this.pixelRatio, 0.5, 0.5);
                 if (_this.autoClear) {
                     if (r) {
                         ctx.clearRect(r.x, r.y, r.width, r.height);
@@ -134,6 +136,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
                         break;
                     }
             }
+            return this;
         };
         Stage.prototype.tick = function (delta) {
             if (!this.tickEnabled) {
@@ -240,7 +243,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             bounds = element.getBoundingClientRect();
             var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
             var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
-            var styles = window.getComputedStyle ? getComputedStyle(element, null) : element.currentStyle;
+            var styles = window.getComputedStyle ? getComputedStyle(element, null) : element['currentStyle'];
             var padL = parseInt(styles.paddingLeft) + parseInt(styles.borderLeftWidth);
             var padT = parseInt(styles.paddingTop) + parseInt(styles.borderTopWidth);
             var padR = parseInt(styles.paddingRight) + parseInt(styles.borderRightWidth);
@@ -477,8 +480,10 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {
-                this.canvas.width = width;
-                this.canvas.height = height;
+                this.canvas.width = width * this.pixelRatio;
+                this.canvas.height = height * this.pixelRatio;
+                this.canvas.style.width = '' + width + 'px';
+                this.canvas.style.height = '' + height + 'px';
                 _super.prototype.onResize.call(this, width, height);
                 if (!this._isRunning) {
                     this.update(0);

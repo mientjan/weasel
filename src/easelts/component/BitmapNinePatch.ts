@@ -2,6 +2,7 @@ import NinePatch = require('./bitmapninepatch/NinePatch');
 import NinePatchCoordinates = require('./bitmapninepatch/NinePatchCoordinates');
 import Bitmap = require('../display/Bitmap');
 import DisplayObject = require('../display/DisplayObject');
+import Rectangle = require('../geom/Rectangle');
 import DisplayType = require('../enum/DisplayType');
 
 class BitmapNinePatch extends DisplayObject {
@@ -19,7 +20,7 @@ class BitmapNinePatch extends DisplayObject {
 		this._patch = ninePatch;
 
 		if( !this._patch.bitmap.loaded ){
-			this._patch.bitmap.addEventListener(Bitmap.EVENT_ONLOAD, this.onLoad.bind(this) );
+			this._patch.bitmap.addEventListener(Bitmap.EVENT_LOAD, this.onLoad.bind(this) );
 		} else {
 			this.onLoad();
 		}
@@ -28,6 +29,29 @@ class BitmapNinePatch extends DisplayObject {
 	private onLoad():void
 	{
 		this.loaded = true;
+	}
+
+	public setContentSize(width:number, height:number):BitmapNinePatch
+	{
+		var imageSize = this._patch.bitmap.getImageSize();
+		this.setWidth(
+			this._patch.rectangle.x
+			+ Math.max(this._patch.rectangle.width, width)
+			+ imageSize.width - (this._patch.rectangle.x + this._patch.rectangle.width)
+		);
+
+		this.setHeight(
+			this._patch.rectangle.y
+			+ Math.max(this._patch.rectangle.height, height)
+			+ imageSize.height - (this._patch.rectangle.y + this._patch.rectangle.height)
+		);
+
+		return this;
+	}
+
+	public getRectangle():Rectangle
+	{
+		return this._patch.rectangle;
 	}
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean

@@ -10,7 +10,7 @@ define(["require", "exports"], function (require, exports) {
             this.height = json.rect[3];
         }
         FlumpTexture.prototype.draw = function (ctx) {
-            ctx.drawImage(this.renderTexture, this.x, this.y, this.width, this.height, this.originX, this.originY, this.width, this.height);
+            ctx.drawImage(this.renderTexture, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
             return true;
         };
         return FlumpTexture;

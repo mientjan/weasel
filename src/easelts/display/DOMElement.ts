@@ -30,7 +30,7 @@ import DisplayObject = require('./DisplayObject');
 import Point = require('../geom/Point');
 import TimeEvent = require('../../createts/event/TimeEvent');
 
-class DOMElement extends DisplayObject
+class DOMElement<T extends HTMLElement> extends DisplayObject
 {
 
 	// public properties:
@@ -39,7 +39,7 @@ class DOMElement extends DisplayObject
 	 * @property htmlElement
 	 * @type HTMLElement
 	 */
-	public htmlElement:HTMLElement = null;
+	public htmlElement:T;
 
 	// private properties:
 	/**
@@ -62,23 +62,23 @@ class DOMElement extends DisplayObject
 	 * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
 	 * @protected
 	 */
-	constructor(htmlElement:any)
+	constructor(htmlElement:string|T, x?:string|number, y?:string|number, regX?:string|number, regY?:string|number)
 	{
-		super();
+		super(x, y, regX, regY);
 
-		var htmlDomElement:HTMLElement;
+		var domElement:T;
 		if(typeof htmlElement == 'string')
 		{
-			htmlDomElement = document.getElementById(<string> htmlElement);
+			domElement = <T> document.getElementById(<string> htmlElement);
 		}
 		else
 		{
-			htmlDomElement = <HTMLElement> htmlElement;
+			domElement = <T> htmlElement;
 		}
 
 		this.mouseEnabled = false;
-		this.htmlElement = htmlDomElement;
-		var style = htmlDomElement.style;
+		this.htmlElement = domElement;
+		var style = domElement.style;
 		// this relies on the _tick method because draw isn't called if a parent is not visible.
 		style.position = "absolute";
 		style.transformOrigin = style['WebkitTransformOrigin'] = style['msTransformOrigin'] = style['MozTransformOrigin'] = style['OTransformOrigin'] = "0% 0%";

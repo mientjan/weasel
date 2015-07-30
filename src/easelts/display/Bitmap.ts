@@ -66,7 +66,7 @@ import Size = require('../geom/Size');
 class Bitmap extends DisplayObject
 {
 
-	public static EVENT_ONLOAD:string = 'onload';
+	public static EVENT_LOAD:string = 'load';
 	// public properties:
 
 	public type:DisplayType = DisplayType.BITMAP;
@@ -87,6 +87,7 @@ class Bitmap extends DisplayObject
 
 	protected _imageNaturalWidth:number = null;
 	protected _imageNaturalHeight:number = null;
+	protected _isTiled:boolean = false;
 
 	/**
 	 * Specifies an area of the source image to draw. If omitted, the whole image will be drawn.
@@ -144,7 +145,7 @@ class Bitmap extends DisplayObject
 				this.image = <HTMLImageElement> image;
 				this.bitmapType = BitmapType.IMAGE;
 
-				if( this.image && (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2) ){
+				if( (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2) ){
 					this.onLoad();
 				} else {
 					( <HTMLImageElement> this.image).addEventListener('load', () => this.onLoad() );
@@ -180,7 +181,7 @@ class Bitmap extends DisplayObject
 		}
 	}
 
-	public onLoad()
+	protected onLoad()
 	{
 		if(this.bitmapType == BitmapType.IMAGE )
 		{
@@ -209,9 +210,23 @@ class Bitmap extends DisplayObject
 		}
 
 		this.isDirty = true;
-		this.dispatchEvent(Bitmap.EVENT_ONLOAD);
-
 		this.loaded = true;
+
+		this.dispatchEvent(Bitmap.EVENT_LOAD);
+	}
+
+	public addEventListener(name:string, listener?:Function, useCaption?:boolean):Bitmap
+	{
+		if(this.loaded && name == Bitmap.EVENT_LOAD)
+		{
+			listener.call(this)
+		}
+		else
+		{
+			super.addEventListener(name, listener, useCaption);
+		}
+
+		return this;
 	}
 
 	/**
@@ -246,54 +261,140 @@ class Bitmap extends DisplayObject
 			return true;
 		}
 
-		if(this.isVisible())
+		var sourceRect = this.sourceRect;
+		var destRect = this.destinationRect;
+		var width = this.width;
+		var height = this.height;
+
+		if(sourceRect && !destRect)
 		{
-			var sourceRect = this.sourceRect;
-			var destRect = this.destinationRect;
-			var width = this.width;
-			var height = this.height;
-
-			if(sourceRect && !destRect)
+			ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
+		}
+		else if(!sourceRect && destRect)
+		{
+			ctx.drawImage(this.image, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
+		}
+		else if(sourceRect && destRect)
+		{
+			ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
+		}
+		else
+		{
+			if( this.bitmapType == BitmapType.IMAGE )
 			{
-				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
-			}
-			else if(!sourceRect && destRect)
-			{
-				ctx.drawImage(this.image, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
-			}
-			else if(sourceRect && destRect)
-			{
-				ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
-			}
-			else
-			{
-				if( this.bitmapType == BitmapType.IMAGE ){
-					if( this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0)
-					{
-						this._imageNaturalWidth = ( <HTMLImageElement> this.image).naturalWidth;
-						this._imageNaturalHeight = ( <HTMLImageElement> this.image).naturalHeight;
-					}
-
-					if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0)
-					{
-						if( width == 0 )
-						{
-							this.width = width = this._imageNaturalWidth;
-						}
-
-						if( height == 0 ){
-							this.height = height = this._imageNaturalHeight;
-						}
-
-						ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
-					}
-				} else {
-					ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height );
+				if( this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0)
+				{
+					this._imageNaturalWidth = ( <HTMLImageElement> this.image).naturalWidth;
+					this._imageNaturalHeight = ( <HTMLImageElement> this.image).naturalHeight;
 				}
+
+				if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0)
+				{
+					if( width == 0 )
+					{
+						this.width = width = this._imageNaturalWidth;
+					}
+
+					if( height == 0 ){
+						this.height = height = this._imageNaturalHeight;
+					}
+
+					ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
+				}
+			} else {
+				ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height );
 			}
 		}
 
 		return true;
+	}
+
+	public tile(maxWidth:number, maxHeight?:number):Bitmap
+	{
+		if(maxHeight === void 0)
+		{
+			maxHeight = maxWidth;
+		}
+
+		if(this.loaded)
+		{
+			if(this.bitmapType != BitmapType.IMAGE)
+			{
+				throw new Error('tiling is only possible with images');
+			}
+
+			if (this._imageNaturalWidth > maxWidth
+				|| this._imageNaturalHeight > maxHeight)
+			{
+
+				if(this.width < maxWidth && this.height < maxHeight)
+				{
+					this.cache(0,0, this.width, this.height);
+				}
+				else
+				{
+					// dirty way of caching
+					this.cache(0,0, this.width, this.height, Math.min(maxWidth/this.width, maxHeight/this.height));
+					
+
+				}
+			}
+
+		}
+		else
+		{
+			this.addEventListener(Bitmap.EVENT_LOAD, () => this.tile(maxWidth, maxHeight) );
+		}
+
+		return this;
+				//
+				//		// one = true;
+				//		canvas.width = this.width;
+				//		canvas.height = this.height;
+				//		ctx.drawImage(this, 0, 0);
+				//
+				//		var rx = Math.ceil(width/maxWidth),
+				//			ry = Math.ceil(height/maxHeight),
+				//			tempCanvas = document.createElement('canvas'),
+				//			tempCtx = null;
+				//
+				//		tempCanvas.width = maximumSize;
+				//		tempCanvas.height = maximumSize;
+				//
+				//		var s = maximumSize,
+				//			ox = width % maximumSize,
+				//			oy = height % maximumSize;
+				//
+				//		for(var x = 1;x<=rx;++x)
+				//		{
+				//			for(var y = 1;y<=ry;++y)
+				//			{
+				//				var newX = x*s - s;
+				//				var newY = y*s-s;
+				//				var newWidth = Math.min(width - (x*s-s), s);
+				//				var newHeight = Math.min(height - (y*s-s), s);
+				//
+				//				tempCanvas = document.createElement('canvas');
+				//				tempCanvas.width = newWidth + 2;
+				//				tempCanvas.height = newHeight + 2;
+				//
+				//				tempCtx = tempCanvas.getContext('2d');
+				//
+				//				tempCtx.putImageData(
+				//					ctx.getImageData(
+				//						newX,
+				//						newY,
+				//						newWidth + 2,
+				//						newHeight + 2
+				//					), 0, 0
+				//				);
+				//
+				//				tempCanvas.style['-webkit-transform'] = 'translate3d('+[newX,newY,0].join('px,')+'px)';
+				//				div.append(tempCanvas);
+				//			}
+				//		}
+				//	}
+
 	}
 
 	/**
@@ -308,6 +409,27 @@ class Bitmap extends DisplayObject
 		}
 		var o = <{width:number;height:number;}> this.sourceRect || this.image;
 		return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
+	}
+
+	public getImageSize():Size
+	{
+		var width = 0;
+		var height = 0;
+
+		if( this.bitmapType == BitmapType.UNKNOWN
+			|| this.bitmapType == BitmapType.CANVAS
+			|| this.bitmapType == BitmapType.VIDEO
+		){
+			var width = this.image.width;
+			var height = this.image.height;
+		} else if( this.bitmapType == BitmapType.IMAGE)
+		{
+			var width = (<HTMLImageElement> this.image).naturalWidth;
+			var height = (<HTMLImageElement> this.image).naturalHeight;
+		}
+
+
+		return new Size(width, height);
 	}
 
 	/**

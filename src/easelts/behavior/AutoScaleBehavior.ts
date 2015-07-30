@@ -45,14 +45,16 @@ class AutoScaleBehavior extends AbstractBehavior
 	 * @method alwaysFill
 	 * @param value
 	 */
-	public setAwaysVisible(value:boolean):void
+	public setAwaysVisible(value:boolean):AutoScaleBehavior
 	{
 		this._alwaysVisible = value;
+		return this;
 	}
 
-	public setAlwaysCover(value:boolean):void
+	public setAlwaysCover(value:boolean):AutoScaleBehavior
 	{
 		this._alwaysCover = value;
+		return this;
 	}
 
 	public setDownScaleBreakPoint(width:number, height:number):void

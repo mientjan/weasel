@@ -9,6 +9,8 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
         __extends(FlumpMovieLayer, _super);
         function FlumpMovieLayer(flumpMove, flumpLayerData) {
             _super.call(this);
+            this.name = '';
+            this._frame = -1;
             this._symbols = {};
             this._storedMtx = {
                 a: 0,
@@ -19,14 +21,15 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
                 ty: 0
             };
             this.flumpLayerData = flumpLayerData;
+            this.name = flumpLayerData.name;
             var flumpLibrary = flumpMove.flumpLibrary;
             for (var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++) {
                 var keyframe = flumpLayerData.flumpKeyframeDatas[i];
                 if (keyframe.label) {
                     flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
                 }
-                if (keyframe.ref != null && (keyframe.ref in this._symbols) == false) {
-                    this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref);
+                if ((keyframe.ref != -1 && keyframe.ref != null) && (keyframe.ref in this._symbols) == false) {
+                    this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref, false);
                 }
             }
             this.setFrame(0);
@@ -40,6 +43,10 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             }
         };
         FlumpMovieLayer.prototype.setFrame = function (frame) {
+            if (this._frame == frame) {
+                return;
+            }
+            this._frame = frame;
             var keyframe = this.flumpLayerData.getKeyframeForFrame(frame);
             if (!(keyframe instanceof FlumpKeyframeData)) {
                 this._symbol = null;
@@ -88,7 +95,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
             this.alpha = alpha;
             this.visible = keyframe.visible;
-            this._symbol = (keyframe.ref != null) ? this._symbols[keyframe.ref] : null;
+            this._symbol = (keyframe.ref != -1 || keyframe.ref != null) ? this._symbols[keyframe.ref] : null;
         };
         FlumpMovieLayer.prototype.draw = function (ctx, ignoreCache) {
             if (this._symbol != null) {

@@ -27,9 +27,11 @@ define(["require", "exports", './AbstractBehavior', '../geom/Size'], function (r
         };
         AutoScaleBehavior.prototype.setAwaysVisible = function (value) {
             this._alwaysVisible = value;
+            return this;
         };
         AutoScaleBehavior.prototype.setAlwaysCover = function (value) {
             this._alwaysCover = value;
+            return this;
         };
         AutoScaleBehavior.prototype.setDownScaleBreakPoint = function (width, height) {
             if (!this._downScaleBreakPoint) {

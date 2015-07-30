@@ -1,4 +1,5 @@
 import Promise = require('./Promise');
+import ILoadable = require('../../easelts/interface/ILoadable');
 
 class HttpRequest
 {
@@ -52,14 +53,22 @@ class HttpRequest
 		return HttpRequest.request('GET', url, query);
 	}
 
-	public static wait(list:Array<Promise<any>>, onProgress:(progress:number) => any = (progress:number) => {} ):Promise<Array<any>>
+	public static getJSON(url:string, query:{[name:string]:any} = {}):Promise<any>
 	{
-		return new Promise(function(resolve:(response:any) => any){
+		return HttpRequest.getString(url, query).then((response:string) => {
+			return JSON.parse(response);
+		});
+	}
+
+	public static wait(list:Array<Promise<any>>, onProgress:(progress:number) => any = (progress:number) => {}):Promise<Array<any>>
+	{
+		return new Promise(function(resolve:(response:any) => any)
+		{
 			var newList = [];
 
 			var then = function(response)
 			{
-				list.push(response);
+				newList.push(response);
 				onProgress( newList.length / list.length);
 
 				if(newList.length == list.length){
@@ -71,6 +80,38 @@ class HttpRequest
 			{
 				list[i].then(then);
 			}
+		});
+	}
+
+	public static waitForLoadable(list:Array<ILoadable<any>>, onProgress:(progress:number) => any = (progress:number) => {}):Promise<Array<any>>
+	{
+		var count = list.length;
+		var progressList = new Array(count).map(function(value){
+			return value == void 0 ? 0 : value;
+		});
+
+		var prvProgress = function(index, progress:number)
+		{
+			progressList[index] = progress;
+			var total = 0;
+			var length = progressList.length;
+
+			for(var i = 0; i < length; i++)
+			{
+				total += progressList[i];
+			}
+
+			onProgress(total / count);
+		};
+
+		var promiseList = new Array(count);
+		for(var i = 0; i < count; i++)
+		{
+			promiseList[i] = list[i].load(prvProgress.bind(this, i));
+		}
+
+		return HttpRequest.wait(promiseList).then(() => {
+			return true;
 		});
 	}
 }

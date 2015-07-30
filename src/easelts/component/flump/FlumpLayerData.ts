@@ -2,7 +2,7 @@ import DisplayObject = require('../../display/DisplayObject');
 import Flump = require('../FlumpLibrary');
 import FlumpMovieLayer = require('./FlumpMovieLayer');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
-import IFlumpLibrary = require('./IFlumpLibrary');
+import IFlumpLibrary = require('../../interface/IFlumpLibrary');
 
 class FlumpLayerData {
 

@@ -171,6 +171,7 @@ class Stage extends Container
 	public _isRunning:boolean = false;
 	public _tickSignalConnection:SignalConnection = null;
 	public _fps:number = 60;
+	//public _pixelRatio:number = 60;
 
 	public _eventListeners:{
 		[name:string]: {
@@ -403,8 +404,7 @@ class Stage extends Container
 	 * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-
-	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
+	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false, public pixelRatio:number = 2)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
@@ -454,7 +454,7 @@ class Stage extends Container
 	 * @param {QualityType} value
 	 * @public
 	 */
-	public setQuality(value:QualityType):void
+	public setQuality(value:QualityType):Stage
 	{
 
 		switch(value)
@@ -477,6 +477,8 @@ class Stage extends Container
 				break;
 			}
 		}
+
+		return this;
 	}
 
 	/**
@@ -512,8 +514,8 @@ class Stage extends Container
 		 *
 		 */
 		ctx.setTransform(
-			1, 0, 0,
-			1, 0.5, 0.5
+			this.pixelRatio, 0, 0,
+			this.pixelRatio, 0.5, 0.5
 		);
 		//ctx.translate(0.5, 0.5);
 
@@ -814,7 +816,7 @@ class Stage extends Container
 		var offX = (window.pageXOffset || document['scrollLeft'] || 0) - (document['clientLeft'] || document.body.clientLeft || 0);
 		var offY = (window.pageYOffset || document['scrollTop'] || 0) - (document['clientTop'] || document.body.clientTop || 0);
 
-		var styles = window.getComputedStyle ? getComputedStyle(element, null) : element.currentStyle; // IE <9 compatibility.
+		var styles = window.getComputedStyle ? getComputedStyle(element, null) : element['currentStyle']; // IE <9 compatibility.
 		var padL = parseInt(styles.paddingLeft) + parseInt(styles.borderLeftWidth);
 		var padT = parseInt(styles.paddingTop) + parseInt(styles.borderTopWidth);
 		var padR = parseInt(styles.paddingRight) + parseInt(styles.borderRightWidth);
@@ -1320,8 +1322,11 @@ class Stage extends Container
 
 		if(this.width != width || this.height != height)
 		{
-			this.canvas.width = width;
-			this.canvas.height = height;
+			this.canvas.width = width * this.pixelRatio;
+			this.canvas.height = height * this.pixelRatio;
+
+			this.canvas.style.width = '' + width + 'px';
+			this.canvas.style.height = '' + height + 'px';
 
 			super.onResize(width, height);
 

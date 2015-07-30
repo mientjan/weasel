@@ -22,6 +22,9 @@ define(["require", "exports", './FlumpTextureGroupAtlas', '../../../createts/uti
                     }
                 }
                 return new FlumpTextureGroup(atlases, flumpTextures);
+            }).catch(function (err) {
+                console.warn('could not load textureGroup', err);
+                throw new Error('could not load textureGroup');
             });
         };
         return FlumpTextureGroup;

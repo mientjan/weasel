@@ -4,10 +4,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../geom/Rectangle'], function (require, exports, EventDispatcher, Rectangle) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/util/Promise', '../../createts/util/HttpRequest', '../geom/Rectangle'], function (require, exports, EventDispatcher, Promise, HttpRequest, Rectangle) {
     var SpriteSheet = (function (_super) {
         __extends(SpriteSheet, _super);
-        function SpriteSheet(data) {
+        function SpriteSheet(dataOrUrl) {
             _super.call(this);
             this.complete = true;
             this.framerate = 0;
@@ -21,6 +21,41 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../geom/R
             this._numFrames = 0;
             this._regX = 0;
             this._regY = 0;
+            this.isLoaded = false;
+            this.url = null;
+            if (typeof dataOrUrl == 'string') {
+                this.url = dataOrUrl;
+            }
+            else {
+                this.initialize(dataOrUrl);
+            }
+        }
+        SpriteSheet.load = function (url, spriteSheet, onProcess) {
+            if (spriteSheet === void 0) { spriteSheet = new SpriteSheet(''); }
+            var baseDir = url;
+            if (url.indexOf('.json') > -1) {
+                baseDir = url.substr(0, url.lastIndexOf('/'));
+            }
+            else {
+                if (baseDir.substr(-1) == '/') {
+                    baseDir = baseDir.substr(0, baseDir.length - 1);
+                }
+                url += (url.substr(url.length - 1) != '/' ? '/' : '') + 'library.json';
+            }
+            return HttpRequest.getJSON(url).then(function (json) {
+                spriteSheet.url = url;
+                for (var i = 0; i < json.images.length; i++) {
+                    var image = json.images[i];
+                    if (!(/\\/.test(image))) {
+                        json.images[i] = baseDir + '/' + image;
+                    }
+                }
+                spriteSheet.initialize(json);
+                onProcess(1);
+                return spriteSheet;
+            });
+        };
+        SpriteSheet.prototype.initialize = function (data) {
             var i, l, o, a;
             if (data == null) {
                 return;
@@ -110,7 +145,23 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../geom/R
                     this._data[name] = anim;
                 }
             }
-        }
+            this.isLoaded = true;
+        };
+        SpriteSheet.prototype.load = function (onProgress) {
+            var _this = this;
+            if (this.isLoaded) {
+                onProgress(1);
+                return new Promise(function (resolve, reject) {
+                    resolve(_this);
+                });
+            }
+            if (!this.url) {
+                throw new Error('url is not set and there for can not be loaded');
+            }
+            return SpriteSheet.load(this.url, this, onProgress).catch(function () {
+                throw new Error('could not load library');
+            });
+        };
         SpriteSheet.prototype.getNumFrames = function (animation) {
             if (animation == null) {
                 return this._frames ? this._frames.length : this._numFrames;

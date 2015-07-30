@@ -114,6 +114,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                 }
             }
             this.children.push(child);
+            child.onResize(child.parent.width, child.parent.height);
             return child;
         };
         Container.prototype.onStageSet = function () {
@@ -141,6 +142,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             child.parent = this;
             child.isDirty = true;
             this.children.splice(index, 0, child);
+            child.onResize(this.width, this.height);
             return child;
         };
         Container.prototype.removeChild = function () {

@@ -7,21 +7,20 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", './DisplayObject'], function (require, exports, DisplayObject) {
     var DOMElement = (function (_super) {
         __extends(DOMElement, _super);
-        function DOMElement(htmlElement) {
-            _super.call(this);
-            this.htmlElement = null;
+        function DOMElement(htmlElement, x, y, regX, regY) {
+            _super.call(this, x, y, regX, regY);
             this._oldMtx = null;
             this._visible = false;
-            var htmlDomElement;
+            var domElement;
             if (typeof htmlElement == 'string') {
-                htmlDomElement = document.getElementById(htmlElement);
+                domElement = document.getElementById(htmlElement);
             }
             else {
-                htmlDomElement = htmlElement;
+                domElement = htmlElement;
             }
             this.mouseEnabled = false;
-            this.htmlElement = htmlDomElement;
-            var style = htmlDomElement.style;
+            this.htmlElement = domElement;
+            var style = domElement.style;
             style.position = "absolute";
             style.transformOrigin = style['WebkitTransformOrigin'] = style['msTransformOrigin'] = style['MozTransformOrigin'] = style['OTransformOrigin'] = "0% 0%";
         }

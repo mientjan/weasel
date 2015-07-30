@@ -1,4 +1,4 @@
-import IFlumpLibrary = require('./IFlumpLibrary');
+import IFlumpLibrary = require('../../interface/IFlumpLibrary');
 import FlumpTexture = require('./FlumpTexture');
 import FlumpLibrary = require('../FlumpLibrary');
 import IHashMap = require('../../interface/IHashMap');

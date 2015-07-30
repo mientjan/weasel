@@ -1,8 +1,9 @@
 /*
  * SpriteSheet
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling.
+ * Copyright (c) 2015 MediaMonks B.V.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -130,11 +131,53 @@
  **/
 
 import EventDispatcher = require('../../createts/event/EventDispatcher');
+import Promise = require('../../createts/util/Promise');
+import HttpRequest = require('../../createts/util/HttpRequest');
 import Rectangle = require('../geom/Rectangle');
+import ILoadable = require('../interface/ILoadable');
 
-class SpriteSheet extends EventDispatcher
+class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 {
-	// events:
+	public static load(url:string, spriteSheet:SpriteSheet = new SpriteSheet(''), onProcess?:(process:number) => any ):Promise<SpriteSheet>
+	{
+		var baseDir = url;
+
+		if(url.indexOf('.json') > -1)
+		{
+			baseDir = url.substr(0, url.lastIndexOf('/'));
+
+		} else {
+
+			if(baseDir.substr(-1) == '/')
+			{
+				baseDir = baseDir.substr(0, baseDir.length - 1);
+			}
+
+			url += ( url.substr(url.length-1) != '/' ? '/' : '' ) +  'library.json';
+		}
+
+		return HttpRequest
+			.getJSON(url)
+			.then((json:any) =>
+			{
+				spriteSheet.url = url;
+
+				for(var i = 0; i < json.images.length; i++)
+				{
+					var image = json.images[i];
+					if(!(/\\/.test(image)))
+					{
+						json.images[i] = baseDir + '/' + image;
+					}
+				}
+
+				spriteSheet.initialize(json);
+
+				onProcess(1);
+
+				return spriteSheet;
+			});
+	}
 
 	/**
 	 * Dispatched when all images are loaded.  Note that this only fires if the images
@@ -236,15 +279,31 @@ class SpriteSheet extends EventDispatcher
 	 **/
 	public _regY = 0;
 
+
+	public isLoaded:boolean = false;
+	public url:string = null;
+
 	/**
 	 * @method constructor
 	 * @param {Object} data An object describing the SpriteSheet data.
 	 * @protected
 	 **/
-	constructor(data?:any)
+	constructor(dataOrUrl?:string|any)
 	{
 		super();
 
+		if(typeof dataOrUrl == 'string')
+		{
+			this.url = <string> dataOrUrl;
+		}
+		else
+		{
+			this.initialize(<any> dataOrUrl);
+		}
+	}
+
+	public initialize(data?:any)
+	{
 		var i, l, o, a;
 		if(data == null)
 		{
@@ -365,6 +424,28 @@ class SpriteSheet extends EventDispatcher
 			}
 		}
 
+		this.isLoaded = true;
+	}
+
+	public load( onProgress?:(progress:number) => any):Promise<SpriteSheet>
+	{
+		if( this.isLoaded)
+		{
+			onProgress(1);
+
+			return new Promise<SpriteSheet>((resolve:Function, reject:Function) => {
+				resolve(this);
+			});
+		}
+
+		if(!this.url)
+		{
+			throw new Error('url is not set and there for can not be loaded');
+		}
+
+		return SpriteSheet.load(this.url, this, onProgress ).catch(() => {
+			throw new Error('could not load library');
+		});
 	}
 
 	// public methods:

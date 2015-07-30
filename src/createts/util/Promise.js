@@ -2,11 +2,6 @@ define(["require", "exports"], function (require, exports) {
     var asap = (typeof setImmediate === 'function' && setImmediate) || function (fn) {
         setTimeout(fn, 1);
     };
-    function bind(fn, thisArg) {
-        return function () {
-            fn.apply(thisArg, arguments);
-        };
-    }
     var isArray = Array.isArray || function (value) {
         return Object.prototype.toString.call(value) === "[object Array]";
     };
@@ -40,7 +35,7 @@ define(["require", "exports"], function (require, exports) {
             if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
                 var then = newValue.then;
                 if (typeof then === 'function') {
-                    doResolve(bind(then, newValue), bind(resolve, this), bind(reject, this));
+                    doResolve(then.bind(newValue), resolve.bind(this), reject.bind(this));
                     return;
                 }
             }
@@ -100,7 +95,7 @@ define(["require", "exports"], function (require, exports) {
                 throw new TypeError('Promises must be constructed via new');
             if (typeof init !== 'function')
                 throw new TypeError('not a function');
-            doResolve(init, bind(resolve, this), bind(reject, this));
+            doResolve(init, resolve.bind(this), reject.bind(this));
         }
         Promise.all = function () {
             var args = [];

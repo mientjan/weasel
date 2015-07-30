@@ -1,7 +1,8 @@
+import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+
 import Flump = require('../FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpLabelData = require('./FlumpLabelData');
-import IFlumpLibrary = require('./IFlumpLibrary');
 
 class FlumpMovieData {
 

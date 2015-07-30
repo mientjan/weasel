@@ -8,6 +8,8 @@ import FlumpLabelData = require('./FlumpLabelData');
 
 class FlumpMovieLayer extends DisplayObject
 {
+	public name:string = '';
+	private _frame:number = -1;
 	public flumpLayerData:FlumpLayerData;
 
 	_symbol; // BitmapDrawable
@@ -26,6 +28,8 @@ class FlumpMovieLayer extends DisplayObject
 		super();
 
 		this.flumpLayerData = flumpLayerData;
+		this.name = flumpLayerData.name;
+
 		var flumpLibrary = flumpMove.flumpLibrary;
 
 		for(var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++)
@@ -37,12 +41,13 @@ class FlumpMovieLayer extends DisplayObject
 				flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
 			}
 
-			if(keyframe.ref != null && ( keyframe.ref in this._symbols ) == false)
+			if( ( ( <any> keyframe.ref) != -1 && ( <any> keyframe.ref) != null) && ( keyframe.ref in this._symbols ) == false)
 			{
-				this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref);
+				this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref, false);
 			}
 		}
-
+		
+		
 		this.setFrame(0);
 	}
 
@@ -52,7 +57,6 @@ class FlumpMovieLayer extends DisplayObject
 	{
 		if( this._symbol != null && !(this._symbol instanceof FlumpTexture))
 		{
-			//var animatable = this._symbol as Animatable;
 			return this._symbol.onTick(delta);
 		}
 		else
@@ -63,7 +67,13 @@ class FlumpMovieLayer extends DisplayObject
 
 	public setFrame(frame:number):void
 	{
-		var keyframe = this.flumpLayerData.getKeyframeForFrame(frame);
+		if(this._frame == frame){
+			return;
+		}
+
+		this._frame = frame;
+
+		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(frame);
 		if(!(keyframe instanceof FlumpKeyframeData))
 		{
 			this._symbol = null;
@@ -76,7 +86,7 @@ class FlumpMovieLayer extends DisplayObject
 		var scaleY:number = keyframe.scaleY;
 		var skewX:number = keyframe.skewX;
 		var skewY:number = keyframe.skewY;
-		var pivotX:number = keyframe.pivotX
+		var pivotX:number = keyframe.pivotX;
 		var pivotY:number = keyframe.pivotY;
 		var alpha:number = keyframe.alpha;
 
@@ -123,15 +133,22 @@ class FlumpMovieLayer extends DisplayObject
 		 _transformationMatrixPrivate.translate(x, y);
 		 */
 
+		//pivotX *= 2;
+		//pivotY *= 2;
+
 		this._storedMtx.a =   scaleX * Math.cos(skewY);
 		this._storedMtx.b =   scaleX * Math.sin(skewY);
 		this._storedMtx.c = - scaleY * Math.sin(skewX);
 		this._storedMtx.d =   scaleY * Math.cos(skewX);
 		this._storedMtx.tx =  x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
 		this._storedMtx.ty =  y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
-
-
-		//this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY);
+		//
+		//console.log(frame, pivotX, pivotY);
+		
+		//console.log( skewX, skewY, pivotX, pivotY);
+		
+		
+		//this.setTransform(x, y, scaleX, scaleY, 0, skewX * (180/Math.PI), skewY * (180/Math.PI), pivotX * 2, pivotY* 2);
 		//console.log(frame, x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY);
 		
 		//_transformationMatrix.setTo(a, b, c, d, tx, ty);
@@ -139,7 +156,16 @@ class FlumpMovieLayer extends DisplayObject
 		this.alpha = alpha;
 		this.visible = keyframe.visible;
 
-		this._symbol = (keyframe.ref != null) ? this._symbols[keyframe.ref] : null;
+		this._symbol = ( ( <any> keyframe.ref) != -1 || ( <any> keyframe.ref) != null) ? this._symbols[keyframe.ref] : null;
+
+		//if( this._symbol.instanceOf)
+
+		//this._symbol.x = x;
+		//this._symbol.y = x;
+		//this._symbol.scaleX = scaleX;
+		//this._symbol.scaleY = scaleY;
+		//this._symbol.rotation = 0;
+		//this._symbol.x = x;
 	}
 
 

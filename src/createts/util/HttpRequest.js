@@ -38,13 +38,19 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
             if (query === void 0) { query = {}; }
             return HttpRequest.request('GET', url, query);
         };
+        HttpRequest.getJSON = function (url, query) {
+            if (query === void 0) { query = {}; }
+            return HttpRequest.getString(url, query).then(function (response) {
+                return JSON.parse(response);
+            });
+        };
         HttpRequest.wait = function (list, onProgress) {
             if (onProgress === void 0) { onProgress = function (progress) {
             }; }
             return new Promise(function (resolve) {
                 var newList = [];
                 var then = function (response) {
-                    list.push(response);
+                    newList.push(response);
                     onProgress(newList.length / list.length);
                     if (newList.length == list.length) {
                         resolve(newList);
@@ -53,6 +59,30 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
                 for (var i = 0; i < list.length; i++) {
                     list[i].then(then);
                 }
+            });
+        };
+        HttpRequest.waitForLoadable = function (list, onProgress) {
+            if (onProgress === void 0) { onProgress = function (progress) {
+            }; }
+            var count = list.length;
+            var progressList = new Array(count).map(function (value) {
+                return value == void 0 ? 0 : value;
+            });
+            var prvProgress = function (index, progress) {
+                progressList[index] = progress;
+                var total = 0;
+                var length = progressList.length;
+                for (var i = 0; i < length; i++) {
+                    total += progressList[i];
+                }
+                onProgress(total / count);
+            };
+            var promiseList = new Array(count);
+            for (var i = 0; i < count; i++) {
+                promiseList[i] = list[i].load(prvProgress.bind(this, i));
+            }
+            return HttpRequest.wait(promiseList).then(function () {
+                return true;
             });
         };
         return HttpRequest;
