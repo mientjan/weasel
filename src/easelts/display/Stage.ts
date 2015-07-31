@@ -1,10 +1,11 @@
 /*
  * Stage
- * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * The MIT License (MIT)
  *
  * Copyright (c) 2010 gskinner.com, inc.
- * Copyright (c) 2014-2015 Mient-jan Stelling.
- * Copyright (c) 2015 mediamonks.com
+ * Copyright (c) 2014-2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -55,6 +56,7 @@ import TimeEvent = require('../../createts/event/TimeEvent');
 import Signal1 = require('../../createts/event/Signal1');
 import Signal = require('../../createts/event/Signal');
 import SignalConnection = require('../../createts/event/SignalConnection');
+import Interval = require("../../createts/util/Interval");
 
 /**
  * @module createts
@@ -88,7 +90,6 @@ import SignalConnection = require('../../createts/event/SignalConnection');
 class Stage extends Container
 {
 	// events:
-
 	public static EVENT_MOUSE_LEAVE = 'mouseleave';
 	public static EVENT_MOUSE_ENTER = 'mouseenter';
 	public static EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
@@ -138,7 +139,7 @@ class Stage extends Container
 	 * @event tickstart
 	 * @since 0.7.0
 	 */
-//	protected _ticker:Ticker = new Ticker();
+	//	protected _ticker:Ticker = new Ticker();
 
 	public tickstartSignal:Signal = new Signal();
 
@@ -168,10 +169,9 @@ class Stage extends Container
 	// public properties:
 	public type:DisplayType = DisplayType.STAGE;
 
-	public _isRunning:boolean = false;
-	public _tickSignalConnection:SignalConnection = null;
-	public _fps:number = 60;
-	//public _pixelRatio:number = 60;
+	private _isRunning:boolean = false;
+	private _fps:number = 60;
+	private _ticker:Interval;
 
 	public _eventListeners:{
 		[name:string]: {
@@ -456,7 +456,6 @@ class Stage extends Container
 	 */
 	public setQuality(value:QualityType):Stage
 	{
-
 		switch(value)
 		{
 			case QualityType.LOW:
@@ -507,15 +506,15 @@ class Stage extends Container
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
 
 		var r = this.drawRect,
-			ctx = this.ctx;
+				ctx = this.ctx;
 
 
 		/**
 		 *
 		 */
 		ctx.setTransform(
-			this.pixelRatio, 0, 0,
-			this.pixelRatio, 0.5, 0.5
+				this.pixelRatio, 0, 0,
+				this.pixelRatio, 0.5, 0.5
 		);
 		//ctx.translate(0.5, 0.5);
 
@@ -541,6 +540,7 @@ class Stage extends Container
 
 		this.updateContext(ctx);
 		this.draw(ctx, false);
+
 		ctx.restore();
 
 		this.drawendSignal.emit();
@@ -793,8 +793,6 @@ class Stage extends Container
 	{
 		return "[Stage (name=" + this.name + ")]";
 	}
-
-	public tryCatch
 
 	/**
 	 * @method _getElementRect
@@ -1223,10 +1221,10 @@ class Stage extends Container
 	 * @method setFps
 	 * @param value
 	 */
-	public setFps(value:number):void
+	public setFps(value:number):Stage
 	{
 		this._fps = value;
-		Ticker.getInstance().setFPS(value);
+		return this;
 	}
 
 	/**
@@ -1256,19 +1254,20 @@ class Stage extends Container
 	 * @method start
 	 * @returns {boolean}
 	 */
-	public start():boolean
+	public start():Stage
 	{
-		if(!this._isRunning)
+		if(this._ticker)
 		{
-			this.update(0);
-			this._tickSignalConnection = Ticker.getInstance().addTickListener(<any> this.update);
-			Ticker.getInstance().start();
-
-			this._isRunning = true;
-			return true;
+			this._ticker.destruct();
+			this._ticker = null;
 		}
 
-		return false;
+		this._ticker = new Interval(this.getFps())
+				.attach(this.update);
+
+		this._isRunning = true;
+
+		return this;
 	}
 
 	/**
@@ -1277,23 +1276,21 @@ class Stage extends Container
 	 * @method stop
 	 * @returns {boolean}
 	 */
-	public stop():boolean
+	public stop():Stage
 	{
-		if(this._isRunning)
+		// remove Signal connection
+		if(this._ticker)
 		{
-			// remove Signal connection
-			this._tickSignalConnection.dispose();
-			this._tickSignalConnection = null;
-
-			// update stage for a last tick, solves rendering
-			// issues when having slowdown. Last frame is sometimes not rendered. When using createjsAnimations
-			setTimeout(this.update, 1000 / this._fps);
-
-			this._isRunning = false;
-			return true;
+			this._ticker.destruct();
+			this._ticker = null;
 		}
 
-		return false;
+		// update stage for a last tick, solves rendering
+		// issues when having slowdown. Last frame is sometimes not rendered.
+		// setTimeout(this.update, 1000 / this._fps);
+		this._isRunning = false;
+
+		return this;
 	}
 
 	/**

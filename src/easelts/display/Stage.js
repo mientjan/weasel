@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal'], function (require, exports, Ticker, DisplayObject, Container, Size, PointerData, PointerEvent, Signal) {
+define(["require", "exports", './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal', "../../createts/util/Interval"], function (require, exports, DisplayObject, Container, Size, PointerData, PointerEvent, Signal, Interval) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
         function Stage(element, triggerResizeOnWindowResize, pixelRatio) {
@@ -19,7 +19,6 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             this.drawendSignal = new Signal();
             this.type = 1 /* STAGE */;
             this._isRunning = false;
-            this._tickSignalConnection = null;
             this._fps = 60;
             this._eventListeners = null;
             this._onResizeEventListener = null;
@@ -440,7 +439,7 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
         };
         Stage.prototype.setFps = function (value) {
             this._fps = value;
-            Ticker.getInstance().setFPS(value);
+            return this;
         };
         Stage.prototype.getFps = function () {
             return this._fps;
@@ -454,24 +453,21 @@ define(["require", "exports", '../../createts/util/Ticker', './DisplayObject', '
             window.removeEventListener('resize', this._onResizeEventListener);
         };
         Stage.prototype.start = function () {
-            if (!this._isRunning) {
-                this.update(0);
-                this._tickSignalConnection = Ticker.getInstance().addTickListener(this.update);
-                Ticker.getInstance().start();
-                this._isRunning = true;
-                return true;
+            if (this._ticker) {
+                this._ticker.destruct();
+                this._ticker = null;
             }
-            return false;
+            this._ticker = new Interval(this.getFps()).attach(this.update);
+            this._isRunning = true;
+            return this;
         };
         Stage.prototype.stop = function () {
-            if (this._isRunning) {
-                this._tickSignalConnection.dispose();
-                this._tickSignalConnection = null;
-                setTimeout(this.update, 1000 / this._fps);
-                this._isRunning = false;
-                return true;
+            if (this._ticker) {
+                this._ticker.destruct();
+                this._ticker = null;
             }
-            return false;
+            this._isRunning = false;
+            return this;
         };
         Stage.prototype.isRunning = function () {
             return this._isRunning;
