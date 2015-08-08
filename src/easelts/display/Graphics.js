@@ -340,6 +340,7 @@ define(["require", "exports", '../util/Methods'], function (require, exports, Me
             this._activeInstructions = null;
             this._dirty = false;
             this._ctx = Graphics._ctx;
+            this.type = 32 /* GRAPHICS */;
             this.curveTo = this.quadraticCurveTo;
             this.drawRect = this.rect;
             this.mt = this.moveTo;

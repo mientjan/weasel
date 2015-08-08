@@ -27,6 +27,7 @@
  */
 
 import Methods = require('../util/Methods');
+import DisplayType = require('../enum/DisplayType');
 import m2 = require('../geom/Matrix2');
 
 /**
@@ -1358,13 +1359,14 @@ class Graphics
 
 	protected _ctx:CanvasRenderingContext2D = Graphics._ctx;
 
+	public type:DisplayType = DisplayType.GRAPHICS;
+
 	/**
 	 * @constructor
 	 **/
-		constructor()
+	constructor()
 	{
 		this.clear();
-
 	}
 
 	/**

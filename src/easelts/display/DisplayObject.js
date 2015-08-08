@@ -15,7 +15,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this);
-            this.type = 3 /* DISPLAYOBJECT */;
+            this.type = 8 /* DISPLAYOBJECT */;
             this.cacheCanvas = null;
             this.id = UID.get();
             this.mouseEnabled = true;
@@ -51,6 +51,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this.shadow = null;
             this.stage = null;
             this._behaviorList = null;
+            this._resizeSignal = null;
             this.compositeOperation = null;
             this.snapToPixel = true;
             this.filters = null;
@@ -67,7 +68,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._rectangle = new Rectangle(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
-            this.DisplayObject_getBounds = this._getBounds;
             this.setGeomTransform(width, height, x, y, regX, regY);
         }
         Object.defineProperty(DisplayObject.prototype, "resizeSignal", {
@@ -644,7 +644,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
             return bounds.setProperies(minX, minY, maxX - minX, maxY - minY);
         };
-        DisplayObject.prototype._hasMouseEventListener = function () {
+        DisplayObject.prototype.hasMouseEventListener = function () {
             var evts = DisplayObject._MOUSE_EVENTS;
             for (var i = 0, l = evts.length; i < l; i++) {
                 if (this.hasEventListener(evts[i])) {

@@ -34,6 +34,8 @@ import m2 = require('../geom/Matrix2');
 import Rectangle = require('../geom/Rectangle');
 
 import TimeEvent = require('../../createts/event/TimeEvent');
+import IDisplayObject = require("../interface/IDisplayObject");
+import Stage = require("./Stage");
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -70,7 +72,7 @@ class Container extends DisplayObject
 	 * @type Array
 	 * @default null
 	 **/
-	public children:any[] = [];
+	public children:Array<IDisplayObject> = [];
 
 	/**
 	 * Indicates whether the children of this container are independently enabled for mouse/pointer interaction.
@@ -279,7 +281,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	public addChild(...children:DisplayObject[]):DisplayObject
+	public addChild(...children:Array<IDisplayObject>):IDisplayObject
 	{
 		var length = children.length;
 		if(length == 0)
@@ -322,22 +324,15 @@ class Container extends DisplayObject
 	 * @method onStageSet
 	 * @description When the stage is set this method is called to all its children.
 	 */
-	public onStageSet():void
+	public setStage(stage:Stage):void
 	{
+		this.stage = stage;
+
 		var children = this.children;
 		for(var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-
-			if(child.stage != this.stage)
-			{
-				child.stage = this.stage;
-
-				if(child.onStageSet)
-				{
-					child.onStageSet.call(child);
-				}
-			}
+			child.setStage(this.stage);
 		}
 	}
 
@@ -357,11 +352,11 @@ class Container extends DisplayObject
 	 * This would also bump otherShape's index up by one. Fails silently if the index is out of range.
 	 *
 	 * @method addChildAt
-	 * @param {DisplayObject} child The display object to add.
+	 * @param {IDisplayObject} child The display object to add.
 	 * @param {number} index The index to add the child at.
-	 * @return {DisplayObject} Returns the last child that was added, or the last child if multiple children were added.
+	 * @return {IDisplayObject} Returns the last child that was added, or the last child if multiple children were added.
 	 **/
-	public addChildAt(child:DisplayObject, index:number):DisplayObject
+	public addChildAt(child:IDisplayObject, index:number):IDisplayObject
 	{
 		if(child.parent)
 		{
@@ -396,10 +391,10 @@ class Container extends DisplayObject
 	 *
 	 * Returns true if the child (or children) was removed, or false if it was not in the display list.
 	 * @method removeChild
-	 * @param {DisplayObject} child The child to remove.
+	 * @param {IDisplayObject} child The child to remove.
 	 * @return {Boolean} true if the child (or children) was removed, or false if it was not in the display list.
 	 **/
-	public removeChild(...children:DisplayObject[]):boolean
+	public removeChild(...children:IDisplayObject[]):boolean
 	{
 		var l = children.length;
 		if(l > 1)
@@ -495,9 +490,9 @@ class Container extends DisplayObject
 	 *
 	 * @method getChildAt
 	 * @param {Number} index The index of the child to return.
-	 * @return {DisplayObject} The child at the specified index. Returns null if there is no child at the index.
+	 * @return {IDisplayObject} The child at the specified index. Returns null if there is no child at the index.
 	 **/
-	public getChildAt(index:number):DisplayObject
+	public getChildAt(index:number):IDisplayObject
 	{
 		return this.children[index];
 	}
@@ -506,20 +501,21 @@ class Container extends DisplayObject
 	 * Returns the child with the specified name.
 	 * @method getChildByName
 	 * @param {String} name The name of the child to return.
-	 * @return {DisplayObject} The child with the specified name.
+	 * @return {IDisplayObject} The child with the specified name.
 	 **/
-	public getChildByName(name:string):DisplayObject
+	public getChildrenByProperty(name:string, value:any):Array<IDisplayObject>
 	{
 		var children = this.children;
+		var result = [];
 		for(var i = 0, l = children.length; i < l; i++)
 		{
-			if(children[i].name == name)
+			if(children[i][name] == value)
 			{
-				return children[i];
+				result.push(children[i]);
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/**
@@ -538,7 +534,7 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction:(a:DisplayObject, b:DisplayObject) => number):Container
+	public sortChildren(sortFunction:(a:IDisplayObject, b:IDisplayObject) => number):Container
 	{
 		this.children.sort(sortFunction);
 		return this;
@@ -552,10 +548,10 @@ class Container extends DisplayObject
 	 *      var index = container.getChildIndex(child);
 	 *
 	 * @method getChildIndex
-	 * @param {DisplayObject} child The child to return the index of.
+	 * @param {IDisplayObject} child The child to return the index of.
 	 * @return {Number} The index of the specified child. -1 if the child is not found.
 	 **/
-	public getChildIndex(child:DisplayObject):number
+	public getChildIndex(child:IDisplayObject):number
 	{
 		return this.children.indexOf(child);
 	}
@@ -593,10 +589,10 @@ class Container extends DisplayObject
 	 * Swaps the specified children's depth in the display list. Fails silently if either child is not a child of this
 	 * Container.
 	 * @method swapChildren
-	 * @param {DisplayObject} child0
-	 * @param {DisplayObject} child1
+	 * @param {IDisplayObject} child0
+	 * @param {IDisplayObject} child1
 	 **/
-	public swapChildren(child0:DisplayObject, child1:DisplayObject):Container
+	public swapChildren(child0:IDisplayObject, child1:IDisplayObject):Container
 	{
 		var children = this.children;
 		var index1, index2;
@@ -630,10 +626,10 @@ class Container extends DisplayObject
 	 * Changes the depth of the specified child. Fails silently if the child is not a child of this container, or the index is out of range.
 	 *
 	 * @method setChildIndex
-	 * @param {DisplayObject} child
+	 * @param {IDisplayObject} child
 	 * @param {Number} index
 	 **/
-	public setChildIndex(child:DisplayObject, index:number):Container
+	public setChildIndex(child:IDisplayObject, index:number):Container
 	{
 		var children = this.children, l = children.length;
 		if(child.parent != this || index < 0 || index >= l)
@@ -663,10 +659,10 @@ class Container extends DisplayObject
 	 * of this container.
 	 *
 	 * @method contains
-	 * @param {DisplayObject} child The DisplayObject to be checked.
+	 * @param {IDisplayObject} child The IDisplayObject to be checked.
 	 * @return {Boolean} true if the specified display object either is this container or is a descendent.
 	 **/
-	public contains(child:DisplayObject):boolean
+	public contains(child:IDisplayObject):boolean
 	{
 		while(child)
 		{
@@ -688,7 +684,7 @@ class Container extends DisplayObject
 	 * @method hitTest
 	 * @param {Number} x The x position to check in the display object's local coordinates.
 	 * @param {Number} y The y position to check in the display object's local coordinates.
-	 * @return {Boolean} A Boolean indicating whether there is a visible section of a DisplayObject that overlaps the specified
+	 * @return {Boolean} A Boolean indicating whether there is a visible section of a IDisplayObject that overlaps the specified
 	 * coordinates.
 	 **/
 	public hitTest(x:number, y:number):boolean
@@ -704,13 +700,13 @@ class Container extends DisplayObject
 	 * expensive operation to run, so it is best to use it carefully. For example, if testing for objects under the
 	 * mouse, test on tick (instead of on mousemove), and only if the mouse's position has changed.
 	 *
-	 * Accounts for both {{#crossLink "DisplayObject/hitArea:property"}}{{/crossLink}} and {{#crossLink "DisplayObject/mask:property"}}{{/crossLink}}.
+	 * Accounts for both {{#crossLink "IDisplayObject/hitArea:property"}}{{/crossLink}} and {{#crossLink "IDisplayObject/mask:property"}}{{/crossLink}}.
 	 * @method getObjectsUnderPoint
 	 * @param {Number} x The x position in the container to test.
 	 * @param {Number} y The y position in the container to test.
-	 * @return {Array} An Array of DisplayObjects under the specified coordinates.
+	 * @return {Array} An Array of IDisplayObjects under the specified coordinates.
 	 **/
-	public getObjectsUnderPoint(x:number, y:number):Array<DisplayObject>
+	public getObjectsUnderPoint(x:number, y:number):Array<IDisplayObject>
 	{
 		var arr = [];
 		var pt = this.localToGlobal(x, y);
@@ -725,9 +721,9 @@ class Container extends DisplayObject
 	 * @method getObjectUnderPoint
 	 * @param {Number} x The x position in the container to test.
 	 * @param {Number} y The y position in the container to test.
-	 * @return {DisplayObject} The top-most display object under the specified coordinates.
+	 * @return {IDisplayObject} The top-most display object under the specified coordinates.
 	 **/
-	public getObjectUnderPoint(x:number, y:number):Container|Array<DisplayObject>
+	public getObjectUnderPoint(x:number, y:number):Container|IDisplayObject
 	{
 		var pt = this.localToGlobal(x, y);
 		return this._getObjectsUnderPoint(pt.x, pt.y);
@@ -757,7 +753,7 @@ class Container extends DisplayObject
 	 * properties of the container will be cloned, but the new instance will not have any children.
 	 * @return {Container} A clone of the current Container instance.
 	 **/
-	public clone(recursive:boolean):Container
+	/*public clone(recursive:boolean):Container
 	{
 		var container = new Container();
 		this.cloneProps(container);
@@ -773,7 +769,7 @@ class Container extends DisplayObject
 		}
 
 		return container;
-	}
+	}*/
 
 	/**
 	 * Returns a string representation of this object.
@@ -801,17 +797,14 @@ class Container extends DisplayObject
 		for(var i = 0; i < this.children.length; i++)
 		{
 			var child = this.children[i];
-			if(child.onResize)
-			{
-				child.onResize(newWidth, newHeight);
-			}
+			child.onResize(newWidth, newHeight);
 		}
 
 	}
 
 	/**
 	 * @method onTick
-	 * @param {Object} props Properties to copy to the DisplayObject {{#crossLink "DisplayObject/tick"}}{{/crossLink}} event object.
+	 * @param {Object} props Properties to copy to the IDisplayObject {{#crossLink "IDisplayObject/tick"}}{{/crossLink}} event object.
 	 * function.
 	 * @protected
 	 **/
@@ -840,11 +833,11 @@ class Container extends DisplayObject
 	 * @return {Array}
 	 * @protected
 	 **/
-	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean):Container | Array<DisplayObject>
+	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean):Container | IDisplayObject
 	{
 		var ctx = DisplayObject._hitTestContext;
 		var mtx = this._matrix;
-		activeListener = activeListener || (mouse && this._hasMouseEventListener());
+		activeListener = activeListener || (mouse && this.hasMouseEventListener());
 
 		// draw children one at a time, and check if we get a hit:
 		var children = this.children;
@@ -895,7 +888,7 @@ class Container extends DisplayObject
 			{
 
 
-				if(mouse && !activeListener && !child._hasMouseEventListener())
+				if(mouse && !activeListener && !child.hasMouseEventListener())
 				{
 					continue;
 				}
@@ -928,9 +921,7 @@ class Container extends DisplayObject
 				}
 				else
 				{
-
-
-					return (mouse && !this.mouseChildren) ? this : child;
+					return (mouse && !this.mouseChildren) ? (<Container> this) : (<IDisplayObject> child);
 				}
 			}
 		}
@@ -964,7 +955,7 @@ class Container extends DisplayObject
 		for(var i = 0; i < l; i++)
 		{
 			var child = this.children[i];
-			if(!child.visible || !(bounds = child._getBounds(mtx)))
+			if(!child.visible || !(bounds = child.getTransformedBounds(mtx)))
 			{
 				continue;
 			}
@@ -992,16 +983,12 @@ class Container extends DisplayObject
 
 	public destruct():void
 	{
-		this.removeAllChildren();
-
 		for(var i = 0; i < this.children.length; i++)
 		{
-			if(typeof this.children[i].destruct == 'function')
-			{
-				this.children[i].destruct();
-			}
+			this.children[i].destruct();
 		}
 
+		this.removeAllChildren();
 		this.disableMouseInteraction();
 
 		super.destruct();

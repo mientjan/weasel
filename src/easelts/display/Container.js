@@ -15,7 +15,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 2 /* CONTAINER */;
+            this.type = 4 /* CONTAINER */;
             this.children = [];
             this.mouseChildren = true;
             this.tickChildren = true;
@@ -114,16 +114,12 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             child.onResize(child.parent.width, child.parent.height);
             return child;
         };
-        Container.prototype.onStageSet = function () {
+        Container.prototype.setStage = function (stage) {
+            this.stage = stage;
             var children = this.children;
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                if (child.stage != this.stage) {
-                    child.stage = this.stage;
-                    if (child.onStageSet) {
-                        child.onStageSet.call(child);
-                    }
-                }
+                child.setStage(this.stage);
             }
         };
         Container.prototype.addChildAt = function (child, index) {
@@ -190,14 +186,15 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         Container.prototype.getChildAt = function (index) {
             return this.children[index];
         };
-        Container.prototype.getChildByName = function (name) {
+        Container.prototype.getChildrenByProperty = function (name, value) {
             var children = this.children;
+            var result = [];
             for (var i = 0, l = children.length; i < l; i++) {
-                if (children[i].name == name) {
-                    return children[i];
+                if (children[i][name] == value) {
+                    result.push(children[i]);
                 }
             }
-            return null;
+            return result;
         };
         Container.prototype.sortChildren = function (sortFunction) {
             this.children.sort(sortFunction);
@@ -285,19 +282,6 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         Container.prototype.getTransformedBounds = function () {
             return this._getBounds(null, true);
         };
-        Container.prototype.clone = function (recursive) {
-            var container = new Container();
-            this.cloneProps(container);
-            if (recursive) {
-                var arr = container.children = [];
-                for (var i = 0, l = this.children.length; i < l; i++) {
-                    var clone = this.children[i].clone(recursive);
-                    clone.parent = container;
-                    arr.push(clone);
-                }
-            }
-            return container;
-        };
         Container.prototype.toString = function () {
             return "[Container (name=" + this.name + ")]";
         };
@@ -311,9 +295,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             }
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
-                if (child.onResize) {
-                    child.onResize(newWidth, newHeight);
-                }
+                child.onResize(newWidth, newHeight);
             }
         };
         Container.prototype.onTick = function (delta) {
@@ -328,7 +310,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         Container.prototype._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener) {
             var ctx = DisplayObject._hitTestContext;
             var mtx = this._matrix;
-            activeListener = activeListener || (mouse && this._hasMouseEventListener());
+            activeListener = activeListener || (mouse && this.hasMouseEventListener());
             var children = this.children;
             var l = children.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -350,14 +332,14 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                     ctx.setTransform(1, 0, 0, 1, 0, 0);
                     ctx.clearRect(0, 0, 2, 2);
                 }
-                if (!hitArea && child.type == 2 /* CONTAINER */) {
+                if (!hitArea && child.type == 4 /* CONTAINER */) {
                     var result = child._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
                     if (!arr && result) {
                         return (mouse && !this.mouseChildren) ? this : result;
                     }
                 }
                 else {
-                    if (mouse && !activeListener && !child._hasMouseEventListener()) {
+                    if (mouse && !activeListener && !child.hasMouseEventListener()) {
                         continue;
                     }
                     child.getConcatenatedMatrix(mtx);
@@ -396,7 +378,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             var l = this.children.length;
             for (var i = 0; i < l; i++) {
                 var child = this.children[i];
-                if (!child.visible || !(bounds = child._getBounds(mtx))) {
+                if (!child.visible || !(bounds = child.getTransformedBounds(mtx))) {
                     continue;
                 }
                 var x1 = bounds.x, y1 = bounds.y, x2 = x1 + bounds.width, y2 = y1 + bounds.height;
@@ -416,12 +398,10 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return (maxX == null) ? null : this._rectangle.setProperies(minX, minY, maxX - minX, maxY - minY);
         };
         Container.prototype.destruct = function () {
-            this.removeAllChildren();
             for (var i = 0; i < this.children.length; i++) {
-                if (typeof this.children[i].destruct == 'function') {
-                    this.children[i].destruct();
-                }
+                this.children[i].destruct();
             }
+            this.removeAllChildren();
             this.disableMouseInteraction();
             _super.prototype.destruct.call(this);
         };

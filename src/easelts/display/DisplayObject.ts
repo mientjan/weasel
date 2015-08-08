@@ -63,14 +63,14 @@ import Point = require('../geom/Point');
 import IVector2 = require('../interface/IVector2');
 import ISize = require('../interface/ISize');
 import IDisplayType = require('../interface/IDisplayType');
-
 import IBehavior = require('../behavior/IBehavior');
+import IDisplayObject = require("../interface/IDisplayObject");
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
  * @class DisplayObject
  */
-class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplayType
+class DisplayObject extends EventDispatcher implements IDisplayObject
 {
 	public static EVENT_MOUSE_CLICK = 'click';
 	public static EVENT_MOUSE_DOWN = 'mousedown';
@@ -379,7 +379,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	/**
 	 *
 	 */
-	private _resizeSignal:Signal2<number, number>;
+	private _resizeSignal:Signal2<number, number> = null;
 
 	/**
 	 *
@@ -521,7 +521,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	protected _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -1714,7 +1714,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
 
-	public DisplayObject_getBounds = this._getBounds;
+	//public DisplayObject_getBounds = this._getBounds;
 
 
 	/**
@@ -1809,7 +1809,7 @@ class DisplayObject extends EventDispatcher implements IVector2, ISize, IDisplay
 	 * @return {Boolean}
 	 * @protected
 	 **/
-	protected _hasMouseEventListener():boolean
+	public hasMouseEventListener():boolean
 	{
 		var evts = DisplayObject._MOUSE_EVENTS;
 		for(var i = 0, l = evts.length; i < l; i++)

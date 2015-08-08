@@ -15,7 +15,7 @@ define(["require", "exports", './Graphics', './DisplayObject'], function (requir
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 4 /* SHAPE */;
+            this.type = 16 /* SHAPE */;
             this.graphics = graphics ? graphics : new Graphics();
         }
         Shape.prototype.isVisible = function () {

@@ -11,7 +11,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             var _this = this;
             if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
-            this.type = 1 /* STAGE */;
+            this.type = 2 /* STAGE */;
             this.tickstartSignal = new Signal();
             this.tickendSignal = new Signal();
             this.drawstartSignal = new Signal();
