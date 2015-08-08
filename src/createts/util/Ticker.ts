@@ -429,4 +429,4 @@ class Ticker
 	}
 }
 
-export = Ticker;
+//export = Ticker;

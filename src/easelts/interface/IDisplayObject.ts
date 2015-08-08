@@ -48,7 +48,7 @@ interface IDisplayObject extends IDisplayType
 	mouseEnabled:boolean;
 	mask:Shape;
 	hitArea:IDisplayObject;
-	parent:Container;
+	parent:Container<IDisplayObject>;
 
 	isDirty:boolean;
 	visible:boolean;

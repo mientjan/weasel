@@ -57,6 +57,7 @@ import Signal1 = require('../../createts/event/Signal1');
 import Signal = require('../../createts/event/Signal');
 import SignalConnection = require('../../createts/event/SignalConnection');
 import Interval = require("../../createts/util/Interval");
+import IDisplayObject = require("../interface/IDisplayObject");
 
 /**
  * @module createts
@@ -87,7 +88,7 @@ import Interval = require("../../createts/util/Interval");
  * of a canvas object in the current document.
  **/
 
-class Stage extends Container
+class Stage extends Container<IDisplayObject>
 {
 	// events:
 	public static EVENT_MOUSE_LEAVE = 'mouseleave';

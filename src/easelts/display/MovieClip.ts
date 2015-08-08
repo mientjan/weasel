@@ -3,6 +3,7 @@ import Timeline = require('../../tweents/Timeline');
 import Tween = require('../../tweents/Tween');
 import TimeEvent = require('../../createts/event/TimeEvent');
 import DisplayObject = require('./DisplayObject');
+
 //import MovieClipPlugin = require('./MovieClipPlugin');
 /*
  * Copyright (c) 2010 gskinner.com, inc.
@@ -83,8 +84,6 @@ import DisplayObject = require('./DisplayObject');
  **/
 class MovieClip extends Container
 {
-
-
 	// constants:
 	/**
 	 * The MovieClip will advance independently of its parent, even if its parent is paused.
@@ -95,7 +94,7 @@ class MovieClip extends Container
 	 * @default "independent"
 	 * @readonly
 	 **/
-	public static INDEPENDENT = "independent";
+	public static INDEPENDENT:string = "independent";
 
 	/**
 	 * The MovieClip will only display a single frame (as determined by the startPosition property).
@@ -105,7 +104,7 @@ class MovieClip extends Container
 	 * @default "single"
 	 * @readonly
 	 **/
-	public static SINGLE_FRAME = "single";
+	public static SINGLE_FRAME:string = "single";
 
 	/**
 	 * The MovieClip will be advanced only when its parent advances and will be synched to the position of
@@ -116,11 +115,11 @@ class MovieClip extends Container
 	 * @default "synched"
 	 * @readonly
 	 **/
-	public static SYNCHED = "synched";
+	public static SYNCHED:string = "synched";
 
 
 	// static properties:
-	public static inited = false;
+	public static inited:boolean = false;
 
 
 	// static methods:
@@ -143,7 +142,7 @@ class MovieClip extends Container
 	 * @type String
 	 * @default null
 	 **/
-	mode = MovieClip.INDEPENDENT;
+	public mode = MovieClip.INDEPENDENT;
 
 	/**
 	 * Specifies what the first frame to play in this movieclip, or the only frame to display if mode is SINGLE_FRAME.
@@ -151,9 +150,9 @@ class MovieClip extends Container
 	 * @type Number
 	 * @default 0
 	 */
-	startPosition = 0;
+	public startPosition = 0;
 
-	_framerate;
+	public _framerate;
 
 
 	/**
@@ -162,7 +161,7 @@ class MovieClip extends Container
 	 * @type Boolean
 	 * @default true
 	 */
-	loop = false;
+	public loop = false;
 
 	/**
 	 * The current frame of the movieclip.
@@ -171,7 +170,7 @@ class MovieClip extends Container
 	 * @default 0
 	 * @readonly
 	 */
-	currentFrame = 0;
+	public currentFrame = 0;
 
 	/**
 	 * The TweenJS Timeline that is associated with this MovieClip. This is created automatically when the MovieClip
@@ -197,7 +196,7 @@ class MovieClip extends Container
 	 * @type Timeline
 	 * @default null
 	 */
-	timeline = null;
+	public timeline = null;
 
 	/**
 	 * If true, the MovieClip's position will not advance when ticked.
@@ -205,7 +204,7 @@ class MovieClip extends Container
 	 * @type Boolean
 	 * @default false
 	 */
-	paused = false;
+	public paused = false;
 
 	/**
 	 * If true, actions in this MovieClip's tweens will be run when the playhead advances.
@@ -213,7 +212,7 @@ class MovieClip extends Container
 	 * @type Boolean
 	 * @default true
 	 */
-	actionsEnabled = true;
+	public actionsEnabled = true;
 
 	/**
 	 * If true, the MovieClip will automatically be reset to its first frame whenever the timeline adds
@@ -227,7 +226,7 @@ class MovieClip extends Container
 	 * @type Boolean
 	 * @default true
 	 */
-	autoReset = true;
+	public autoReset = true;
 
 	/**
 	 * An array of bounds for each frame in the MovieClip. This is mainly intended for tool output.
@@ -235,7 +234,7 @@ class MovieClip extends Container
 	 * @type Array
 	 * @default null
 	 */
-	frameBounds = this.frameBounds || null; // TODO: Deprecated. This is for backwards support of FlashCC
+	public frameBounds = this.frameBounds || null; // TODO: Deprecated. This is for backwards support of FlashCC
 
 	/**
 	 * By default MovieClip instances advance one frame per tick. Specifying a framerate for the MovieClip
@@ -252,7 +251,7 @@ class MovieClip extends Container
 	 * @type {Number}
 	 * @default 0
 	 **/
-	framerate = null;
+	public framerate = null;
 
 
 	// private properties:
@@ -262,7 +261,7 @@ class MovieClip extends Container
 	 * @default 0
 	 * @private
 	 */
-	_synchOffset = 0;
+	public _synchOffset = 0;
 
 	/**
 	 * @property _prevPos
@@ -270,7 +269,7 @@ class MovieClip extends Container
 	 * @default -1
 	 * @private
 	 */
-	_prevPos = -1; // TODO: evaluate using a ._reset Boolean prop instead of -1.
+	public _prevPos = -1; // TODO: evaluate using a ._reset Boolean prop instead of -1.
 
 	/**
 	 * @property _prevPosition
@@ -278,7 +277,7 @@ class MovieClip extends Container
 	 * @default 0
 	 * @private
 	 */
-	_prevPosition = 0;
+	public _prevPosition = 0;
 
 	/**
 	 * The time remaining from the previous tick, only applicable when .framerate is set.
@@ -286,7 +285,7 @@ class MovieClip extends Container
 	 * @type Number
 	 * @private
 	 */
-	_t = 0;
+	public _t = 0;
 
 	/**
 	 * List of display objects that are actively being managed by the MovieClip.
@@ -294,7 +293,7 @@ class MovieClip extends Container
 	 * @type Object
 	 * @private
 	 */
-	_managed = {};
+	public _managed = {};
 
 	constructor(mode = MovieClip.INDEPENDENT, startPosition = 0, loop = true, labels?)
 	{

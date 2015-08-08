@@ -283,7 +283,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return this._getBounds(null, true);
         };
         Container.prototype.toString = function () {
-            return "[Container (name=" + this.name + ")]";
+            return "[Container<T> (name=" + this.name + ")]";
         };
         Container.prototype.onResize = function (width, height) {
             _super.prototype.onResize.call(this, width, height);

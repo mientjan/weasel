@@ -244,7 +244,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @default null
 	 * @readonly
 	 **/
-	public parent:Container = null;
+	public parent:Container<any> = null;
 
 	/**
 	 * Indicates whether this display object should be rendered to the canvas and included when running the Stage

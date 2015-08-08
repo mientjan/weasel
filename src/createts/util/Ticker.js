@@ -120,5 +120,4 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
         Ticker.maxDelta = 0;
         return Ticker;
     })();
-    return Ticker;
 });

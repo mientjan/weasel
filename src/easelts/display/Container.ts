@@ -50,7 +50,7 @@ import Stage = require("./Stage");
  *
  * <h4>Example</h4>
  *
- *      var container = new createjs.Container();
+ *      var container = new Container();
  *      container.addChild(bitmapInstance, shapeInstance);
  *      container.x = 100;
  *
@@ -58,7 +58,7 @@ import Stage = require("./Stage");
  * @extends DisplayObject
  * @constructor
  **/
-class Container extends DisplayObject
+class Container<T extends IDisplayObject> extends DisplayObject
 {
 	// public properties:
 	public type:DisplayType = DisplayType.CONTAINER;
@@ -72,7 +72,7 @@ class Container extends DisplayObject
 	 * @type Array
 	 * @default null
 	 **/
-	public children:Array<IDisplayObject> = [];
+	public children:Array<T> = [];
 
 	/**
 	 * Indicates whether the children of this container are independently enabled for mouse/pointer interaction.
@@ -136,7 +136,7 @@ class Container extends DisplayObject
 	 * @param value
 	 * @returns {Container}
 	 */
-	public setRenderIsolation(value:boolean):Container
+	public setRenderIsolation(value:boolean):Container<T>
 	{
 		if(this._isRenderIsolated && !value)
 		{
@@ -281,7 +281,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child The display object to add.
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
-	public addChild(...children:Array<IDisplayObject>):IDisplayObject
+	public addChild(...children:Array<T>):T
 	{
 		var length = children.length;
 		if(length == 0)
@@ -306,7 +306,7 @@ class Container extends DisplayObject
 			child.parent.removeChild(child);
 		}
 
-		child.parent = <Container> this;
+		child.parent = <Container<T>> this;
 		child.isDirty = true;
 
 		if(this.stage)
@@ -356,7 +356,7 @@ class Container extends DisplayObject
 	 * @param {number} index The index to add the child at.
 	 * @return {IDisplayObject} Returns the last child that was added, or the last child if multiple children were added.
 	 **/
-	public addChildAt(child:IDisplayObject, index:number):IDisplayObject
+	public addChildAt(child:T, index:number):T
 	{
 		if(child.parent)
 		{
@@ -368,7 +368,7 @@ class Container extends DisplayObject
 			child.setStage(this.stage)
 		}
 
-		child.parent = <Container> this;
+		child.parent = <Container<T>> this;
 		child.isDirty = true;
 
 		this.children.splice(index, 0, child);
@@ -394,7 +394,7 @@ class Container extends DisplayObject
 	 * @param {IDisplayObject} child The child to remove.
 	 * @return {Boolean} true if the child (or children) was removed, or false if it was not in the display list.
 	 **/
-	public removeChild(...children:IDisplayObject[]):boolean
+	public removeChild(...children:Array<T>):boolean
 	{
 		var l = children.length;
 		if(l > 1)
@@ -470,7 +470,7 @@ class Container extends DisplayObject
 	 *
 	 * @method removeAllChildren
 	 **/
-	public removeAllChildren():Container
+	public removeAllChildren():Container<T>
 	{
 		var children = this.children;
 		while(children.length)
@@ -534,7 +534,7 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction:(a:IDisplayObject, b:IDisplayObject) => number):Container
+	public sortChildren(sortFunction:(a:IDisplayObject, b:IDisplayObject) => number):Container<T>
 	{
 		this.children.sort(sortFunction);
 		return this;
@@ -551,7 +551,7 @@ class Container extends DisplayObject
 	 * @param {IDisplayObject} child The child to return the index of.
 	 * @return {Number} The index of the specified child. -1 if the child is not found.
 	 **/
-	public getChildIndex(child:IDisplayObject):number
+	public getChildIndex(child:T):number
 	{
 		return this.children.indexOf(child);
 	}
@@ -592,7 +592,7 @@ class Container extends DisplayObject
 	 * @param {IDisplayObject} child0
 	 * @param {IDisplayObject} child1
 	 **/
-	public swapChildren(child0:IDisplayObject, child1:IDisplayObject):Container
+	public swapChildren(child0:T, child1:T):Container<T>
 	{
 		var children = this.children;
 		var index1, index2;
@@ -629,7 +629,7 @@ class Container extends DisplayObject
 	 * @param {IDisplayObject} child
 	 * @param {Number} index
 	 **/
-	public setChildIndex(child:IDisplayObject, index:number):Container
+	public setChildIndex(child:T, index:number):Container<T>
 	{
 		var children = this.children, l = children.length;
 		if(child.parent != this || index < 0 || index >= l)
@@ -723,7 +723,7 @@ class Container extends DisplayObject
 	 * @param {Number} y The y position in the container to test.
 	 * @return {IDisplayObject} The top-most display object under the specified coordinates.
 	 **/
-	public getObjectUnderPoint(x:number, y:number):Container|IDisplayObject
+	public getObjectUnderPoint(x:number, y:number):Container<T>|IDisplayObject
 	{
 		var pt = this.localToGlobal(x, y);
 		return this._getObjectsUnderPoint(pt.x, pt.y);
@@ -778,7 +778,7 @@ class Container extends DisplayObject
 	 **/
 	public toString():string
 	{
-		return "[Container (name=" + this.name + ")]";
+		return "[Container<T> (name=" + this.name + ")]";
 	}
 
 	public onResize(width:number, height:number):void
@@ -833,7 +833,7 @@ class Container extends DisplayObject
 	 * @return {Array}
 	 * @protected
 	 **/
-	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean):Container | IDisplayObject
+	public _getObjectsUnderPoint(x, y, arr?:Array<T>, mouse?:boolean, activeListener?:boolean):Container<T> | T
 	{
 		var ctx = DisplayObject._hitTestContext;
 		var mtx = this._matrix;
@@ -878,10 +878,10 @@ class Container extends DisplayObject
 			// if a child container has a hitArea then we only need to check its hitArea, so we can treat it as a normal DO:
 			if(!hitArea && child.type == DisplayType.CONTAINER)
 			{
-				var result = ( <Container> child)._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
+				var result:any = (<any> child)._getObjectsUnderPoint(x, y, arr, mouse, activeListener);
 				if(!arr && result)
 				{
-					return (mouse && !this.mouseChildren) ? this : result;
+					return (mouse && !this.mouseChildren) ? this : <T> result;
 				}
 			}
 			else
@@ -921,7 +921,7 @@ class Container extends DisplayObject
 				}
 				else
 				{
-					return (mouse && !this.mouseChildren) ? (<Container> this) : (<IDisplayObject> child);
+					return (mouse && !this.mouseChildren) ? (<Container<T>> this) : (<T> child);
 				}
 			}
 		}
