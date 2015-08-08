@@ -68,6 +68,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._rectangle = new Rectangle(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
+            this.DisplayObject_getBounds = this._getBounds;
             this.setGeomTransform(width, height, x, y, regX, regY);
         }
         Object.defineProperty(DisplayObject.prototype, "resizeSignal", {

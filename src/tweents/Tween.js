@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/event/EventDispatcher', '../createts/util/Ticker', '../tweents/Ease'], function (require, exports, EventDispatcher, Ticker, Ease) {
+define(["require", "exports", '../createts/event/EventDispatcher', '../tweents/Ease', "../createts/util/Interval"], function (require, exports, EventDispatcher, Ease, Interval) {
     var Tween = (function (_super) {
         __extends(Tween, _super);
         function Tween(target, props, pluginData) {
@@ -54,21 +54,23 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                 this.setPosition(props.position, Tween.NONE);
             }
         }
+        Tween.start = function () {
+            if (!Tween.interval) {
+                Tween.interval = new Interval(60);
+            }
+            Tween.interval.attach(this.onTick);
+        };
+        Tween.stop = function () {
+            if (Tween.interval) {
+                Tween.interval.destruct();
+                Tween.interval = null;
+            }
+        };
         Tween.get = function (target, props, pluginData, override) {
             if (override) {
                 Tween.removeTweens(target);
             }
             return new Tween(target, props, pluginData);
-        };
-        Tween.onTick = function (delta, paused) {
-            var tweens = Tween._tweens.slice();
-            for (var i = tweens.length - 1; i >= 0; i--) {
-                var tween = tweens[i];
-                if ((paused && !tween.ignoreGlobalPause) || tween._paused) {
-                    continue;
-                }
-                tween.onTick(tween._useTicks ? 1 : delta);
-            }
         };
         Tween.removeTweens = function (target) {
             if (!target.tweenjs_count) {
@@ -128,8 +130,8 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
                     target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count + 1 : 1;
                 }
                 tweens.push(tween);
-                if (!Tween._inited && Ticker) {
-                    Ticker.getInstance().addTickListener(Tween.onTick.bind(Tween));
+                if (!Tween._inited) {
+                    Tween.start();
                     Tween._inited = true;
                 }
             }
@@ -388,12 +390,23 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../createts/
             }
         };
         Tween._inited = false;
+        Tween.interval = null;
         Tween.NONE = 0;
         Tween.LOOP = 1;
         Tween.REVERSE = 2;
         Tween.IGNORE = {};
         Tween._tweens = [];
         Tween._plugins = {};
+        Tween.onTick = function (delta) {
+            var tweens = Tween._tweens.slice();
+            for (var i = tweens.length - 1; i >= 0; i--) {
+                var tween = tweens[i];
+                if (tween._paused) {
+                    continue;
+                }
+                tween.onTick(tween._useTicks ? 1 : delta);
+            }
+        };
         return Tween;
     })(EventDispatcher);
     return Tween;

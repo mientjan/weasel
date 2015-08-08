@@ -1,6 +1,7 @@
 import EventDispatcher = require('../createts/event/EventDispatcher');
-import Ticker = require('../createts/util/Ticker');
+//import Ticker = require('../createts/util/Ticker');
 import Ease = require('../tweents/Ease');
+import Interval = require("../createts/util/Interval");
 
 
 /*
@@ -121,6 +122,7 @@ class Tween extends EventDispatcher
 {
 
 	public static _inited = false;
+	public static interval:Interval = null;
 
 	// static properties
 	/**
@@ -174,6 +176,22 @@ class Tween extends EventDispatcher
 	 */
 	public static _plugins = {};
 
+	public static start():void
+	{
+		if(!Tween.interval ){
+			Tween.interval = new Interval(60);
+		}
+
+		Tween.interval.attach(this.onTick)
+	}
+
+	public static stop():void
+	{
+		if(Tween.interval){
+			Tween.interval.destruct();
+			Tween.interval = null;
+		}
+	}
 
 	// static methods
 	/**
@@ -225,16 +243,17 @@ class Tween extends EventDispatcher
 	 * will ignore this, but all others will pause if this is `true`.
 	 * @static
 	 */
-	public static onTick(delta:number, paused:boolean)
+	public static onTick = (delta:number) =>
 	{
 		var tweens = Tween._tweens.slice(); // to avoid race conditions.
 		for(var i = tweens.length - 1; i >= 0; i--)
 		{
 			var tween = tweens[i];
-			if((paused && !tween.ignoreGlobalPause) || tween._paused)
+			if(tween._paused)
 			{
 				continue;
 			}
+
 			tween.onTick(tween._useTicks ? 1 : delta);
 		}
 	}
@@ -376,9 +395,9 @@ class Tween extends EventDispatcher
 				target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count + 1 : 1;
 			}
 			tweens.push(tween);
-			if(!Tween._inited && Ticker)
+			if(!Tween._inited)
 			{
-				Ticker.getInstance().addTickListener(Tween.onTick.bind(Tween));
+				Tween.start();
 				Tween._inited = true;
 			}
 		}

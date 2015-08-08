@@ -1674,7 +1674,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _applyFilterBounds(x, y, width, height)
+	protected _applyFilterBounds(x:number, y:number, width:number, height:number)
 	{
 		var bounds, l, filters = this.filters;
 		if(!filters || !(l = filters.length))
@@ -1709,12 +1709,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean)
+	protected _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean):Rectangle
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
 
-	//public DisplayObject_getBounds = this._getBounds;
+	public DisplayObject_getBounds:(matrix?:m2.Matrix2, ignoreTransform?:boolean) => Rectangle = this._getBounds;
 
 
 	/**
@@ -1725,7 +1725,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean)
+	protected _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		if(!bounds)
 		{

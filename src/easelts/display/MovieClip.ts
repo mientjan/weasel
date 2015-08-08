@@ -3,9 +3,14 @@ import Timeline = require('../../tweents/Timeline');
 import Tween = require('../../tweents/Tween');
 import TimeEvent = require('../../createts/event/TimeEvent');
 import DisplayObject = require('./DisplayObject');
+import IDisplayObject = require("../interface/IDisplayObject");
 
 //import MovieClipPlugin = require('./MovieClipPlugin');
-/*
+/**
+ * MovieClip
+ *
+ * The MIT License (MIT)
+ *
  * Copyright (c) 2010 gskinner.com, inc.
  * Copyright (c) 2015 Mient-jan Stelling.
  *
@@ -45,17 +50,17 @@ import DisplayObject = require('./DisplayObject');
  * This example animates two shapes back and forth. The grey shape starts on the left, but we jump to a mid-point in
  * the animation using {{#crossLink "MovieClip/gotoAndPlay"}}{{/crossLink}}.
  *
- *      var stage = new createjs.Stage("canvas");
- *      createjs.Ticker.addEventListener("tick", stage);
+ *      var stage = new Stage("canvas");
+ *      stage.start();
  *
- *      var mc = new createjs.MovieClip(null, 0, true, {start:20});
+ *      var mc = new MovieClip(null, 0, true, {start:20});
  *      stage.addChild(mc);
  *
- *      var child1 = new createjs.Shape(
- *          new createjs.Graphics().beginFill("#999999")
+ *      var child1 = new Shape(
+ *          new Graphics().beginFill("#999999")
  *              .drawCircle(30,30,30));
- *      var child2 = new createjs.Shape(
- *          new createjs.Graphics().beginFill("#5a9cfb")
+ *      var child2 = new Shape(
+ *          new Graphics().beginFill("#5a9cfb")
  *              .drawCircle(30,30,30));
  *
  *      mc.timeline.addTween(
@@ -82,7 +87,7 @@ import DisplayObject = require('./DisplayObject');
  * @param {Object} [labels=null] A hash of labels to pass to the timeline instance associated with this MovieClip.
  * Labels only need to be passed if they need to be used.
  **/
-class MovieClip extends Container
+class MovieClip extends Container<IDisplayObject>
 {
 	// constants:
 	/**
@@ -611,7 +616,7 @@ class MovieClip extends Container
 		var kids = this.children;
 		for(i = kids.length - 1; i >= 0; i--)
 		{
-			var id = kids[i].id;
+			var id = kids[i]['id'];
 			if(this._managed[id] == 1)
 			{
 				this.removeChildAt(i);

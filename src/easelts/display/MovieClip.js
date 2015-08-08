@@ -171,7 +171,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
             }
             var kids = this.children;
             for (i = kids.length - 1; i >= 0; i--) {
-                var id = kids[i].id;
+                var id = kids[i]['id'];
                 if (this._managed[id] == 1) {
                     this.removeChildAt(i);
                     delete (this._managed[id]);
