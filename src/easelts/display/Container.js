@@ -108,10 +108,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             child.parent = this;
             child.isDirty = true;
             if (this.stage) {
-                child.stage = this.stage;
-                if (child.onStageSet) {
-                    child.onStageSet.call(child);
-                }
+                child.setStage(this.stage);
             }
             this.children.push(child);
             child.onResize(child.parent.width, child.parent.height);
@@ -134,10 +131,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                 child.parent.removeChild(child);
             }
             if (this.stage) {
-                child.stage = this.stage;
-                if (child.onStageSet) {
-                    child.onStageSet.call(child);
-                }
+                child.setStage(this.stage);
             }
             child.parent = this;
             child.isDirty = true;
@@ -191,6 +185,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             while (children.length) {
                 children.pop().parent = null;
             }
+            return this;
         };
         Container.prototype.getChildAt = function (index) {
             return this.children[index];
@@ -206,6 +201,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         };
         Container.prototype.sortChildren = function (sortFunction) {
             this.children.sort(sortFunction);
+            return this;
         };
         Container.prototype.getChildIndex = function (child) {
             return this.children.indexOf(child);
@@ -213,15 +209,15 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         Container.prototype.getNumChildren = function () {
             return this.children.length;
         };
-        Container.prototype.swapChildrenAt = function (index1, index2) {
+        Container.prototype.swapChildrenAt = function (index0, index1) {
             var children = this.children;
-            var o1 = children[index1];
-            var o2 = children[index2];
-            if (!o1 || !o2) {
+            var child0 = children[index0];
+            var child1 = children[index1];
+            if (!child0 || !child1) {
                 return;
             }
-            children[index1] = o2;
-            children[index2] = o1;
+            children[index0] = child1;
+            children[index1] = child0;
         };
         Container.prototype.swapChildren = function (child0, child1) {
             var children = this.children;
@@ -238,10 +234,11 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                 }
             }
             if (i == l) {
-                return;
+                return this;
             }
             children[index1] = child1;
             children[index2] = child0;
+            return this;
         };
         Container.prototype.setChildIndex = function (child, index) {
             var children = this.children, l = children.length;
@@ -254,10 +251,11 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
                 }
             }
             if (i == l || i == index) {
-                return;
+                return this;
             }
             children.splice(i, 1);
             children.splice(index, 0, child);
+            return this;
         };
         Container.prototype.contains = function (child) {
             while (child) {
@@ -269,7 +267,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return false;
         };
         Container.prototype.hitTest = function (x, y) {
-            return (this.getObjectUnderPoint(x, y) != null);
+            return this.getObjectUnderPoint(x, y) != null;
         };
         Container.prototype.getObjectsUnderPoint = function (x, y) {
             var arr = [];
@@ -304,8 +302,6 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             return "[Container (name=" + this.name + ")]";
         };
         Container.prototype.onResize = function (width, height) {
-            var oldWidth = this.width;
-            var oldHeight = this.height;
             _super.prototype.onResize.call(this, width, height);
             var newWidth = this.width;
             var newHeight = this.height;
@@ -323,12 +319,9 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         Container.prototype.onTick = function (delta) {
             _super.prototype.onTick.call(this, delta);
             if (this.tickChildren) {
-                var children = this.children;
-                for (var i = children.length - 1; i >= 0; i--) {
-                    var child = children[i];
-                    if (child.tickEnabled) {
-                        child.onTick(delta);
-                    }
+                for (var children = this.children, child = null, i = children.length - 1; i >= 0; i--) {
+                    child = children[i];
+                    child.tickEnabled && child.onTick(delta);
                 }
             }
         };
@@ -395,7 +388,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             if (bounds) {
                 return this._transformBounds(bounds, matrix, ignoreTransform);
             }
-            var minX, maxX, minY, maxY;
+            var minX = null, maxX = null, minY = null, maxY = null;
             var mtx = ignoreTransform ? this._matrix.identity() : this.getMatrix(this._matrix);
             if (matrix) {
                 mtx.prependMatrix(matrix);

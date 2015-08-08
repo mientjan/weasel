@@ -653,7 +653,8 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
             return this.cursor != null;
         };
-        DisplayObject.prototype.onStageSet = function () {
+        DisplayObject.prototype.setStage = function (stage) {
+            this.stage = stage;
         };
         DisplayObject.prototype.onResize = function (width, height) {
             this.isDirty = false;

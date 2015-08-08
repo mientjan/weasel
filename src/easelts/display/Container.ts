@@ -309,11 +309,7 @@ class Container extends DisplayObject
 
 		if(this.stage)
 		{
-			child.stage = this.stage;
-			if(child.onStageSet)
-			{
-				child.onStageSet.call(child);
-			}
+			child.setStage(this.stage);
 		}
 
 		this.children.push(child);
@@ -374,11 +370,7 @@ class Container extends DisplayObject
 
 		if(this.stage)
 		{
-			child.stage = this.stage;
-			if(child.onStageSet)
-			{
-				child.onStageSet.call(child);
-			}
+			child.setStage(this.stage)
 		}
 
 		child.parent = <Container> this;
@@ -444,7 +436,7 @@ class Container extends DisplayObject
 		var l = index.length;
 		if(l > 1)
 		{
-			index.sort(function(a, b)
+			index.sort(function (a, b)
 			{
 				return b - a;
 			});
@@ -483,13 +475,15 @@ class Container extends DisplayObject
 	 *
 	 * @method removeAllChildren
 	 **/
-	public removeAllChildren()
+	public removeAllChildren():Container
 	{
 		var children = this.children;
 		while(children.length)
 		{
 			children.pop().parent = null;
 		}
+
+		return this;
 	}
 
 	/**
@@ -524,6 +518,7 @@ class Container extends DisplayObject
 				return children[i];
 			}
 		}
+
 		return null;
 	}
 
@@ -543,9 +538,10 @@ class Container extends DisplayObject
 	 * @param {Function} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code>
 	 * documentation for details.
 	 **/
-	public sortChildren(sortFunction:(a:DisplayObject, b:DisplayObject) => number):void
+	public sortChildren(sortFunction:(a:DisplayObject, b:DisplayObject) => number):Container
 	{
 		this.children.sort(sortFunction);
+		return this;
 	}
 
 	/**
@@ -577,20 +573,20 @@ class Container extends DisplayObject
 	/**
 	 * Swaps the children at the specified indexes. Fails silently if either index is out of range.
 	 * @method swapChildrenAt
+	 * @param {Number} index0
 	 * @param {Number} index1
-	 * @param {Number} index2
 	 **/
-	public swapChildrenAt(index1:number, index2:number):void
+	public swapChildrenAt(index0:number, index1:number):void
 	{
 		var children = this.children;
-		var o1 = children[index1];
-		var o2 = children[index2];
-		if(!o1 || !o2)
+		var child0 = children[index0];
+		var child1 = children[index1];
+		if(!child0 || !child1)
 		{
 			return;
 		}
-		children[index1] = o2;
-		children[index2] = o1;
+		children[index0] = child1;
+		children[index1] = child0;
 	}
 
 	/**
@@ -600,7 +596,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child0
 	 * @param {DisplayObject} child1
 	 **/
-	public swapChildren(child0:DisplayObject, child1:DisplayObject):void
+	public swapChildren(child0:DisplayObject, child1:DisplayObject):Container
 	{
 		var children = this.children;
 		var index1, index2;
@@ -621,10 +617,13 @@ class Container extends DisplayObject
 		}
 		if(i == l)
 		{
-			return;
-		} // TODO: throw error?
+			return this;
+		}
+
 		children[index1] = child1;
 		children[index2] = child0;
+
+		return this;
 	}
 
 	/**
@@ -634,7 +633,7 @@ class Container extends DisplayObject
 	 * @param {DisplayObject} child
 	 * @param {Number} index
 	 **/
-	public setChildIndex(child:DisplayObject, index:number):void
+	public setChildIndex(child:DisplayObject, index:number):Container
 	{
 		var children = this.children, l = children.length;
 		if(child.parent != this || index < 0 || index >= l)
@@ -650,10 +649,13 @@ class Container extends DisplayObject
 		}
 		if(i == l || i == index)
 		{
-			return;
+			return this;
 		}
+
 		children.splice(i, 1);
 		children.splice(index, 0, child);
+
+		return this;
 	}
 
 	/**
@@ -674,6 +676,7 @@ class Container extends DisplayObject
 			}
 			child = child.parent;
 		}
+
 		return false;
 	}
 
@@ -691,7 +694,7 @@ class Container extends DisplayObject
 	public hitTest(x:number, y:number):boolean
 	{
 		// TODO: optimize to use the fast cache check where possible.
-		return (this.getObjectUnderPoint(x, y) != null);
+		return this.getObjectUnderPoint(x, y) != null;
 	}
 
 	/**
@@ -707,7 +710,7 @@ class Container extends DisplayObject
 	 * @param {Number} y The y position in the container to test.
 	 * @return {Array} An Array of DisplayObjects under the specified coordinates.
 	 **/
-	public getObjectsUnderPoint(x:number, y:number):DisplayObject[]
+	public getObjectsUnderPoint(x:number, y:number):Array<DisplayObject>
 	{
 		var arr = [];
 		var pt = this.localToGlobal(x, y);
@@ -724,7 +727,7 @@ class Container extends DisplayObject
 	 * @param {Number} y The y position in the container to test.
 	 * @return {DisplayObject} The top-most display object under the specified coordinates.
 	 **/
-	public getObjectUnderPoint(x:number, y:number):DisplayObject[]
+	public getObjectUnderPoint(x:number, y:number):Container|Array<DisplayObject>
 	{
 		var pt = this.localToGlobal(x, y);
 		return this._getObjectsUnderPoint(pt.x, pt.y);
@@ -733,7 +736,7 @@ class Container extends DisplayObject
 	/**
 	 * Docced in superclass.
 	 */
-	public getBounds()
+	public getBounds():Rectangle
 	{
 		return this._getBounds(null, true);
 	}
@@ -741,7 +744,7 @@ class Container extends DisplayObject
 	/**
 	 * Docced in superclass.
 	 */
-	public getTransformedBounds()
+	public getTransformedBounds():Rectangle
 	{
 		return this._getBounds(null, true);
 	}
@@ -784,9 +787,6 @@ class Container extends DisplayObject
 
 	public onResize(width:number, height:number):void
 	{
-		var oldWidth = this.width;
-		var oldHeight = this.height;
-
 		super.onResize(width, height);
 
 		var newWidth = this.width;
@@ -809,16 +809,8 @@ class Container extends DisplayObject
 
 	}
 
-	// private properties:
 	/**
-	 * @property DisplayObject__tick
-	 * @type Function
-	 * @private
-	 **/
-	//	p.DisplayObject__tick = p._tick;
-
-	/**
-	 * @method _tick
+	 * @method onTick
 	 * @param {Object} props Properties to copy to the DisplayObject {{#crossLink "DisplayObject/tick"}}{{/crossLink}} event object.
 	 * function.
 	 * @protected
@@ -829,14 +821,10 @@ class Container extends DisplayObject
 
 		if(this.tickChildren)
 		{
-			var children = this.children;
-			for(var i = children.length - 1; i >= 0; i--)
+			for(var children = this.children, child = null, i = children.length - 1; i >= 0; i--)
 			{
-				var child = children[i];
-				if(child.tickEnabled)
-				{
-					child.onTick(delta);
-				}
+				child = children[i];
+				child.tickEnabled && child.onTick(delta);
 			}
 
 		}
@@ -852,7 +840,7 @@ class Container extends DisplayObject
 	 * @return {Array}
 	 * @protected
 	 **/
-	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean)
+	public _getObjectsUnderPoint(x, y, arr?:any[], mouse?:boolean, activeListener?:boolean):Container | Array<DisplayObject>
 	{
 		var ctx = DisplayObject._hitTestContext;
 		var mtx = this._matrix;
@@ -965,7 +953,7 @@ class Container extends DisplayObject
 			return this._transformBounds(bounds, matrix, ignoreTransform);
 		}
 
-		var minX, maxX, minY, maxY;
+		var minX = null, maxX = null, minY = null, maxY = null;
 		var mtx = ignoreTransform ? this._matrix.identity() : this.getMatrix(this._matrix);
 		if(matrix)
 		{
@@ -1001,7 +989,6 @@ class Container extends DisplayObject
 
 		return (maxX == null) ? null : this._rectangle.setProperies(minX, minY, maxX - minX, maxY - minY);
 	}
-
 
 	public destruct():void
 	{

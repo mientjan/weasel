@@ -94,52 +94,7 @@ class Stage extends Container
 	public static EVENT_MOUSE_ENTER = 'mouseenter';
 	public static EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
 
-
-	/**
-	 * Dispatched when the user moves the mouse over the canvas.
-	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
-	 * @event stagemousemove
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the user presses their left mouse button on the canvas. See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event stagemousedown
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the user the user releases the mouse button anywhere that the page can detect it (this varies slightly between browsers).
-	 * You can use {{#crossLink "Stage/mouseInBounds:property"}}{{/crossLink}} to check whether the mouse is currently within the stage bounds.
-	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
-	 * @event stagemouseup
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the mouse moves from within the canvas area (mouseInBounds == true) to outside it (mouseInBounds == false).
-	 * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event mouseleave
-	 * @since 0.7.0
-	 */
-
-	/**
-	 * Dispatched when the mouse moves into the canvas area (mouseInBounds == false) from outside it (mouseInBounds == true).
-	 * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event mouseenter
-	 * @since 0.7.0
-	 */
-
-	/**
-	 * Dispatched each update immediately before the tick event is propagated through the display list.
-	 * You can call preventDefault on the event object to cancel propagating the tick event.
-	 * @event tickstart
-	 * @since 0.7.0
-	 */
-	//	protected _ticker:Ticker = new Ticker();
+	public type:DisplayType = DisplayType.STAGE;
 
 	public tickstartSignal:Signal = new Signal();
 
@@ -166,12 +121,9 @@ class Stage extends Container
 	 */
 	public drawendSignal:Signal = new Signal();
 
-	// public properties:
-	public type:DisplayType = DisplayType.STAGE;
-
-	private _isRunning:boolean = false;
-	private _fps:number = 60;
-	private _ticker:Interval;
+	protected _isRunning:boolean = false;
+	protected _fps:number = 60;
+	protected _ticker:Interval;
 
 	public _eventListeners:{
 		[name:string]: {
@@ -180,7 +132,7 @@ class Stage extends Container
 		}
 	} = null;
 
-	public _onResizeEventListener:Function = null;
+	private _onResizeEventListener:Function = null;
 
 	/**
 	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
@@ -196,22 +148,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	public autoClear = true;
-
-	/**
-	 * The canvas the stage will render to. Multiple stages can share a single canvas, but you must disable autoClear for all but the
-	 * first stage that will be ticked (or they will clear each other's render).
-	 *
-	 * When changing the canvas property you must disable the events on the old canvas, and enable events on the
-	 * new canvas or mouse events will not work as expected. For example:
-	 *
-	 *      myStage.enableDOMEvents(false);
-	 *      myStage.canvas = anotherCanvas;
-	 *      myStage.enableDOMEvents(true);
-	 *
-	 * @property canvas
-	 * @type HTMLCanvasElement
-	 **/
+	public autoClear:boolean = true;
 	public canvas:HTMLCanvasElement = null;
 	public ctx:CanvasRenderingContext2D = null;
 
@@ -274,7 +211,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default false
 	 **/
-	public mouseInBounds = false;
+	public mouseInBounds:boolean = false;
 
 	/**
 	 * If true, tick callbacks will be called on all display objects on the stage prior to rendering to the canvas.
@@ -282,7 +219,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default true
 	 **/
-	public tickOnUpdate = true;
+	public tickOnUpdate:boolean = true;
 
 	/**
 	 * If true, mouse move events will continue to be called when the mouse leaves the target canvas. See
@@ -292,7 +229,7 @@ class Stage extends Container
 	 * @type Boolean
 	 * @default false
 	 **/
-	public mouseMoveOutside = false;
+	public mouseMoveOutside:boolean = false;
 
 	/**
 	 * The hitArea property is not supported for Stage.
@@ -301,56 +238,7 @@ class Stage extends Container
 	 * @default null
 	 */
 
-	public __touch:TouchInjectProperties;
-
-	// getter / setters:
-	/**
-	 * Specifies a target stage that will have mouse / touch interactions relayed to it after this stage handles them.
-	 * This can be useful in cases where you have multiple layered canvases and want user interactions
-	 * events to pass through. For example, this would relay mouse events from topStage to bottomStage:
-	 *
-	 *      topStage.nextStage = bottomStage;
-	 *
-	 * To disable relaying, set nextStage to null.
-	 *
-	 * MouseOver, MouseOut, RollOver, and RollOut interactions are also passed through using the mouse over settings
-	 * of the top-most stage, but are only processed if the target stage has mouse over interactions enabled.
-	 * Considerations when using roll over in relay targets:<OL>
-	 * <LI> The top-most (first) stage must have mouse over interactions enabled (via enableMouseOver)</LI>
-	 * <LI> All stages that wish to participate in mouse over interaction must enable them via enableMouseOver</LI>
-	 * <LI> All relay targets will share the frequency value of the top-most stage</LI>
-	 * </OL>
-	 * To illustrate, in this example the targetStage would process mouse over interactions at 10hz (despite passing
-	 * 30 as it's desired frequency):
-	 *    topStage.nextStage = targetStage;
-	 *    topStage.enableMouseOver(10);
-	 *    targetStage.enableMouseOver(30);
-	 *
-	 * If the target stage's canvas is completely covered by this stage's canvas, you may also want to disable its
-	 * DOM events using:
-	 *
-	 *    targetStage.enableDOMEvents(false);
-	 *
-	 * @property nextStage
-	 * @type {Stage}
-	 **/
-	public get nextStage()
-	{
-		return this._nextStage;
-	}
-
-	public set nextStage(value:Stage)
-	{
-		if(this._nextStage)
-		{
-			this._nextStage._prevStage = null;
-		}
-		if(value)
-		{
-			value._prevStage = this;
-		}
-		this._nextStage = value;
-	}
+	public __touch:TouchInjectProperties = null;
 
 	/**
 	 * Holds objects with data for each active pointer id. Each object has the following properties:
@@ -359,7 +247,7 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	public _pointerData:any = {};
+	protected _pointerData:any = {};
 
 	/**
 	 * Number of active pointers.
@@ -367,7 +255,7 @@ class Stage extends Container
 	 * @type {number}
 	 * @private
 	 */
-	public _pointerCount:number = 0;
+	protected _pointerCount:number = 0;
 
 	/**
 	 * The ID of the primary pointer.
@@ -375,28 +263,14 @@ class Stage extends Container
 	 * @type {Object}
 	 * @private
 	 */
-	public _primaryPointerID = null;
+	protected _primaryPointerID:any = null;
 
 	/**
 	 * @property _mouseOverIntervalID
 	 * @protected
 	 * @type Number
 	 **/
-	public _mouseOverIntervalID = null;
-
-	/**
-	 * @property _nextStage
-	 * @protected
-	 * @type Stage
-	 **/
-	public _nextStage:Stage = null;
-
-	/**
-	 * @property _prevStage
-	 * @protected
-	 * @type Stage
-	 **/
-	public _prevStage = null;
+	protected _mouseOverIntervalID:number = null;
 
 	/**
 	 * @class Stage
@@ -404,7 +278,7 @@ class Stage extends Container
 	 * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false, public pixelRatio:number = 2)
+	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
@@ -513,8 +387,8 @@ class Stage extends Container
 		 *
 		 */
 		ctx.setTransform(
-				this.pixelRatio, 0, 0,
-				this.pixelRatio, 0.5, 0.5
+				1, 0, 0,
+				1, 0.5, 0.5
 		);
 		//ctx.translate(0.5, 0.5);
 
@@ -881,24 +755,16 @@ class Stage extends Container
 	 **/
 	public _handlePointerMove(id:number, e:MouseEvent, pageX:number, pageY:number, owner?:Stage)
 	{
-		if(this._prevStage && owner === undefined)
-		{
-			return;
-		}
-
 		// redundant listener.
 		if(!this.canvas)
 		{
 			return;
 		}
 
-
-		var nextStage = this._nextStage;
 		var pointerData = this._getPointerData(id);
 
 		var inBounds = pointerData.inBounds;
-		this._updatePointerPosition(id, e, pageX, pageY
-		);
+		this._updatePointerPosition(id, e, pageX, pageY);
 		if(inBounds || pointerData.inBounds || this.mouseMoveOutside)
 		{
 			if(id == -1 && pointerData.inBounds == !inBounds)
@@ -909,8 +775,6 @@ class Stage extends Container
 			this._dispatchMouseEvent(this, "stagemousemove", false, id, pointerData, e);
 			this._dispatchMouseEvent(pointerData.target, "pressmove", true, id, pointerData, e);
 		}
-
-		nextStage && nextStage._handlePointerMove(id, e, pageX, pageY, null);
 	}
 
 	/**
@@ -975,16 +839,12 @@ class Stage extends Container
 	 **/
 	public _handlePointerUp(id, e, clear, owner?:Stage):void
 	{
-		var nextStage = this._nextStage, o = this._getPointerData(id);
-		if(this._prevStage && owner === undefined)
-		{
-			return;
-		} // redundant listener.
+		var o = this._getPointerData(id);
 
 		this._dispatchMouseEvent(this, "stagemouseup", false, id, o, e);
 
 		var target = null, oTarget = o.target;
-		if(!owner && (oTarget || nextStage))
+		if(!owner && oTarget)
 		{
 			target = this._getObjectsUnderPoint(o.x, o.y, null, true);
 		}
@@ -1006,8 +866,6 @@ class Stage extends Container
 		{
 			o.target = null;
 		}
-
-		nextStage && nextStage._handlePointerUp(id, e, clear, owner || target && this);
 	}
 
 	/**
@@ -1037,7 +895,6 @@ class Stage extends Container
 		}
 
 		var target = null;
-		var nextStage = this._nextStage;
 		var pointerData = this._getPointerData(id);
 
 
@@ -1052,8 +909,6 @@ class Stage extends Container
 
 			this._dispatchMouseEvent(pointerData.target, "mousedown", true, id, pointerData, e);
 		}
-
-		nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
 	}
 
 	/**
@@ -1065,16 +920,8 @@ class Stage extends Container
 	 **/
 	public _testMouseOver(clear?:boolean, owner?:Stage, eventTarget?:Stage)
 	{
-		if(this._prevStage && owner === undefined)
-		{
-			return;
-		} // redundant listener.
-
-		var nextStage = this._nextStage;
 		if(!this._mouseOverIntervalID)
 		{
-			// not enabled for mouseover, but should still relay the event.
-			nextStage && nextStage._testMouseOver(clear, owner, eventTarget);
 			return;
 		}
 
@@ -1150,8 +997,6 @@ class Stage extends Container
 		{
 			this._dispatchMouseEvent(target, "mouseover", true, -1, o, e);
 		}
-
-		nextStage && nextStage._testMouseOver(clear, owner || target && this, eventTarget || isEventTarget && this);
 	}
 
 	/**
@@ -1160,22 +1005,21 @@ class Stage extends Container
 	 * @param {MouseEvent} e
 	 * @param {Stage} owner Indicates that the event has already been captured & handled by the indicated stage.
 	 **/
-	public _handleDoubleClick(e:MouseEvent, owner?:Stage)
+	protected _handleDoubleClick(e:MouseEvent, owner?:Stage)
 	{
-		var target = null, nextStage = this._nextStage, o = this._getPointerData(-1);
+		var target = null, o = this._getPointerData(-1);
 		if(!owner)
 		{
 			target = this._getObjectsUnderPoint(o.x, o.y, null, true);
 			this._dispatchMouseEvent(target, "dblclick", true, -1, o, e);
 		}
-		nextStage && nextStage._handleDoubleClick(e, owner || target && this);
 	}
 
 	/**
 	 * @method _handleWindowResize
 	 * @protected
 	 **/
-	public _handleWindowResize(e)
+	protected _handleWindowResize(e)
 	{
 		this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
 	}
@@ -1193,7 +1037,7 @@ class Stage extends Container
 	 * @param {Object} o
 	 * @param {MouseEvent} [nativeEvent]
 	 **/
-	public _dispatchMouseEvent(target:DisplayObject, type:string, bubbles:boolean, pointerId:number, o:any, nativeEvent:MouseEvent)
+	protected _dispatchMouseEvent(target:DisplayObject, type:string, bubbles:boolean, pointerId:number, o:any, nativeEvent:MouseEvent)
 	{
 
 		// TODO: might be worth either reusing MouseEvent instances, or adding a willTrigger method to avoid GC.
@@ -1319,8 +1163,8 @@ class Stage extends Container
 
 		if(this.width != width || this.height != height)
 		{
-			this.canvas.width = width * this.pixelRatio;
-			this.canvas.height = height * this.pixelRatio;
+			this.canvas.width = width;
+			this.canvas.height = height;
 
 			this.canvas.style.width = '' + width + 'px';
 			this.canvas.style.height = '' + height + 'px';

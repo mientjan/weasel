@@ -7,17 +7,15 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal', "../../createts/util/Interval"], function (require, exports, DisplayObject, Container, Size, PointerData, PointerEvent, Signal, Interval) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
-        function Stage(element, triggerResizeOnWindowResize, pixelRatio) {
+        function Stage(element, triggerResizeOnWindowResize) {
             var _this = this;
             if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
-            if (pixelRatio === void 0) { pixelRatio = 2; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
-            this.pixelRatio = pixelRatio;
+            this.type = 1 /* STAGE */;
             this.tickstartSignal = new Signal();
             this.tickendSignal = new Signal();
             this.drawstartSignal = new Signal();
             this.drawendSignal = new Signal();
-            this.type = 1 /* STAGE */;
             this._isRunning = false;
             this._fps = 60;
             this._eventListeners = null;
@@ -34,12 +32,11 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             this.mouseInBounds = false;
             this.tickOnUpdate = true;
             this.mouseMoveOutside = false;
+            this.__touch = null;
             this._pointerData = {};
             this._pointerCount = 0;
             this._primaryPointerID = null;
             this._mouseOverIntervalID = null;
-            this._nextStage = null;
-            this._prevStage = null;
             this.update = function (delta) {
                 if (!_this.canvas) {
                     return;
@@ -50,7 +47,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
                 var r = _this.drawRect, ctx = _this.ctx;
-                ctx.setTransform(_this.pixelRatio, 0, 0, _this.pixelRatio, 0.5, 0.5);
+                ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
                 if (_this.autoClear) {
                     if (r) {
                         ctx.clearRect(r.x, r.y, r.width, r.height);
@@ -100,22 +97,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             }
             this.onResize(size.width, size.height);
         }
-        Object.defineProperty(Stage.prototype, "nextStage", {
-            get: function () {
-                return this._nextStage;
-            },
-            set: function (value) {
-                if (this._nextStage) {
-                    this._nextStage._prevStage = null;
-                }
-                if (value) {
-                    value._prevStage = this;
-                }
-                this._nextStage = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Stage.prototype.setQuality = function (value) {
             switch (value) {
                 case 1 /* LOW */:
@@ -272,13 +253,9 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             this._handlePointerMove(-1, e, e.pageX, e.pageY);
         };
         Stage.prototype._handlePointerMove = function (id, e, pageX, pageY, owner) {
-            if (this._prevStage && owner === undefined) {
-                return;
-            }
             if (!this.canvas) {
                 return;
             }
-            var nextStage = this._nextStage;
             var pointerData = this._getPointerData(id);
             var inBounds = pointerData.inBounds;
             this._updatePointerPosition(id, e, pageX, pageY);
@@ -289,7 +266,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 this._dispatchMouseEvent(this, "stagemousemove", false, id, pointerData, e);
                 this._dispatchMouseEvent(pointerData.target, "pressmove", true, id, pointerData, e);
             }
-            nextStage && nextStage._handlePointerMove(id, e, pageX, pageY, null);
         };
         Stage.prototype._updatePointerPosition = function (id, e, pageX, pageY) {
             var rect = this._getElementRect(this.canvas);
@@ -321,13 +297,10 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             this._handlePointerUp(-1, e, false);
         };
         Stage.prototype._handlePointerUp = function (id, e, clear, owner) {
-            var nextStage = this._nextStage, o = this._getPointerData(id);
-            if (this._prevStage && owner === undefined) {
-                return;
-            }
+            var o = this._getPointerData(id);
             this._dispatchMouseEvent(this, "stagemouseup", false, id, o, e);
             var target = null, oTarget = o.target;
-            if (!owner && (oTarget || nextStage)) {
+            if (!owner && oTarget) {
                 target = this._getObjectsUnderPoint(o.x, o.y, null, true);
             }
             if (target == oTarget) {
@@ -343,7 +316,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             else {
                 o.target = null;
             }
-            nextStage && nextStage._handlePointerUp(id, e, clear, owner || target && this);
         };
         Stage.prototype._handleMouseDown = function (e) {
             this._handlePointerDown(-1, e, e.pageX, e.pageY);
@@ -353,7 +325,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 this._updatePointerPosition(id, e, pageX, pageY);
             }
             var target = null;
-            var nextStage = this._nextStage;
             var pointerData = this._getPointerData(id);
             if (pointerData.inBounds) {
                 this._dispatchMouseEvent(this, "stagemousedown", false, id, pointerData, e);
@@ -362,15 +333,9 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 target = pointerData.target = this._getObjectsUnderPoint(pointerData.x, pointerData.y, null, true);
                 this._dispatchMouseEvent(pointerData.target, "mousedown", true, id, pointerData, e);
             }
-            nextStage && nextStage._handlePointerDown(id, e, pageX, pageY, owner || target && this);
         };
         Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {
-            if (this._prevStage && owner === undefined) {
-                return;
-            }
-            var nextStage = this._nextStage;
             if (!this._mouseOverIntervalID) {
-                nextStage && nextStage._testMouseOver(clear, owner, eventTarget);
                 return;
             }
             if (this._primaryPointerID != -1 || (!clear && this.mouseX == this._mouseOverX && this.mouseY == this._mouseOverY && this.mouseInBounds)) {
@@ -417,15 +382,13 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             if (oldTarget != target) {
                 this._dispatchMouseEvent(target, "mouseover", true, -1, o, e);
             }
-            nextStage && nextStage._testMouseOver(clear, owner || target && this, eventTarget || isEventTarget && this);
         };
         Stage.prototype._handleDoubleClick = function (e, owner) {
-            var target = null, nextStage = this._nextStage, o = this._getPointerData(-1);
+            var target = null, o = this._getPointerData(-1);
             if (!owner) {
                 target = this._getObjectsUnderPoint(o.x, o.y, null, true);
                 this._dispatchMouseEvent(target, "dblclick", true, -1, o, e);
             }
-            nextStage && nextStage._handleDoubleClick(e, owner || target && this);
         };
         Stage.prototype._handleWindowResize = function (e) {
             this.onResize(this.holder.offsetWidth, this.holder.offsetHeight);
@@ -476,8 +439,8 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {
-                this.canvas.width = width * this.pixelRatio;
-                this.canvas.height = height * this.pixelRatio;
+                this.canvas.width = width;
+                this.canvas.height = height;
                 this.canvas.style.width = '' + width + 'px';
                 this.canvas.style.height = '' + height + 'px';
                 _super.prototype.onResize.call(this, width, height);
