@@ -1093,6 +1093,20 @@ class Stage extends Container<IDisplayObject>
 		window.removeEventListener('resize', <any> this._onResizeEventListener);
 	}
 
+	public enableMouseInteraction():void
+	{
+		this.enableDOMEvents(true);
+
+		super.enableMouseInteraction();
+	}
+
+	public disableMouseInteraction():void
+	{
+		this.enableDOMEvents(false);
+
+		super.disableMouseInteraction();
+	}
+
 	/**
 	 * Start the update loop.
 	 *
