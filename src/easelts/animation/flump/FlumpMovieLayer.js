@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpTexture', './FlumpLabelData'], function (require, exports, DisplayObject, FlumpKeyframeData, FlumpTexture, FlumpLabelData) {
+define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpLabelData', "./FlumpMtx"], function (require, exports, DisplayObject, FlumpKeyframeData, FlumpLabelData, FlumpMtx) {
     var FlumpMovieLayer = (function (_super) {
         __extends(FlumpMovieLayer, _super);
         function FlumpMovieLayer(flumpMove, flumpLayerData) {
@@ -13,20 +13,14 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this._frame = 0;
             this._symbols = {};
             this._symbolName = null;
-            this._storedMtx = {
-                a: 1,
-                b: 0,
-                c: 0,
-                d: 1,
-                tx: 0,
-                ty: 0
-            };
+            this._storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
+            this.disableMouseInteraction();
             this.flumpLayerData = flumpLayerData;
             this.name = flumpLayerData.name;
             for (var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++) {
                 var keyframe = flumpLayerData.flumpKeyframeDatas[i];
                 if (keyframe.label) {
-                    flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+                    flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
                 }
                 if ((keyframe.ref != -1 && keyframe.ref != null) && (keyframe.ref in this._symbols) == false) {
                     this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref, false);
@@ -35,7 +29,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this.setFrame(0);
         }
         FlumpMovieLayer.prototype.onTick = function (delta) {
-            if (this._symbol != null && !(this._symbol instanceof FlumpTexture)) {
+            if (this._symbol != null && this._symbol.type != 256) {
                 this._symbol.onTick(delta);
             }
         };

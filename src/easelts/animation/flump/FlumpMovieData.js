@@ -2,15 +2,17 @@ define(["require", "exports", './FlumpLayerData'], function (require, exports, F
     var FlumpMovieData = (function () {
         function FlumpMovieData(flumpLibrary, json) {
             this.frames = 0;
+            var layers = json.layers;
+            var frames = 0;
             this.flumpLibrary = flumpLibrary;
             this.id = json.id;
-            var layers = json.layers;
             this.flumpLayerDatas = new Array(layers.length);
             for (var i = 0; i < layers.length; i++) {
                 var layer = new FlumpLayerData(layers[i]);
                 this.flumpLayerDatas[i] = layer;
-                this.frames = Math.max(this.frames, layer.frames);
+                frames = Math.max(frames, layer.frames);
             }
+            this.frames = frames;
         }
         return FlumpMovieData;
     })();

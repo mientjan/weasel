@@ -151,7 +151,7 @@ class Interval
 
 	private static requestAnimationFrame = (timeUpdate:number):void =>
 	{
-		Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
+
 
 		var prevTime = Interval._time;
 		Interval._time = timeUpdate;
@@ -173,6 +173,8 @@ class Interval
 				fc.ptime = fc.time;
 			}
 		}
+
+		Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
 	}
 
 	private fps:number = 0;

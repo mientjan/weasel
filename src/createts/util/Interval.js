@@ -119,7 +119,6 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
         Interval._rafInt = -1;
         Interval._time = -1;
         Interval.requestAnimationFrame = function (timeUpdate) {
-            Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
             var prevTime = Interval._time;
             Interval._time = timeUpdate;
             var delta = timeUpdate - prevTime;
@@ -134,6 +133,7 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
                     fc.ptime = fc.time;
                 }
             }
+            Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
         };
         return Interval;
     })();

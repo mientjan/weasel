@@ -2,24 +2,27 @@ import IFlumpLibrary = require('../../interface/IFlumpLibrary');
 
 class FlumpKeyframeData
 {
-	index:number;
-	duration:number;
-	label:string;
-	ref:string;
+	// position in the animation array
+	public position:number;
 
-	x:number;
-	y:number;
-	scaleX:number;
-	scaleY:number;
-	skewX:number;
-	skewY:number;
-	pivotX:number;
-	pivotY:number;
+	public index:number;
+	public duration:number;
+	public label:string;
+	public ref:string;
 
-	visible:boolean;
-	alpha:number;
+	public x:number;
+	public y:number;
+	public scaleX:number;
+	public scaleY:number;
+	public skewX:number;
+	public skewY:number;
+	public pivotX:number;
+	public pivotY:number;
 
-	tweened:boolean;
+	public visible:boolean;
+	public alpha:number;
+
+	public tweened:boolean;
 
 	ease:number;
 
@@ -36,14 +39,14 @@ class FlumpKeyframeData
 			this.duration = jsonObject.duration;
 			this.ref = 'ref' in jsonObject ? jsonObject.ref : null;
 			this.label = 'label' in jsonObject ? jsonObject.label : null;
-			this.x = 'loc' in jsonObject ? jsonObject.loc[0] : 0.0;
-			this.y = 'loc' in jsonObject ? jsonObject.loc[1] : 0.0;
+			this.x = 'loc' in jsonObject ? jsonObject.loc[0] : 0;
+			this.y = 'loc' in jsonObject ? jsonObject.loc[1] : 0;
 			this.scaleX = 'scale' in jsonObject ? jsonObject.scale[0] : 1.0;
 			this.scaleY = 'scale' in jsonObject ? jsonObject.scale[1] : 1.0;
 			this.skewX = 'skew' in jsonObject ? jsonObject.skew[0] : 0.0;
 			this.skewY = 'skew' in jsonObject ? jsonObject.skew[1] : 0.0;
-			this.pivotX = 'pivot' in jsonObject ? jsonObject.pivot[0] : 0.0;
-			this.pivotY = 'pivot' in jsonObject ? jsonObject.pivot[1] : 0.0;
+			this.pivotX = 'pivot' in jsonObject ? jsonObject.pivot[0] : 0;
+			this.pivotY = 'pivot' in jsonObject ? jsonObject.pivot[1] : 0;
 			this.visible = 'visible' in jsonObject ? jsonObject.visible : true;
 			this.alpha = 'alpha' in jsonObject ? jsonObject.alpha : 1.0;
 			this.tweened = 'tweened' in jsonObject ? jsonObject.tweened : true;

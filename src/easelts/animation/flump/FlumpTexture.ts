@@ -1,17 +1,21 @@
 import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+import DisplayType = require('../../enum/DisplayType');
 
-class FlumpTexture {
-
+class FlumpTexture
+{
+	public type:DisplayType = DisplayType.TEXTURE;
 	public time:number = 0.0;
+
 	public bitmap:HTMLImageElement|HTMLCanvasElement;
+
 	public originX:number;
 	public originY:number;
-	public x:number;
-	public y:number;
-	public width:number;
-	public height:number;
+	private x:number;
+	private y:number;
+	private width:number;
+	private height:number;
 
-	constructor( bitmap:HTMLImageElement|HTMLCanvasElement, json:IFlumpLibrary.ITexture)
+	constructor(bitmap:HTMLImageElement|HTMLCanvasElement, json:IFlumpLibrary.ITexture)
 	{
 		this.bitmap = bitmap;
 		this.originX = json.origin[0];
@@ -24,7 +28,8 @@ class FlumpTexture {
 
 	public draw(ctx:CanvasRenderingContext2D):boolean
 	{
-		ctx.drawImage( <HTMLImageElement> this.bitmap, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+		var bitmap = this.bitmap, x = this.x, y = this.y, width = this.width, height = this.height;
+		ctx.drawImage(<HTMLImageElement> bitmap, x, y, width, height, 0, 0, width, height);
 		return true;
 	}
 

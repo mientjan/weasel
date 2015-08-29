@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     var FlumpTexture = (function () {
         function FlumpTexture(bitmap, json) {
+            this.type = 256;
             this.time = 0.0;
             this.bitmap = bitmap;
             this.originX = json.origin[0];
@@ -11,7 +12,8 @@ define(["require", "exports"], function (require, exports) {
             this.height = json.rect[3];
         }
         FlumpTexture.prototype.draw = function (ctx) {
-            ctx.drawImage(this.bitmap, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+            var bitmap = this.bitmap, x = this.x, y = this.y, width = this.width, height = this.height;
+            ctx.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
             return true;
         };
         FlumpTexture.prototype.reset = function () {

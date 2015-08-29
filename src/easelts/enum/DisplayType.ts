@@ -10,7 +10,8 @@ const enum DisplayType {
 	GRAPHICS = 1 << 5,
 	MOVIECLIP = 1 << 6,
 	BITMAP = 1 << 7,
-	BITMAPVIDEO = 1 << 8
+	BITMAPVIDEO = 1 << 8,
+	TEXTURE = 1 << 8,
 }
 
 export = DisplayType;

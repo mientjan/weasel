@@ -162,8 +162,6 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 
 		}
 
-		console.warn('no _symbol found: (' + name + ')');
-
 		throw new Error("no _symbol found");
 	}
 
@@ -188,8 +186,6 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 				return movie;
 			}
 		}
-
-		console.warn('no _symbol found: (' + name + ') ', this);
 
 		throw new Error("no _symbol found: " + this);
 	}

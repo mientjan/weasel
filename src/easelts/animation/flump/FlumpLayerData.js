@@ -2,6 +2,7 @@ define(["require", "exports", './FlumpKeyframeData'], function (require, exports
     var FlumpLayerData = (function () {
         function FlumpLayerData(json) {
             this.flumpKeyframeDatas = [];
+            this.keyframes = {};
             this.name = json.name;
             this.flipbook = 'flipbook' in json ? !!json.flipbook : false;
             var keyframes = json.keyframes;
@@ -9,26 +10,21 @@ define(["require", "exports", './FlumpKeyframeData'], function (require, exports
             for (var i = 0; i < keyframes.length; i++) {
                 var keyframe = keyframes[i];
                 keyFrameData = new FlumpKeyframeData(keyframe);
+                for (var j = keyFrameData.index; j <= (keyFrameData.index + keyFrameData.duration); j++) {
+                    if (!this.keyframes[j]) {
+                        this.keyframes[j] = keyFrameData;
+                    }
+                }
+                keyFrameData.position = this.flumpKeyframeDatas.length;
                 this.flumpKeyframeDatas.push(keyFrameData);
             }
             this.frames = keyFrameData.index + keyFrameData.duration;
         }
         FlumpLayerData.prototype.getKeyframeForFrame = function (frame) {
-            var datas = this.flumpKeyframeDatas;
-            for (var i = 1; i < datas.length; i++) {
-                if (datas[i].index > frame) {
-                    return datas[i - 1];
-                }
-            }
-            return datas[datas.length - 1];
+            return this.keyframes[frame];
         };
         FlumpLayerData.prototype.getKeyframeAfter = function (flumpKeyframeData) {
-            for (var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
-                if (this.flumpKeyframeDatas[i] === flumpKeyframeData) {
-                    return this.flumpKeyframeDatas[i + 1];
-                }
-            }
-            return null;
+            return this.flumpKeyframeDatas[flumpKeyframeData.position + 1];
         };
         return FlumpLayerData;
     })();

@@ -96,16 +96,11 @@ define(["require", "exports"], function (require, exports) {
                 throw new TypeError('not a function');
             doResolve(init, resolve.bind(this), reject.bind(this));
         }
-        Promise.all = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var arg = (args.length === 1 && isArray(args[0]) ? args[0] : args);
+        Promise.all = function (promiseList) {
             return new Promise(function (resolve, reject) {
-                if (arg.length === 0)
+                if (promiseList.length === 0)
                     return resolve([]);
-                var remaining = arg.length;
+                var remaining = promiseList.length;
                 function res(i, val) {
                     try {
                         if (val && (typeof val === 'object' || typeof val === 'function')) {
@@ -117,17 +112,17 @@ define(["require", "exports"], function (require, exports) {
                                 return;
                             }
                         }
-                        arg[i] = val;
+                        promiseList[i] = val;
                         if (--remaining === 0) {
-                            resolve(arg);
+                            resolve(promiseList);
                         }
                     }
                     catch (ex) {
                         reject(ex);
                     }
                 }
-                for (var i = 0; i < args.length; i++) {
-                    res(i, arg[i]);
+                for (var i = 0; i < promiseList.length; i++) {
+                    res(i, promiseList[i]);
                 }
             });
         };

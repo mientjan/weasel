@@ -3,12 +3,14 @@ import Flump = require('../FlumpLibrary');
 import FlumpMovieLayer = require('./FlumpMovieLayer');
 import FlumpKeyframeData = require('./FlumpKeyframeData');
 import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+import IHashMap = require("../../interface/IHashMap");
 
 class FlumpLayerData {
 
 	public name:string;
 	public flipbook:boolean;
 	public flumpKeyframeDatas:Array<FlumpKeyframeData> = [];
+	private keyframes = {};
 
 	public frames:number;
 
@@ -23,6 +25,14 @@ class FlumpLayerData {
 		{
 			var keyframe = keyframes[i];
 			keyFrameData = new FlumpKeyframeData(keyframe);
+			for(var j = keyFrameData.index; j <= (keyFrameData.index + keyFrameData.duration); j++)
+			{
+				if(!this.keyframes[j]){
+					this.keyframes[j] = keyFrameData;
+				}
+			}
+
+			keyFrameData.position = this.flumpKeyframeDatas.length;
 			this.flumpKeyframeDatas.push( keyFrameData );
 		}
 
@@ -31,26 +41,19 @@ class FlumpLayerData {
 
 	public getKeyframeForFrame(frame:number):FlumpKeyframeData
 	{
-		var datas = this.flumpKeyframeDatas;
-		for(var i = 1; i < datas.length; i++)
-		{
-			if (datas[i].index > frame) {
-				return datas[i - 1];
-			}
-		}
-
-		return datas[datas.length - 1];
+		return this.keyframes[frame];
 	}
 
 	public getKeyframeAfter( flumpKeyframeData:FlumpKeyframeData):FlumpKeyframeData
 	{
-		for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
-			if (this.flumpKeyframeDatas[i] === flumpKeyframeData)
-			{
-				return this.flumpKeyframeDatas[i + 1];
-			}
-		}
-		return null;
+		return this.flumpKeyframeDatas[flumpKeyframeData.position + 1];
+		//for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
+		//	if (this.flumpKeyframeDatas[i] === flumpKeyframeData)
+		//	{
+		//		return this.flumpKeyframeDatas[i + 1];
+		//	}
+		//}
+		//return null;
 	}
 }
 

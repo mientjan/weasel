@@ -6,6 +6,8 @@ import FlumpTexture = require('./FlumpTexture');
 import FlumpMovie = require('./FlumpMovie');
 import FlumpLabelData = require('./FlumpLabelData');
 import IHashMap = require("../../interface/IHashMap");
+import DisplayType = require("../../enum/DisplayType");
+import FlumpMtx = require("./FlumpMtx");
 
 class FlumpMovieLayer extends DisplayObject
 {
@@ -17,18 +19,14 @@ class FlumpMovieLayer extends DisplayObject
 	protected _symbols:IHashMap<FlumpMovie|FlumpTexture> = {};
 	protected _symbolName:any = null;
 
-	public _storedMtx = {
-		a: 1,
-		b: 0,
-		c: 0,
-		d: 1,
-		tx: 0,
-		ty: 0
-	};
+
+	public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
 
 	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
 	{
 		super();
+
+		this.disableMouseInteraction()
 
 		this.flumpLayerData = flumpLayerData;
 		this.name = flumpLayerData.name;
@@ -39,7 +37,7 @@ class FlumpMovieLayer extends DisplayObject
 
 			if(keyframe.label)
 			{
-				flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+				flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
 			}
 
 			if(( ( <any> keyframe.ref) != -1 && ( <any> keyframe.ref) != null) && ( keyframe.ref in this._symbols ) == false)
@@ -56,7 +54,7 @@ class FlumpMovieLayer extends DisplayObject
 
 	public onTick(delta:number):void
 	{
-		if(this._symbol != null && !(this._symbol instanceof FlumpTexture))
+		if(this._symbol != null && this._symbol.type != DisplayType.TEXTURE )
 		{
 			( <FlumpMovie> this._symbol ).onTick(delta);
 		}

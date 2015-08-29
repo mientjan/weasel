@@ -98,7 +98,6 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
                     return movie;
                 }
             }
-            console.warn('no _symbol found: (' + name + ')');
             throw new Error("no _symbol found");
         };
         FlumpLibrary.prototype.createMovie = function (id) {
@@ -116,7 +115,6 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
                     return movie;
                 }
             }
-            console.warn('no _symbol found: (' + name + ') ', this);
             throw new Error("no _symbol found: " + this);
         };
         FlumpLibrary.prototype.getNameFromReferenceList = function (value) {

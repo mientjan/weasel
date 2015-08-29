@@ -15,7 +15,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this._labels = {};
+            this.labels = {};
             this._labelQueue = [];
             this._label = null;
             this.hasFrameCallbacks = false;
@@ -24,6 +24,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.duration = 0.0;
             this.frame = 0;
             this.frames = 0;
+            this.disableMouseInteraction();
             this.name = name;
             this.flumpLibrary = flumpLibrary;
             this.flumpMovieData = flumpLibrary.getFlumpMovieData(name);
@@ -52,7 +53,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                 this._labelQueue.push(labelQueueData);
             }
             else {
-                var queue = this._labels[label];
+                var queue = this.labels[label];
                 if (!queue) {
                     console.warn('unknown label:', label, 'on', this.name);
                     throw new Error('unknown label:' + label + ' | ' + this.name);
@@ -197,10 +198,12 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             var ga = ctx.globalAlpha;
             for (var i = 0; i < length; i++) {
                 var layer = layers[i];
+                var mtx = layer._storedMtx;
+                var a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
                 if (layer.visible) {
                     ctx.save();
                     ctx.globalAlpha = ga * layer.alpha;
-                    ctx.transform(layer._storedMtx.a, layer._storedMtx.b, layer._storedMtx.c, layer._storedMtx.d, layer._storedMtx.tx, layer._storedMtx.ty);
+                    ctx.transform.apply(ctx, [a, b, c, d, tx, ty]);
                     layer.draw(ctx);
                     ctx.restore();
                 }

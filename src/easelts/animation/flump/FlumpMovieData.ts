@@ -4,7 +4,8 @@ import Flump = require('../FlumpLibrary');
 import FlumpLayerData = require('./FlumpLayerData');
 import FlumpLabelData = require('./FlumpLabelData');
 
-class FlumpMovieData {
+class FlumpMovieData
+{
 
 	public id:string;
 	public flumpLibrary;
@@ -14,17 +15,21 @@ class FlumpMovieData {
 
 	constructor(flumpLibrary:Flump, json:IFlumpLibrary.IMovie)
 	{
+		var layers = json.layers;
+		var frames = 0;
+
 		this.flumpLibrary = flumpLibrary;
 		this.id = json.id;
-
-		var layers = json.layers;
 		this.flumpLayerDatas = new Array(layers.length);
+
 		for(var i = 0; i < layers.length; i++)
 		{
 			var layer = new FlumpLayerData(layers[i]);
 			this.flumpLayerDatas[i] = layer;
-			this.frames = Math.max(this.frames, layer.frames)
+
+			frames = Math.max(frames, layer.frames)
 		}
+		this.frames = frames;
 	}
 }
 
