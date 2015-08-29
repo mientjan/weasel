@@ -1,0 +1,23 @@
+{
+  "fileVersion": 0,
+  "exports": [
+    {
+      "prettyPrint": true,
+      "format": "JSON",
+      "scaleFactors": [
+        1
+      ],
+      "combine": false,
+      "optimize": "Speed",
+      "textureBorder": 1,
+      "scale": 1,
+      "name": "ani-100",
+      "maxAtlasSize": 2048,
+      "quality": "best",
+      "description": "'ani-100' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
+    }
+  ],
+  "exportDir": "",
+  "importDir": ""
+}

@@ -103,16 +103,16 @@ function doResolve(fn, onFulfilled, onRejected) {
 
 class Promise<T>
 {
-	public static all(...args:Array<Array<Promise<any>>|Array<Promise<any>>>)
+	public static all(...args:Array<Array<Promise<any>>>)
 	{
 
 		//var args = Array.prototype.slice.call(arguments.length === 1 && isArray(arguments[0]) ? arguments[0] : arguments);
-		var args = (args.length === 1 && isArray(args[0]) ? args[0] : args );
+		var arg = (args.length === 1 && isArray(args[0]) ? args[0] : args );
 
 		return new Promise(function (resolve, reject)
 		{
-			if(args.length === 0) return resolve([]);
-			var remaining = args.length;
+			if(arg.length === 0) return resolve([]);
+			var remaining = arg.length;
 
 			function res(i, val)
 			{
@@ -130,10 +130,10 @@ class Promise<T>
 							return;
 						}
 					}
-					args[i] = val;
+					arg[i] = val;
 					if(--remaining === 0)
 					{
-						resolve(args);
+						resolve(arg);
 					}
 				} catch(ex)
 				{
@@ -143,7 +143,7 @@ class Promise<T>
 
 			for(var i = 0; i < args.length; i++)
 			{
-				res(i, args[i]);
+				res(i, arg[i]);
 			}
 		});
 	}

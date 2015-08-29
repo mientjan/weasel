@@ -1,3 +1,4 @@
+/// <reference path="../display/DisplayObject.ts" />
 define(["require", "exports"], function (require, exports) {
     var Matrix2 = (function () {
         function Matrix2(a, b, c, d, tx, ty) {

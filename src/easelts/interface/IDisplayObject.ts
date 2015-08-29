@@ -51,7 +51,9 @@ interface IDisplayObject extends IDisplayType
 	parent:Container<IDisplayObject>;
 
 	isDirty:boolean;
+
 	visible:boolean;
+
 	alpha:number;
 	width:number;
 	height:number;
@@ -67,9 +69,6 @@ interface IDisplayObject extends IDisplayType
 
 	scaleX:number;
 	scaleY:number;
-
-
-
 }
 
 

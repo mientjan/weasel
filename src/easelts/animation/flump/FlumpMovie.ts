@@ -8,12 +8,11 @@ import FlumpLibrary = require('../FlumpLibrary');
 import FlumpMovieLayer = require('./FlumpMovieLayer');
 import FlumpLabelData = require('./FlumpLabelData');
 import FlumpLabelQueueData = require('./FlumpLabelQueueData');
+import FlumpTexture = require("./FlumpTexture");
 
 
 class FlumpMovie extends DisplayObject implements IPlayable
 {
-	public static EVENT_COMPLETE = 'FlumpMovie.Complete';
-
 	public flumpLibrary:FlumpLibrary;
 	public flumpMovieData;
 	public flumpMovieLayers:Array<FlumpMovieLayer>;
@@ -38,6 +37,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	constructor( flumpLibrary:FlumpLibrary, name:string, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
+
+		//flumpLibrary.frameRate = 2;
 
 		this.name = name;
 		this.flumpLibrary = flumpLibrary;
@@ -124,7 +125,9 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			this._labelQueue.length = 0;
 		}
 
-		this._label.times = 1;
+		if(this._label){
+			this._label.times = 1;
+		}
 		return this;
 	}
 
@@ -170,8 +173,6 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			this._label.destruct();
 		}
 
-
-		this.dispatchEvent(FlumpMovie.EVENT_COMPLETE);
 		return this;
 	}
 
@@ -185,10 +186,11 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 			var label = this._label;
 			var fromFrame = this.frame;
-			var toFrame = Math.floor((this.frames * this.time) / this.duration);
+			var toFrame = 0;
 
 			if( label )
 			{
+				toFrame = this.frames * this.time / this.duration;
 
 				if( label.times != -1 )
 				{
@@ -208,18 +210,22 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 				if( this.hasFrameCallbacks )
 				{
-					this.handleFrameCallback(fromFrame, toFrame, delta);
+					this.handleFrameCallback(fromFrame, toFrame | 0, delta);
 				}
 
 			}
 			else
 			{
+
 				// inner flumpmovie
-				toFrame = Math.min(
-					Math.floor((this.frames * (this.time % this.duration)) / this.duration),
-					this.frames - 1
-				);
+				toFrame = (this.frames * (this.time % this.duration)) / this.duration;
+				//
+				if(toFrame < this.frames)
+				{
+					toFrame = toFrame % this.duration;
+				}
 			}
+
 
 			for(var i = 0; i < this.flumpMovieLayers.length; i++)
 			{
@@ -266,47 +272,72 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		return this;
 	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	public setFrame(value:number):FlumpMovie
 	{
-		if(this.visible)
+		var layers = this.flumpMovieLayers;
+		var length = layers.length;
+
+		//( this.frames / flumpLibrary.frameRate ) * 1000;
+
+		for(var i = 0; i < length; i++)
 		{
-			var layers = this.flumpMovieLayers;
-			var length = layers.length;
-			var ga = ctx.globalAlpha;
-
-			for(var i = 0; i < length; i++)
-			{
-				var layer:FlumpMovieLayer = layers[i];
-
-				if(layer.visible)
-				{
-					ctx.save();
-					//layer.updateContext(ctx)
-					ctx.globalAlpha = ga * layer.alpha;
-
-					ctx.transform(
-						layer._storedMtx.a,
-						layer._storedMtx.b,
-						layer._storedMtx.c,
-						layer._storedMtx.d,
-						layer._storedMtx.tx,// + (this.x),
-						layer._storedMtx.ty// + (this.y)
-					);
-
-					layer.draw(ctx);
-					ctx.restore();
-				}
-			}
+			var layer = layers[i];
+			layer.reset();
+			layer.onTick( (value / this.frames) * this.duration );
+			layer.setFrame(value);
 
 		}
 
+		return this;
+	}
 
-		
-		//console.timeEnd('draw');
+	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	{
+
+		var layers = this.flumpMovieLayers;
+		var length = layers.length;
+		var ga = ctx.globalAlpha;
+
+		for(var i = 0; i < length; i++)
+		{
+			var layer:FlumpMovieLayer = layers[i];
+
+			if(layer.visible)
+			{
+				ctx.save();
+				//layer.updateContext(ctx)
+				ctx.globalAlpha = ga * layer.alpha;
+
+				ctx.transform(
+					layer._storedMtx.a,
+					layer._storedMtx.b,
+					layer._storedMtx.c,
+					layer._storedMtx.d,
+					layer._storedMtx.tx,// + (this.x),
+					layer._storedMtx.ty// + (this.y)
+				);
+
+				layer.draw(ctx);
+				ctx.restore();
+			}
+		}
 
 		return true;
 	}
 
+	public reset():void
+	{
+		this.frame = 0;
+		this.time = 0.0;
+
+		for(var fml in this.flumpMovieLayers)
+		{
+			for(var symbol in fml._symbols)
+			{
+				symbol.reset();
+			}
+		}
+	}
 }
 
 export = FlumpMovie;

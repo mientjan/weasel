@@ -1,10 +1,9 @@
 define(["require", "exports"], function (require, exports) {
-    var asap = (typeof setImmediate === 'function' && setImmediate) || function (fn) {
-        setTimeout(fn, 1);
-    };
-    var isArray = Array.isArray || function (value) {
-        return Object.prototype.toString.call(value) === "[object Array]";
-    };
+    var asap = (typeof setImmediate === 'function' && setImmediate) ||
+        function (fn) {
+            setTimeout(fn, 1);
+        };
+    var isArray = Array.isArray || function (value) { return Object.prototype.toString.call(value) === "[object Array]"; };
     function handle(deferred) {
         var me = this;
         if (this._state === null) {
@@ -102,11 +101,11 @@ define(["require", "exports"], function (require, exports) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var args = (args.length === 1 && isArray(args[0]) ? args[0] : args);
+            var arg = (args.length === 1 && isArray(args[0]) ? args[0] : args);
             return new Promise(function (resolve, reject) {
-                if (args.length === 0)
+                if (arg.length === 0)
                     return resolve([]);
-                var remaining = args.length;
+                var remaining = arg.length;
                 function res(i, val) {
                     try {
                         if (val && (typeof val === 'object' || typeof val === 'function')) {
@@ -118,9 +117,9 @@ define(["require", "exports"], function (require, exports) {
                                 return;
                             }
                         }
-                        args[i] = val;
+                        arg[i] = val;
                         if (--remaining === 0) {
-                            resolve(args);
+                            resolve(arg);
                         }
                     }
                     catch (ex) {
@@ -128,7 +127,7 @@ define(["require", "exports"], function (require, exports) {
                     }
                 }
                 for (var i = 0; i < args.length; i++) {
-                    res(i, args[i]);
+                    res(i, arg[i]);
                 }
             });
         };

@@ -1,0 +1,357 @@
+{
+ "textureGroups": [
+  {
+   "scaleFactor": 1,
+   "atlases": [
+    {
+     "textures": [
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number10",
+       "rect": [
+        1,
+        1,
+        81,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Symbol1",
+       "rect": [
+        84,
+        1,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number3",
+       "rect": [
+        130,
+        1,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number4",
+       "rect": [
+        176,
+        1,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number5",
+       "rect": [
+        1,
+        83,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number1",
+       "rect": [
+        1,
+        165,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number7",
+       "rect": [
+        47,
+        83,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number8",
+       "rect": [
+        47,
+        165,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number9",
+       "rect": [
+        93,
+        83,
+        44,
+        80
+       ]
+      },
+      {
+       "origin": [
+        0,
+        0
+       ],
+       "symbol": "Number6",
+       "rect": [
+        93,
+        165,
+        44,
+        80
+       ]
+      }
+     ],
+     "file": "atlas0.png"
+    }
+   ]
+  }
+ ],
+ "movies": [
+  {
+   "id": "TextAnimation",
+   "layers": [
+    {
+     "keyframes": [
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number1",
+       "index": 0,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Symbol1",
+       "index": 1,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number3",
+       "index": 2,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number4",
+       "index": 3,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number5",
+       "index": 4,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number6",
+       "index": 5,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number7",
+       "index": 6,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number8",
+       "index": 7,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        19.55,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number9",
+       "index": 8,
+       "tweened": false
+      },
+      {
+       "pivot": [
+        37.05,
+        35.4
+       ],
+       "loc": [
+        23.05,
+        35.4
+       ],
+       "duration": 1,
+       "ref": "Number10",
+       "index": 9,
+       "tweened": false
+      }
+     ],
+     "name": "Layer 1"
+    }
+   ]
+  },
+  {
+   "id": "TextLoopAnimation",
+   "layers": [
+    {
+     "keyframes": [
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "ref": "TextAnimation",
+       "loc": [
+        -1,
+        0
+       ],
+       "index": 0,
+       "duration": 9
+      },
+      {
+       "pivot": [
+        19.55,
+        35.4
+       ],
+       "loc": [
+        -1,
+        0
+       ],
+       "duration": 10,
+       "ref": "TextAnimation",
+       "index": 9,
+       "skew": [
+        -3.1416,
+        3.1416
+       ]
+      },
+      {
+       "pivot": [
+        19.6,
+        35.4
+       ],
+       "loc": [
+        -0.9767,
+        0.0107
+       ],
+       "tweened": false,
+       "duration": 1,
+       "ref": "TextAnimation",
+       "index": 19,
+       "skew": [
+        -0.13,
+        6.1532
+       ]
+      }
+     ],
+     "name": "Layer 1"
+    }
+   ]
+  }
+ ],
+ "md5": "558779119b6bc1caadca1f43c2c1c0ab",
+ "frameRate": 1,
+ "isNamespaced": false
+}

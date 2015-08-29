@@ -347,54 +347,6 @@ class Bitmap extends DisplayObject
 		}
 
 		return this;
-				//
-				//		// one = true;
-				//		canvas.width = this.width;
-				//		canvas.height = this.height;
-				//		ctx.drawImage(this, 0, 0);
-				//
-				//		var rx = Math.ceil(width/maxWidth),
-				//			ry = Math.ceil(height/maxHeight),
-				//			tempCanvas = document.createElement('canvas'),
-				//			tempCtx = null;
-				//
-				//		tempCanvas.width = maximumSize;
-				//		tempCanvas.height = maximumSize;
-				//
-				//		var s = maximumSize,
-				//			ox = width % maximumSize,
-				//			oy = height % maximumSize;
-				//
-				//		for(var x = 1;x<=rx;++x)
-				//		{
-				//			for(var y = 1;y<=ry;++y)
-				//			{
-				//				var newX = x*s - s;
-				//				var newY = y*s-s;
-				//				var newWidth = Math.min(width - (x*s-s), s);
-				//				var newHeight = Math.min(height - (y*s-s), s);
-				//
-				//				tempCanvas = document.createElement('canvas');
-				//				tempCanvas.width = newWidth + 2;
-				//				tempCanvas.height = newHeight + 2;
-				//
-				//				tempCtx = tempCanvas.getContext('2d');
-				//
-				//				tempCtx.putImageData(
-				//					ctx.getImageData(
-				//						newX,
-				//						newY,
-				//						newWidth + 2,
-				//						newHeight + 2
-				//					), 0, 0
-				//				);
-				//
-				//				tempCanvas.style['-webkit-transform'] = 'translate3d('+[newX,newY,0].join('px,')+'px)';
-				//				div.append(tempCanvas);
-				//			}
-				//		}
-				//	}
-
 	}
 
 	/**

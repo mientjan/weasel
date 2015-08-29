@@ -1,4 +1,34 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * Stage
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -11,7 +41,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             var _this = this;
             if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
-            this.type = 2 /* STAGE */;
+            this.type = 2;
             this.tickstartSignal = new Signal();
             this.tickendSignal = new Signal();
             this.drawstartSignal = new Signal();
@@ -90,7 +120,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             this.enableDOMEvents(true);
             this.setFps(this._fps);
             this.ctx = this.canvas.getContext('2d');
-            this.setQuality(1 /* LOW */);
+            this.setQuality(1);
             this.stage = this;
             if (triggerResizeOnWindowResize) {
                 this.enableAutoResize();
@@ -99,7 +129,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         }
         Stage.prototype.setQuality = function (value) {
             switch (value) {
-                case 1 /* LOW */:
+                case 1:
                     {
                         this.ctx['mozImageSmoothingEnabled'] = false;
                         this.ctx['webkitImageSmoothingEnabled'] = false;
@@ -107,7 +137,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                         this.ctx['imageSmoothingEnabled'] = false;
                         break;
                     }
-                case 0 /* NORMAL */:
+                case 0:
                     {
                         this.ctx['mozImageSmoothingEnabled'] = true;
                         this.ctx['webkitImageSmoothingEnabled'] = true;
@@ -249,6 +279,9 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             return data;
         };
         Stage.prototype._handleMouseMove = function (e) {
+            //		if(!e){
+            //			var b = <MouseEvent> window['event'];
+            //		 }
             if (e === void 0) { e = window['event']; }
             this._handlePointerMove(-1, e, e.pageX, e.pageY);
         };
@@ -420,7 +453,8 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 this._ticker.destruct();
                 this._ticker = null;
             }
-            this._ticker = new Interval(this.getFps()).attach(this.update);
+            this._ticker = new Interval(this.getFps())
+                .attach(this.update);
             this._isRunning = true;
             return this;
         };

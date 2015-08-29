@@ -115,7 +115,7 @@ class Interval
 	public static attach(fps_:number, callback:(delta:number) => any):SignalConnection
 	{
 		// floor fps
-		var fps = fps_ >> 1 << 1;
+		var fps = fps_ | 0;
 		var list = Interval._list;
 		var fc:FpsCollection = null;
 		for(var i = 0; i < list.length; i++)

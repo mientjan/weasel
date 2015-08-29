@@ -19,7 +19,7 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
             }
             var unit;
             var match = FluidCalculation._valueUnitDisolvement.exec(val);
-            var mesUnitTypeString = match.length >= 3 ? match[2] : MeasurementUnitType[1 /* PIXEL */];
+            var mesUnitTypeString = match.length >= 3 ? match[2] : MeasurementUnitType[MeasurementUnitType.PIXEL];
             var mesUnitType = FluidCalculation._measurementUnitTypeString.indexOf(mesUnitTypeString);
             if (match) {
                 var v = match.length >= 2 ? match[1] : match[0];
@@ -39,22 +39,22 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
         };
         FluidCalculation.getCalcUnit = function (unit1, math, unit2) {
             switch (math) {
-                case 0 /* ADDITION */:
+                case 0:
                     {
                         return unit1 + unit2;
                         break;
                     }
-                case 1 /* SUBSTRACTION */:
+                case 1:
                     {
                         return unit1 - unit2;
                         break;
                     }
-                case 2 /* MULTIPLICATION */:
+                case 2:
                     {
                         return unit1 * unit2;
                         break;
                     }
-                case 3 /* DIVISION */:
+                case 3:
                     {
                         return unit1 / unit2;
                         break;
@@ -69,20 +69,20 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
         FluidCalculation.getCalculationTypeByValue = function (value) {
             if (typeof (value) == 'string') {
                 if (value.substr(-1) == '%') {
-                    return 1 /* PERCENT */;
+                    return 1;
                 }
                 else {
-                    return 3 /* CALC */;
+                    return 3;
                 }
             }
-            return 2 /* STATIC */;
+            return 2;
         };
         FluidCalculation.getPercentageParcedValue = function (value) {
             return parseFloat(value.substr(0, value.length - 1)) / 100;
         };
         FluidCalculation.getCalcUnitSize = function (size, data) {
             switch (data.unit) {
-                case 0 /* PROCENT */:
+                case MeasurementUnitType.PROCENT:
                     {
                         return size * (data.value / 100);
                         break;
@@ -98,20 +98,13 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
             return parseFloat(value) || 0.0;
         };
         FluidCalculation._calculationUnitType = [
-            0 /* ADDITION */,
-            1 /* SUBSTRACTION */,
-            2 /* MULTIPLICATION */,
-            3 /* DIVISION */
+            0,
+            1,
+            2,
+            3
         ];
         FluidCalculation._measurementUnitTypeString = [
-            '%',
-            'px',
-            'pt',
-            'in',
-            'cm',
-            'mm',
-            'vw',
-            'vh'
+            '%', 'px', 'pt', 'in', 'cm', 'mm', 'vw', 'vh'
         ];
         FluidCalculation._calculationUnitypeString = '+-*/';
         FluidCalculation._valueUnitDisolvement = /([\+\-]?[0-9\.]+)(%|px|pt|in|cm|mm|vw|vh)?/;

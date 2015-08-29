@@ -162,9 +162,9 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 
 		}
 
-		console.warn('no symbol found: (' + name + ')');
+		console.warn('no _symbol found: (' + name + ')');
 
-		throw new Error("no symbol found");
+		throw new Error("no _symbol found");
 	}
 
 	public createMovie(id:any):FlumpMovie
@@ -189,9 +189,9 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			}
 		}
 
-		console.warn('no symbol found: (' + name + ') ', this);
+		console.warn('no _symbol found: (' + name + ') ', this);
 
-		throw new Error("no symbol found: " + this);
+		throw new Error("no _symbol found: " + this);
 	}
 
 	public getNameFromReferenceList(value:string|number):string

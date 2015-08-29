@@ -45,8 +45,7 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
             });
         };
         HttpRequest.wait = function (list, onProgress) {
-            if (onProgress === void 0) { onProgress = function (progress) {
-            }; }
+            if (onProgress === void 0) { onProgress = function (progress) { }; }
             return new Promise(function (resolve) {
                 var newList = [];
                 var then = function (response) {
@@ -62,8 +61,7 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
             });
         };
         HttpRequest.waitForLoadable = function (list, onProgress) {
-            if (onProgress === void 0) { onProgress = function (progress) {
-            }; }
+            if (onProgress === void 0) { onProgress = function (progress) { }; }
             var count = list.length;
             var progressList = new Array(count).map(function (value) {
                 return value == void 0 ? 0 : value;

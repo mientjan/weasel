@@ -1674,7 +1674,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _applyFilterBounds(x:number, y:number, width:number, height:number)
+	protected _applyFilterBounds(x:number, y:number, width:number, height:number):Rectangle
 	{
 		var bounds, l, filters = this.filters;
 		if(!filters || !(l = filters.length))
@@ -1699,6 +1699,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 			bounds.width += fBounds.width;
 			bounds.height += fBounds.height;
 		}
+
 		return bounds;
 	}
 
