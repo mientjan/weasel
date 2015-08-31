@@ -24,7 +24,7 @@ stage.canvas.style.transformStyle = 'preserve-3d';
 //
 //}).catch( error => console.log(error) );
 
-FlumpLibrary.load('../assets/flump/animations-100/character').then((fl:FlumpLibrary) => {
+FlumpLibrary.load('../assets/flump/a-100-8x8l-2048/character').then((fl:FlumpLibrary) => {
 
 	var names = [
 		'SupermanSuduction1',
@@ -39,7 +39,8 @@ FlumpLibrary.load('../assets/flump/animations-100/character').then((fl:FlumpLibr
 	for(var i = 0; i < 60; i++)
 	{
 		var movie = <FlumpMovie> fl.createMovie(ArrayUtil.getRandom(names));
-		movie.setX(Math.random() * stage.width).setY(Math.random() * stage.height);
+		//var movie = <FlumpMovie> fl.createMovie('SupermanWalk');
+		movie.setX(Math.random() * stage.width|0).setY(Math.random() * stage.height|0);
 		movie.play(-1);
 		stage.addChild(movie);
 
@@ -51,9 +52,28 @@ FlumpLibrary.load('../assets/flump/animations-100/character').then((fl:FlumpLibr
 
 	stage.children.sort((item0:IDisplayObject, item1:IDisplayObject) => {
 		return item0.y - item1.y;
-	})
+	});
+
+
+	setTimeout(() => {
+		console.time('performance');
+
+		for(var i = 0; i < 120; i++)
+		{
+			stage.update(16);
+		}
+		console.timeEnd('performance');
+	}, 5000)
+
+	//var y0 = 0;
+	//var y1 = 0;
+	//stage.children.forEach((element) => {
+	//	y0 = Math.min(element.y, y0);
+	//	y1 = Math.max(element.y, y1);
+	//})
+	//stage.children.forEach((element) => {
+	//	element.scaleX = element.scaleY = (element.y - y0) / y1;
+	//	//y1 = Math.max(element.y, y1);
+	//})
 
 }).catch( error => console.log(error) );
-
-
-stage.start();

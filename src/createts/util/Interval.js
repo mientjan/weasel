@@ -65,6 +65,27 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
         }
         return FpsCollection;
     })();
+    var rafInt = 0;
+    var time = 0;
+    var list = [];
+    var listLength = 0;
+    function requestAnimationFrame(timeUpdate) {
+        rafInt = window.requestAnimationFrame(requestAnimationFrame);
+        var prevTime = time;
+        time = timeUpdate;
+        var delta = timeUpdate - prevTime;
+        var fc;
+        for (var i = 0; i < listLength; i++) {
+            fc = list[i];
+            fc.time += delta;
+            fc.accum += delta;
+            if (fc.accum > fc.mspf) {
+                fc.accum -= fc.mspf;
+                fc.signal.emit(fc.time - fc.ptime);
+                fc.ptime = fc.time;
+            }
+        }
+    }
     var Interval = (function () {
         function Interval(fps) {
             if (fps === void 0) { fps = 60; }
@@ -75,7 +96,6 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
         }
         Interval.attach = function (fps_, callback) {
             var fps = fps_ | 0;
-            var list = Interval._list;
             var fc = null;
             for (var i = 0; i < list.length; i++) {
                 if (list[i].fps == fps) {
@@ -85,18 +105,19 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
             if (!fc) {
                 fc = new FpsCollection(fps);
                 list.push(fc);
+                listLength = list.length;
             }
             return fc.signal.connect(callback);
         };
         Interval.start = function () {
             if (!Interval.isRunning) {
                 Interval.isRunning = true;
-                Interval.requestAnimationFrame(0);
+                requestAnimationFrame(0);
             }
         };
         Interval.stop = function () {
             Interval.isRunning = false;
-            cancelAnimationFrame(Interval._rafInt);
+            cancelAnimationFrame(rafInt);
         };
         Interval.prototype.attach = function (callback) {
             this._connections.push(Interval.attach(this.fps, callback));
@@ -104,9 +125,9 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
             return this;
         };
         Interval.prototype.getDelay = function () {
-            var time = (Interval._time - this._delay);
-            this._delay = Interval._time;
-            return time;
+            var delay = (time - this._delay);
+            this._delay = time;
+            return delay;
         };
         Interval.prototype.destruct = function () {
             var connections = this._connections;
@@ -115,26 +136,6 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
             }
         };
         Interval.isRunning = false;
-        Interval._list = [];
-        Interval._rafInt = -1;
-        Interval._time = -1;
-        Interval.requestAnimationFrame = function (timeUpdate) {
-            var prevTime = Interval._time;
-            Interval._time = timeUpdate;
-            var delta = timeUpdate - prevTime;
-            var list = Interval._list;
-            for (var i = 0; i < list.length; i++) {
-                var fc = list[i];
-                fc.time += delta;
-                fc.accum += delta;
-                if (fc.accum > fc.mspf) {
-                    fc.accum -= fc.mspf;
-                    fc.signal.emit(fc.time - fc.ptime);
-                    fc.ptime = fc.time;
-                }
-            }
-            Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
-        };
         return Interval;
     })();
     return Interval;

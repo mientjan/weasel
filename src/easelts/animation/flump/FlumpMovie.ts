@@ -300,21 +300,22 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
 
-		var layers = this.flumpMovieLayers;
-		var length = layers.length;
-		var ga = ctx.globalAlpha;
+		var layers = this.flumpMovieLayers,
+				length = layers.length,
+				ga = ctx.globalAlpha,
+				a, b, c, d, tx, ty, layer:FlumpMovieLayer, mtx;
 
 		for(var i = 0; i < length; i++)
 		{
-			var layer:FlumpMovieLayer = layers[i];
-			var mtx = layer._storedMtx;
-			var a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
+			layer = layers[i];
+			mtx = layer._storedMtx;
 			if(layer.visible)
 			{
+				a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
 				ctx.save();
 				//layer.updateContext(ctx)
 				ctx.globalAlpha = ga * layer.alpha;
-				ctx.transform.apply(ctx, [a, b, c, d, tx, ty]);
+				ctx.transform(a, b, c, d, tx, ty);
 				layer.draw(ctx);
 
 				ctx.restore();
@@ -331,10 +332,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		for(var fml in this.flumpMovieLayers)
 		{
-			for(var symbol in fml._symbols)
-			{
-				symbol.reset();
-			}
+			this.flumpMovieLayers[fml].reset();
 		}
 	}
 }

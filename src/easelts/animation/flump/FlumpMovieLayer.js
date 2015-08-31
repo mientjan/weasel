@@ -10,7 +10,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
         function FlumpMovieLayer(flumpMove, flumpLayerData) {
             _super.call(this);
             this.name = '';
-            this._frame = 0;
+            this._symbolType = 1;
             this._symbols = {};
             this._symbolName = null;
             this._storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
@@ -29,16 +29,12 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this.setFrame(0);
         }
         FlumpMovieLayer.prototype.onTick = function (delta) {
-            if (this._symbol != null && this._symbol.type != 256) {
-                this._symbol.onTick(delta);
+            if (this._symbolType == 8) {
+                this._symbolMovie.onTick(delta);
             }
         };
-        FlumpMovieLayer.prototype.setFrame = function (frame) {
-            var keyframe = this.flumpLayerData.getKeyframeForFrame(frame | 0);
-            if (!(keyframe instanceof FlumpKeyframeData)) {
-                this._symbol = null;
-                return;
-            }
+        FlumpMovieLayer.prototype.setFrameByKeyframe = function (frame, keyframe) {
+            var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
             var x = keyframe.x;
             var y = keyframe.y;
             var scaleX = keyframe.scaleX;
@@ -53,7 +49,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             var sinY = 0.0;
             var cosY = 1.0;
             if (keyframe.index != (frame | 0) && keyframe.tweened) {
-                var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
                 if (nextKeyframe instanceof FlumpKeyframeData) {
                     var interped = (frame - keyframe.index) / keyframe.duration;
                     var ease = keyframe.ease;
@@ -95,23 +90,44 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this.alpha = alpha;
             this.visible = keyframe.visible;
             if (keyframe.ref != -1 && keyframe.ref != null) {
-                if (this._symbol != this._symbols[keyframe.ref]) {
-                    this._symbol = this._symbols[keyframe.ref];
-                    this._symbol.reset();
+                if (this._keyframeRef != keyframe.ref) {
+                    var symbol = this._symbols[keyframe.ref];
+                    this._keyframeRef = keyframe.ref;
+                    this._symbolType = symbol.type;
+                    if (symbol.type == 8) {
+                        this._symbolMovie = symbol;
+                        this._symbolMovie.reset();
+                    }
+                    else if (symbol.type == 256) {
+                        this._symbolTexture = symbol;
+                        this._symbolTexture.reset();
+                    }
                 }
             }
             else {
-                this._symbol = null;
+                this._keyframeRef = null;
+                this._symbolType = 1;
             }
-            this._frame = frame;
+        };
+        FlumpMovieLayer.prototype.setFrame = function (frame) {
+            var keyframe = this.flumpLayerData.getKeyframeForFrame(frame | 0);
+            if (!(keyframe instanceof FlumpKeyframeData)) {
+                this._symbolType = 1;
+            }
+            else {
+                this.setFrameByKeyframe(frame, keyframe);
+            }
         };
         FlumpMovieLayer.prototype.reset = function () {
-            if (this._symbol)
-                this._symbol.reset();
+            if (this._symbolType == 8)
+                this._symbolMovie.reset();
         };
         FlumpMovieLayer.prototype.draw = function (ctx, ignoreCache) {
-            if (this._symbol != null) {
-                this._symbol.draw(ctx);
+            if (this._symbolType == 8) {
+                this._symbolMovie.draw(ctx);
+            }
+            else if (this._symbolType == 256) {
+                this._symbolTexture.draw(ctx);
             }
             return true;
         };

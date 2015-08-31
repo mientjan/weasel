@@ -12,10 +12,15 @@ import FlumpMtx = require("./FlumpMtx");
 class FlumpMovieLayer extends DisplayObject
 {
 	public name:string = '';
-	private _frame:number = 0;
+	//private _frame:number = 0;
 	public flumpLayerData:FlumpLayerData;
 
-	protected _symbol:FlumpMovie|FlumpTexture;
+	protected _symbolType:number = DisplayType.UNKNOWN;
+	protected _symbolMovie:FlumpMovie;
+	protected _symbolTexture:FlumpTexture;
+	protected _keyframeRef:any;
+
+	//protected _symbol:FlumpMovie|FlumpTexture;
 	protected _symbols:IHashMap<FlumpMovie|FlumpTexture> = {};
 	protected _symbolName:any = null;
 
@@ -54,22 +59,15 @@ class FlumpMovieLayer extends DisplayObject
 
 	public onTick(delta:number):void
 	{
-		if(this._symbol != null && this._symbol.type != DisplayType.TEXTURE )
+		if(this._symbolType == DisplayType.DISPLAYOBJECT )
 		{
-			( <FlumpMovie> this._symbol ).onTick(delta);
+			this._symbolMovie.onTick(delta);
 		}
 	}
 
-	public setFrame(frame:number):void
+	private setFrameByKeyframe(frame:number, keyframe:FlumpKeyframeData):void
 	{
-		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(frame | 0);
-
-		if(!(keyframe instanceof FlumpKeyframeData))
-		{
-			this._symbol = null;
-			return;
-		}
-
+		var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
 		var x:number = keyframe.x;
 		var y:number = keyframe.y;
 		var scaleX:number = keyframe.scaleX;
@@ -87,7 +85,7 @@ class FlumpMovieLayer extends DisplayObject
 
 		if(keyframe.index != (frame | 0) && keyframe.tweened)
 		{
-			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
+
 
 			if(nextKeyframe instanceof FlumpKeyframeData)
 			{
@@ -146,36 +144,64 @@ class FlumpMovieLayer extends DisplayObject
 
 		if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
 		{
-			if(this._symbol != this._symbols[keyframe.ref])
+			if(this._keyframeRef != keyframe.ref)
 			{
-				this._symbol = this._symbols[keyframe.ref];
-				this._symbol.reset();
+				var symbol = this._symbols[keyframe.ref];
+				this._keyframeRef = keyframe.ref;
+				this._symbolType = symbol.type;
+
+				if(symbol.type == DisplayType.DISPLAYOBJECT)
+				{
+					this._symbolMovie = <FlumpMovie> symbol;
+					this._symbolMovie.reset();
+				}
+				else if(symbol.type == DisplayType.TEXTURE)
+				{
+					this._symbolTexture = <FlumpTexture> symbol;
+					this._symbolTexture.reset();
+				}
+
 			}
+
 		}
 		else
 		{
-			this._symbol = null;
+			this._keyframeRef = null;
+			this._symbolType = DisplayType.UNKNOWN;
+		}
+	}
+
+	public setFrame(frame:number):void
+	{
+		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(frame | 0);
+
+		if(!(keyframe instanceof FlumpKeyframeData))
+		{
+			this._symbolType = DisplayType.UNKNOWN;
+
+		} else {
+
+			this.setFrameByKeyframe(frame, keyframe);
 		}
 
-		//if( this._frame > frame && this._symbol )
-		//{
-		//	this._symbol.reset();
-		//}
-
-		this._frame = frame;
 	}
 
 	public reset()
 	{
-		if(this._symbol) this._symbol.reset();
+		if(this._symbolType == DisplayType.DISPLAYOBJECT) this._symbolMovie.reset();
 	}
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		if(this._symbol != null)
+		if(this._symbolType == DisplayType.DISPLAYOBJECT)
 		{
-			this._symbol.draw(ctx);
+			this._symbolMovie.draw(ctx);
 		}
+		else if(this._symbolType == DisplayType.TEXTURE)
+		{
+			this._symbolTexture.draw(ctx);
+		}
+
 		return true;
 	}
 }

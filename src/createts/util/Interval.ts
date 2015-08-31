@@ -105,18 +105,45 @@ class FpsCollection {
 	}
 }
 
+var rafInt:number = 0;
+var time:number = 0;
+var list:Array<FpsCollection> = [];
+var listLength:number = 0;
+
+function requestAnimationFrame(timeUpdate:number):void
+{
+	rafInt = window.requestAnimationFrame(requestAnimationFrame);
+	var prevTime = time;
+	time = timeUpdate;
+
+	var delta = timeUpdate - prevTime;
+	var fc;
+
+	for(var i = 0; i < listLength; i++)
+	{
+		fc = list[i];
+		fc.time += delta;
+		fc.accum += delta;
+
+		if(fc.accum > fc.mspf )
+		{
+			fc.accum -= fc.mspf;
+			fc.signal.emit(fc.time - fc.ptime);
+			fc.ptime = fc.time;
+		}
+	}
+
+
+}
+
 class Interval
 {
 	public static isRunning:boolean = false;
-	private static _list:Array<FpsCollection> = [];
-	private static _rafInt:number = -1;
-	private static _time:number = -1;
 
 	public static attach(fps_:number, callback:(delta:number) => any):SignalConnection
 	{
 		// floor fps
 		var fps = fps_ | 0;
-		var list = Interval._list;
 		var fc:FpsCollection = null;
 		for(var i = 0; i < list.length; i++)
 		{
@@ -129,6 +156,7 @@ class Interval
 		if(!fc){
 			fc = new FpsCollection(fps);
 			list.push(fc);
+			listLength = list.length;
 		}
 
 		return fc.signal.connect(callback);
@@ -139,42 +167,14 @@ class Interval
 		if(!Interval.isRunning)
 		{
 			Interval.isRunning = true;
-			Interval.requestAnimationFrame(0);
+			requestAnimationFrame(0);
 		}
 	}
 
 	private static stop():void
 	{
 		Interval.isRunning = false;
-		cancelAnimationFrame(Interval._rafInt);
-	}
-
-	private static requestAnimationFrame = (timeUpdate:number):void =>
-	{
-
-
-		var prevTime = Interval._time;
-		Interval._time = timeUpdate;
-
-		var delta = timeUpdate - prevTime;
-		var list = Interval._list;
-
-		for(var i = 0; i < list.length; i++)
-		{
-			var fc = list[i];
-
-			fc.time += delta;
-			fc.accum += delta;
-
-			if(fc.accum > fc.mspf )
-			{
-				fc.accum -= fc.mspf;
-				fc.signal.emit(fc.time - fc.ptime);
-				fc.ptime = fc.time;
-			}
-		}
-
-		Interval._rafInt = window.requestAnimationFrame(Interval.requestAnimationFrame);
+		cancelAnimationFrame(rafInt);
 	}
 
 	private fps:number = 0;
@@ -196,10 +196,10 @@ class Interval
 	private _delay:number = -1;
 	public getDelay():number
 	{
-		var time =  ( Interval._time - this._delay );
-		this._delay = Interval._time;
+		var delay = ( time - this._delay );
+		this._delay = time;
 
-		return time;
+		return delay;
 	}
 
 	public destruct():void

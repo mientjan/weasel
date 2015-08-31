@@ -368,6 +368,7 @@ class Stage extends Container<IDisplayObject>
 			}
 		}
 
+		this.canvas.style['image-rendering'] = '-webkit-optimize-contrast';
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
 		this.ctx = this.canvas.getContext('2d');
@@ -460,9 +461,7 @@ class Stage extends Container<IDisplayObject>
 		/**
 		 *
 		 */
-		ctx.setTransform(this._option.pixelRatio, 0, 0,
-				this._option.pixelRatio, 0, 0
-		);
+		ctx.setTransform(pixelRatio, 0, 0, pixelRatio, .5, .5 );
 
 		if(autoClear)
 		{

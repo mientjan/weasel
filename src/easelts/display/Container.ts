@@ -218,23 +218,23 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	{
 		var localCtx:CanvasRenderingContext2D = ctx;
 
-		if(super.draw(ctx, ignoreCache))
+		if(super.draw(localCtx, ignoreCache))
 		{
 			return true;
 		}
 
-		if(this._isRenderIsolated)
-		{
-			localCtx = this._renderIsolationCanvas.getContext('2d');
-
-			if(this._willUpdateRenderIsolation)
-			{
-				localCtx.clearRect(0, 0, this.width, this.height);
-			}
-		}
-
-		if(this._willUpdateRenderIsolation)
-		{
+		//if(this._isRenderIsolated)
+		//{
+		//	localCtx = this._renderIsolationCanvas.getContext('2d');
+		//
+		//	if(this._willUpdateRenderIsolation)
+		//	{
+		//		localCtx.clearRect(0, 0, this.width, this.height);
+		//	}
+		//}
+		//
+		//if(this._willUpdateRenderIsolation)
+		//{
 			// this ensures we don't have issues with display list changes that occur during a draw:
 			var list = this.children,
 				child;
@@ -254,14 +254,14 @@ class Container<T extends IDisplayObject> extends DisplayObject
 				child.draw(localCtx);
 				localCtx.restore();
 			}
-		}
+		//}
 
-		if(this._isRenderIsolated)
-		{
-
-			ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
-
-		}
+		//if(this._isRenderIsolated)
+		//{
+		//
+		//	ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
+		//
+		//}
 
 
 		return true;

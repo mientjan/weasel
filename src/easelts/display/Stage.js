@@ -76,7 +76,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 _this.drawstartSignal.emit();
                 DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
                 var r = _this.drawRect, ctx = _this.ctx, pixelRatio = _this._option.pixelRatio;
-                ctx.setTransform(_this._option.pixelRatio, 0, 0, _this._option.pixelRatio, 0, 0);
+                ctx.setTransform(pixelRatio, 0, 0, pixelRatio, .5, .5);
                 if (autoClear) {
                     if (autoClearColor) {
                         ctx.fillStyle = autoClearColor;
@@ -126,6 +126,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                         break;
                     }
             }
+            this.canvas.style['image-rendering'] = '-webkit-optimize-contrast';
             this.enableDOMEvents(true);
             this.setFps(this._fps);
             this.ctx = this.canvas.getContext('2d');

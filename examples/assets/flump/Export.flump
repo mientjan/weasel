@@ -2,52 +2,84 @@
   "fileVersion": 2,
   "exports": [
     {
+      "prettyPrint": false,
       "format": "JSON",
-      "maxAtlasSize": 1024,
+      "scaleFactors": [
+        1
+      ],
+      "combine": false,
+      "optimize": "Memory",
       "textureBorder": 1,
       "scale": 1,
-      "prettyPrint": false,
-      "quality": "best",
       "name": "animations-100",
-      "scaleFactors": [
-        1
-      ],
-      "combine": false,
-      "optimize": "Speed",
-      "scaleFactorsString": "1",
-      "description": "'animations-100' (JSON, 100%, @1x)"
+      "maxAtlasSize": 1024,
+      "quality": "8x8",
+      "description": "'animations-100' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
     },
     {
-      "format": "JSON",
-      "maxAtlasSize": 1024,
-      "textureBorder": 1,
-      "scale": 0.75,
       "prettyPrint": false,
-      "quality": "best",
-      "name": "animations-75",
+      "format": "JSON",
       "scaleFactors": [
         1
       ],
       "combine": false,
-      "optimize": "Speed",
-      "scaleFactorsString": "1",
-      "description": "'animations-75' (JSON, 75%, @1x)"
+      "optimize": "Memory",
+      "textureBorder": 1,
+      "scale": 1,
+      "name": "a-100-8x8l-2048",
+      "maxAtlasSize": 2048,
+      "quality": "8x8linear",
+      "description": "'a-100-8x8l-2048' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
     },
     {
-      "format": "JSON",
-      "maxAtlasSize": 1024,
-      "textureBorder": 1,
-      "scale": 0.5,
       "prettyPrint": false,
-      "quality": "best",
-      "name": "animations-50",
+      "format": "JSON",
       "scaleFactors": [
         1
       ],
       "combine": false,
-      "optimize": "Speed",
-      "scaleFactorsString": "1",
-      "description": "'animations-50' (JSON, 50%, @1x)"
+      "optimize": "Memory",
+      "textureBorder": 1,
+      "scale": 1,
+      "name": "a-100-8x8l-1024",
+      "maxAtlasSize": 1024,
+      "quality": "8x8linear",
+      "description": "'a-100-8x8l-1024' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
+    },
+    {
+      "prettyPrint": false,
+      "format": "JSON",
+      "scaleFactors": [
+        1
+      ],
+      "combine": false,
+      "optimize": "Memory",
+      "textureBorder": 1,
+      "scale": 1,
+      "name": "a-100-16x16l-2048",
+      "maxAtlasSize": 2048,
+      "quality": "16x16linear",
+      "description": "'a-100-16x16l-2048' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
+    },
+    {
+      "prettyPrint": false,
+      "format": "JSON",
+      "scaleFactors": [
+        1
+      ],
+      "combine": false,
+      "optimize": "Memory",
+      "textureBorder": 1,
+      "scale": 1,
+      "name": "a-100-16x16l-1024",
+      "maxAtlasSize": 1024,
+      "quality": "16x16linear",
+      "description": "'a-100-16x16l-1024' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
     }
   ],
   "exportDir": "",

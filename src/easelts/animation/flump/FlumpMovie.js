@@ -193,17 +193,15 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             return this;
         };
         FlumpMovie.prototype.draw = function (ctx, ignoreCache) {
-            var layers = this.flumpMovieLayers;
-            var length = layers.length;
-            var ga = ctx.globalAlpha;
+            var layers = this.flumpMovieLayers, length = layers.length, ga = ctx.globalAlpha, a, b, c, d, tx, ty, layer, mtx;
             for (var i = 0; i < length; i++) {
-                var layer = layers[i];
-                var mtx = layer._storedMtx;
-                var a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
+                layer = layers[i];
+                mtx = layer._storedMtx;
                 if (layer.visible) {
+                    a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
                     ctx.save();
                     ctx.globalAlpha = ga * layer.alpha;
-                    ctx.transform.apply(ctx, [a, b, c, d, tx, ty]);
+                    ctx.transform(a, b, c, d, tx, ty);
                     layer.draw(ctx);
                     ctx.restore();
                 }
@@ -214,9 +212,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.frame = 0;
             this.time = 0.0;
             for (var fml in this.flumpMovieLayers) {
-                for (var symbol in fml._symbols) {
-                    symbol.reset();
-                }
+                this.flumpMovieLayers[fml].reset();
             }
         };
         return FlumpMovie;
