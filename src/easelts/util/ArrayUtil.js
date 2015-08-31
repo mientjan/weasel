@@ -18,6 +18,9 @@ define(["require", "exports", "../geom/Size"], function (require, exports, Size)
             }
             return size;
         };
+        ArrayUtil.getRandom = function (arr) {
+            return arr[Math.random() * arr.length | 0];
+        };
         return ArrayUtil;
     })();
     return ArrayUtil;

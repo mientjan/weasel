@@ -39,6 +39,7 @@ import Methods = require('../../easelts/util/Methods');
 // interfaces
 import IVector2 = require('../interface/IVector2');
 import IDisplayObject = require("../interface/IDisplayObject");
+import {IStageOption} from "../interface/IStageOption";
 
 // geom
 import Rectangle = require('../geom/Rectangle');
@@ -57,6 +58,7 @@ import Signal = require('../../createts/event/Signal');
 import SignalConnection = require('../../createts/event/SignalConnection');
 import Interval = require("../../createts/util/Interval");
 import Stats = require("../component/Stats");
+import {StageOption} from "../data/StageOption";
 
 
 /**
@@ -96,60 +98,12 @@ class Stage extends Container<IDisplayObject>
 	public static EVENT_MOUSE_ENTER = 'mouseenter';
 	public static EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
 
-
-	/**
-	 * Dispatched when the user moves the mouse over the canvas.
-	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
-	 * @event stagemousemove
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the user presses their left mouse button on the canvas. See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event stagemousedown
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the user the user releases the mouse button anywhere that the page can detect it (this varies slightly between browsers).
-	 * You can use {{#crossLink "Stage/mouseInBounds:property"}}{{/crossLink}} to check whether the mouse is currently within the stage bounds.
-	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
-	 * @event stagemouseup
-	 * @since 0.6.0
-	 */
-
-	/**
-	 * Dispatched when the mouse moves from within the canvas area (mouseInBounds == true) to outside it (mouseInBounds == false).
-	 * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event mouseleave
-	 * @since 0.7.0
-	 */
-
-	/**
-	 * Dispatched when the mouse moves into the canvas area (mouseInBounds == false) from outside it (mouseInBounds == true).
-	 * This is currently only dispatched for mouse input (not touch). See the {{#crossLink "MouseEvent"}}{{/crossLink}}
-	 * class for a listing of event properties.
-	 * @event mouseenter
-	 * @since 0.7.0
-	 */
-
-	/**
-	 * Dispatched each update immediately before the tick event is propagated through the display list.
-	 * You can call preventDefault on the event object to cancel propagating the tick event.
-	 * @event tickstart
-	 * @since 0.7.0
-	 */
-	//	protected _ticker:Ticker = new Ticker();
-
 	public tickstartSignal:Signal = new Signal();
 
 	/**
 	 * Dispatched each update immediately after the tick event is propagated through the display list. Does not fire if
 	 * tickOnUpdate is false. Precedes the "drawstart" event.
 	 * @event tickend
-	 * @since 0.7.0
 	 */
 	public tickendSignal:Signal = new Signal();
 
@@ -157,20 +111,19 @@ class Stage extends Container<IDisplayObject>
 	 * Dispatched each update immediately before the canvas is cleared and the display list is drawn to it.
 	 * You can call preventDefault on the event object to cancel the draw.
 	 * @event drawstart
-	 * @since 0.7.0
 	 */
 	public drawstartSignal:Signal = new Signal();
 
 	/**
 	 * Dispatched each update immediately after the display list is drawn to the canvas and the canvas context is restored.
 	 * @event drawend
-	 * @since 0.7.0
 	 */
 	public drawendSignal:Signal = new Signal();
 
 	// public properties:
 	public type:DisplayType = DisplayType.STAGE;
 
+	private _option:StageOption;
 	private _isRunning:boolean = false;
 	private _fps:number = 60;
 	private _fpsCounter:Stats = null;
@@ -184,22 +137,6 @@ class Stage extends Container<IDisplayObject>
 	} = null;
 
 	public _onResizeEventListener:Function = null;
-
-	/**
-	 * Indicates whether the stage should automatically clear the canvas before each render. You can set this to <code>false</code>
-	 * to manually control clearing (for generative art, or when pointing multiple stages at the same canvas for
-	 * example).
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *      var stage = new Stage("canvasId");
-	 *      stage.autoClear = false;
-	 *
-	 * @property autoClear
-	 * @type Boolean
-	 * @default true
-	 **/
-	public autoClear:boolean = true;
 
 	/**
 	 * The canvas the stage will render to. Multiple stages can share a single canvas, but you must disable autoClear for all but the
@@ -244,14 +181,6 @@ class Stage extends Container<IDisplayObject>
 	private _mouseOverY:number;
 	private _mouseOverX:number;
 	private _mouseOverTarget:any[];
-
-	/**
-	 * Indicates whether onResize should be called when the window is resized.
-	 * @property triggerResizeOnWindowResize
-	 * @type {boolean}
-	 * @default false
-	 */
-	public triggerResizeOnWindowResize:boolean = false;
 
 	/**
 	 * Specifies the area of the stage to affect when calling update. This can be use to selectively
@@ -407,11 +336,12 @@ class Stage extends Container<IDisplayObject>
 	 * @param {HTMLCanvasElement|HTMLBlockElement} element A canvas or div element. If it's a div element, a canvas object will be created and appended to the div.
 	 * @param {boolean} [triggerResizeOnWindowResize=false] Indicates whether onResize should be called when the window is resized
 	 **/
-	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, triggerResizeOnWindowResize:any = false, public pixelRatio:number = 1)
+	constructor(element:HTMLBlockElement|HTMLDivElement|HTMLCanvasElement, option:IStageOption)
 	{
 		super('100%', '100%', 0, 0, 0, 0);
 
-		this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+		this._option = new StageOption(option);
+
 		var size:Size;
 
 		switch(element.tagName)
@@ -444,7 +374,7 @@ class Stage extends Container<IDisplayObject>
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
-		if( triggerResizeOnWindowResize ){
+		if( this._option.autoResize ){
 			this.enableAutoResize();
 		}
 
@@ -504,6 +434,9 @@ class Stage extends Container<IDisplayObject>
 	 **/
 	public update = (delta:number):void =>
 	{
+		var autoClear = this._option.autoClear;
+		var autoClearColor = this._option.autoClearColor;
+
 		if(!this.canvas)
 		{
 			return;
@@ -520,18 +453,25 @@ class Stage extends Container<IDisplayObject>
 		DisplayObject._snapToPixelEnabled = this.snapToPixelEnabled;
 
 		var r = this.drawRect,
-				ctx = this.ctx;
+				ctx = this.ctx,
+				pixelRatio = this._option.pixelRatio;
 
 
 		/**
 		 *
 		 */
-		ctx.setTransform(this.pixelRatio, 0, 0,
-				this.pixelRatio, 0, 0
+		ctx.setTransform(this._option.pixelRatio, 0, 0,
+				this._option.pixelRatio, 0, 0
 		);
 
-		if(this.autoClear)
+		if(autoClear)
 		{
+			if(autoClearColor)
+			{
+				ctx.fillStyle = autoClearColor;
+				ctx.fillRect(0,0,this.canvas.width + 1, this.canvas.height + 1);
+			}
+
 			if(r)
 			{
 				ctx.clearRect(r.x, r.y, r.width, r.height);
@@ -803,7 +743,7 @@ class Stage extends Container<IDisplayObject>
 	 **/
 	public clone():Stage
 	{
-		var o = new Stage(null, this.triggerResizeOnWindowResize);
+		var o = new Stage(null, this._option.autoResize);
 		this.cloneProps(o);
 		return o;
 	}
@@ -1349,14 +1289,15 @@ class Stage extends Container<IDisplayObject>
 	 */
 	public onResize(width:number, height:number):void
 	{
+		var pixelRatio = this._option.pixelRatio;
 		// anti-half pixel fix
 		width = width + 1 >> 1 << 1;
 		height = height + 1 >> 1 << 1;
 
 		if(this.width != width || this.height != height)
 		{
-			this.canvas.width = width * this.pixelRatio;
-			this.canvas.height = height * this.pixelRatio;
+			this.canvas.width = width * pixelRatio;
+			this.canvas.height = height * pixelRatio;
 
 			this.canvas.style.width = '' + width + 'px';
 			this.canvas.style.height = '' + height + 'px';

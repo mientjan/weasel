@@ -1,19 +1,27 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary'], function (require, exports, Stage, FlumpLibrary) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary', "../../src/easelts/util/ArrayUtil"], function (require, exports, Stage, FlumpLibrary, ArrayUtil) {
     var holder = document.getElementById('holder');
     var stage = new Stage(holder, true).setFpsCounter(true);
     stage.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
     stage.canvas.style.transformStyle = 'preserve-3d';
-    FlumpLibrary.load('../assets/flump/ani-100/Interface').then(function (fl) {
-        for (var i = 0; i < 50; i++) {
-            var movie = fl.createMovie('animation_awesome');
-            movie.setX(Math.random() * stage.width).setY(Math.random() * stage.height);
-            movie.play(-1);
-            stage.addChild(movie);
-            var movie = fl.createMovie('aniamtion_hope_sadTriangles');
+    FlumpLibrary.load('../assets/flump/animations-100/character').then(function (fl) {
+        var names = [
+            'SupermanSuduction1',
+            'SupermanSuduction2',
+            'SupermanSuduction3',
+            'SupermanDie',
+            'SupermanWalk',
+            'SupermanSuductionWin',
+            'SupermanSuductionLose'
+        ];
+        for (var i = 0; i < 60; i++) {
+            var movie = fl.createMovie(ArrayUtil.getRandom(names));
             movie.setX(Math.random() * stage.width).setY(Math.random() * stage.height);
             movie.play(-1);
             stage.addChild(movie);
         }
+        stage.children.sort(function (item0, item1) {
+            return item0.y - item1.y;
+        });
     }).catch(function (error) { return console.log(error); });
     stage.start();
 });

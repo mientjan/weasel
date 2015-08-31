@@ -2,7 +2,7 @@ import Promise = require('../../createts/util/Promise');
 
 interface ILoadable<T>
 {
-	isLoaded:boolean;
+	isLoaded():boolean;
 	load(onProgress:(progress:number) => any):Promise<T>
 }
 
