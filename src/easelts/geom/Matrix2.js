@@ -237,5 +237,5 @@ define(["require", "exports"], function (require, exports) {
         Matrix2.DEG_TO_RAD = Math.PI / 180;
         return Matrix2;
     })();
-    exports.Matrix2 = Matrix2;
+    exports.default = Matrix2;
 });

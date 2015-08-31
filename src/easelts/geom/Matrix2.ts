@@ -2,7 +2,6 @@
 
 /*
  * Matrix2D
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
  *
@@ -43,7 +42,7 @@
  * @param {Number} [ty=0] Specifies the ty property for the new matrix.
  * @constructor
  **/
-export class Matrix2
+export default class Matrix2
 {
 
 	/**
@@ -71,42 +70,42 @@ export class Matrix2
 	 * @property a
 	 * @type Number
 	 **/
-	a:number = 1;
+	public a:number = 1;
 
 	/**
 	 * Position (0, 1) in a 3x3 affine transformation matrix.
 	 * @property b
 	 * @type Number
 	 **/
-	b:number = 0;
+	public b:number = 0;
 
 	/**
 	 * Position (1, 0) in a 3x3 affine transformation matrix.
 	 * @property c
 	 * @type Number
 	 **/
-	c:number = 0;
+	public c:number = 0;
 
 	/**
 	 * Position (1, 1) in a 3x3 affine transformation matrix.
 	 * @property d
 	 * @type Number
 	 **/
-	d:number = 1;
+	public d:number = 1;
 
 	/**
 	 * Position (2, 0) in a 3x3 affine transformation matrix.
 	 * @property tx
 	 * @type Number
 	 **/
-	tx:number = 0;
+	public tx:number = 0;
 
 	/**
 	 * Position (2, 1) in a 3x3 affine transformation matrix.
 	 * @property ty
 	 * @type Number
 	 **/
-	ty:number = 0;
+	public ty:number = 0;
 
 	/**
 	 * Property representing the alpha that will be applied to a display object. This is not part of matrix
@@ -114,7 +113,7 @@ export class Matrix2
 	 * @property alpha
 	 * @type Number
 	 **/
-	alpha:number = 1;
+	public alpha:number = 1;
 
 	/**
 	 * Property representing the shadow that will be applied to a display object. This is not part of matrix
@@ -122,7 +121,7 @@ export class Matrix2
 	 * @property shadow
 	 * @type Shadow
 	 **/
-	shadow = null;
+	public shadow = null;
 
 	/**
 	 * Property representing the compositeOperation that will be applied to a display object. This is not part of
@@ -132,7 +131,7 @@ export class Matrix2
 	 * @property compositeOperation
 	 * @type String
 	 **/
-	compositeOperation = null;
+	public compositeOperation = null;
 
 	/**
 	 * Property representing the value for visible that will be applied to a display object. This is not part of matrix
@@ -140,7 +139,7 @@ export class Matrix2
 	 * @property visible
 	 * @type Boolean
 	 **/
-	visible:boolean = true;
+	public visible:boolean = true;
 
 	// constructor:
 	/**

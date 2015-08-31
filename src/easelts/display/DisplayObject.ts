@@ -55,7 +55,7 @@ import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
 import CalculationUnitType = require('../enum/CalculationUnitType');
 import ValueCalculation = require('../geom/ValueCalculation');
 
-import m2 = require('../geom/Matrix2');
+import Matrix2 from "../geom/Matrix2";
 import Rectangle = require('../geom/Rectangle');
 import Size = require('../geom/Size');
 import Point = require('../geom/Point');
@@ -271,7 +271,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 */
 	public isDirty:boolean = false;
 	public isHitable:boolean = true;
-
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
@@ -521,7 +520,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+	public _matrix:Matrix2 = new Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -553,9 +552,9 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @method initialize
 	 * @param args
 	 */
-	public initialize(...args:any[])
+	public initialize()
 	{
-		this['constructor'].apply(this, args);
+		this['constructor'].apply(this, arguments);
 	}
 
 	/**
@@ -1327,10 +1326,10 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * Matrix object is returned.
 	 * @return {Matrix2D} A matrix representing this display object's transform.
 	 **/
-	public getMatrix(matrix?:m2.Matrix2)
+	public getMatrix(matrix?:Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new Matrix2(0, 0, 0, 0, 0, 0))
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1346,7 +1345,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Matrix2D} a concatenated Matrix2D object representing the combined transform of the display object and
 	 * all of its parent Containers up to the highest level ancestor (usually the {{#crossLink "Stage"}}{{/crossLink}}).
 	 **/
-	public getConcatenatedMatrix(matrix:m2.Matrix2):m2.Matrix2
+	public getConcatenatedMatrix(matrix:Matrix2):Matrix2
 	{
 		if(matrix)
 		{
@@ -1354,7 +1353,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		}
 		else
 		{
-			matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+			matrix = new Matrix2(0, 0, 0, 0, 0, 0);
 		}
 		var o = this;
 		while(o != null)
@@ -1710,12 +1709,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean):Rectangle
+	protected _getBounds(matrix?:Matrix2, ignoreTransform?:boolean):Rectangle
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
 
-	public DisplayObject_getBounds:(matrix?:m2.Matrix2, ignoreTransform?:boolean) => Rectangle = this._getBounds;
+	public DisplayObject_getBounds:(matrix?:Matrix2, ignoreTransform?:boolean) => Rectangle = this._getBounds;
 
 
 	/**
@@ -1726,7 +1725,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
+	protected _transformBounds(bounds:Rectangle, matrix:Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		if(!bounds)
 		{

@@ -31,7 +31,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../geom/FluidCalculation', '../geom/Matrix2', '../geom/Rectangle', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, FluidCalculation, m2, Rectangle, Point) {
+define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../geom/FluidCalculation', "../geom/Matrix2", '../geom/Rectangle', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, FluidCalculation, Matrix2_1, Rectangle, Point) {
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
         function DisplayObject(width, height, x, y, regX, regY) {
@@ -91,7 +91,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._cacheScale = 1;
             this._cacheDataURLID = 0;
             this._cacheDataURL = null;
-            this._matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+            this._matrix = new Matrix2_1.default(0, 0, 0, 0, 0, 0);
             this._rectangle = new Rectangle(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
@@ -109,11 +109,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             configurable: true
         });
         DisplayObject.prototype.initialize = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            this['constructor'].apply(this, args);
+            this['constructor'].apply(this, arguments);
         };
         DisplayObject.prototype.dot = function (v) {
             return this.x * v.x + this.y * v.y;
@@ -481,7 +477,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         };
         DisplayObject.prototype.getMatrix = function (matrix) {
             var o = this;
-            return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
+            return (matrix ? matrix.identity() : new Matrix2_1.default(0, 0, 0, 0, 0, 0))
                 .appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
                 .appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
         };
@@ -490,7 +486,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 matrix.identity();
             }
             else {
-                matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+                matrix = new Matrix2_1.default(0, 0, 0, 0, 0, 0);
             }
             var o = this;
             while (o != null) {

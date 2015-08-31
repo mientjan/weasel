@@ -36,6 +36,7 @@ import Rectangle = require('../geom/Rectangle');
 import TimeEvent = require('../../createts/event/TimeEvent');
 import IDisplayObject = require("../interface/IDisplayObject");
 import Stage = require("./Stage");
+import Matrix2 from "../geom/Matrix2";
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -936,7 +937,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
+	public _getBounds(matrix:Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		var bounds = super.getBounds();
 		if(bounds)
