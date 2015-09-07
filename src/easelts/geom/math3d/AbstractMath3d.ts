@@ -4,7 +4,7 @@ import Quaternion from "../Quaternion";
 import Matrix4 from "../Matrix4";
 
 
-export class AbstractMath3d
+export default class AbstractMath3D
 {
 	private _quaternion:{[index:string]:Quaternion} = {};
 	private _vector3:{[index:string]:Vector3} = {};

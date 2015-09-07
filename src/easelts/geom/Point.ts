@@ -68,7 +68,7 @@ class Point implements IPoint
 	 * @param {Number} [y=0] Y position.
 	 * @return {Point} This instance. Useful for chaining method calls.
 	 */
-		constructor(x:number, y:number)
+	constructor(x:number, y:number)
 	{
 		this.x = x;
 		this.y = y;

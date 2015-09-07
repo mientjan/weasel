@@ -4,46 +4,18 @@
 import Quaternion from "./Quaternion";
 import Matrix4 from "./Matrix4";
 import MathUtil from "../util/MathUtil";
+import AbstractMath3D from "./math3d/AbstractMath3D";
+import Matrix3 from "./Matrix3";
 
-export default class Vector3
+export default class Vector3 extends AbstractMath3D
 {
-	private _quaternion:{[index:string]:Quaternion} = {};
-	private _vector3:{[index:string]:Vector3} = {};
-	private _matrix4:{[index:string]:Matrix4} = {};
-
-	protected getQuaternion(value:string):Quaternion
-	{
-		if(!this._quaternion[value])
-		{
-			this._quaternion[value] = new Quaternion();
-		}
-		return this._quaternion[value];
-	}
-
-	protected getVector3(value:string):Vector3
-	{
-		if(!this._vector3[value])
-		{
-			this._vector3[value] = new Vector3();
-		}
-		return this._vector3[value];
-	}
-
-	protected getMatrix4(value:string):Matrix4
-	{
-		if(!this._matrix4[value])
-		{
-			this._matrix4[value] = new Matrix4();
-		}
-		return this._matrix4[value];
-	}
-
 	public x:number;
 	public y:number;
 	public z:number;
 
 	constructor(x:number = 0, y:number = 0, z:number = 0)
 	{
+		super();
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -128,7 +100,7 @@ export default class Vector3
 
 	}
 
-	public copy(v)
+	public copy(v):Vector3
 	{
 		this.x = v.x;
 		this.y = v.y;
@@ -137,7 +109,7 @@ export default class Vector3
 		return this;
 	}
 
-	public add(v:Vector3)
+	public add(v:Vector3):Vector3
 	{
 		this.x += v.x;
 		this.y += v.y;
@@ -146,7 +118,7 @@ export default class Vector3
 		return this;
 	}
 
-	public addScalar(s:number)
+	public addScalar(s:number):Vector3
 	{
 
 		this.x += s;
@@ -175,7 +147,7 @@ export default class Vector3
 		return this;
 	}
 
-	public subScalar(s:number)
+	public subScalar(s:number):Vector3
 	{
 
 		this.x -= s;
@@ -219,7 +191,7 @@ export default class Vector3
 
 	}
 
-	public multiplyVectors(a, b)
+	public multiplyVectors(a:Vector3, b:Vector3):Vector3
 	{
 
 		this.x = a.x * b.x;
@@ -247,7 +219,7 @@ export default class Vector3
 		return this;
 	}
 
-	public applyMatrix3(m):Vector3
+	public applyMatrix3(m:Matrix3):Vector3
 	{
 
 		var x = this.x;

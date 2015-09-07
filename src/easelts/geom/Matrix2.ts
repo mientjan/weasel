@@ -31,6 +31,7 @@
  * @module EaselJS
  */
 
+import Point = require("./Point");
 /**
  * Represents an affine transformation matrix, and provides tools for constructing and concatenating matrixes.
  * @class Matrix2D
@@ -151,9 +152,14 @@ export default class Matrix2
 	 * @param {Number} [tx=0] Specifies the tx property for the new matrix.
 	 * @param {Number} [ty=0] Specifies the ty property for the new matrix.
 	 */
-		constructor(a:number, b:number, c:number, d:number, tx:number, ty:number)
+	constructor(a:number, b:number, c:number, d:number, tx:number, ty:number)
 	{
-		this._initialize(a, b, c, d, tx, ty);
+		this.a = a;
+		this.b = b;
+		this.c = c;
+		this.d = d;
+		this.tx = tx;
+		this.ty = ty;
 	}
 
 	public _initialize(a:number, b:number, c:number, d:number, tx:number, ty:number):void
@@ -177,7 +183,7 @@ export default class Matrix2
 	 * @param {Number} ty
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public prepend(a, b, c, d, tx, ty)
+	public prepend(a:number, b:number, c:number, d:number, tx:number, ty:number)
 	{
 		var tx1 = this.tx;
 		if(a != 1 || b != 0 || c != 0 || d != 1)
@@ -205,7 +211,7 @@ export default class Matrix2
 	 * @param {Number} ty
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public append(a, b, c, d, tx, ty)
+	public append(a:number, b:number, c:number, d:number, tx:number, ty:number)
 	{
 		var a1 = this.a;
 		var b1 = this.b;
@@ -227,7 +233,7 @@ export default class Matrix2
 	 * @param {Matrix2D} matrix
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public prependMatrix(matrix)
+	public prependMatrix(matrix:Matrix2)
 	{
 		this.prepend(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 		this.prependProperties(matrix.alpha, matrix.shadow, matrix.compositeOperation, matrix.visible);
@@ -240,7 +246,7 @@ export default class Matrix2
 	 * @param {Matrix2D} matrix
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public appendMatrix(matrix)
+	public appendMatrix(matrix:Matrix2)
 	{
 		this.append(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 		this.appendProperties(matrix.alpha, matrix.shadow, matrix.compositeOperation, matrix.visible);
@@ -263,7 +269,7 @@ export default class Matrix2
 	 * @param {Number} regY Optional.
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public prependTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
+	public prependTransform(x:number, y:number, scaleX:number, scaleY:number, rotation:number, skewX:number, skewY:number, regX:number, regY:number)
 	{
 		if(rotation % 360)
 		{
@@ -314,7 +320,7 @@ export default class Matrix2
 	 * @param {Number} regY Optional.
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public appendTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY)
+	public appendTransform(x:number, y:number, scaleX:number, scaleY:number, rotation:number, skewX:number, skewY:number, regX:number, regY:number):Matrix2
 	{
 		if(rotation % 360)
 		{
@@ -356,7 +362,7 @@ export default class Matrix2
 	 * @param {Number} angle The angle in radians. To use degrees, multiply by <code>Math.PI/180</code>.
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public rotate(angle)
+	public rotate(angle:number):Matrix2
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
@@ -381,7 +387,7 @@ export default class Matrix2
 	 * @param {Number} skewY The amount to skew vertically in degrees.
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 */
-	public skew(skewX, skewY)
+	public skew(skewX:number, skewY:number):Matrix2
 	{
 		skewX = skewX * Matrix2.DEG_TO_RAD;
 		skewY = skewY * Matrix2.DEG_TO_RAD;
@@ -396,7 +402,7 @@ export default class Matrix2
 	 * @param {Number} y The amount to scale vertically
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public scale(x, y)
+	public scale(x:number, y:number):Matrix2
 	{
 		this.a *= x;
 		this.d *= y;
@@ -414,7 +420,7 @@ export default class Matrix2
 	 * @param {Number} y
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public translate(x, y)
+	public translate(x:number, y:number):Matrix2
 	{
 		this.tx += x;
 		this.ty += y;
@@ -426,7 +432,7 @@ export default class Matrix2
 	 * @method identity
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public identity()
+	public identity():Matrix2
 	{
 		this.alpha = this.a = this.d = 1;
 		this.b = this.c = this.tx = this.ty = 0;
@@ -440,7 +446,7 @@ export default class Matrix2
 	 * @method invert
 	 * @return {Matrix2D} This matrix. Useful for chaining method calls.
 	 **/
-	public invert()
+	public invert():Matrix2
 	{
 		var a1 = this.a;
 		var b1 = this.b;
@@ -463,7 +469,7 @@ export default class Matrix2
 	 * @method isIdentity
 	 * @return {Boolean}
 	 **/
-	public isIdentity()
+	public isIdentity():boolean
 	{
 		return this.tx == 0 && this.ty == 0 && this.a == 1 && this.b == 0 && this.c == 0 && this.d == 1;
 	}
@@ -476,9 +482,8 @@ export default class Matrix2
 	 * @param {Point | Object} [pt] An object to copy the result into. If omitted a generic object with x/y properties will be returned.
 	 * @return {Point} This matrix. Useful for chaining method calls.
 	 **/
-	public transformPoint(x, y, pt)
+	public transformPoint(x:number, y:number, pt:Point = new Point(0,0))
 	{
-		pt = pt || {};
 		pt.x = x * this.a + y * this.c + this.tx;
 		pt.y = x * this.b + y * this.d + this.ty;
 		return pt;

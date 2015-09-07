@@ -748,4 +748,4 @@ class Vector4
 	}
 }
 
-export = Vector4;
+export default Vector4;

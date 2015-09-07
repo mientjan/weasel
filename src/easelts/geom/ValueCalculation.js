@@ -49,5 +49,5 @@ define(["require", "exports", './FluidCalculation'], function (require, exports,
         };
         return ValueCalculation;
     })();
-    return ValueCalculation;
+    exports.default = ValueCalculation;
 });

@@ -1,9 +1,14 @@
-define(["require", "exports", "./Quaternion", "./Vector3", "../util/MathUtil"], function (require, exports, Quaternion_1, Vector3_1, MathUtil_1) {
-    var Matrix4 = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", "../util/MathUtil", "./math3d/AbstractMath3D"], function (require, exports, MathUtil_1, AbstractMath3D_1) {
+    var Matrix4 = (function (_super) {
+        __extends(Matrix4, _super);
         function Matrix4() {
-            this._quaternion = {};
-            this._vector3 = {};
-            this._matrix4 = {};
+            _super.call(this);
             this.elements = new Float32Array([
                 1, 0, 0, 0,
                 0, 1, 0, 0,
@@ -11,24 +16,6 @@ define(["require", "exports", "./Quaternion", "./Vector3", "../util/MathUtil"], 
                 0, 0, 0, 1
             ]);
         }
-        Matrix4.prototype.getQuaternion = function (value) {
-            if (!this._quaternion[value]) {
-                this._quaternion[value] = new Quaternion_1.default();
-            }
-            return this._quaternion[value];
-        };
-        Matrix4.prototype.getVector3 = function (value) {
-            if (!this._vector3[value]) {
-                this._vector3[value] = new Vector3_1.default();
-            }
-            return this._vector3[value];
-        };
-        Matrix4.prototype.getMatrix4 = function (value) {
-            if (!this._matrix4[value]) {
-                this._matrix4[value] = new Matrix4();
-            }
-            return this._matrix4[value];
-        };
         Matrix4.prototype.set = function (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
             var te = this.elements;
             te[0] = n11;
@@ -611,6 +598,6 @@ define(["require", "exports", "./Quaternion", "./Vector3", "../util/MathUtil"], 
             return new Matrix4().fromArray(this.elements);
         };
         return Matrix4;
-    })();
+    })(AbstractMath3D_1.default);
     exports.default = Matrix4;
 });

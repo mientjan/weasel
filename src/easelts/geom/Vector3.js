@@ -1,35 +1,22 @@
-define(["require", "exports", "./Quaternion", "./Matrix4", "../util/MathUtil"], function (require, exports, Quaternion_1, Matrix4_1, MathUtil_1) {
-    var Vector3 = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", "../util/MathUtil", "./math3d/AbstractMath3D"], function (require, exports, MathUtil_1, AbstractMath3D_1) {
+    var Vector3 = (function (_super) {
+        __extends(Vector3, _super);
         function Vector3(x, y, z) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
-            this._quaternion = {};
-            this._vector3 = {};
-            this._matrix4 = {};
+            _super.call(this);
             this._dotProjectOnVector = null;
             this.x = x;
             this.y = y;
             this.z = z;
         }
-        Vector3.prototype.getQuaternion = function (value) {
-            if (!this._quaternion[value]) {
-                this._quaternion[value] = new Quaternion_1.default();
-            }
-            return this._quaternion[value];
-        };
-        Vector3.prototype.getVector3 = function (value) {
-            if (!this._vector3[value]) {
-                this._vector3[value] = new Vector3();
-            }
-            return this._vector3[value];
-        };
-        Vector3.prototype.getMatrix4 = function (value) {
-            if (!this._matrix4[value]) {
-                this._matrix4[value] = new Matrix4_1.default();
-            }
-            return this._matrix4[value];
-        };
         Vector3.prototype.set = function (x, y, z) {
             this.x = x;
             this.y = y;
@@ -437,6 +424,6 @@ define(["require", "exports", "./Quaternion", "./Matrix4", "../util/MathUtil"], 
             return new Vector3(this.x, this.y, this.z);
         };
         return Vector3;
-    })();
+    })(AbstractMath3D_1.default);
     exports.default = Vector3;
 });

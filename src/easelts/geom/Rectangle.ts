@@ -47,8 +47,6 @@
  **/
 class Rectangle
 {
-
-
 	// public properties:
 	/**
 	 * X position.

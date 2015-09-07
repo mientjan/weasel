@@ -1,6 +1,7 @@
 import Quaternion from "./Quaternion";
 import Vector3 from "./Vector3";
 import MathUtil from "../util/MathUtil";
+import AbstractMath3D from "./math3d/AbstractMath3D";
 
 
 /**
@@ -18,40 +19,8 @@ import MathUtil from "../util/MathUtil";
  * @author bhouston / http://exocortex.com
  * @author WestLangley / http://github.com/WestLangley
  */
-export default class Matrix4
+export default class Matrix4 extends AbstractMath3D
 {
-	private _quaternion:{[index:string]:Quaternion} = {};
-	private _vector3:{[index:string]:Vector3} = {};
-	private _matrix4:{[index:string]:Matrix4} = {};
-
-	protected getQuaternion(value:string):Quaternion
-	{
-		if(!this._quaternion[value])
-		{
-			this._quaternion[value] = new Quaternion();
-		}
-		return this._quaternion[value];
-	}
-
-	protected getVector3(value:string):Vector3
-	{
-		if(!this._vector3[value])
-		{
-			this._vector3[value] = new Vector3();
-		}
-		return this._vector3[value];
-	}
-
-	protected getMatrix4(value:string):Matrix4
-	{
-		if(!this._matrix4[value])
-		{
-			this._matrix4[value] = new Matrix4();
-		}
-		return this._matrix4[value];
-	}
-
-
 	public elements:Float32Array = new Float32Array([
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -61,6 +30,7 @@ export default class Matrix4
 
 	constructor()
 	{
+		super();
 	}
 
 	public set(n11:number, n12:number, n13:number, n14:number, n21:number, n22:number, n23:number, n24:number, n31:number, n32:number, n33:number, n34:number, n41:number, n42:number, n43:number, n44:number):Matrix4

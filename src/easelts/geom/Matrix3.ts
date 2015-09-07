@@ -1,13 +1,14 @@
-import v3 = require('./Vector3');
-import m4 = require('./Matrix4');
 
+
+import Vector3 from "./Vector3";
+import Matrix4 from "./Matrix4";
 /**
  * @method Matrix3
  * @author alteredq / http://alteredqualia.com/
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://exocortex.com
  */
-export class Matrix3
+export default class Matrix3
 {
 	public elements:Float32Array;
 
@@ -69,12 +70,12 @@ export class Matrix3
 
 	}
 
-	private __v0:v3.Vector3 = null;
+	private __v0:Vector3 = null;
 
 	public applyToVector3Array(array:number[], offset:number, length:number):number[]
 	{
 		if(!this.__v0){
-			this.__v0 = new v3.Vector3(0, 0, 0);
+			this.__v0 = new Vector3(0, 0, 0);
 		}
 		var v1 = this.__v0;
 
@@ -137,7 +138,7 @@ export class Matrix3
 
 	}
 
-	public getInverse(matrix:m4.Matrix4, throwOnInvertible:boolean = false)
+	public getInverse(matrix:Matrix4, throwOnInvertible:boolean = false)
 	{
 
 		// input: THREE.Matrix4
@@ -230,7 +231,7 @@ export class Matrix3
 
 	}
 
-	public getNormalMatrix(m:m4.Matrix4)
+	public getNormalMatrix(m:Matrix4)
 	{
 
 		// input: THREE.Matrix4

@@ -1,5 +1,5 @@
 /// <reference path="../display/DisplayObject.ts" />
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "./Point"], function (require, exports, Point) {
     var Matrix2 = (function () {
         function Matrix2(a, b, c, d, tx, ty) {
             this.a = 1;
@@ -12,7 +12,12 @@ define(["require", "exports"], function (require, exports) {
             this.shadow = null;
             this.compositeOperation = null;
             this.visible = true;
-            this._initialize(a, b, c, d, tx, ty);
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.tx = tx;
+            this.ty = ty;
         }
         Matrix2.prototype._initialize = function (a, b, c, d, tx, ty) {
             this.a = a;
@@ -169,7 +174,7 @@ define(["require", "exports"], function (require, exports) {
             return this.tx == 0 && this.ty == 0 && this.a == 1 && this.b == 0 && this.c == 0 && this.d == 1;
         };
         Matrix2.prototype.transformPoint = function (x, y, pt) {
-            pt = pt || {};
+            if (pt === void 0) { pt = new Point(0, 0); }
             pt.x = x * this.a + y * this.c + this.tx;
             pt.y = x * this.b + y * this.d + this.ty;
             return pt;
