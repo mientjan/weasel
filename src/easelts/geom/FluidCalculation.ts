@@ -1,8 +1,8 @@
-import FluidMeasurementsUnit = require('./FluidMeasurementsUnit');
-//import IResize = require('lib/createjs/easeljs/component/interface/IResize');
-import CalculationType = require('../enum/CalculationType');
-import CalculationUnitType = require('../enum/CalculationUnitType');
-import MeasurementUnitType = require('../enum/MeasurementUnitType');
+import FluidMeasurementsUnit from "./FluidMeasurementsUnit";
+//import IResize from "lib/createjs/easeljs/component/interface/IResize";
+import CalculationType from "../enum/CalculationType";
+import CalculationUnitType from "../enum/CalculationUnitType";
+import MeasurementUnitType from "../enum/MeasurementUnitType";
 
 
 /**
@@ -229,4 +229,4 @@ class FluidCalculation
 	}
 }
 
-export = FluidCalculation;
+export default FluidCalculation;

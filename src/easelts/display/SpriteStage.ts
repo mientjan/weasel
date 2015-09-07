@@ -72,8 +72,8 @@
 //	_class.prototype._spritestage_compatibility = index + 1;
 //});
 
-import Stage = require('./Stage');
-import m2 = require('../geom/Matrix2');
+import Stage from "./Stage";
+import m2 from "../geom/Matrix2";
 
 class SpriteStage extends Stage
 {
@@ -1121,4 +1121,4 @@ class SpriteStage extends Stage
 	}
 }
 
-export = SpriteStage;
+export default SpriteStage;

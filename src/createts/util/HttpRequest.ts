@@ -1,5 +1,5 @@
-import Promise = require('./Promise');
-import ILoadable = require('../../easelts/interface/ILoadable');
+import Promise from "./Promise";
+import ILoadable from "../../easelts/interface/ILoadable";
 
 /*
  * HttpRequest
@@ -146,4 +146,4 @@ class HttpRequest
 	}
 }
 
-export = HttpRequest;
+export default HttpRequest;

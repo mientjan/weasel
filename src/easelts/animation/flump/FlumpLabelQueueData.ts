@@ -1,4 +1,4 @@
-import FlumpLabelData = require('./FlumpLabelData');
+import FlumpLabelData from "./FlumpLabelData";
 
 class FlumpLabelQueueData extends FlumpLabelData
 {
@@ -37,4 +37,4 @@ class FlumpLabelQueueData extends FlumpLabelData
 	}
 }
 
-export = FlumpLabelQueueData;
+export default FlumpLabelQueueData;

@@ -1,5 +1,5 @@
-import Shape = require('../display/Shape');
-import Size = require('../geom/Size');
+import Shape from "../display/Shape";
+import Size from "../geom/Size";
 
 /**
  * @class BackgroundColor
@@ -48,4 +48,4 @@ class RectangleColor extends Shape
 	}
 }
 
-export = RectangleColor;
+export default RectangleColor;

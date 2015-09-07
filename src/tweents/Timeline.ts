@@ -507,4 +507,4 @@ class Timeline extends EventDispatcher
 	}
 }
 
-export = Timeline;
+export default Timeline;

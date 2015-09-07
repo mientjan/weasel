@@ -26,17 +26,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Methods = require('../util/Methods');
-import DisplayType = require('../enum/DisplayType');
-import Size = require('../geom/Size');
-import m2 = require('../geom/Matrix2');
-import Rectangle = require('../geom/Rectangle');
+import DisplayObject from "./DisplayObject";
+import * as Methods from "../util/Methods";
+import DisplayType from "../enum/DisplayType";
+import Size from "../geom/Size";
+import m2 from "../geom/Matrix2";
+import Rectangle from "../geom/Rectangle";
 
-import TimeEvent = require('../../createts/event/TimeEvent');
-import IDisplayObject = require("../interface/IDisplayObject");
-import Stage = require("./Stage");
+import TimeEvent from "../../createts/event/TimeEvent";
+import Stage from "./Stage";
 import Matrix2 from "../geom/Matrix2";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -996,4 +996,4 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	}
 }
 
-export = Container;
+export default Container;

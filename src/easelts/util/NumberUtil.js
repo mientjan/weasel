@@ -14,5 +14,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return NumberUtil;
     })();
-    return NumberUtil;
+    exports.default = NumberUtil;
 });

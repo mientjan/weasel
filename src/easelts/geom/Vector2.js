@@ -295,5 +295,5 @@ define(["require", "exports"], function (require, exports) {
         Vector2.degreeToRad = Math.PI / 180;
         return Vector2;
     })();
-    return Vector2;
+    exports.default = Vector2;
 });

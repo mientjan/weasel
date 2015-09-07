@@ -27,9 +27,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Rectangle = require('../geom/Rectangle');
-import Methods = require('../util/Methods');
+import DisplayObject from "./DisplayObject";
+import Rectangle from "../geom/Rectangle";
+import Methods from "../util/Methods";
 
 /**
  * @module easelts
@@ -722,4 +722,4 @@ if(canvas.getContext)
 	canvas.width = canvas.height = 1;
 }
 
-export = Text;
+export default Text;

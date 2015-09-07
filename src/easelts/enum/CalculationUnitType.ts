@@ -8,4 +8,4 @@ const enum CalculationUnitType {
 	DIVISION
 }
 
-export = CalculationUnitType;
+export default CalculationUnitType;

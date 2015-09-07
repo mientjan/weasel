@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/event/EventDispatcher', '../tweents/Ease', "../createts/util/Interval"], function (require, exports, EventDispatcher, Ease, Interval) {
+define(["require", "exports", "../createts/event/EventDispatcher", "../tweents/Ease", "../createts/util/Interval"], function (require, exports, EventDispatcher_1, Ease_1, Interval_1) {
     var Tween = (function (_super) {
         __extends(Tween, _super);
         function Tween(target, props, pluginData) {
@@ -56,7 +56,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../tweents/E
         }
         Tween.start = function () {
             if (!Tween.interval) {
-                Tween.interval = new Interval(60);
+                Tween.interval = new Interval_1.default(60);
             }
             Tween.interval.attach(this.onTick);
         };
@@ -155,7 +155,7 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../tweents/E
                 return this;
             }
             var o = this._cloneProps(this._curQueueProps);
-            return this._addStep({ d: duration, p0: o, e: Ease.linear, p1: o, v: passive });
+            return this._addStep({ d: duration, p0: o, e: Ease_1.default.linear, p1: o, v: passive });
         };
         Tween.prototype.to = function (props, duration, ease) {
             if (isNaN(duration) || duration < 0) {
@@ -408,6 +408,6 @@ define(["require", "exports", '../createts/event/EventDispatcher', '../tweents/E
             }
         };
         return Tween;
-    })(EventDispatcher);
-    return Tween;
+    })(EventDispatcher_1.default);
+    exports.default = Tween;
 });

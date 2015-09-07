@@ -32,7 +32,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/Event', './DisplayObject'], function (require, exports, Event, DisplayObject) {
+define(["require", "exports", "../../createts/event/Event", "./DisplayObject"], function (require, exports, Event_1, DisplayObject_1) {
     var Sprite = (function (_super) {
         __extends(Sprite, _super);
         function Sprite(spriteSheet, frameOrAnimation) {
@@ -158,7 +158,7 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
         Sprite.prototype._dispatchAnimationEnd = function (animation, frame, paused, next, end) {
             var name = animation ? animation.name : null;
             if (this.hasEventListener("animationend")) {
-                var evt = new Event("animationend");
+                var evt = new Event_1.default("animationend");
                 this.dispatchEvent(evt);
             }
             var changed = (this._animation != animation || this._currentFrame != frame);
@@ -196,6 +196,6 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
             }
         };
         return Sprite;
-    })(DisplayObject);
-    return Sprite;
+    })(DisplayObject_1.default);
+    exports.default = Sprite;
 });

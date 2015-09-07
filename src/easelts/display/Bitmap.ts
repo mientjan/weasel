@@ -27,12 +27,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import DisplayType = require('../enum/DisplayType');
-import BitmapType = require('../enum/BitmapType');
-import Rectangle = require('../geom/Rectangle');
-import Signal = require('../../createts/event/Signal');
-import Size = require('../geom/Size');
+import DisplayObject from "./DisplayObject";
+import DisplayType from "../enum/DisplayType";
+import BitmapType from "../enum/BitmapType";
+import Rectangle from "../geom/Rectangle";
+import Signal from "../../createts/event/Signal";
+import Size from "../geom/Size";
 
 /**
  * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing
@@ -423,4 +423,4 @@ class Bitmap extends DisplayObject
 	}
 
 }
-export = Bitmap;
+export default Bitmap;

@@ -8,5 +8,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return TouchInjectProperties;
     })();
-    return TouchInjectProperties;
+    exports.default = TouchInjectProperties;
 });

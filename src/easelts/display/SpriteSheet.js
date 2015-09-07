@@ -32,7 +32,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/util/Promise', '../../createts/util/HttpRequest', '../geom/Rectangle'], function (require, exports, EventDispatcher, Promise, HttpRequest, Rectangle) {
+define(["require", "exports", "../../createts/event/EventDispatcher", "../../createts/util/Promise", "../../createts/util/HttpRequest", "../geom/Rectangle"], function (require, exports, EventDispatcher_1, Promise_1, HttpRequest_1, Rectangle_1) {
     var SpriteSheet = (function (_super) {
         __extends(SpriteSheet, _super);
         function SpriteSheet(dataOrUrl) {
@@ -70,7 +70,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 }
                 url += (url.substr(url.length - 1) != '/' ? '/' : '') + 'library.json';
             }
-            return HttpRequest
+            return HttpRequest_1.default
                 .getJSON(url)
                 .then(function (json) {
                 spriteSheet.url = url;
@@ -119,7 +119,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 a = data.frames;
                 for (i = 0, l = a.length; i < l; i++) {
                     var arr = a[i];
-                    this._frames.push({ image: this._images[arr[4] ? arr[4] : 0], rect: new Rectangle(arr[0], arr[1], arr[2], arr[3]), regX: arr[5] || 0, regY: arr[6] || 0 });
+                    this._frames.push({ image: this._images[arr[4] ? arr[4] : 0], rect: new Rectangle_1.default(arr[0], arr[1], arr[2], arr[3]), regX: arr[5] || 0, regY: arr[6] || 0 });
                 }
             }
             else {
@@ -181,7 +181,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             var _this = this;
             if (this.isLoaded) {
                 onProgress(1);
-                return new Promise(function (resolve, reject) {
+                return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
                 });
             }
@@ -221,7 +221,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         };
         SpriteSheet.prototype.getFrameBounds = function (frameIndex, rectangle) {
             var frame = this.getFrame(frameIndex);
-            return frame ? (rectangle || new Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
+            return frame ? (rectangle || new Rectangle_1.default(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height)) : null;
         };
         SpriteSheet.prototype.toString = function () {
             return "[SpriteSheet]";
@@ -267,7 +267,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                         frameCount++;
                         this._frames.push({
                             image: img,
-                            rect: new Rectangle(x, y, frameWidth, frameHeight),
+                            rect: new Rectangle_1.default(x, y, frameWidth, frameHeight),
                             regX: this._regX,
                             regY: this._regY
                         });
@@ -279,6 +279,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._numFrames = frameCount;
         };
         return SpriteSheet;
-    })(EventDispatcher);
-    return SpriteSheet;
+    })(EventDispatcher_1.default);
+    exports.default = SpriteSheet;
 });

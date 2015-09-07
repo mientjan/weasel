@@ -7,4 +7,4 @@ const enum TimingMode {
 	RAF_SYNCHED
 }
 
-export = TimingMode;
+export default TimingMode;

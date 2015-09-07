@@ -15,5 +15,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return RGBA;
     })();
-    return RGBA;
+    exports.default = RGBA;
 });

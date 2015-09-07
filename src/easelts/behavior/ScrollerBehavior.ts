@@ -1,14 +1,14 @@
-import AbstractBehavior = require('./AbstractBehavior');
-import DisplayObject = require('../display/DisplayObject');
-import Stage = require('../display/Stage');
-import Container = require('../display/Container');
-import PointerEvent = require('../event/PointerEvent');
-import DisplayType = require('../enum/DisplayType');
-import MouseEvent = require('../event/MouseEvent');
-import Size = require('../geom/Size');
-import Scroller = require('../../zynga/Scroller');
-import Animate = require('../../zynga/Animate');
-import IScrollerOptions = require('../../zynga/IScrollerOptions');
+import AbstractBehavior from "./AbstractBehavior";
+import DisplayObject from "../display/DisplayObject";
+import Stage from "../display/Stage";
+import Container from "../display/Container";
+import PointerEvent from "../event/PointerEvent";
+import DisplayType from "../enum/DisplayType";
+import MouseEvent from "../event/MouseEvent";
+import Size from "../geom/Size";
+import Scroller from "../../zynga/Scroller";
+import Animate from "../../zynga/Animate";
+import IScrollerOptions from "../../zynga/IScrollerOptions";
 
 class ScrollerBehavior extends AbstractBehavior
 {
@@ -142,4 +142,4 @@ class ScrollerBehavior extends AbstractBehavior
 	}
 }
 
-export = ScrollerBehavior;
+export default ScrollerBehavior;

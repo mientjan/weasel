@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Container', '../../tweents/Timeline', '../../tweents/Tween', './DisplayObject'], function (require, exports, Container, Timeline, Tween, DisplayObject) {
+define(["require", "exports", "./Container", "../../tweents/Timeline", "../../tweents/Tween", "./DisplayObject"], function (require, exports, Container_1, Timeline_1, Tween_1, DisplayObject_1) {
     var MovieClip = (function (_super) {
         __extends(MovieClip, _super);
         function MovieClip(mode, startPosition, loop, labels) {
@@ -31,7 +31,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
             this.mode = mode;
             this.startPosition = startPosition;
             this.loop = loop;
-            this.timeline = new Timeline(null, labels, { paused: true, position: startPosition, useTicks: true });
+            this.timeline = new Timeline_1.default(null, labels, { paused: true, position: startPosition, useTicks: true });
         }
         MovieClip.init = function () {
             if (MovieClip.inited) {
@@ -141,10 +141,10 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
             var synched = this.mode != MovieClip.INDEPENDENT;
             tl.loop = (this.loop == null) ? true : this.loop;
             if (synched) {
-                tl.setPosition(this.startPosition + (this.mode == MovieClip.SINGLE_FRAME ? 0 : this._synchOffset), Tween.NONE);
+                tl.setPosition(this.startPosition + (this.mode == MovieClip.SINGLE_FRAME ? 0 : this._synchOffset), Tween_1.default.NONE);
             }
             else {
-                tl.setPosition(this._prevPos < 0 ? 0 : this._prevPosition, this.actionsEnabled ? null : Tween.NONE);
+                tl.setPosition(this._prevPos < 0 ? 0 : this._prevPosition, this.actionsEnabled ? null : Tween_1.default.NONE);
             }
             this._prevPosition = tl._prevPosition;
             if (this._prevPos == tl._prevPos) {
@@ -162,7 +162,7 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
                     continue;
                 }
                 var offset = tween._stepPosition;
-                if (target instanceof DisplayObject) {
+                if (target instanceof DisplayObject_1.default) {
                     this._addManagedChild(target, offset);
                 }
                 else {
@@ -223,13 +223,13 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
         MovieClip.SYNCHED = "synched";
         MovieClip.inited = false;
         return MovieClip;
-    })(Container);
+    })(Container_1.default);
     var MovieClipPlugin = (function () {
         function MovieClipPlugin() {
             throw ("MovieClipPlugin cannot be instantiated.");
         }
         MovieClipPlugin.install = function () {
-            Tween.installPlugin(MovieClipPlugin, ["startPosition"]);
+            Tween_1.default.installPlugin(MovieClipPlugin, ["startPosition"]);
         };
         MovieClipPlugin.init = function (tween, prop, value) {
             return value;
@@ -245,5 +245,5 @@ define(["require", "exports", './Container', '../../tweents/Timeline', '../../tw
         MovieClipPlugin.priority = 100;
         return MovieClipPlugin;
     })();
-    return MovieClip;
+    exports.default = MovieClip;
 });

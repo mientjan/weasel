@@ -255,4 +255,4 @@ class Animate
 	}
 }
 
-export = Animate;
+export default Animate;

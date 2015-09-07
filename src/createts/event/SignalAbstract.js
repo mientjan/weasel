@@ -1,4 +1,4 @@
-define(["require", "exports", './SignalConnection'], function (require, exports, SignalConnection) {
+define(["require", "exports", "./SignalConnection"], function (require, exports, SignalConnection_1) {
     var Task = (function () {
         function Task(fn) {
             this.next = null;
@@ -11,7 +11,7 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
             if (listener === void 0) { listener = null; }
             this._deferredTasks = null;
             this.connect = this.connectImpl;
-            this._head = (listener != null) ? new SignalConnection(this, listener) : null;
+            this._head = (listener != null) ? new SignalConnection_1.default(this, listener) : null;
         }
         SignalAbstract.prototype.hasListeners = function () {
             return this._head != null;
@@ -19,7 +19,7 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
         SignalAbstract.prototype.connectImpl = function (listener, prioritize) {
             if (prioritize === void 0) { prioritize = false; }
             var _g = this;
-            var conn = new SignalConnection(this, listener);
+            var conn = new SignalConnection_1.default(this, listener);
             if (this.dispatching()) {
                 this.defer(function () {
                     _g.listAdd(conn, prioritize);
@@ -111,8 +111,8 @@ define(["require", "exports", './SignalConnection'], function (require, exports,
                 p = p._next;
             }
         };
-        SignalAbstract.DISPATCHING_SENTINEL = new SignalConnection(null, null);
+        SignalAbstract.DISPATCHING_SENTINEL = new SignalConnection_1.default(null, null);
         return SignalAbstract;
     })();
-    return SignalAbstract;
+    exports.default = SignalAbstract;
 });

@@ -1,7 +1,7 @@
-import EventDispatcher = require('../createts/event/EventDispatcher');
-//import Ticker = require('../createts/util/Ticker');
-import Ease = require('../tweents/Ease');
-import Interval = require("../createts/util/Interval");
+import EventDispatcher from "../createts/event/EventDispatcher";
+//import Ticker from "../createts/util/Ticker";
+import Ease from "../tweents/Ease";
+import Interval from "../createts/util/Interval";
 
 
 /*
@@ -1143,4 +1143,4 @@ class Tween extends EventDispatcher
 
 }
 
-export = Tween;
+export default Tween;

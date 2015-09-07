@@ -28,7 +28,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Event'], function (require, exports, Event) {
+define(["require", "exports", "./Event"], function (require, exports, Event_1) {
     var TimeEvent = (function (_super) {
         __extends(TimeEvent, _super);
         function TimeEvent(type, delta, paused, time, runtime, bubbles, cancelable) {
@@ -41,6 +41,6 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
             this.runTime = runtime;
         }
         return TimeEvent;
-    })(Event);
-    return TimeEvent;
+    })(Event_1.default);
+    exports.default = TimeEvent;
 });

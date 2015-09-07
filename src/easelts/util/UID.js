@@ -35,5 +35,5 @@ define(["require", "exports"], function (require, exports) {
         UID._nextID = 0;
         return UID;
     })();
-    return UID;
+    exports.default = UID;
 });

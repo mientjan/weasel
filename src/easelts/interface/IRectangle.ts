@@ -35,4 +35,4 @@ interface IRectangle
 	height:number;
 }
 
-export = IRectangle;
+export default IRectangle;

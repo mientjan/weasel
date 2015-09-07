@@ -23,13 +23,13 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayType = require('../enum/DisplayType');
-import IDisplayType = require("./IDisplayType");
-import Stage = require("../display/Stage");
-import Container = require("../display/Container");
-import Rectangle = require("../geom/Rectangle");
-import IRectangle = require("./IRectangle");
-import Shape = require("../display/Shape");
+import DisplayType from "../enum/DisplayType";
+import IDisplayType from "./IDisplayType";
+import Stage from "../display/Stage";
+import Container from "../display/Container";
+import Rectangle from "../geom/Rectangle";
+import IRectangle from "./IRectangle";
+import Shape from "../display/Shape";
 import Matrix2 from "../geom/Matrix2";
 
 interface IDisplayObject extends IDisplayType
@@ -72,4 +72,4 @@ interface IDisplayObject extends IDisplayType
 }
 
 
-export = IDisplayObject;
+export default IDisplayObject;

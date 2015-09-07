@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Event = require('./Event');
+import Event from "./Event";
 
 class DataEvent<T> extends Event
 {
@@ -35,4 +35,4 @@ class DataEvent<T> extends Event
 		this.data = data;
 	}
 }
-export = DataEvent;
+export default DataEvent;

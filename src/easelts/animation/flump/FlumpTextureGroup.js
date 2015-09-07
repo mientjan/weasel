@@ -1,4 +1,4 @@
-define(["require", "exports", './FlumpTextureGroupAtlas', '../../../createts/util/Promise'], function (require, exports, FlumpTextureGroupAtlas, Promise) {
+define(["require", "exports", "./FlumpTextureGroupAtlas", "../../../createts/util/Promise"], function (require, exports, FlumpTextureGroupAtlas_1, Promise_1) {
     var FlumpTextureGroup = (function () {
         function FlumpTextureGroup(flumpTextureGroupAtlases, flumpTextures) {
             this.flumpTextureGroupAtlases = flumpTextureGroupAtlases;
@@ -9,9 +9,9 @@ define(["require", "exports", './FlumpTextureGroupAtlas', '../../../createts/uti
             var loaders = [];
             for (var i = 0; i < atlases.length; i++) {
                 var atlas = atlases[i];
-                loaders.push(FlumpTextureGroupAtlas.load(flumpLibrary, atlas));
+                loaders.push(FlumpTextureGroupAtlas_1.default.load(flumpLibrary, atlas));
             }
-            return Promise.all(loaders).then(function (atlases) {
+            return Promise_1.default.all(loaders).then(function (atlases) {
                 var flumpTextures = {};
                 for (var i = 0; i < atlases.length; i++) {
                     var atlas = atlases[i];
@@ -29,5 +29,5 @@ define(["require", "exports", './FlumpTextureGroupAtlas', '../../../createts/uti
         };
         return FlumpTextureGroup;
     })();
-    return FlumpTextureGroup;
+    exports.default = FlumpTextureGroup;
 });

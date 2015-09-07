@@ -1,8 +1,8 @@
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
 
-import Flump = require('../FlumpLibrary');
-import FlumpLayerData = require('./FlumpLayerData');
-import FlumpLabelData = require('./FlumpLabelData');
+import Flump from "../FlumpLibrary";
+import FlumpLayerData from "./FlumpLayerData";
+import FlumpLabelData from "./FlumpLabelData";
 
 class FlumpMovieData
 {
@@ -33,4 +33,4 @@ class FlumpMovieData
 	}
 }
 
-export = FlumpMovieData;
+export default FlumpMovieData;

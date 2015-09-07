@@ -4,4 +4,4 @@ class VAlign
 	public static TOP = "top";
 	public static CENTER = "center";
 }
-export = VAlign;
+export default VAlign;

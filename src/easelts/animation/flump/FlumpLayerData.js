@@ -1,4 +1,4 @@
-define(["require", "exports", './FlumpKeyframeData'], function (require, exports, FlumpKeyframeData) {
+define(["require", "exports", "./FlumpKeyframeData"], function (require, exports, FlumpKeyframeData_1) {
     var FlumpLayerData = (function () {
         function FlumpLayerData(json) {
             this.flumpKeyframeDatas = [];
@@ -9,7 +9,7 @@ define(["require", "exports", './FlumpKeyframeData'], function (require, exports
             var keyFrameData = null;
             for (var i = 0; i < keyframes.length; i++) {
                 var keyframe = keyframes[i];
-                keyFrameData = new FlumpKeyframeData(keyframe);
+                keyFrameData = new FlumpKeyframeData_1.default(keyframe);
                 for (var j = keyFrameData.index; j <= (keyFrameData.index + keyFrameData.duration); j++) {
                     if (!this.keyframes[j]) {
                         this.keyframes[j] = keyFrameData;
@@ -28,5 +28,5 @@ define(["require", "exports", './FlumpKeyframeData'], function (require, exports
         };
         return FlumpLayerData;
     })();
-    return FlumpLayerData;
+    exports.default = FlumpLayerData;
 });

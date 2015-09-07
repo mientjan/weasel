@@ -25,9 +25,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container = require('./Container');
-import DisplayObject = require('./DisplayObject');
-import SpriteSheet = require('./SpriteSheet');
+import Container from "./Container";
+import DisplayObject from "./DisplayObject";
+import SpriteSheet from "./SpriteSheet";
 
 /**
  * A SpriteContainer is a nestable display list that enables aggressively optimized rendering of bitmap content.
@@ -193,4 +193,4 @@ class SpriteContainer extends Container
 	}
 }
 
-export = SpriteContainer;
+export default SpriteContainer;

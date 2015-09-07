@@ -1,11 +1,11 @@
-import Container = require('./Container');
-import Timeline = require('../../tweents/Timeline');
-import Tween = require('../../tweents/Tween');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import DisplayObject = require('./DisplayObject');
-import IDisplayObject = require("../interface/IDisplayObject");
+import Container from "./Container";
+import Timeline from "../../tweents/Timeline";
+import Tween from "../../tweents/Tween";
+import TimeEvent from "../../createts/event/TimeEvent";
+import DisplayObject from "./DisplayObject";
+import IDisplayObject from "../interface/IDisplayObject";
 
-//import MovieClipPlugin = require('./MovieClipPlugin');
+//import MovieClipPlugin from "./MovieClipPlugin";
 /**
  * MovieClip
  *
@@ -778,4 +778,4 @@ class MovieClipPlugin
 
 }
 
-export = MovieClip;
+export default MovieClip;

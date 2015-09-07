@@ -1,8 +1,8 @@
-import AbstractBehavior = require('./AbstractBehavior');
-import DisplayObject = require('../display/DisplayObject');
-import Stage = require('../display/Stage');
-import Container = require('../display/Container');
-import DisplayType = require('../enum/DisplayType');
+import AbstractBehavior from "./AbstractBehavior";
+import DisplayObject from "../display/DisplayObject";
+import Stage from "../display/Stage";
+import Container from "../display/Container";
+import DisplayType from "../enum/DisplayType";
 
 /**
  * @method ButtonBehavior
@@ -74,4 +74,4 @@ class ButtonBehavior extends AbstractBehavior
 	}
 }
 
-export = ButtonBehavior;
+export default ButtonBehavior;

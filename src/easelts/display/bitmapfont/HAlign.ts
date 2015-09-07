@@ -5,4 +5,4 @@ class HAlign
 	public static RIGHT = "right";
 }
 
-export = HAlign;
+export default HAlign;

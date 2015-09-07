@@ -1,4 +1,4 @@
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
 
 class FlumpKeyframeData
 {
@@ -97,4 +97,4 @@ class FlumpKeyframeData
 	}
 }
 
-export = FlumpKeyframeData;
+export default FlumpKeyframeData;

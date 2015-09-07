@@ -121,7 +121,7 @@ class Shadow
 	 * @method clone
 	 * @return {Shadow} A clone of the current Shadow instance.
 	 **/
-	public clone()
+	public clone():Shadow
 	{
 		return new Shadow(this.color, this.offsetX, this.offsetY, this.blur);
 	}
@@ -129,4 +129,4 @@ class Shadow
 
 Shadow.identity = new Shadow("transparent", 0, 0, 0);
 
-export = Shadow;
+export default Shadow;

@@ -26,8 +26,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Rectangle = require('../geom/Rectangle');
-import Filter = require('./Filter');
+import Rectangle from "../geom/Rectangle";
+import Filter from "./Filter";
 
 /**
  * Applies a box blur to DisplayObjects. Note that this filter is fairly CPU intensive, particularly if the quality is
@@ -391,4 +391,4 @@ class BlurFilter extends Filter
 	}
 }
 
-export = BlurFilter;
+export default BlurFilter;

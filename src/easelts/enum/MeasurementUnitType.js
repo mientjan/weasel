@@ -10,5 +10,5 @@ define(["require", "exports"], function (require, exports) {
         MeasurementUnitType[MeasurementUnitType["VIEWPORT_WIDTH"] = 6] = "VIEWPORT_WIDTH";
         MeasurementUnitType[MeasurementUnitType["VIEWPORT_HEIGHT"] = 7] = "VIEWPORT_HEIGHT";
     })(MeasurementUnitType || (MeasurementUnitType = {}));
-    return MeasurementUnitType;
+    exports.default = MeasurementUnitType;
 });

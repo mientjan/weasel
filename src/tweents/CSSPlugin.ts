@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Tween = require('./Tween');
+import Tween from "./Tween";
 
 /**
  * @module tweents
@@ -149,4 +149,4 @@ class CSSPlugin
 	}
 }
 
-export = CSSPlugin;
+export default CSSPlugin;

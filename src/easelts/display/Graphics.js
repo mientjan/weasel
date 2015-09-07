@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", '../util/Methods'], function (require, exports, Methods) {
+define(["require", "exports", "../util/Methods"], function (require, exports, Methods) {
     var RoundRect = (function () {
         function RoundRect(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL) {
             this.x = x;
@@ -733,5 +733,5 @@ define(["require", "exports", '../util/Methods'], function (require, exports, Me
         return Graphics;
     })();
     Graphics._canvas.width = Graphics._canvas.height = 1;
-    return Graphics;
+    exports.default = Graphics;
 });

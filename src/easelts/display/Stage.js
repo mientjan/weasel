@@ -32,16 +32,16 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal', "../../createts/util/Interval", "../component/Stats", "../data/StageOption"], function (require, exports, DisplayObject, Container, Size, PointerData, PointerEvent, Signal, Interval, Stats, StageOption_1) {
+define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", "../geom/PointerData", "../event/PointerEvent", "../../createts/event/Signal", "../../createts/util/Interval", "../component/Stats", "../data/StageOption"], function (require, exports, DisplayObject_1, Container_1, Size_1, PointerData_1, PointerEvent_1, Signal_1, Interval_1, Stats_1, StageOption_1) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
         function Stage(element, option) {
             var _this = this;
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
-            this.tickstartSignal = new Signal();
-            this.tickendSignal = new Signal();
-            this.drawstartSignal = new Signal();
-            this.drawendSignal = new Signal();
+            this.tickstartSignal = new Signal_1.default();
+            this.tickendSignal = new Signal_1.default();
+            this.drawstartSignal = new Signal_1.default();
+            this.drawendSignal = new Signal_1.default();
             this.type = 2;
             this._isRunning = false;
             this._fps = 60;
@@ -74,7 +74,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                     _this.onTick.call(_this, Math.min(delta, 100));
                 }
                 _this.drawstartSignal.emit();
-                DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
+                DisplayObject_1.default._snapToPixelEnabled = _this.snapToPixelEnabled;
                 var r = _this.drawRect, ctx = _this.ctx, pixelRatio = _this._option.pixelRatio;
                 ctx.setTransform(pixelRatio, 0, 0, pixelRatio, .5, .5);
                 if (autoClear) {
@@ -113,7 +113,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                     {
                         this.canvas = element;
                         this.holder = element.parentElement;
-                        size = new Size(this.canvas.width, this.canvas.height);
+                        size = new Size_1.default(this.canvas.width, this.canvas.height);
                         break;
                     }
                 default:
@@ -122,7 +122,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                         this.canvas = canvas;
                         this.holder = element;
                         this.holder.appendChild(canvas);
-                        size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
+                        size = new Size_1.default(this.holder.offsetWidth, this.holder.offsetHeight);
                         break;
                     }
             }
@@ -176,7 +176,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         };
         Stage.prototype.setFpsCounter = function (value) {
             if (value) {
-                this._fpsCounter = new Stats;
+                this._fpsCounter = new Stats_1.default;
             }
             else {
                 this._fpsCounter = null;
@@ -305,7 +305,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         Stage.prototype._getPointerData = function (id) {
             var data = this._pointerData[id];
             if (!data) {
-                data = this._pointerData[id] = new PointerData(0, 0);
+                data = this._pointerData[id] = new PointerData_1.default(0, 0);
                 if (this._primaryPointerID == null) {
                     this._primaryPointerID = id;
                 }
@@ -485,7 +485,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             if (!target || (!bubbles && !target.hasEventListener(type))) {
                 return;
             }
-            var evt = new PointerEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
+            var evt = new PointerEvent_1.default(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
             target.dispatchEvent(evt);
         };
         Stage.prototype.setFps = function (value) {
@@ -516,7 +516,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 this._ticker.destruct();
                 this._ticker = null;
             }
-            this._ticker = new Interval(this.getFps())
+            this._ticker = new Interval_1.default(this.getFps())
                 .attach(this.update);
             this._isRunning = true;
             return this;
@@ -556,6 +556,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         Stage.EVENT_MOUSE_ENTER = 'mouseenter';
         Stage.EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
         return Stage;
-    })(Container);
-    return Stage;
+    })(Container_1.default);
+    exports.default = Stage;
 });

@@ -1,4 +1,4 @@
-define(["require", "exports", '../../createts/util/HttpRequest', '../../createts/util/Promise', './flump/FlumpMovieData', './flump/FlumpTextureGroup', './flump/FlumpMovie'], function (require, exports, HttpRequest, Promise, FlumpMovieData, FlumpTextureGroup, FlumpMovie) {
+define(["require", "exports", "../../createts/util/HttpRequest", "../../createts/util/Promise", "./flump/FlumpMovieData", "./flump/FlumpTextureGroup", "./flump/FlumpMovie"], function (require, exports, HttpRequest_1, Promise_1, FlumpMovieData_1, FlumpTextureGroup_1, FlumpMovie_1) {
     var FlumpLibrary = (function () {
         function FlumpLibrary(basePath) {
             this.movieData = [];
@@ -27,7 +27,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             else {
                 flumpLibrary.url = baseDir;
             }
-            return HttpRequest.getJSON(url).then(function (json) {
+            return HttpRequest_1.default.getJSON(url).then(function (json) {
                 return flumpLibrary.processData(json, onProcess);
             });
         };
@@ -35,7 +35,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             var _this = this;
             if (this.isLoaded) {
                 onProgress(1);
-                return new Promise(function (resolve, reject) {
+                return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
                 });
             }
@@ -54,16 +54,16 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             this.isOptimised = json.optimised || false;
             var textureGroupLoaders = [];
             for (var i = 0; i < json.movies.length; i++) {
-                var flumpMovieData = new FlumpMovieData(this, json.movies[i]);
+                var flumpMovieData = new FlumpMovieData_1.default(this, json.movies[i]);
                 this.movieData.push(flumpMovieData);
             }
             var textureGroups = json.textureGroups;
             for (var i = 0; i < textureGroups.length; i++) {
                 var textureGroup = textureGroups[i];
-                var promise = FlumpTextureGroup.load(this, textureGroup);
+                var promise = FlumpTextureGroup_1.default.load(this, textureGroup);
                 textureGroupLoaders.push(promise);
             }
-            return HttpRequest.wait(textureGroupLoaders, onProcess)
+            return HttpRequest_1.default.wait(textureGroupLoaders, onProcess)
                 .then(function (textureGroups) {
                 for (var i = 0; i < textureGroups.length; i++) {
                     var textureGroup = textureGroups[i];
@@ -93,7 +93,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             for (var i = 0; i < this.movieData.length; i++) {
                 var movieData = this.movieData[i];
                 if (movieData.id == name) {
-                    var movie = new FlumpMovie(this, name);
+                    var movie = new FlumpMovie_1.default(this, name);
                     movie.paused = paused;
                     return movie;
                 }
@@ -110,7 +110,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             for (var i = 0; i < this.movieData.length; i++) {
                 var movieData = this.movieData[i];
                 if (movieData.id == name) {
-                    var movie = new FlumpMovie(this, name);
+                    var movie = new FlumpMovie_1.default(this, name);
                     movie.paused = true;
                     return movie;
                 }
@@ -125,5 +125,5 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
         };
         return FlumpLibrary;
     })();
-    return FlumpLibrary;
+    exports.default = FlumpLibrary;
 });

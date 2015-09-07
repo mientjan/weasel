@@ -42,5 +42,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return SignalConnection;
     })();
-    return SignalConnection;
+    exports.default = SignalConnection;
 });

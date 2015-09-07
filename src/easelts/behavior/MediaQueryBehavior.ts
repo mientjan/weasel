@@ -1,12 +1,12 @@
 /**
  * Created by pieters on 12-Mar-15.
  */
-import AbstractBehavior = require('./AbstractBehavior');
-import DisplayObject = require('../display/DisplayObject');
-import IMediaQuery = require('../interface/IMediaQuery');
-import Point = require('../geom/Point');
-import Size = require('../geom/Size');
-import SignalConnection = require('../../createts/event/SignalConnection');
+import AbstractBehavior from "./AbstractBehavior";
+import DisplayObject from "../display/DisplayObject";
+import IMediaQuery from "../interface/IMediaQuery";
+import Point from "../geom/Point";
+import Size from "../geom/Size";
+import SignalConnection from "../../createts/event/SignalConnection";
 
 class MediaQueryBehavior extends AbstractBehavior
 {
@@ -244,4 +244,4 @@ class MediaQueryBehavior extends AbstractBehavior
 	}
 }
 
-export = MediaQueryBehavior;
+export default MediaQueryBehavior;

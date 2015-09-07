@@ -8,4 +8,4 @@ const enum BitmapType {
 	CANVAS
 }
 
-export = BitmapType;
+export default BitmapType;

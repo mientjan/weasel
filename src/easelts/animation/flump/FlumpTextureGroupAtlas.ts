@@ -1,8 +1,8 @@
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
-import FlumpTexture = require('./FlumpTexture');
-import FlumpLibrary = require('../FlumpLibrary');
-import IHashMap = require('../../interface/IHashMap');
-import Promise = require('../../../createts/util/Promise');
+import IFlumpLibrary from "../../interface/IFlumpLibrary";
+import FlumpTexture from "./FlumpTexture";
+import FlumpLibrary from "../FlumpLibrary";
+import IHashMap from "../../interface/IHashMap";
+import Promise from "../../../createts/util/Promise";
 
 class FlumpTextureGroupAtlas
 {
@@ -62,4 +62,4 @@ class FlumpTextureGroupAtlas
 	}
 }
 
-export = FlumpTextureGroupAtlas;
+export default FlumpTextureGroupAtlas;

@@ -1,10 +1,11 @@
-var __extends = this.__extends || function (d, b) {
+/// <reference path="./Filter.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Filter'], function (require, exports, Filter) {
+define(["require", "exports", "./Filter"], function (require, exports, Filter_1) {
     var AlphaMaskFilter = (function (_super) {
         __extends(AlphaMaskFilter, _super);
         function AlphaMaskFilter(mask) {
@@ -38,6 +39,6 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
             return "[AlphaMaskFilter]";
         };
         return AlphaMaskFilter;
-    })(Filter);
-    return AlphaMaskFilter;
+    })(Filter_1.default);
+    exports.default = AlphaMaskFilter;
 });

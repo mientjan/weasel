@@ -1,5 +1,5 @@
 
-import DisplayObject = require("../display/DisplayObject");
+import DisplayObject from "../display/DisplayObject";
 
 var now = ( window.performance && window.performance.now ) ? window.performance.now.bind( performance ) : Date.now;
 
@@ -126,4 +126,4 @@ class Stats extends DisplayObject
 	}
 }
 
-export = Stats;
+export default Stats;

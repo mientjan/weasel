@@ -28,15 +28,15 @@
  */
 
 
-import Bitmap = require('./Bitmap');
-import SpriteSheet = require('./SpriteSheet');
-import Sprite = require('./Sprite');
-import BitmapChar = require('./bitmapfont/BitmapChar');
-import CharLocation = require('./bitmapfont/CharLocation');
-import VAlign = require('./bitmapfont/VAlign');
-import HAlign = require('./bitmapfont/HAlign');
-import Container = require('./Container');
-import IDisplayObject = require("../interface/IDisplayObject");
+import Bitmap from "./Bitmap";
+import SpriteSheet from "./SpriteSheet";
+import Sprite from "./Sprite";
+import BitmapChar from "./bitmapfont/BitmapChar";
+import CharLocation from "./bitmapfont/CharLocation";
+import VAlign from "./bitmapfont/VAlign";
+import HAlign from "./bitmapfont/HAlign";
+import Container from "./Container";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  *
@@ -489,4 +489,4 @@ class BitmapFont
 	}
 }
 
-export = BitmapFont;
+export default BitmapFont;

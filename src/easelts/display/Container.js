@@ -31,7 +31,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../util/Methods'], function (require, exports, DisplayObject, Methods) {
+define(["require", "exports", "./DisplayObject", "../util/Methods"], function (require, exports, DisplayObject_1, Methods) {
     var Container = (function (_super) {
         __extends(Container, _super);
         function Container(width, height, x, y, regX, regY) {
@@ -324,7 +324,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             }
         };
         Container.prototype._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener) {
-            var ctx = DisplayObject._hitTestContext;
+            var ctx = DisplayObject_1.default._hitTestContext;
             var mtx = this._matrix;
             activeListener = activeListener || (mouse && this.hasMouseEventListener());
             var children = this.children;
@@ -422,6 +422,6 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             _super.prototype.destruct.call(this);
         };
         return Container;
-    })(DisplayObject);
-    return Container;
+    })(DisplayObject_1.default);
+    exports.default = Container;
 });

@@ -1,10 +1,12 @@
-define(["require", "exports", './TouchInjectProperties'], function (require, exports, TouchInjectProperties) {
+define(["require", "exports", "./TouchInjectProperties"], function (require, exports, TouchInjectProperties_1) {
     var Touch = (function () {
         function Touch() {
             throw "Touch cannot be instantiated";
         }
         Touch.isSupported = function () {
-            return ('ontouchstart' in window) || (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) || (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0);
+            return ('ontouchstart' in window)
+                || (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0)
+                || (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0);
         };
         Touch.enable = function (stage, singleTouch, allowDefault) {
             if (singleTouch === void 0) { singleTouch = true; }
@@ -12,7 +14,7 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
             if (!stage || !stage.canvas || !Touch.isSupported()) {
                 return false;
             }
-            stage.__touch = new TouchInjectProperties();
+            stage.__touch = new TouchInjectProperties_1.default();
             stage.__touch.multitouch = singleTouch;
             stage.__touch.preventDefault = !allowDefault;
             stage.__touch.count = 0;
@@ -148,7 +150,8 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
                 if (type == "MSPointerMove" || type == "pointermove") {
                     this._handleMove(stage, id, e, e.pageX, e.pageY);
                 }
-                else if (type == "MSPointerUp" || type == "MSPointerCancel" || type == "pointerup" || type == "pointercancel") {
+                else if (type == "MSPointerUp" || type == "MSPointerCancel"
+                    || type == "pointerup" || type == "pointercancel") {
                     delete (ids[id]);
                     this._handleEnd(stage, id, e);
                 }
@@ -185,5 +188,5 @@ define(["require", "exports", './TouchInjectProperties'], function (require, exp
         };
         return Touch;
     })();
-    return Touch;
+    exports.default = Touch;
 });

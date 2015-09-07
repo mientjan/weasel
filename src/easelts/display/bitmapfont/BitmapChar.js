@@ -43,5 +43,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return BitmapChar;
     })();
-    return BitmapChar;
+    exports.default = BitmapChar;
 });

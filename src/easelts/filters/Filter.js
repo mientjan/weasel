@@ -43,5 +43,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Filter;
     })();
-    return Filter;
+    exports.default = Filter;
 });

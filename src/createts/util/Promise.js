@@ -160,5 +160,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Promise;
     })();
-    return Promise;
+    exports.default = Promise;
 });

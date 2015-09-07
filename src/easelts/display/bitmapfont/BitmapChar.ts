@@ -1,4 +1,4 @@
-import Sprite = require('../Sprite');
+import Sprite from "../Sprite";
 
 class BitmapChar
 {
@@ -76,4 +76,4 @@ class BitmapChar
 	}
 }
 
-export = BitmapChar;
+export default BitmapChar;

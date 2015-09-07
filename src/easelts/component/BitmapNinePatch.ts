@@ -1,9 +1,9 @@
-import NinePatch = require('./bitmapninepatch/NinePatch');
-import NinePatchCoordinates = require('./bitmapninepatch/NinePatchCoordinates');
-import Bitmap = require('../display/Bitmap');
-import DisplayObject = require('../display/DisplayObject');
-import Rectangle = require('../geom/Rectangle');
-import DisplayType = require('../enum/DisplayType');
+import NinePatch from "./bitmapninepatch/NinePatch";
+import NinePatchCoordinates from "./bitmapninepatch/NinePatchCoordinates";
+import Bitmap from "../display/Bitmap";
+import DisplayObject from "../display/DisplayObject";
+import Rectangle from "../geom/Rectangle";
+import DisplayType from "../enum/DisplayType";
 
 class BitmapNinePatch extends DisplayObject {
 
@@ -134,4 +134,4 @@ class BitmapNinePatch extends DisplayObject {
 	}
 }
 
-export = BitmapNinePatch;
+export default BitmapNinePatch;

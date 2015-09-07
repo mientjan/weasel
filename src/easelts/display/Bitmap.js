@@ -32,7 +32,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../geom/Size'], function (require, exports, DisplayObject, Size) {
+define(["require", "exports", "./DisplayObject", "../geom/Size"], function (require, exports, DisplayObject_1, Size_1) {
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
         function Bitmap(imageOrUri, width, height, x, y, regX, regY) {
@@ -216,7 +216,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 var width = this.image.naturalWidth;
                 var height = this.image.naturalHeight;
             }
-            return new Size(width, height);
+            return new Size_1.default(width, height);
         };
         Bitmap.prototype.clone = function () {
             var o = new Bitmap(this.image);
@@ -240,6 +240,6 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
         };
         Bitmap.EVENT_LOAD = 'load';
         return Bitmap;
-    })(DisplayObject);
-    return Bitmap;
+    })(DisplayObject_1.default);
+    exports.default = Bitmap;
 });

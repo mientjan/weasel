@@ -8,4 +8,4 @@ const enum CalculationType {
 	CALC
 }
 
-export = CalculationType;
+export default CalculationType;

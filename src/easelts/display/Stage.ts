@@ -27,38 +27,37 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Ticker = require('../../createts/util/Ticker');
-import TouchInjectProperties = require('../ui/TouchInjectProperties');
+import TouchInjectProperties from "../ui/TouchInjectProperties";
 
 // display
-import DisplayObject = require('./DisplayObject');
-import Container = require('./Container');
+import DisplayObject from "./DisplayObject";
+import Container from "./Container";
 
-import Methods = require('../../easelts/util/Methods');
+import * as Methods from "../../easelts/util/Methods";
 
 // interfaces
-import IVector2 = require('../interface/IVector2');
-import IDisplayObject = require("../interface/IDisplayObject");
+import IVector2 from "../interface/IVector2";
 import {IStageOption} from "../interface/IStageOption";
-
+import IDisplayObject from "../interface/IDisplayObject";
 // geom
-import Rectangle = require('../geom/Rectangle');
-import Size = require('../geom/Size');
-import PointerData = require('../geom/PointerData');
+import Rectangle from "../geom/Rectangle";
+import Size from "../geom/Size";
+import PointerData from "../geom/PointerData";
 
 // enum
-import QualityType = require('../enum/QualityType');
-import DisplayType = require('../enum/DisplayType');
+import QualityType from "../enum/QualityType";
+import DisplayType from "../enum/DisplayType";
 
 // event / signal
-import PointerEvent = require('../event/PointerEvent');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Signal1 = require('../../createts/event/Signal1');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
-import Interval = require("../../createts/util/Interval");
-import Stats = require("../component/Stats");
+import PointerEvent from "../event/PointerEvent";
+import TimeEvent from "../../createts/event/TimeEvent";
+import Signal1 from "../../createts/event/Signal1";
+import Signal from "../../createts/event/Signal";
+import SignalConnection from "../../createts/event/SignalConnection";
+import Interval from "../../createts/util/Interval";
+import Stats from "../component/Stats";
 import {StageOption} from "../data/StageOption";
+
 
 
 /**
@@ -167,7 +166,7 @@ class Stage extends Container<IDisplayObject>
 	 * @type Number
 	 * @readonly
 	 **/
-	public mouseX = 0;
+	public mouseX:number = 0;
 
 	/**
 	 * The current mouse Y position on the canvas. If the mouse leaves the canvas, this will indicate the most recent
@@ -176,7 +175,7 @@ class Stage extends Container<IDisplayObject>
 	 * @type Number
 	 * @readonly
 	 **/
-	public mouseY = 0;
+	public mouseY:number = 0;
 
 	private _mouseOverY:number;
 	private _mouseOverX:number;
@@ -1319,4 +1318,4 @@ class Stage extends Container<IDisplayObject>
 	}
 }
 
-export = Stage;
+export default Stage;

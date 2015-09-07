@@ -1,14 +1,14 @@
-import ILoadable = require('../interface/ILoadable');
-import IPlayable = require('../interface/IPlayable');
+import ILoadable from "../interface/ILoadable";
+import IPlayable from "../interface/IPlayable";
 
-import DisplayObject = require('../display/DisplayObject');
-import SpriteSheet = require('../display/SpriteSheet');
-import DisplayType = require('../enum/DisplayType');
-import Methods = require('../util/Methods');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Promise = require('../../createts/util/Promise');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
+import DisplayObject from "../display/DisplayObject";
+import SpriteSheet from "../display/SpriteSheet";
+import DisplayType from "../enum/DisplayType";
+import Methods from "../util/Methods";
+import TimeEvent from "../../createts/event/TimeEvent";
+import Promise from "../../createts/util/Promise";
+import Signal from "../../createts/event/Signal";
+import SignalConnection from "../../createts/event/SignalConnection";
 
 /**
  * @class ImageSequence
@@ -184,4 +184,4 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 
 }
 
-export = ImageSequence;
+export default ImageSequence;

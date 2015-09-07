@@ -138,7 +138,7 @@ export default class Matrix3
 
 	}
 
-	public getInverse(matrix:Matrix4, throwOnInvertible:boolean = false)
+	public getInverse(matrix:Matrix4, throwOnInvertible:boolean = false):Matrix3
 	{
 
 		// input: THREE.Matrix4
@@ -231,7 +231,7 @@ export default class Matrix3
 
 	}
 
-	public getNormalMatrix(m:Matrix4)
+	public getNormalMatrix(m:Matrix4):Matrix3
 	{
 
 		// input: THREE.Matrix4
@@ -242,7 +242,7 @@ export default class Matrix3
 
 	}
 
-	public transposeIntoArray(r)
+	public transposeIntoArray(r):Matrix3
 	{
 
 		var m = this.elements;
@@ -270,7 +270,7 @@ export default class Matrix3
 
 	}
 
-	public toArray()
+	public toArray():Array<number>
 	{
 
 		var te = this.elements;

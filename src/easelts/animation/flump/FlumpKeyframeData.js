@@ -59,5 +59,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return FlumpKeyframeData;
     })();
-    return FlumpKeyframeData;
+    exports.default = FlumpKeyframeData;
 });

@@ -57,9 +57,9 @@
 		};
 }());
 
-import Signal1 = require('../../createts/event/Signal1');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
+import Signal1 from "../../createts/event/Signal1";
+import Signal from "../../createts/event/Signal";
+import SignalConnection from "../../createts/event/SignalConnection";
 
 /*
  * Interval
@@ -211,4 +211,4 @@ class Interval
 	}
 }
 
-export = Interval;
+export default Interval;

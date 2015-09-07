@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", './../util/NumberUtil'], function (require, exports, NumberUtil) {
+define(["require", "exports", "./../util/NumberUtil"], function (require, exports, NumberUtil_1) {
     var Point = (function () {
         function Point(x, y) {
             this.x = x;
@@ -35,10 +35,10 @@ define(["require", "exports", './../util/NumberUtil'], function (require, export
             return new Point(point.x, point.y);
         };
         Point.prototype.toNumber = function () {
-            return NumberUtil.pair(this.x, this.y);
+            return NumberUtil_1.default.pair(this.x, this.y);
         };
         Point.prototype.fromNumber = function (value) {
-            var xy = NumberUtil.depair(value);
+            var xy = NumberUtil_1.default.depair(value);
             this.x = xy[0];
             this.y = xy[1];
         };
@@ -50,5 +50,5 @@ define(["require", "exports", './../util/NumberUtil'], function (require, export
         };
         return Point;
     })();
-    return Point;
+    exports.default = Point;
 });

@@ -31,7 +31,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", '../../createts/event/Signal1'], function (require, exports, Signal1) {
+define(["require", "exports", "../../createts/event/Signal1"], function (require, exports, Signal1_1) {
     (function () {
         var lastTime = 0;
         var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -55,7 +55,7 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
     }());
     var FpsCollection = (function () {
         function FpsCollection(fps) {
-            this.signal = new Signal1();
+            this.signal = new Signal1_1.default();
             this.frame = 0;
             this.time = 0;
             this.ptime = 0;
@@ -138,5 +138,5 @@ define(["require", "exports", '../../createts/event/Signal1'], function (require
         Interval.isRunning = false;
         return Interval;
     })();
-    return Interval;
+    exports.default = Interval;
 });

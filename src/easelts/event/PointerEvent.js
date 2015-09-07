@@ -31,7 +31,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/Event'], function (require, exports, Event) {
+define(["require", "exports", "../../createts/event/Event"], function (require, exports, Event_1) {
     var MouseEvent = (function (_super) {
         __extends(MouseEvent, _super);
         function MouseEvent(type, bubbles, cancelable, stageX, stageY, nativeEvent, pointerID, primary, rawX, rawY) {
@@ -68,6 +68,6 @@ define(["require", "exports", '../../createts/event/Event'], function (require, 
             return "[MouseEvent (type=" + this.type + " stageX=" + this.stageX + " stageY=" + this.stageY + ")]";
         };
         return MouseEvent;
-    })(Event);
-    return MouseEvent;
+    })(Event_1.default);
+    exports.default = MouseEvent;
 });

@@ -1,4 +1,4 @@
-define(["require", "exports", './FluidCalculation'], function (require, exports, FluidCalculation) {
+define(["require", "exports", "./FluidCalculation"], function (require, exports, FluidCalculation_1) {
     var ValueCalculation = (function () {
         function ValueCalculation(value) {
             this.type = 0;
@@ -26,7 +26,7 @@ define(["require", "exports", './FluidCalculation'], function (require, exports,
                 value = this._value * scopeValue;
             }
             else if (this.type == 3) {
-                value = FluidCalculation.calcUnit(scopeValue, this._value_calc);
+                value = FluidCalculation_1.default.calcUnit(scopeValue, this._value_calc);
             }
             else if (this.type == 2) {
                 value = this._value;
@@ -41,7 +41,7 @@ define(["require", "exports", './FluidCalculation'], function (require, exports,
                 this._value_percent = parseFloat(stringValue.substr(0, stringValue.length - 1)) / 100;
             }
             else if (this.type == 3) {
-                this._value_calc = FluidCalculation.dissolveCalcElements(stringValue);
+                this._value_calc = FluidCalculation_1.default.dissolveCalcElements(stringValue);
             }
             else if (this.type == 2) {
                 this._value = numberValue;

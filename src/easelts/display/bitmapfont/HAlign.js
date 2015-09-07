@@ -7,5 +7,5 @@ define(["require", "exports"], function (require, exports) {
         HAlign.RIGHT = "right";
         return HAlign;
     })();
-    return HAlign;
+    exports.default = HAlign;
 });

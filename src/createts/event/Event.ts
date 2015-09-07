@@ -269,4 +269,4 @@ class Event
 		return "[Event (type=" + this.type + ")]";
 	}
 }
-export = Event;
+export default Event;

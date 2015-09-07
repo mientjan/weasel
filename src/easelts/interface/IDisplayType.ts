@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayType = require('../enum/DisplayType');
+import DisplayType from "../enum/DisplayType";
 
 interface IDisplayType
 {
@@ -31,4 +31,4 @@ interface IDisplayType
 }
 
 
-export = IDisplayType;
+export default IDisplayType;

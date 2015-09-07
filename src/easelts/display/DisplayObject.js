@@ -31,7 +31,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/EventDispatcher', '../../createts/event/Signal2', '../util/UID', '../util/Methods', './Shadow', '../geom/FluidCalculation', "../geom/Matrix2", '../geom/Rectangle', '../geom/Point'], function (require, exports, EventDispatcher, Signal2, UID, Methods, Shadow, FluidCalculation, Matrix2_1, Rectangle, Point) {
+define(["require", "exports", "../../createts/event/EventDispatcher", "../../createts/event/Signal2", "../util/UID", "../util/Methods", "./Shadow", "../geom/FluidCalculation", "../geom/Matrix2", "../geom/Rectangle", "../geom/Point"], function (require, exports, EventDispatcher_1, Signal2_1, UID_1, Methods, Shadow_1, FluidCalculation_1, Matrix2_1, Rectangle_1, Point_1) {
     var DisplayObject = (function (_super) {
         __extends(DisplayObject, _super);
         function DisplayObject(width, height, x, y, regX, regY) {
@@ -44,7 +44,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             _super.call(this);
             this.type = 8;
             this.cacheCanvas = null;
-            this.id = UID.get();
+            this.id = UID_1.default.get();
             this.mouseEnabled = true;
             this.tickEnabled = true;
             this.name = null;
@@ -92,7 +92,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             this._cacheDataURLID = 0;
             this._cacheDataURL = null;
             this._matrix = new Matrix2_1.default(0, 0, 0, 0, 0, 0);
-            this._rectangle = new Rectangle(0, 0, 0, 0);
+            this._rectangle = new Rectangle_1.default(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
             this.DisplayObject_getBounds = this._getBounds;
@@ -101,7 +101,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         Object.defineProperty(DisplayObject.prototype, "resizeSignal", {
             get: function () {
                 if (this._resizeSignal === void 0) {
-                    this._resizeSignal = new Signal2();
+                    this._resizeSignal = new Signal2_1.default();
                 }
                 return this._resizeSignal;
             },
@@ -122,14 +122,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return Math.sqrt(this.distanceToSquared(v));
         };
         DisplayObject.prototype.setWidth = function (value) {
-            this._width_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._width_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._width_type) {
                 case 1: {
-                    this._width_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._width_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._width_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._width_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -144,14 +144,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return this.width;
         };
         DisplayObject.prototype.setHeight = function (value) {
-            this._height_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._height_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._height_type) {
                 case 1: {
-                    this._height_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._height_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._height_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._height_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -166,14 +166,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return this.height;
         };
         DisplayObject.prototype.setX = function (value) {
-            this._x_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._x_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._x_type) {
                 case 1: {
-                    this._x_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._x_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._x_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._x_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -188,14 +188,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             return this.x;
         };
         DisplayObject.prototype.setY = function (value) {
-            this._y_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._y_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._y_type) {
                 case 1: {
-                    this._y_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._y_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._y_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._y_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -211,14 +211,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         };
         DisplayObject.prototype.setRegX = function (value) {
             this.isDirty = true;
-            this._regX_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._regX_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._regX_type) {
                 case 1: {
-                    this._regX_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._regX_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._regX_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._regX_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -233,14 +233,14 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         };
         DisplayObject.prototype.setRegY = function (value) {
             this.isDirty = true;
-            this._regY_type = FluidCalculation.getCalculationTypeByValue(value);
+            this._regY_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._regY_type) {
                 case 1: {
-                    this._regY_percent = FluidCalculation.getPercentageParcedValue(value);
+                    this._regY_percent = FluidCalculation_1.default.getPercentageParcedValue(value);
                     break;
                 }
                 case 3: {
-                    this._regY_calc = FluidCalculation.dissolveCalcElements(value);
+                    this._regY_calc = FluidCalculation_1.default.dissolveCalcElements(value);
                     break;
                 }
                 case 2: {
@@ -412,7 +412,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 return null;
             }
             mtx.append(1, 0, 0, 1, x, y);
-            return new Point(mtx.tx, mtx.ty);
+            return new Point_1.default(mtx.tx, mtx.ty);
         };
         DisplayObject.prototype.globalToLocal = function (x, y) {
             var mtx = this.getConcatenatedMatrix(this._matrix);
@@ -421,7 +421,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             }
             mtx.invert();
             mtx.append(1, 0, 0, 1, x, y);
-            return new Point(mtx.tx, mtx.ty);
+            return new Point_1.default(mtx.tx, mtx.ty);
         };
         DisplayObject.prototype.localToLocal = function (x, y, target) {
             var pt = this.localToGlobal(x, y);
@@ -531,7 +531,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             if (x == null) {
                 this._bounds = null;
             }
-            this._bounds = (this._bounds || new Rectangle(x, y, width, height));
+            this._bounds = (this._bounds || new Rectangle_1.default(x, y, width, height));
         };
         DisplayObject.prototype.clone = function (recursive) {
             var o = new DisplayObject();
@@ -560,7 +560,7 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
             o.compositeOperation = this.compositeOperation;
         };
         DisplayObject.prototype._applyShadow = function (ctx, shadow) {
-            shadow = shadow || Shadow.identity;
+            shadow = shadow || Shadow_1.default.identity;
             ctx.shadowColor = shadow.color;
             ctx.shadowOffsetX = shadow.offsetX;
             ctx.shadowOffsetY = shadow.offsetY;
@@ -688,37 +688,37 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
                 this.width = this._width_percent * width;
             }
             else if (this._width_type == 3) {
-                this.width = FluidCalculation.calcUnit(width, this._width_calc);
+                this.width = FluidCalculation_1.default.calcUnit(width, this._width_calc);
             }
             if (this._height_type == 1) {
                 this.height = this._height_percent * height;
             }
             else if (this._height_type == 3) {
-                this.height = FluidCalculation.calcUnit(height, this._height_calc);
+                this.height = FluidCalculation_1.default.calcUnit(height, this._height_calc);
             }
             if (this._regX_type == 1) {
                 this.regX = this._regX_percent * this.width;
             }
             else if (this._regX_type == 3) {
-                this.regX = FluidCalculation.calcUnit(this.width, this._regX_calc);
+                this.regX = FluidCalculation_1.default.calcUnit(this.width, this._regX_calc);
             }
             if (this._regY_type == 1) {
                 this.regY = this._regY_percent * this.height;
             }
             else if (this._regY_type == 3) {
-                this.regY = FluidCalculation.calcUnit(this.height, this._regY_calc);
+                this.regY = FluidCalculation_1.default.calcUnit(this.height, this._regY_calc);
             }
             if (this._x_type == 1) {
                 this.x = Math.round(this._x_percent * width);
             }
             else if (this._x_type == 3) {
-                this.x = Math.round(FluidCalculation.calcUnit(width, this._x_calc));
+                this.x = Math.round(FluidCalculation_1.default.calcUnit(width, this._x_calc));
             }
             if (this._y_type == 1) {
                 this.y = Math.round(this._y_percent * height);
             }
             else if (this._y_type == 3) {
-                this.y = Math.round(FluidCalculation.calcUnit(height, this._y_calc));
+                this.y = Math.round(FluidCalculation_1.default.calcUnit(height, this._y_calc));
             }
             if (this._resizeSignal && this._resizeSignal.hasListeners()) {
                 this._resizeSignal.emit(width, height);
@@ -780,6 +780,6 @@ define(["require", "exports", '../../createts/event/EventDispatcher', '../../cre
         DisplayObject._hitTestContext = DisplayObject._hitTestCanvas.getContext('2d');
         DisplayObject._nextCacheID = 1;
         return DisplayObject;
-    })(EventDispatcher);
-    return DisplayObject;
+    })(EventDispatcher_1.default);
+    exports.default = DisplayObject;
 });

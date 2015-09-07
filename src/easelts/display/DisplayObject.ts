@@ -27,44 +27,45 @@
  */
 
 // event
-import EventDispatcher = require('../../createts/event/EventDispatcher');
-import Event = require('../../createts/event/Event');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Signal2 = require('../../createts/event/Signal2');
+import EventDispatcher from "../../createts/event/EventDispatcher";
+import Event from "../../createts/event/Event";
+import TimeEvent from "../../createts/event/TimeEvent";
+import Signal2 from "../../createts/event/Signal2";
 
 // utils
-import UID = require('../util/UID');
-import Methods = require('../util/Methods');
+import UID from "../util/UID";
+import * as Methods from "../util/Methods";
 
 // display
-import Shape = require('./Shape');
-import Shadow = require('./Shadow');
-import Stage = require('./Stage');
-import Container = require('./Container');
+import Shape from "./Shape";
+import Shadow from "./Shadow";
+import Stage from "./Stage";
+import Container from "./Container";
 
 // filter
-import Filter = require('../filters/Filter');
+import Filter from "../filters/Filter";
 
 // enum
-import CalculationType = require('../enum/CalculationType');
-import DisplayType = require('../enum/DisplayType');
+import CalculationType from "../enum/CalculationType";
+import DisplayType from "../enum/DisplayType";
 
 // geom
-import FluidCalculation = require('../geom/FluidCalculation');
-import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import CalculationUnitType = require('../enum/CalculationUnitType');
-import ValueCalculation = require('../geom/ValueCalculation');
+import FluidCalculation from "../geom/FluidCalculation";
+import FluidMeasurementsUnit from "../geom/FluidMeasurementsUnit";
+import CalculationUnitType from "../enum/CalculationUnitType";
+import ValueCalculation from "../geom/ValueCalculation";
 
 import Matrix2 from "../geom/Matrix2";
-import Rectangle = require('../geom/Rectangle');
-import Size = require('../geom/Size');
-import Point = require('../geom/Point');
+import Rectangle from "../geom/Rectangle";
+import Size from "../geom/Size";
+import Point from "../geom/Point";
 
-import IVector2 = require('../interface/IVector2');
-import ISize = require('../interface/ISize');
-import IDisplayType = require('../interface/IDisplayType');
-import IBehavior = require('../behavior/IBehavior');
-import IDisplayObject = require("../interface/IDisplayObject");
+import IVector2 from "../interface/IVector2";
+import ISize from "../interface/ISize";
+import IDisplayType from "../interface/IDisplayType";
+import IBehavior from "../behavior/IBehavior";
+import IContext2D from "../interface/IContext2D";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -926,7 +927,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	public draw(ctx:IContext2D, ignoreCache?:boolean):boolean
 	{
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
@@ -950,7 +951,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		return true;
 	}
 
-	public DisplayObject_draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	public DisplayObject_draw(ctx:IContext2D, ignoreCache?:boolean):boolean
 	{
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
@@ -1907,4 +1908,4 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	}
 }
 
-export = DisplayObject;
+export default DisplayObject;

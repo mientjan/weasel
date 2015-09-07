@@ -1,14 +1,14 @@
-import IFlumpLibrary = require('../interface/IFlumpLibrary');
-import ILoadable = require('../interface/ILoadable');
+import * as IFlumpLibrary from "../interface/IFlumpLibrary";
+import ILoadable from "../interface/ILoadable";
 
-import Signal = require('../../createts/event/Signal');
-import HttpRequest = require('../../createts/util/HttpRequest');
-import Promise = require('../../createts/util/Promise');
-import SignalConnection = require('../../createts/event/SignalConnection');
-import FlumpMovieData = require('./flump/FlumpMovieData');
-import FlumpTexture = require('./flump/FlumpTexture');
-import FlumpTextureGroup = require('./flump/FlumpTextureGroup');
-import FlumpMovie = require('./flump/FlumpMovie');
+import Signal from "../../createts/event/Signal";
+import HttpRequest from "../../createts/util/HttpRequest";
+import Promise from "../../createts/util/Promise";
+import SignalConnection from "../../createts/event/SignalConnection";
+import FlumpMovieData from "./flump/FlumpMovieData";
+import FlumpTexture from "./flump/FlumpTexture";
+import FlumpTextureGroup from "./flump/FlumpTextureGroup";
+import FlumpMovie from "./flump/FlumpMovie";
 
 class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
@@ -201,4 +201,4 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 	}
 }
 
-export = FlumpLibrary;
+export default FlumpLibrary;

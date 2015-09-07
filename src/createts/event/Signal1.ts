@@ -1,4 +1,4 @@
-import Event = require('./Event');
+import Event from "./Event";
 
 /*
  * Signal1
@@ -25,7 +25,7 @@ import Event = require('./Event');
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import SignalAbstract = require('./SignalAbstract');
+import SignalAbstract from "./SignalAbstract";
 
 /**
  * @namespace createts.events
@@ -68,4 +68,4 @@ class Signal1<T> extends SignalAbstract
 	}
 }
 
-export = Signal1;
+export default Signal1;

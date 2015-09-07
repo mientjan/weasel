@@ -1,10 +1,10 @@
-import Container = require("./Container");
-import Shape = require("./Shape");
-import Graphics = require("./Graphics");
-import Text = require("./Text");
-import Size = require('../geom/Size');
+import Container from "./Container";
+import Shape from "./Shape";
+import Graphics from "./Graphics";
+import Text from "./Text";
+import Size from "../geom/Size";
 
-class Debug extends Container
+class Debug extends Container<Shape|Text>
 {
 	private _shape:Shape = new Shape();
 	private _text:Text = new Text('', 'bold 16px Arial', '#FFF');
@@ -30,7 +30,7 @@ class Debug extends Container
 		this.update();
 	}
 
-	update():void
+	public update():void
 	{
 		if(this.width > 0 && this.height > 0)
 		{
@@ -73,4 +73,4 @@ class Debug extends Container
 	}
 }
 
-export = Debug;
+export default Debug;

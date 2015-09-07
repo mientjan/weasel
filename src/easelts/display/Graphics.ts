@@ -26,9 +26,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Methods = require('../util/Methods');
-import DisplayType = require('../enum/DisplayType');
-import m2 = require('../geom/Matrix2');
+import * as Methods from "../util/Methods";
+import DisplayType from "../enum/DisplayType";
 import Matrix2 from "../geom/Matrix2";
 
 /**
@@ -2372,4 +2371,4 @@ class Graphics
 
 Graphics._canvas.width = Graphics._canvas.height = 1;
 
-export = Graphics;
+export default Graphics;

@@ -1,5 +1,6 @@
-import Rectangle = require("../geom/Rectangle");
-import IDisplayObject = require("../interface/IDisplayObject");
+import Rectangle from "../geom/Rectangle";
+import IDisplayObject from "../interface/IDisplayObject";
+import IContext2D from "../interface/IContext2D";
 
 /**
  * Base class For all bitmap type drawing.
@@ -17,7 +18,7 @@ export default class Texture
 		this.source = source;
 	}
 
-	public draw(ctx:IContext2d):boolean
+	public draw(ctx:IContext2D):boolean
 	{
 		var source = this.source, bitmap = <HTMLImageElement> this.bitmap, x = source.x, y = source.y, width = source.width, height = source.height;
 		ctx.drawImage(bitmap, x, y, width, height, 0, 0, width, height);

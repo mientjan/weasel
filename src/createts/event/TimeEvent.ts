@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Event = require('./Event');
+import Event from "./Event";
 
 class TimeEvent extends Event
 {
@@ -42,4 +42,4 @@ class TimeEvent extends Event
 		this.runTime = runtime;
 	}
 }
-export = TimeEvent;
+export default TimeEvent;

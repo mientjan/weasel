@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/DisplayObject', '../../createts/util/Promise'], function (require, exports, DisplayObject, Promise) {
+define(["require", "exports", "../display/DisplayObject", "../../createts/util/Promise"], function (require, exports, DisplayObject_1, Promise_1) {
     var ImageSequence = (function (_super) {
         __extends(ImageSequence, _super);
         function ImageSequence(spriteSheet, fps, width, height, x, y, regX, regY) {
@@ -13,7 +13,7 @@ define(["require", "exports", '../display/DisplayObject', '../../createts/util/P
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = 128;
             this._playing = false;
             this._timeIndex = -1;
             this._frame = 0;
@@ -43,7 +43,7 @@ define(["require", "exports", '../display/DisplayObject', '../../createts/util/P
             var _this = this;
             if (this.isLoaded) {
                 onProgress(1);
-                return new Promise(function (resolve, reject) {
+                return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
                 });
             }
@@ -117,6 +117,6 @@ define(["require", "exports", '../display/DisplayObject', '../../createts/util/P
             }
         };
         return ImageSequence;
-    })(DisplayObject);
-    return ImageSequence;
+    })(DisplayObject_1.default);
+    exports.default = ImageSequence;
 });

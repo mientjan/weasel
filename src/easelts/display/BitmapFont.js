@@ -26,7 +26,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapChar', './bitmapfont/CharLocation', './bitmapfont/VAlign', './bitmapfont/HAlign', './Container'], function (require, exports, SpriteSheet, Sprite, BitmapChar, CharLocation, VAlign, HAlign, Container) {
+define(["require", "exports", "./SpriteSheet", "./Sprite", "./bitmapfont/BitmapChar", "./bitmapfont/CharLocation", "./bitmapfont/VAlign", "./bitmapfont/HAlign", "./Container"], function (require, exports, SpriteSheet_1, Sprite_1, BitmapChar_1, CharLocation_1, VAlign_1, HAlign_1, Container_1) {
     var BitmapFont = (function () {
         function BitmapFont(texture, fontXML, size, _scaleFactor) {
             if (_scaleFactor === void 0) { _scaleFactor = 1; }
@@ -80,17 +80,17 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 animations["frame" + i] = [i];
                 allChars.push(obj);
             }
-            var spriteSheet = new SpriteSheet({
+            var spriteSheet = new SpriteSheet_1.default({
                 images: [this.texture],
                 frames: arrFrames,
                 animations: animations
             });
             for (var k = 0; k < allChars.length; k++) {
-                var texture = new Sprite(spriteSheet);
+                var texture = new Sprite_1.default(spriteSheet);
                 texture.gotoAndStop(k);
                 texture.x = Math.random() * 800;
                 texture.y = 100;
-                var bitmapChar = new BitmapChar(allChars[k].id, texture, allChars[k].xOffset, allChars[k].yOffset, allChars[k].xAdvance);
+                var bitmapChar = new BitmapChar_1.default(allChars[k].id, texture, allChars[k].xOffset, allChars[k].yOffset, allChars[k].xAdvance);
                 this.addChar(allChars[k].id, bitmapChar);
             }
             if (fontXML.childNodes[0].getElementsByTagName('kernings')[0] != null) {
@@ -125,8 +125,8 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
             if (fontSize === void 0) { fontSize = -1; }
             if (horizantalLetterSpacing === void 0) { horizantalLetterSpacing = 1; }
             if (verticalLetterSpacing === void 0) { verticalLetterSpacing = 1; }
-            if (hAlign === void 0) { hAlign = HAlign.CENTER; }
-            if (vAlign === void 0) { vAlign = VAlign.CENTER; }
+            if (hAlign === void 0) { hAlign = HAlign_1.default.CENTER; }
+            if (vAlign === void 0) { vAlign = VAlign_1.default.CENTER; }
             if (autoScale === void 0) { autoScale = true; }
             if (kerning === void 0) { kerning = true; }
             var container = null;
@@ -138,7 +138,7 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                     this._container = null;
                 }
                 else {
-                    container = new Container;
+                    container = new Container_1.default;
                 }
                 for (var i = 0; i < numChars; i++) {
                     var charLocation = charLocations[i];
@@ -154,7 +154,7 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 }
             }
             else {
-                container = new Container();
+                container = new Container_1.default();
                 var buffer = {
                     container: container,
                     arguments: []
@@ -169,8 +169,8 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
         BitmapFont.prototype.arrangeChars = function (width, height, text, fontSize, hAlign, vAlign, autoScale, kerning, horizantalLetterSpacing, verticalLetterSpacing) {
             if (text === void 0) { text = ''; }
             if (fontSize === void 0) { fontSize = -1; }
-            if (hAlign === void 0) { hAlign = HAlign.CENTER; }
-            if (vAlign === void 0) { vAlign = VAlign.CENTER; }
+            if (hAlign === void 0) { hAlign = HAlign_1.default.CENTER; }
+            if (vAlign === void 0) { vAlign = VAlign_1.default.CENTER; }
             if (autoScale === void 0) { autoScale = true; }
             if (kerning === void 0) { kerning = true; }
             if (horizantalLetterSpacing === void 0) { horizantalLetterSpacing = 1; }
@@ -183,7 +183,7 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
             }
             var lines = [[]];
             var finished = false;
-            var charLocation = new CharLocation(null);
+            var charLocation = new CharLocation_1.default(null);
             var numChars = 0;
             var containerWidth = 0;
             var containerHeight = 0;
@@ -218,7 +218,7 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                             if (kerning) {
                                 currentX = char.getKerning(lastCharID) / 1 + currentX / 1;
                             }
-                            var charLocation = new CharLocation(char);
+                            var charLocation = new CharLocation_1.default(char);
                             charLocation.char = char;
                             charLocation.x = currentX / 1 + char.getXOffset() / 1;
                             charLocation.y = currentY / 1 + char.getYOffset() / 1;
@@ -270,10 +270,10 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
             var numLines = lines.length;
             var bottom = currentY + this.mLineHeight;
             var yOffset = 0;
-            if (vAlign == VAlign.BOTTOM) {
+            if (vAlign == VAlign_1.default.BOTTOM) {
                 yOffset = containerHeight - bottom;
             }
-            else if (vAlign == VAlign.CENTER) {
+            else if (vAlign == VAlign_1.default.CENTER) {
                 yOffset = (containerHeight - bottom) / 2;
             }
             this.previousWidth = [];
@@ -288,10 +288,10 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
                 var right = lastLocation.x - (lastLocation.char.getXOffset() / 1) + (lastLocation.char.getXAdvance() / 1);
                 console.log(horizantalLetterSpacing);
                 right += numChars * horizantalLetterSpacing;
-                if (hAlign == HAlign.RIGHT) {
+                if (hAlign == HAlign_1.default.RIGHT) {
                     xOffset = containerWidth - right;
                 }
-                else if (hAlign == HAlign.CENTER) {
+                else if (hAlign == HAlign_1.default.CENTER) {
                     xOffset = (containerWidth - right) / 2;
                 }
                 this.width = 0;
@@ -346,5 +346,5 @@ define(["require", "exports", './SpriteSheet', './Sprite', './bitmapfont/BitmapC
         BitmapFont.CHAR_CARRIAGE_RETURN = 13;
         return BitmapFont;
     })();
-    return BitmapFont;
+    exports.default = BitmapFont;
 });

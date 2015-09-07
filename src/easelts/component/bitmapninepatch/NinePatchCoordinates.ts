@@ -5,4 +5,4 @@ class NinePatchCoordinates {
 
 }
 
-export = NinePatchCoordinates;
+export default NinePatchCoordinates;

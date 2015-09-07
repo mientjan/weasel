@@ -8,5 +8,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return NinePatchCoordinates;
     })();
-    return NinePatchCoordinates;
+    exports.default = NinePatchCoordinates;
 });

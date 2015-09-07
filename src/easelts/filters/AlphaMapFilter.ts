@@ -30,8 +30,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Methods = require('../util/Methods');
-import Filter = require('./Filter');
+import Methods from "../util/Methods";
+import Filter from "./Filter";
 
 /**
  * Applies a greyscale alpha map image (or canvas) to the target, such that the alpha channel of the result will
@@ -185,4 +185,4 @@ class AlphaMapFilter extends Filter
 	}
 }
 
-export = AlphaMapFilter;
+export default AlphaMapFilter;

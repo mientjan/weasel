@@ -27,11 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container = require('./Container');
-import SpriteSheet = require('./SpriteSheet');
-import Sprite = require('./Sprite');
+import Container from "./Container";
+import SpriteSheet from "./SpriteSheet";
+import Sprite from "./Sprite";
 import IContext2D from "../interface/IContext2D";
-import IDisplayObject = require("../interface/IDisplayObject");
+import IDisplayObject from "../interface/IDisplayObject";
 
 class BitmapTextProperties
 {
@@ -352,4 +352,4 @@ class BitmapText extends Container<IDisplayObject|Sprite>
 
 }
 
-export = BitmapText;
+export default BitmapText;

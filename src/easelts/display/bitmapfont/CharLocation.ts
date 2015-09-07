@@ -1,4 +1,4 @@
-import BitmapChar = require('./BitmapChar');
+import BitmapChar from "./BitmapChar";
 
 class CharLocation {
 
@@ -13,4 +13,4 @@ class CharLocation {
 	}
 }
 
-export = CharLocation;
+export default CharLocation;

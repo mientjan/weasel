@@ -1,7 +1,7 @@
-import DisplayObject = require("../display/DisplayObject");
-import Bounds = require("../geom/Bounds");
-import Size = require("../geom/Size");
-import Point = require("../geom/Point");
+import DisplayObject from "../display/DisplayObject";
+import Bounds from "../geom/Bounds";
+import Size from "../geom/Size";
+import Point from "../geom/Point";
 
 class ArrayUtil
 {
@@ -35,4 +35,4 @@ class ArrayUtil
 	}
 }
 
-export = ArrayUtil;
+export default ArrayUtil;

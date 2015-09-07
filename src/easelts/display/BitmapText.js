@@ -32,7 +32,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Container', './Sprite'], function (require, exports, Container, Sprite) {
+define(["require", "exports", "./Container", "./Sprite"], function (require, exports, Container_1, Sprite_1) {
     var BitmapTextProperties = (function () {
         function BitmapTextProperties() {
             this.text = '';
@@ -137,7 +137,7 @@ define(["require", "exports", './Container', './Sprite'], function (require, exp
                     sprite = kids[childIndex];
                 }
                 else {
-                    sprite = this.addChild(pool.length ? pool.pop() : new Sprite(ss));
+                    sprite = this.addChild(pool.length ? pool.pop() : new Sprite_1.default(ss));
                     numKids++;
                 }
                 sprite.spriteSheet = ss;
@@ -159,6 +159,6 @@ define(["require", "exports", './Container', './Sprite'], function (require, exp
         BitmapText.maxPoolSize = 100;
         BitmapText._spritePool = [];
         return BitmapText;
-    })(Container);
-    return BitmapText;
+    })(Container_1.default);
+    exports.default = BitmapText;
 });

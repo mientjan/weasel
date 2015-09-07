@@ -1,20 +1,21 @@
-import AbstractBehavior = require('./AbstractBehavior');
-import DisplayObject = require('../display/DisplayObject');
-import Stage = require('../display/Stage');
-import Container = require('../display/Container');
-import PointerEvent = require('../event/PointerEvent');
-import DisplayType = require('../enum/DisplayType');
-import MouseEvent = require('../event/MouseEvent');
-import Size = require('../geom/Size');
-import Scroller = require('../../zynga/Scroller');
-import Animate = require('../../zynga/Animate');
-import IScrollerOptions = require('../../zynga/IScrollerOptions');
+import AbstractBehavior from "./AbstractBehavior";
+import DisplayObject from "../display/DisplayObject";
+import Stage from "../display/Stage";
+import Container from "../display/Container";
+import PointerEvent from "../event/PointerEvent";
+import DisplayType from "../enum/DisplayType";
+import MouseEvent from "../event/MouseEvent";
+import Size from "../geom/Size";
+import Scroller from "../../zynga/Scroller";
+import Animate from "../../zynga/Animate";
+import IScrollerOptions from "../../zynga/IScrollerOptions";
+import IDisplayObject from "../interface/IDisplayObject";
 
 class AutoAssetBehavior extends AbstractBehavior
 {
 	protected _elements:Array<DisplayObject> = [];
 
-	public owner:Container;
+	public owner:Container<IDisplayObject>;
 
 	constructor()
 	{
@@ -24,9 +25,7 @@ class AutoAssetBehavior extends AbstractBehavior
 	public initialize(container:DisplayObject):void
 	{
 		super.initialize(container);
-
-
 	}
 }
 
-export = AutoAssetBehavior;
+export default AutoAssetBehavior;

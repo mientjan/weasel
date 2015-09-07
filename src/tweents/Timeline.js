@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../createts/event/EventDispatcher', './Tween'], function (require, exports, EventDispatcher, Tween) {
+define(["require", "exports", './Tween'], function (require, exports, Tween) {
     var Timeline = (function (_super) {
         __extends(Timeline, _super);
         function Timeline(tweens, labels, props) {
@@ -201,5 +201,5 @@ define(["require", "exports", '../createts/event/EventDispatcher', './Tween'], f
         };
         return Timeline;
     })(EventDispatcher);
-    return Timeline;
+    exports.default = Timeline;
 });

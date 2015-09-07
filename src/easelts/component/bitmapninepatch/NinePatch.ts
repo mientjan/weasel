@@ -1,6 +1,6 @@
-import Bitmap = require('../../display/Bitmap');
-import Rectangle = require('../../geom/Rectangle');
-import NinePatchCoordinates = require('./NinePatchCoordinates');
+import Bitmap from "../../display/Bitmap";
+import Rectangle from "../../geom/Rectangle";
+import NinePatchCoordinates from "./NinePatchCoordinates";
 
 /**
  *
@@ -67,4 +67,4 @@ class NinePatch {
 	}
 }
 
-export = NinePatch;
+export default NinePatch;

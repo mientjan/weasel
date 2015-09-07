@@ -1,9 +1,9 @@
-import AbstractBehavior = require('./AbstractBehavior');
-import DisplayObject = require('../display/DisplayObject');
-import Stage = require('../display/Stage');
-import Container = require('../display/Container');
-import PointerEvent = require('../event/PointerEvent');
-import DisplayType = require('../enum/DisplayType');
+import AbstractBehavior from "./AbstractBehavior";
+import DisplayObject from "../display/DisplayObject";
+import Stage from "../display/Stage";
+import Container from "../display/Container";
+import PointerEvent from "../event/PointerEvent";
+import DisplayType from "../enum/DisplayType";
 
 class FollowMouseBehavior extends AbstractBehavior
 {
@@ -38,4 +38,4 @@ class FollowMouseBehavior extends AbstractBehavior
 	}
 }
 
-export = FollowMouseBehavior;
+export default FollowMouseBehavior;

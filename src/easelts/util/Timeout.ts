@@ -18,4 +18,4 @@ class Timeout
 	}
 }
 
-export = Timeout;
+export default Timeout;

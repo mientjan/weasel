@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Rectangle = require('../geom/Rectangle');
+import Rectangle from "../geom/Rectangle";
 
 /**
  * @module EaselJS
@@ -124,4 +124,4 @@ class Filter
 	}
 }
 
-export = Filter;
+export default Filter;

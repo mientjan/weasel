@@ -1,9 +1,9 @@
-define(["require", "exports", '../../display/Bitmap', '../../geom/Rectangle', './NinePatchCoordinates'], function (require, exports, Bitmap, Rectangle, NinePatchCoordinates) {
+define(["require", "exports", "../../display/Bitmap", "../../geom/Rectangle", "./NinePatchCoordinates"], function (require, exports, Bitmap_1, Rectangle_1, NinePatchCoordinates_1) {
     var NinePatch = (function () {
         function NinePatch(imageOrString, rectangle) {
-            this.bitmap = new Bitmap(imageOrString);
-            if (!(rectangle instanceof Rectangle)) {
-                this.rectangle = new Rectangle(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+            this.bitmap = new Bitmap_1.default(imageOrString);
+            if (!(rectangle instanceof Rectangle_1.default)) {
+                this.rectangle = new Rectangle_1.default(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
             }
             else {
                 this.rectangle = rectangle;
@@ -18,32 +18,20 @@ define(["require", "exports", '../../display/Bitmap', '../../geom/Rectangle', '.
             var rw = this.rectangle.width;
             var rh = this.rectangle.height;
             var sourceRow = [
-                0,
-                ry,
-                ry + rh,
-                ih
+                0, ry, ry + rh, ih
             ];
             var sourceColumn = [
-                0,
-                rx,
-                rx + rw,
-                iw
+                0, rx, rx + rw, iw
             ];
             var destRow = [
-                0,
-                ry,
-                height - (sourceRow[3] - sourceRow[2]),
-                height
+                0, ry, height - (sourceRow[3] - sourceRow[2]), height
             ];
             var destColumn = [
-                0,
-                rx,
-                width - (sourceColumn[3] - sourceColumn[2]),
-                width
+                0, rx, width - (sourceColumn[3] - sourceColumn[2]), width
             ];
-            return new NinePatchCoordinates(sourceRow, sourceColumn, destRow, destColumn);
+            return new NinePatchCoordinates_1.default(sourceRow, sourceColumn, destRow, destColumn);
         };
         return NinePatch;
     })();
-    return NinePatch;
+    exports.default = NinePatch;
 });

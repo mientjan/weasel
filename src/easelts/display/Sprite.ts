@@ -27,11 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Event = require('../../createts/event/Event');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import DisplayObject = require('./DisplayObject');
-import SpriteSheet = require('./SpriteSheet');
-import Rectangle = require('../geom/Rectangle');
+import Event from "../../createts/event/Event";
+import TimeEvent from "../../createts/event/TimeEvent";
+import DisplayObject from "./DisplayObject";
+import SpriteSheet from "./SpriteSheet";
+import Rectangle from "../geom/Rectangle";
 
 
 /**
@@ -97,9 +97,8 @@ class Sprite extends DisplayObject
 	 * @property currentAnimation
 	 * @type {String}
 	 * @final
-	 * @readonly
 	 **/
-	public currentAnimation = null;
+	public currentAnimation:string = null;
 
 	/**
 	 * Prevents the animation from advancing each tick automatically. For example, you could create a sprite
@@ -535,4 +534,4 @@ class Sprite extends DisplayObject
 	}
 }
 
-export = Sprite; 
+export default Sprite;

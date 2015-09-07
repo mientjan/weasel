@@ -133,4 +133,4 @@ class Rectangle
 	}
 }
 
-export = Rectangle;
+export default Rectangle;

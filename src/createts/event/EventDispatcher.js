@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 "use strict";
-define(["require", "exports", './Event'], function (require, exports, Event) {
+define(["require", "exports", "./Event"], function (require, exports, Event_1) {
     var EventDispatcher = (function () {
         function EventDispatcher(target) {
             this._listeners = null;
@@ -104,7 +104,7 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
                 if (!listeners || !listeners[eventObj]) {
                     return false;
                 }
-                eventObj = new Event(eventObj);
+                eventObj = new Event_1.default(eventObj);
             }
             try {
                 eventObj.target = target || this;
@@ -185,5 +185,5 @@ define(["require", "exports", './Event'], function (require, exports, Event) {
         };
         return EventDispatcher;
     })();
-    return EventDispatcher;
+    exports.default = EventDispatcher;
 });

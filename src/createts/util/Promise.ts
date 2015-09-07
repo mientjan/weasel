@@ -213,4 +213,4 @@ class Promise<T>
 	}
 }
 
-export = Promise;
+export default Promise;

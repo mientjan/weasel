@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './SignalAbstract'], function (require, exports, SignalAbstract) {
+define(["require", "exports", "./SignalAbstract"], function (require, exports, SignalAbstract_1) {
     var Signal1 = (function (_super) {
         __extends(Signal1, _super);
         function Signal1() {
@@ -32,6 +32,6 @@ define(["require", "exports", './SignalAbstract'], function (require, exports, S
             this.didEmit(head);
         };
         return Signal1;
-    })(SignalAbstract);
-    return Signal1;
+    })(SignalAbstract_1.default);
+    exports.default = Signal1;
 });

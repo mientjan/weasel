@@ -26,14 +26,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Bitmap = require('./Bitmap');
-import DisplayType = require('../enum/DisplayType');
-import Rectangle = require('../geom/Rectangle');
-import IVector2 = require('../interface/IVector2');
-import Vector2 = require('../geom/Vector2');
-import Signal = require('../../createts/event/Signal');
-import Size = require('../geom/Size');
+import DisplayObject from "./DisplayObject";
+import Bitmap from "./Bitmap";
+import DisplayType from "../enum/DisplayType";
+import Rectangle from "../geom/Rectangle";
+import IVector2 from "../interface/IVector2";
+import Vector2 from "../geom/Vector2";
+import Signal from "../../createts/event/Signal";
+import Size from "../geom/Size";
 
 /**
  * @author Mient-jan Stelling
@@ -398,7 +398,7 @@ class BitmapProjective extends Bitmap
 	}
 }
 
-export = BitmapProjective;
+export default BitmapProjective;
 
 class Matrix
 {

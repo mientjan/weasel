@@ -1,13 +1,13 @@
-import DisplayObject = require('../../display/DisplayObject');
-import FlumpLibrary = require('../FlumpLibrary');
-import FlumpLayerData = require('./FlumpLayerData');
-import FlumpKeyframeData = require('./FlumpKeyframeData');
-import FlumpTexture = require('./FlumpTexture');
-import FlumpMovie = require('./FlumpMovie');
-import FlumpLabelData = require('./FlumpLabelData');
-import IHashMap = require("../../interface/IHashMap");
-import DisplayType = require("../../enum/DisplayType");
-import FlumpMtx = require("./FlumpMtx");
+import DisplayObject from "../../display/DisplayObject";
+import FlumpLibrary from "../FlumpLibrary";
+import FlumpLayerData from "./FlumpLayerData";
+import FlumpKeyframeData from "./FlumpKeyframeData";
+import FlumpTexture from "./FlumpTexture";
+import FlumpMovie from "./FlumpMovie";
+import FlumpLabelData from "./FlumpLabelData";
+import IHashMap from "../../interface/IHashMap";
+import DisplayType from "../../enum/DisplayType";
+import FlumpMtx from "./FlumpMtx";
 
 class FlumpMovieLayer extends DisplayObject
 {
@@ -200,4 +200,4 @@ class FlumpMovieLayer extends DisplayObject
 	}
 }
 
-export = FlumpMovieLayer;
+export default FlumpMovieLayer;

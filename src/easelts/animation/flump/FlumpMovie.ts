@@ -1,14 +1,14 @@
-import DisplayObject = require('../../display/DisplayObject');
+import DisplayObject from "../../display/DisplayObject";
 
-import IHashMap = require('../../interface/IHashMap');
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
-import IPlayable = require('../../interface/IPlayable');
+import IHashMap from "../../interface/IHashMap";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
+import IPlayable from "../../interface/IPlayable";
 
-import FlumpLibrary = require('../FlumpLibrary');
-import FlumpMovieLayer = require('./FlumpMovieLayer');
-import FlumpLabelData = require('./FlumpLabelData');
-import FlumpLabelQueueData = require('./FlumpLabelQueueData');
-import FlumpTexture = require("./FlumpTexture");
+import FlumpLibrary from "../FlumpLibrary";
+import FlumpMovieLayer from "./FlumpMovieLayer";
+import FlumpLabelData from "./FlumpLabelData";
+import FlumpLabelQueueData from "./FlumpLabelQueueData";
+import FlumpTexture from "./FlumpTexture";
 
 
 class FlumpMovie extends DisplayObject implements IPlayable
@@ -338,4 +338,4 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	}
 }
 
-export = FlumpMovie;
+export default FlumpMovie;

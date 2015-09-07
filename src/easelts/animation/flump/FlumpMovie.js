@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer', './FlumpLabelQueueData'], function (require, exports, DisplayObject, FlumpMovieLayer, FlumpLabelQueueData) {
+define(["require", "exports", "../../display/DisplayObject", "./FlumpMovieLayer", "./FlumpLabelQueueData"], function (require, exports, DisplayObject_1, FlumpMovieLayer_1, FlumpLabelQueueData_1) {
     var FlumpMovie = (function (_super) {
         __extends(FlumpMovie, _super);
         function FlumpMovie(flumpLibrary, name, width, height, x, y, regX, regY) {
@@ -33,7 +33,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             var movieLayers = new Array(length);
             for (var i = 0; i < length; i++) {
                 var layerData = layers[i];
-                movieLayers[i] = new FlumpMovieLayer(this, layerData);
+                movieLayers[i] = new FlumpMovieLayer_1.default(this, layerData);
             }
             this.flumpMovieLayers = movieLayers;
             this.frames = this.flumpMovieData.frames;
@@ -49,7 +49,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.visible = true;
             var labelQueueData;
             if (label == null || label == '*') {
-                labelQueueData = new FlumpLabelQueueData(label, 0, this.frames, times, 0);
+                labelQueueData = new FlumpLabelQueueData_1.default(label, 0, this.frames, times, 0);
                 this._labelQueue.push(labelQueueData);
             }
             else {
@@ -58,7 +58,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                     console.warn('unknown label:', label, 'on', this.name);
                     throw new Error('unknown label:' + label + ' | ' + this.name);
                 }
-                labelQueueData = new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times, 0);
+                labelQueueData = new FlumpLabelQueueData_1.default(queue.label, queue.index, queue.duration, times, 0);
                 this._labelQueue.push(labelQueueData);
             }
             if (complete) {
@@ -216,6 +216,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             }
         };
         return FlumpMovie;
-    })(DisplayObject);
-    return FlumpMovie;
+    })(DisplayObject_1.default);
+    exports.default = FlumpMovie;
 });

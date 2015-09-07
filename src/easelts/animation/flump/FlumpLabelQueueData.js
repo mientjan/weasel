@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './FlumpLabelData'], function (require, exports, FlumpLabelData) {
+define(["require", "exports", "./FlumpLabelData"], function (require, exports, FlumpLabelData_1) {
     var FlumpLabelQueueData = (function (_super) {
         __extends(FlumpLabelQueueData, _super);
         function FlumpLabelQueueData(label, index, duration, times, delay) {
@@ -29,6 +29,6 @@ define(["require", "exports", './FlumpLabelData'], function (require, exports, F
             this._complete = null;
         };
         return FlumpLabelQueueData;
-    })(FlumpLabelData);
-    return FlumpLabelQueueData;
+    })(FlumpLabelData_1.default);
+    exports.default = FlumpLabelQueueData;
 });

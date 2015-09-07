@@ -1,9 +1,9 @@
-define(["require", "exports", './Promise'], function (require, exports, Promise) {
+define(["require", "exports", "./Promise"], function (require, exports, Promise_1) {
     var HttpRequest = (function () {
         function HttpRequest() {
         }
         HttpRequest.request = function (method, url, args) {
-            var promise = new Promise(function (resolve, reject) {
+            var promise = new Promise_1.default(function (resolve, reject) {
                 var client = new XMLHttpRequest();
                 var uri = url;
                 if (args && (method === 'POST' || method === 'PUT')) {
@@ -46,7 +46,7 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
         };
         HttpRequest.wait = function (list, onProgress) {
             if (onProgress === void 0) { onProgress = function (progress) { }; }
-            return new Promise(function (resolve) {
+            return new Promise_1.default(function (resolve) {
                 var newList = [];
                 var then = function (response) {
                     newList.push(response);
@@ -85,5 +85,5 @@ define(["require", "exports", './Promise'], function (require, exports, Promise)
         };
         return HttpRequest;
     })();
-    return HttpRequest;
+    exports.default = HttpRequest;
 });

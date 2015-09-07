@@ -31,7 +31,7 @@
  * @module EaselJS
  */
 
-import Point = require("./Point");
+import Point from "./Point";
 /**
  * Represents an affine transformation matrix, and provides tools for constructing and concatenating matrixes.
  * @class Matrix2D

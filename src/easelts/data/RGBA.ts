@@ -11,4 +11,4 @@ class RGBA
 	}
 }
 
-export = RGBA;
+export default RGBA;

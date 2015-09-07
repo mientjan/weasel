@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/Bitmap', '../display/DisplayObject'], function (require, exports, Bitmap, DisplayObject) {
+define(["require", "exports", "../display/Bitmap", "../display/DisplayObject"], function (require, exports, Bitmap_1, DisplayObject_1) {
     var BitmapNinePatch = (function (_super) {
         __extends(BitmapNinePatch, _super);
         function BitmapNinePatch(ninePatch, width, height, x, y, regX, regY) {
@@ -15,11 +15,11 @@ define(["require", "exports", '../display/Bitmap', '../display/DisplayObject'], 
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = 128;
             this.loaded = false;
             this._patch = ninePatch;
             if (!this._patch.bitmap.loaded) {
-                this._patch.bitmap.addEventListener(Bitmap.EVENT_LOAD, this.onLoad.bind(this));
+                this._patch.bitmap.addEventListener(Bitmap_1.default.EVENT_LOAD, this.onLoad.bind(this));
             }
             else {
                 this.onLoad();
@@ -30,8 +30,12 @@ define(["require", "exports", '../display/Bitmap', '../display/DisplayObject'], 
         };
         BitmapNinePatch.prototype.setContentSize = function (width, height) {
             var imageSize = this._patch.bitmap.getImageSize();
-            this.setWidth(this._patch.rectangle.x + Math.max(this._patch.rectangle.width, width) + imageSize.width - (this._patch.rectangle.x + this._patch.rectangle.width));
-            this.setHeight(this._patch.rectangle.y + Math.max(this._patch.rectangle.height, height) + imageSize.height - (this._patch.rectangle.y + this._patch.rectangle.height));
+            this.setWidth(this._patch.rectangle.x
+                + Math.max(this._patch.rectangle.width, width)
+                + imageSize.width - (this._patch.rectangle.x + this._patch.rectangle.width));
+            this.setHeight(this._patch.rectangle.y
+                + Math.max(this._patch.rectangle.height, height)
+                + imageSize.height - (this._patch.rectangle.y + this._patch.rectangle.height));
             return this;
         };
         BitmapNinePatch.prototype.getRectangle = function () {
@@ -64,6 +68,6 @@ define(["require", "exports", '../display/Bitmap', '../display/DisplayObject'], 
             return true;
         };
         return BitmapNinePatch;
-    })(DisplayObject);
-    return BitmapNinePatch;
+    })(DisplayObject_1.default);
+    exports.default = BitmapNinePatch;
 });

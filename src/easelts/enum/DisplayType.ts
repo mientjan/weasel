@@ -14,4 +14,4 @@ const enum DisplayType {
 	TEXTURE = 1 << 8,
 }
 
-export = DisplayType;
+export default DisplayType;

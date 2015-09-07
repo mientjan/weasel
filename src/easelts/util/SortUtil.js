@@ -1,9 +1,9 @@
-define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (require, exports, Bounds, Vector2) {
+define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (require, exports, Bounds_1, Vector2_1) {
     var SortUtil = (function () {
         function SortUtil() {
         }
         SortUtil.getBounds = function (list) {
-            var bounds = new Bounds();
+            var bounds = new Bounds_1.default();
             if (list.length > 0) {
                 bounds.x0 = list[0].x;
                 bounds.y0 = list[1].y;
@@ -30,7 +30,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
         };
         SortUtil.centerOut = function (list) {
             var bounds = this.getBounds(list);
-            var point = new Vector2(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
+            var point = new Vector2_1.default(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
             list.sort(function (a, b) {
                 var x0 = (a.x - point.x);
                 var y0 = (a.y - point.y);
@@ -42,7 +42,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
         };
         SortUtil.centerIn = function (list) {
             var bounds = this.getBounds(list);
-            var point = new Vector2(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
+            var point = new Vector2_1.default(bounds.width / 2 + bounds.x0, bounds.height / 2 + bounds.y0);
             list.sort(function (a, b) {
                 var x0 = (a.x - point.x);
                 var y0 = (a.y - point.y);
@@ -60,7 +60,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
                 abs[2] = Math.max(list[i].x, abs[2]);
                 abs[3] = Math.max(list[i].y, abs[3]);
             }
-            var point = new Vector2((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
+            var point = new Vector2_1.default((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
             list.sort(function (a, b) {
                 return a.y - b.y;
             });
@@ -74,7 +74,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
                 abs[2] = Math.max(list[i].x, abs[2]);
                 abs[3] = Math.max(list[i].y, abs[3]);
             }
-            var point = new Vector2((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
+            var point = new Vector2_1.default((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
             list.sort(function (a, b) {
                 return b.y - a.y;
             });
@@ -88,7 +88,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
                 abs[2] = Math.max(list[i].x, abs[2]);
                 abs[3] = Math.max(list[i].y, abs[3]);
             }
-            var point = new Vector2((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
+            var point = new Vector2_1.default((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
             list.sort(function (a, b) {
                 return a.x - b.x;
             });
@@ -102,7 +102,7 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
                 abs[2] = Math.max(list[i].x, abs[2]);
                 abs[3] = Math.max(list[i].y, abs[3]);
             }
-            var point = new Vector2((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
+            var point = new Vector2_1.default((abs[2] - abs[0]) / 2 + abs[0], (abs[3] - abs[1]) / 2 + abs[1]);
             list.sort(function (a, b) {
                 return b.x - a.x;
             });
@@ -110,5 +110,5 @@ define(["require", "exports", "../geom/Bounds", "../geom/Vector2"], function (re
         };
         return SortUtil;
     })();
-    return SortUtil;
+    exports.default = SortUtil;
 });

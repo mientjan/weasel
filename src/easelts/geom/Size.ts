@@ -100,4 +100,4 @@ class Size
 	}
 }
 
-export = Size;
+export default Size;
