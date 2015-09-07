@@ -199,8 +199,8 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                 mtx = layer._storedMtx;
                 if (layer.visible) {
                     a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
-                    ctx.save();
                     ctx.globalAlpha = ga * layer.alpha;
+                    ctx.save();
                     ctx.transform(a, b, c, d, tx, ty);
                     layer.draw(ctx);
                     ctx.restore();

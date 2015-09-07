@@ -3,7 +3,7 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
     var stage = new Stage(holder, true).setFpsCounter(true);
     stage.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
     stage.canvas.style.transformStyle = 'preserve-3d';
-    FlumpLibrary.load('../assets/flump/a-100-8x8l-2048/character').then(function (fl) {
+    FlumpLibrary.load('../assets/flump/a-100-8x8l-1024/character').then(function (fl) {
         var names = [
             'SupermanSuduction1',
             'SupermanSuduction2',
@@ -22,11 +22,11 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
         stage.children.sort(function (item0, item1) {
             return item0.y - item1.y;
         });
+        console.time('performance');
+        console.profile('performance');
+        stage.start();
         setTimeout(function () {
-            console.time('performance');
-            for (var i = 0; i < 120; i++) {
-                stage.update(16);
-            }
+            console.profileEnd('performance');
             console.timeEnd('performance');
         }, 5000);
     }).catch(function (error) { return console.log(error); });

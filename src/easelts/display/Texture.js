@@ -5,10 +5,11 @@ define(["require", "exports"], function (require, exports) {
             this.source = source;
         }
         Texture.prototype.draw = function (ctx) {
-            var source = this.source;
-            ctx.drawImage(this.bitmap, source.x, source.y, source.width, source.height, 0, 0, source.width, source.height);
+            var source = this.source, bitmap = this.bitmap, x = source.x, y = source.y, width = source.width, height = source.height;
+            ctx.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
             return true;
         };
         return Texture;
     })();
+    exports.default = Texture;
 });

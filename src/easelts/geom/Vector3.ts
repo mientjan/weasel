@@ -1,20 +1,21 @@
-import am3 = require('./math3d/AbstractMath3d');
-import m4 = require('./Matrix4');
-import q = require('./Quaternion');
-import MathUtil = require('../util/MathUtil');
 
 
-export class Vector3
+
+import Quaternion from "./Quaternion";
+import Matrix4 from "./Matrix4";
+import MathUtil from "../util/MathUtil";
+
+export default class Vector3
 {
-	private _quaternion:{[index:string]:q.Quaternion} = {};
+	private _quaternion:{[index:string]:Quaternion} = {};
 	private _vector3:{[index:string]:Vector3} = {};
-	private _matrix4:{[index:string]:m4.Matrix4} = {};
+	private _matrix4:{[index:string]:Matrix4} = {};
 
-	protected getQuaternion(value:string):q.Quaternion
+	protected getQuaternion(value:string):Quaternion
 	{
 		if(!this._quaternion[value])
 		{
-			this._quaternion[value] = new q.Quaternion();
+			this._quaternion[value] = new Quaternion();
 		}
 		return this._quaternion[value];
 	}
@@ -28,11 +29,11 @@ export class Vector3
 		return this._vector3[value];
 	}
 
-	protected getMatrix4(value:string):m4.Matrix4
+	protected getMatrix4(value:string):Matrix4
 	{
 		if(!this._matrix4[value])
 		{
-			this._matrix4[value] = new m4.Matrix4();
+			this._matrix4[value] = new Matrix4();
 		}
 		return this._matrix4[value];
 	}
@@ -330,14 +331,14 @@ export class Vector3
 	public project(camera:any):Vector3
 	{
 		var m1 = this.getMatrix4('_projectMatrix');
-		m1.multiplyMatrices(<m4.Matrix4> camera.projectionMatrix, <m4.Matrix4> m1.getInverse(camera.matrixWorld));
+		m1.multiplyMatrices(<Matrix4> camera.projectionMatrix, <Matrix4> m1.getInverse(camera.matrixWorld));
 		return this.applyProjection(m1);
 	}
 
 	public unproject(camera:any):Vector3
 	{
 		var m1 = this.getMatrix4('_unprojectMatrix');
-		m1.multiplyMatrices(<m4.Matrix4> camera.matrixWorld, <m4.Matrix4> m1.getInverse(camera.projectionMatrix));
+		m1.multiplyMatrices(<Matrix4> camera.matrixWorld, <Matrix4> m1.getInverse(camera.projectionMatrix));
 		return this.applyProjection(m1);
 
 	}
@@ -760,7 +761,7 @@ export class Vector3
 	//
 	//	}
 
-	public setFromMatrixPosition(m:m4.Matrix4):Vector3
+	public setFromMatrixPosition(m:Matrix4):Vector3
 	{
 		this.x = m.elements[ 12 ];
 		this.y = m.elements[ 13 ];
@@ -769,7 +770,7 @@ export class Vector3
 		return this;
 	}
 
-	public setFromMatrixScale(m:m4.Matrix4):Vector3
+	public setFromMatrixScale(m:Matrix4):Vector3
 	{
 		var sx = this.set(m.elements[ 0 ], m.elements[ 1 ], m.elements[  2 ]).length();
 		var sy = this.set(m.elements[ 4 ], m.elements[ 5 ], m.elements[  6 ]).length();

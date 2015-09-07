@@ -24,7 +24,7 @@ stage.canvas.style.transformStyle = 'preserve-3d';
 //
 //}).catch( error => console.log(error) );
 
-FlumpLibrary.load('../assets/flump/a-100-8x8l-2048/character').then((fl:FlumpLibrary) => {
+FlumpLibrary.load('../assets/flump/a-100-8x8l-1024/character').then((fl:FlumpLibrary) => {
 
 	var names = [
 		'SupermanSuduction1',
@@ -55,13 +55,13 @@ FlumpLibrary.load('../assets/flump/a-100-8x8l-2048/character').then((fl:FlumpLib
 	});
 
 
-	setTimeout(() => {
-		console.time('performance');
 
-		for(var i = 0; i < 120; i++)
-		{
-			stage.update(16);
-		}
+		console.time('performance');
+		console.profile('performance');
+		stage.start();
+
+	setTimeout(() => {
+		console.profileEnd('performance');
 		console.timeEnd('performance');
 	}, 5000)
 

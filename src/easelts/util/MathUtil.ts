@@ -134,7 +134,7 @@ class MathUtil
 	 * @param {number} high
 	 * @returns {number}
 	 */
-	public static randFloat(low:number, high:number)
+	public static randFloat(low:number, high:number):number
 	{
 		return low + Math.random() * ( high - low );
 	}
@@ -145,7 +145,7 @@ class MathUtil
 	 * @param {number} range
 	 * @returns {number}
 	 */
-	public static randFloatSpread(range:number)
+	public static randFloatSpread(range:number):number
 	{
 		return range * ( 0.5 - Math.random() );
 	}
@@ -155,7 +155,7 @@ class MathUtil
 	 * @param {number} degrees
 	 * @returns {number}
 	 */
-	public static degToRad(degrees:number)
+	public static degToRad(degrees:number):number
 	{
 		return degrees * MathUtil.degreeToRadiansFactor;
 	}
@@ -165,7 +165,7 @@ class MathUtil
 	 * @param {number} radians
 	 * @returns {number}
 	 */
-	public static radToDeg(radians:number)
+	public static radToDeg(radians:number):number
 	{
 		return radians * MathUtil.radianToDegreesFactor;
 	}
@@ -175,10 +175,10 @@ class MathUtil
 	 * @param {number} value
 	 * @returns {boolean}
 	 */
-	public static isPowerOfTwo(value:number)
+	public static isPowerOfTwo(value:number):boolean
 	{
 		return ( value & ( value - 1 ) ) === 0 && value !== 0;
 	}
 }
 
-export = MathUtil;
+export default MathUtil;

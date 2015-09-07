@@ -64,113 +64,6 @@ class FlumpMovieLayer extends DisplayObject
 			this._symbolMovie.onTick(delta);
 		}
 	}
-
-	private setFrameByKeyframe(frame:number, keyframe:FlumpKeyframeData):void
-	{
-		var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
-		var x:number = keyframe.x;
-		var y:number = keyframe.y;
-		var scaleX:number = keyframe.scaleX;
-		var scaleY:number = keyframe.scaleY;
-		var skewX:number = keyframe.skewX;
-		var skewY:number = keyframe.skewY;
-		var pivotX:number = keyframe.pivotX;
-		var pivotY:number = keyframe.pivotY;
-		var alpha:number = keyframe.alpha;
-
-		var sinX = 0.0;
-		var cosX = 1.0;
-		var sinY = 0.0;
-		var cosY = 1.0;
-
-		if(keyframe.index != (frame | 0) && keyframe.tweened)
-		{
-
-
-			if(nextKeyframe instanceof FlumpKeyframeData)
-			{
-				var interped = (frame - keyframe.index) / keyframe.duration;
-				var ease = keyframe.ease;
-
-				if(ease != 0)
-				{
-					var t = 0.0;
-					if(ease < 0)
-					{
-						var inv = 1 - interped;
-						t = 1 - inv * inv;
-						ease = 0 - ease;
-					}
-					else
-					{
-						t = interped * interped;
-					}
-					interped = ease * t + (1 - ease) * interped;
-				}
-
-				x = x + (nextKeyframe.x - x) * interped;
-				y = y + (nextKeyframe.y - y) * interped;
-				scaleX = scaleX + (nextKeyframe.scaleX - scaleX) * interped;
-				scaleY = scaleY + (nextKeyframe.scaleY - scaleY) * interped;
-				skewX = skewX + (nextKeyframe.skewX - skewX) * interped;
-				skewY = skewY + (nextKeyframe.skewY - skewY) * interped;
-				alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
-			}
-		}
-
-		if(skewX != 0)
-		{
-			sinX = Math.sin(skewX);
-			cosX = Math.cos(skewX);
-		}
-
-		if(skewY != 0)
-		{
-			sinY = Math.sin(skewY);
-			cosY = Math.cos(skewY);
-		}
-
-		this._storedMtx.a = scaleX * cosY;
-		this._storedMtx.b = scaleX * sinY;
-		this._storedMtx.c = -scaleY * sinX;
-		this._storedMtx.d = scaleY * cosX;
-
-		this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
-		this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
-
-
-		this.alpha = alpha;
-		this.visible = keyframe.visible;
-
-		if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
-		{
-			if(this._keyframeRef != keyframe.ref)
-			{
-				var symbol = this._symbols[keyframe.ref];
-				this._keyframeRef = keyframe.ref;
-				this._symbolType = symbol.type;
-
-				if(symbol.type == DisplayType.DISPLAYOBJECT)
-				{
-					this._symbolMovie = <FlumpMovie> symbol;
-					this._symbolMovie.reset();
-				}
-				else if(symbol.type == DisplayType.TEXTURE)
-				{
-					this._symbolTexture = <FlumpTexture> symbol;
-					this._symbolTexture.reset();
-				}
-
-			}
-
-		}
-		else
-		{
-			this._keyframeRef = null;
-			this._symbolType = DisplayType.UNKNOWN;
-		}
-	}
-
 	public setFrame(frame:number):void
 	{
 		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(frame | 0);
@@ -181,7 +74,108 @@ class FlumpMovieLayer extends DisplayObject
 
 		} else {
 
-			this.setFrameByKeyframe(frame, keyframe);
+			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
+			var x:number = keyframe.x;
+			var y:number = keyframe.y;
+			var scaleX:number = keyframe.scaleX;
+			var scaleY:number = keyframe.scaleY;
+			var skewX:number = keyframe.skewX;
+			var skewY:number = keyframe.skewY;
+			var pivotX:number = keyframe.pivotX;
+			var pivotY:number = keyframe.pivotY;
+			var alpha:number = keyframe.alpha;
+
+			var sinX = 0.0;
+			var cosX = 1.0;
+			var sinY = 0.0;
+			var cosY = 1.0;
+
+			if(keyframe.index != (frame | 0) && keyframe.tweened)
+			{
+
+
+				if(nextKeyframe instanceof FlumpKeyframeData)
+				{
+					var interped = (frame - keyframe.index) / keyframe.duration;
+					var ease = keyframe.ease;
+
+					if(ease != 0)
+					{
+						var t = 0.0;
+						if(ease < 0)
+						{
+							var inv = 1 - interped;
+							t = 1 - inv * inv;
+							ease = 0 - ease;
+						}
+						else
+						{
+							t = interped * interped;
+						}
+						interped = ease * t + (1 - ease) * interped;
+					}
+
+					x = x + (nextKeyframe.x - x) * interped;
+					y = y + (nextKeyframe.y - y) * interped;
+					scaleX = scaleX + (nextKeyframe.scaleX - scaleX) * interped;
+					scaleY = scaleY + (nextKeyframe.scaleY - scaleY) * interped;
+					skewX = skewX + (nextKeyframe.skewX - skewX) * interped;
+					skewY = skewY + (nextKeyframe.skewY - skewY) * interped;
+					alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
+				}
+			}
+
+			if(skewX != 0)
+			{
+				sinX = Math.sin(skewX);
+				cosX = Math.cos(skewX);
+			}
+
+			if(skewY != 0)
+			{
+				sinY = Math.sin(skewY);
+				cosY = Math.cos(skewY);
+			}
+
+			this._storedMtx.a = scaleX * cosY;
+			this._storedMtx.b = scaleX * sinY;
+			this._storedMtx.c = -scaleY * sinX;
+			this._storedMtx.d = scaleY * cosX;
+
+			this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
+			this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
+
+
+			this.alpha = alpha;
+			this.visible = keyframe.visible;
+
+			if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
+			{
+				if(this._keyframeRef != keyframe.ref)
+				{
+					var symbol = this._symbols[keyframe.ref];
+					this._keyframeRef = keyframe.ref;
+					this._symbolType = symbol.type;
+
+					if(symbol.type == DisplayType.DISPLAYOBJECT)
+					{
+						this._symbolMovie = <FlumpMovie> symbol;
+						this._symbolMovie.reset();
+					}
+					else if(symbol.type == DisplayType.TEXTURE)
+					{
+						this._symbolTexture = <FlumpTexture> symbol;
+						this._symbolTexture.reset();
+					}
+
+				}
+
+			}
+			else
+			{
+				this._keyframeRef = null;
+				this._symbolType = DisplayType.UNKNOWN;
+			}
 		}
 
 	}

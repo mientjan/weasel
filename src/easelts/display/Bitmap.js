@@ -1,4 +1,32 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * Bitmap
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling.
+ * Copyright (c) 2015 mediamonks.com
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -12,8 +40,8 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
             if (width === void 0) { width = 0; }
             if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 128 /* BITMAP */;
-            this.bitmapType = 0 /* UNKNOWN */;
+            this.type = 128;
+            this.bitmapType = 0;
             this.loaded = false;
             this.image = null;
             this._imageNaturalWidth = null;
@@ -37,7 +65,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 case 'img':
                     {
                         this.image = image;
-                        this.bitmapType = 1 /* IMAGE */;
+                        this.bitmapType = 1;
                         if ((this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2)) {
                             this.onLoad();
                         }
@@ -49,7 +77,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 case 'video':
                     {
                         this.image = image;
-                        this.bitmapType = 2 /* VIDEO */;
+                        this.bitmapType = 2;
                         if (this.width == 0 || this.height == 0) {
                             throw new Error('width and height must be set when using canvas / video');
                         }
@@ -59,7 +87,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 case 'canvas':
                     {
                         this.image = image;
-                        this.bitmapType = 3 /* CANVAS */;
+                        this.bitmapType = 3;
                         if (this.width == 0 || this.height == 0) {
                             throw new Error('width and height must be set when using canvas / video');
                         }
@@ -69,7 +97,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
             }
         }
         Bitmap.prototype.onLoad = function () {
-            if (this.bitmapType == 1 /* IMAGE */) {
+            if (this.bitmapType == 1) {
                 this._imageNaturalWidth = this.image.naturalWidth;
                 this._imageNaturalHeight = this.image.naturalHeight;
                 if (!this.width) {
@@ -122,7 +150,7 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
             }
             else {
-                if (this.bitmapType == 1 /* IMAGE */) {
+                if (this.bitmapType == 1) {
                     if (this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0) {
                         this._imageNaturalWidth = this.image.naturalWidth;
                         this._imageNaturalHeight = this.image.naturalHeight;
@@ -149,10 +177,11 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
                 maxHeight = maxWidth;
             }
             if (this.loaded) {
-                if (this.bitmapType != 1 /* IMAGE */) {
+                if (this.bitmapType != 1) {
                     throw new Error('tiling is only possible with images');
                 }
-                if (this._imageNaturalWidth > maxWidth || this._imageNaturalHeight > maxHeight) {
+                if (this._imageNaturalWidth > maxWidth
+                    || this._imageNaturalHeight > maxHeight) {
                     if (this.width < maxWidth && this.height < maxHeight) {
                         this.cache(0, 0, this.width, this.height);
                     }
@@ -177,11 +206,13 @@ define(["require", "exports", './DisplayObject', '../geom/Size'], function (requ
         Bitmap.prototype.getImageSize = function () {
             var width = 0;
             var height = 0;
-            if (this.bitmapType == 0 /* UNKNOWN */ || this.bitmapType == 3 /* CANVAS */ || this.bitmapType == 2 /* VIDEO */) {
+            if (this.bitmapType == 0
+                || this.bitmapType == 3
+                || this.bitmapType == 2) {
                 var width = this.image.width;
                 var height = this.image.height;
             }
-            else if (this.bitmapType == 1 /* IMAGE */) {
+            else if (this.bitmapType == 1) {
                 var width = this.image.naturalWidth;
                 var height = this.image.naturalHeight;
             }

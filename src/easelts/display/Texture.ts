@@ -6,10 +6,10 @@ import IDisplayObject = require("../interface/IDisplayObject");
  *
  * @class Texture
  */
-class Texture
+export default class Texture
 {
-	public bitmap:HTMLCanvasElement|HTMLVideoElement|HTMLImageElement;
-	public source:Rectangle;
+	private bitmap:HTMLCanvasElement|HTMLVideoElement|HTMLImageElement;
+	private source:Rectangle;
 
 	constructor(bitmap:HTMLCanvasElement|HTMLVideoElement|HTMLImageElement, source:Rectangle)
 	{
@@ -17,10 +17,10 @@ class Texture
 		this.source = source;
 	}
 
-	public draw(ctx:CanvasRenderingContext2D):boolean
+	public draw(ctx:IContext2d):boolean
 	{
-		var source = this.source;
-		ctx.drawImage(this.bitmap, source.x, source.y, source.width, source.height, 0, 0, source.width, source.height);
+		var source = this.source, bitmap = <HTMLImageElement> this.bitmap, x = source.x, y = source.y, width = source.width, height = source.height;
+		ctx.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
 		return true;
 	}
 }

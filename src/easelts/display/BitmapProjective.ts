@@ -137,11 +137,9 @@ class BitmapProjective extends Bitmap
 
 	protected getPointsRectangle(points:Array<Array<number>>):Rectangle
 	{
-		if(!points || !points.length)
+		if(!points.length)
 		{
-			console.log(points);
-			debugger;
-			//throw new Error('points is empty or not a array');
+			throw new Error('points is empty ');
 			return;
 		}
 
