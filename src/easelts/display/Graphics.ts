@@ -29,6 +29,7 @@
 import * as Methods from "../util/Methods";
 import DisplayType from "../enum/DisplayType";
 import Matrix2 from "../geom/Matrix2";
+import IContext2D from "../interface/IContext2D";
 
 /**
  * @module easelts
@@ -1388,7 +1389,7 @@ class Graphics
 	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
 	 * @param {Object} data Optional data that is passed to graphics command exec methods. When called from a Shape instance, the shape passes itself as the data parameter. This can be used by custom graphic commands to insert contextual data.
 	 **/
-	public draw(ctx, data?)
+	public draw(ctx:IContext2D, data?)
 	{
 		this._updateInstructions();
 		var instr = this._instructions;
@@ -1404,7 +1405,7 @@ class Graphics
 	 * @method drawAsPath
 	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
 	 **/
-	public drawAsPath(ctx)
+	public drawAsPath(ctx:IContext2D)
 	{
 		this._updateInstructions();
 		var instr, instrs = this._instructions;
