@@ -1,4 +1,4 @@
-import IFlumpLibrary from "../../interface/IFlumpLibrary";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
 import FlumpTexture from "./FlumpTexture";
 import FlumpLibrary from "../FlumpLibrary";
 import IHashMap from "../../interface/IHashMap";

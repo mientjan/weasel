@@ -29,7 +29,7 @@
 
 import DisplayObject from "./DisplayObject";
 import Rectangle from "../geom/Rectangle";
-import Methods from "../util/Methods";
+import * as Methods from "../util/Methods";
 
 /**
  * @module easelts

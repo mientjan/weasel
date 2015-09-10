@@ -1,4 +1,4 @@
-import IFlumpLibrary from "../../interface/IFlumpLibrary";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
 import ILoadable from "../../interface/ILoadable";
 import FlumpLibrary from "../FlumpLibrary";
 import IHashMap from "../../interface/IHashMap";

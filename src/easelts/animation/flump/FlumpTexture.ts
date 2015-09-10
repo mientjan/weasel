@@ -1,4 +1,4 @@
-import IFlumpLibrary from "../../interface/IFlumpLibrary";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
 import DisplayType from "../../enum/DisplayType";
 
 class FlumpTexture

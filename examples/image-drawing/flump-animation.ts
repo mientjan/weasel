@@ -1,8 +1,8 @@
-import Stage = require('../../src/easelts/display/Stage');
-import FlumpLibrary = require('../../src/easelts/animation/FlumpLibrary');
-import FlumpMovie = require('../../src/easelts/animation/flump/FlumpMovie');
-import ArrayUtil = require("../../src/easelts/util/ArrayUtil");
-import IDisplayObject = require("../../src/easelts/interface/IDisplayObject");
+import Stage from '../../src/easelts/display/Stage';
+import FlumpLibrary from '../../src/easelts/animation/FlumpLibrary';
+import FlumpMovie from '../../src/easelts/animation/flump/FlumpMovie';
+import ArrayUtil from "../../src/easelts/util/ArrayUtil";
+import IDisplayObject from "../../src/easelts/interface/IDisplayObject";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true).setFpsCounter(true);
@@ -34,7 +34,7 @@ FlumpLibrary.load('../assets/flump/a-100-8x8l-1024/character').then((fl:FlumpLib
 		'SupermanWalk',
 		'SupermanSuductionWin',
 		'SupermanSuductionLose'
-	]
+	];
 
 	for(var i = 0; i < 60; i++)
 	{
@@ -56,13 +56,13 @@ FlumpLibrary.load('../assets/flump/a-100-8x8l-1024/character').then((fl:FlumpLib
 
 
 
-		console.time('performance');
-		console.profile('performance');
+		//console.time('performance');
+		//console.profile('performance');
 		stage.start();
 
 	setTimeout(() => {
-		console.profileEnd('performance');
-		console.timeEnd('performance');
+		//console.profileEnd('performance');
+		//console.timeEnd('performance');
 	}, 5000)
 
 	//var y0 = 0;
