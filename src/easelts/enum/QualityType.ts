@@ -6,4 +6,4 @@ const enum QualityType {
 	LOW
 }
 
-export = QualityType;
+export default QualityType;

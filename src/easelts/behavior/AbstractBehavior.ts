@@ -1,5 +1,5 @@
-import DisplayObject = require('../display/DisplayObject');
-import IBehavior = require('./IBehavior');
+import DisplayObject from "../display/DisplayObject";
+import IBehavior from "./IBehavior";
 
 /**
  * AbstractBehaviour
@@ -35,4 +35,4 @@ class AbstractBehavior implements IBehavior
 	}
 }
 
-export = AbstractBehavior;
+export default AbstractBehavior;

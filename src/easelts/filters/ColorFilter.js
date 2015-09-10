@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Filter'], function (require, exports, Filter) {
+define(["require", "exports", "./Filter"], function (require, exports, Filter_1) {
     var ColorFilter = (function (_super) {
         __extends(ColorFilter, _super);
         function ColorFilter(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier, redOffset, greenOffset, blueOffset, alphaOffset) {
@@ -58,6 +58,6 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
             return new ColorFilter(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
         };
         return ColorFilter;
-    })(Filter);
-    return ColorFilter;
+    })(Filter_1.default);
+    exports.default = ColorFilter;
 });

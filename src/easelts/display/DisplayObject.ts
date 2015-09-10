@@ -27,44 +27,45 @@
  */
 
 // event
-import EventDispatcher = require('../../createts/event/EventDispatcher');
-import Event = require('../../createts/event/Event');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Signal2 = require('../../createts/event/Signal2');
+import EventDispatcher from "../../createts/event/EventDispatcher";
+import Event from "../../createts/event/Event";
+import TimeEvent from "../../createts/event/TimeEvent";
+import Signal2 from "../../createts/event/Signal2";
 
 // utils
-import UID = require('../util/UID');
-import Methods = require('../util/Methods');
+import UID from "../util/UID";
+import * as Methods from "../util/Methods";
 
 // display
-import Shape = require('./Shape');
-import Shadow = require('./Shadow');
-import Stage = require('./Stage');
-import Container = require('./Container');
+import Shape from "./Shape";
+import Shadow from "./Shadow";
+import Stage from "./Stage";
+import Container from "./Container";
 
 // filter
-import Filter = require('../filters/Filter');
+import Filter from "../filters/Filter";
 
 // enum
-import CalculationType = require('../enum/CalculationType');
-import DisplayType = require('../enum/DisplayType');
+import CalculationType from "../enum/CalculationType";
+import DisplayType from "../enum/DisplayType";
 
 // geom
-import FluidCalculation = require('../geom/FluidCalculation');
-import FluidMeasurementsUnit = require('../geom/FluidMeasurementsUnit');
-import CalculationUnitType = require('../enum/CalculationUnitType');
-import ValueCalculation = require('../geom/ValueCalculation');
+import FluidCalculation from "../geom/FluidCalculation";
+import FluidMeasurementsUnit from "../geom/FluidMeasurementsUnit";
+import CalculationUnitType from "../enum/CalculationUnitType";
+import ValueCalculation from "../geom/ValueCalculation";
 
-import m2 = require('../geom/Matrix2');
-import Rectangle = require('../geom/Rectangle');
-import Size = require('../geom/Size');
-import Point = require('../geom/Point');
+import Matrix2 from "../geom/Matrix2";
+import Rectangle from "../geom/Rectangle";
+import Size from "../geom/Size";
+import Point from "../geom/Point";
 
-import IVector2 = require('../interface/IVector2');
-import ISize = require('../interface/ISize');
-import IDisplayType = require('../interface/IDisplayType');
-import IBehavior = require('../behavior/IBehavior');
-import IDisplayObject = require("../interface/IDisplayObject");
+import IVector2 from "../interface/IVector2";
+import ISize from "../interface/ISize";
+import IDisplayType from "../interface/IDisplayType";
+import IBehavior from "../behavior/IBehavior";
+import IContext2D from "../interface/IContext2D";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -271,7 +272,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 */
 	public isDirty:boolean = false;
 	public isHitable:boolean = true;
-
 
 	/**
 	 * The x (horizontal) position of the display object, relative to its parent.
@@ -521,7 +521,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:m2.Matrix2 = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+	public _matrix:Matrix2 = new Matrix2(0, 0, 0, 0, 0, 0);
 
 	/**
 	 * @property _rectangle
@@ -553,9 +553,9 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @method initialize
 	 * @param args
 	 */
-	public initialize(...args:any[])
+	public initialize()
 	{
-		this['constructor'].apply(this, args);
+		this['constructor'].apply(this, arguments);
 	}
 
 	/**
@@ -927,7 +927,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * used for drawing the cache (to prevent it from simply drawing an existing cache back into itself).
 	 * @return {Boolean}
 	 **/
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	public draw(ctx:IContext2D, ignoreCache?:boolean):boolean
 	{
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
@@ -951,7 +951,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		return true;
 	}
 
-	public DisplayObject_draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	public DisplayObject_draw(ctx:IContext2D, ignoreCache?:boolean):boolean
 	{
 		var cacheCanvas = this.cacheCanvas;
 		if(ignoreCache || !cacheCanvas)
@@ -1327,10 +1327,10 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * Matrix object is returned.
 	 * @return {Matrix2D} A matrix representing this display object's transform.
 	 **/
-	public getMatrix(matrix?:m2.Matrix2)
+	public getMatrix(matrix?:Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new m2.Matrix2(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new Matrix2(0, 0, 0, 0, 0, 0))
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1346,7 +1346,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Matrix2D} a concatenated Matrix2D object representing the combined transform of the display object and
 	 * all of its parent Containers up to the highest level ancestor (usually the {{#crossLink "Stage"}}{{/crossLink}}).
 	 **/
-	public getConcatenatedMatrix(matrix:m2.Matrix2):m2.Matrix2
+	public getConcatenatedMatrix(matrix:Matrix2):Matrix2
 	{
 		if(matrix)
 		{
@@ -1354,7 +1354,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		}
 		else
 		{
-			matrix = new m2.Matrix2(0, 0, 0, 0, 0, 0);
+			matrix = new Matrix2(0, 0, 0, 0, 0, 0);
 		}
 		var o = this;
 		while(o != null)
@@ -1710,12 +1710,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _getBounds(matrix?:m2.Matrix2, ignoreTransform?:boolean):Rectangle
+	protected _getBounds(matrix?:Matrix2, ignoreTransform?:boolean):Rectangle
 	{
 		return this._transformBounds(this.getBounds(), matrix, ignoreTransform);
 	}
 
-	public DisplayObject_getBounds:(matrix?:m2.Matrix2, ignoreTransform?:boolean) => Rectangle = this._getBounds;
+	public DisplayObject_getBounds:(matrix?:Matrix2, ignoreTransform?:boolean) => Rectangle = this._getBounds;
 
 
 	/**
@@ -1726,7 +1726,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	protected _transformBounds(bounds:Rectangle, matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
+	protected _transformBounds(bounds:Rectangle, matrix:Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		if(!bounds)
 		{
@@ -1908,4 +1908,4 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	}
 }
 
-export = DisplayObject;
+export default DisplayObject;

@@ -28,7 +28,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Size'], function (require, exports, Size) {
+define(["require", "exports", './Size'], function (require, exports, Size_1) {
     var Bounds = (function (_super) {
         __extends(Bounds, _super);
         function Bounds(x0, y0, x1, y1, width, height) {
@@ -47,6 +47,6 @@ define(["require", "exports", './Size'], function (require, exports, Size) {
             this.height = height;
         }
         return Bounds;
-    })(Size);
-    return Bounds;
+    })(Size_1.default);
+    exports.default = Bounds;
 });

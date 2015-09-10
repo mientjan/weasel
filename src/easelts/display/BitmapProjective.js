@@ -1,10 +1,37 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * BitmapProjective
+ *
+ * Copyright (c) 2015 Mient-jan Stelling.
+ * Copyright (c) 2012 Steven Wittens.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'], function (require, exports, Bitmap, Rectangle, Vector2) {
+define(["require", "exports", "./Bitmap", "../geom/Rectangle", "../geom/Vector2"], function (require, exports, Bitmap_1, Rectangle_1, Vector2_1) {
     var BitmapProjective = (function (_super) {
         __extends(BitmapProjective, _super);
         function BitmapProjective(imageOrUri, points, x, y, regX, regY) {
@@ -21,7 +48,7 @@ define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'
             if (points.length == 4) {
                 var v2 = [];
                 for (var i = 0; i < points.length; i++) {
-                    var v = new Vector2(points[i][0], points[i][1]);
+                    var v = new Vector2_1.default(points[i][0], points[i][1]);
                     v2.push(v);
                 }
                 for (var i = 0; i < v2.length; i++) {
@@ -57,9 +84,8 @@ define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'
             return true;
         };
         BitmapProjective.prototype.getPointsRectangle = function (points) {
-            if (!points || !points.length) {
-                console.log(points);
-                debugger;
+            if (!points.length) {
+                throw new Error('points is empty ');
                 return;
             }
             var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
@@ -70,7 +96,7 @@ define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'
                 minY = Math.min(minY, Math.floor(point[1]));
                 maxY = Math.max(maxY, Math.ceil(point[1]));
             }
-            return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+            return new Rectangle_1.default(minX, minY, maxX - minX, maxY - minY);
         };
         BitmapProjective.prototype.updatePoints = function (ctx) {
             var points = this._points;
@@ -241,7 +267,8 @@ define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'
             _super.prototype.destruct.call(this);
         };
         return BitmapProjective;
-    })(Bitmap);
+    })(Bitmap_1.default);
+    exports.default = BitmapProjective;
     var Matrix = (function () {
         function Matrix(w, h, values) {
             this.w = w;
@@ -381,5 +408,4 @@ define(["require", "exports", './Bitmap', '../geom/Rectangle', '../geom/Vector2'
         };
         return Matrix;
     })();
-    return BitmapProjective;
 });

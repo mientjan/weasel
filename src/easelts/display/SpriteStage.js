@@ -1,10 +1,37 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * SpriteStage
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Stage'], function (require, exports, Stage) {
+define(["require", "exports", "./Stage"], function (require, exports, Stage_1) {
     var SpriteStage = (function (_super) {
         __extends(SpriteStage, _super);
         function SpriteStage(canvas, preserveDrawingBuffer, antialias) {
@@ -204,8 +231,21 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
             }
         };
         SpriteStage.prototype._createShaderProgram = function (ctx) {
-            var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER, "precision mediump float;" + "uniform sampler2D uSampler0;" + "varying vec3 vTextureCoord;" + "void main(void) {" + "vec4 color = texture2D(uSampler0, vTextureCoord.st);" + "gl_FragColor = vec4(color.rgb, color.a * vTextureCoord.z);" + "}");
-            var vertexShader = this._createShader(ctx, ctx.VERTEX_SHADER, "attribute vec2 aVertexPosition;" + "attribute vec3 aTextureCoord;" + "uniform mat3 uPMatrix;" + "varying vec3 vTextureCoord;" + "void main(void) {" + "vTextureCoord = aTextureCoord;" + "gl_Position = vec4((uPMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);" + "}");
+            var fragmentShader = this._createShader(ctx, ctx.FRAGMENT_SHADER, "precision mediump float;" +
+                "uniform sampler2D uSampler0;" +
+                "varying vec3 vTextureCoord;" +
+                "void main(void) {" +
+                "vec4 color = texture2D(uSampler0, vTextureCoord.st);" +
+                "gl_FragColor = vec4(color.rgb, color.a * vTextureCoord.z);" +
+                "}");
+            var vertexShader = this._createShader(ctx, ctx.VERTEX_SHADER, "attribute vec2 aVertexPosition;" +
+                "attribute vec3 aTextureCoord;" +
+                "uniform mat3 uPMatrix;" +
+                "varying vec3 vTextureCoord;" +
+                "void main(void) {" +
+                "vTextureCoord = aTextureCoord;" +
+                "gl_Position = vec4((uPMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);" +
+                "}");
             if (this._webGLErrorDetected || !fragmentShader || !vertexShader) {
                 return;
             }
@@ -298,7 +338,8 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
                     continue;
                 }
                 mtx = kid._matrix;
-                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity()).appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
+                mtx = (parentMVMatrix ? mtx.copy(parentMVMatrix) : mtx.identity())
+                    .appendTransform(kid.x, kid.y, kid.scaleX, kid.scaleY, kid.rotation, kid.skewX, kid.skewY, kid.regX, kid.regY);
                 var uStart = 0, uEnd = 1, vStart = 0, vEnd = 1;
                 if (kid._spritestage_compatibility === 4) {
                     image = kid.image;
@@ -391,6 +432,6 @@ define(["require", "exports", './Stage'], function (require, exports, Stage) {
         SpriteStage.MAX_INDEX_SIZE = Math.pow(2, 16);
         SpriteStage.MAX_BOXES_POINTS_INCREMENT = SpriteStage.MAX_INDEX_SIZE / 4;
         return SpriteStage;
-    })(Stage);
-    return SpriteStage;
+    })(Stage_1.default);
+    exports.default = SpriteStage;
 });

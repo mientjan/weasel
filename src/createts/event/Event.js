@@ -74,5 +74,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Event;
     })();
-    return Event;
+    exports.default = Event;
 });

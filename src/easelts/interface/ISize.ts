@@ -33,4 +33,4 @@ interface ISize
 	height:number;
 }
 
-export = ISize;
+export default ISize;

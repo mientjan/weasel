@@ -131,4 +131,4 @@ class ColorMatrixFilter extends Filter
 	}
 }
 
-export = ColorMatrixFilter;
+export default ColorMatrixFilter;

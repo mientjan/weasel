@@ -26,14 +26,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Bitmap = require('./Bitmap');
-import DisplayType = require('../enum/DisplayType');
-import Rectangle = require('../geom/Rectangle');
-import IVector2 = require('../interface/IVector2');
-import Vector2 = require('../geom/Vector2');
-import Signal = require('../../createts/event/Signal');
-import Size = require('../geom/Size');
+import DisplayObject from "./DisplayObject";
+import Bitmap from "./Bitmap";
+import DisplayType from "../enum/DisplayType";
+import Rectangle from "../geom/Rectangle";
+import IVector2 from "../interface/IVector2";
+import Vector2 from "../geom/Vector2";
+import Signal from "../../createts/event/Signal";
+import Size from "../geom/Size";
 
 /**
  * @author Mient-jan Stelling
@@ -137,11 +137,9 @@ class BitmapProjective extends Bitmap
 
 	protected getPointsRectangle(points:Array<Array<number>>):Rectangle
 	{
-		if(!points || !points.length)
+		if(!points.length)
 		{
-			console.log(points);
-			debugger;
-			//throw new Error('points is empty or not a array');
+			throw new Error('points is empty ');
 			return;
 		}
 
@@ -367,7 +365,7 @@ class BitmapProjective extends Bitmap
 		var padv = pady * dv;
 	
 		ctx.drawImage(
-			this.image,
+			<HTMLImageElement> this.image,
 			u1 * width,
 			v1 * height,
 			Math.min(u4 - u1 + padu, 1) * width,
@@ -400,7 +398,7 @@ class BitmapProjective extends Bitmap
 	}
 }
 
-export = BitmapProjective;
+export default BitmapProjective;
 
 class Matrix
 {

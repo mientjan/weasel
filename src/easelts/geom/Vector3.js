@@ -1,35 +1,22 @@
-define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], function (require, exports, m4, q, MathUtil) {
-    var Vector3 = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", "../util/MathUtil", "./math3d/AbstractMath3D"], function (require, exports, MathUtil_1, AbstractMath3D_1) {
+    var Vector3 = (function (_super) {
+        __extends(Vector3, _super);
         function Vector3(x, y, z) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
-            this._quaternion = {};
-            this._vector3 = {};
-            this._matrix4 = {};
+            _super.call(this);
             this._dotProjectOnVector = null;
             this.x = x;
             this.y = y;
             this.z = z;
         }
-        Vector3.prototype.getQuaternion = function (value) {
-            if (!this._quaternion[value]) {
-                this._quaternion[value] = new q.Quaternion();
-            }
-            return this._quaternion[value];
-        };
-        Vector3.prototype.getVector3 = function (value) {
-            if (!this._vector3[value]) {
-                this._vector3[value] = new Vector3();
-            }
-            return this._vector3[value];
-        };
-        Vector3.prototype.getMatrix4 = function (value) {
-            if (!this._matrix4[value]) {
-                this._matrix4[value] = new m4.Matrix4();
-            }
-            return this._matrix4[value];
-        };
         Vector3.prototype.set = function (x, y, z) {
             this.x = x;
             this.y = y;
@@ -156,6 +143,7 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
             return this;
         };
         Vector3.prototype.applyMatrix4 = function (m) {
+            // input: THREE.Matrix4 affine matrix
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
             this.x = e[0] * x + e[4] * y + e[8] * z + e[12];
@@ -164,6 +152,7 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
             return this;
         };
         Vector3.prototype.applyProjection = function (m) {
+            // input: THREE.Matrix4 projection matrix
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
             var d = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
@@ -200,6 +189,8 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
             return this.applyProjection(m1);
         };
         Vector3.prototype.transformDirection = function (m) {
+            // input: THREE.Matrix4 affine matrix
+            // vector interpreted as a direction
             var x = this.x, y = this.y, z = this.z;
             var e = m.elements;
             this.x = e[0] * x + e[4] * y + e[8] * z;
@@ -253,6 +244,7 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
             return this;
         };
         Vector3.prototype.clamp = function (min, max) {
+            // This function assumes min < max, if this assumption isn't true it will not operate correctly
             if (this.x < min.x) {
                 this.x = min.x;
             }
@@ -374,7 +366,7 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
         };
         Vector3.prototype.angleTo = function (v) {
             var theta = this.dot(v) / (this.length() * v.length());
-            return Math.acos(MathUtil.clamp(theta, -1, 1));
+            return Math.acos(MathUtil_1.default.clamp(theta, -1, 1));
         };
         Vector3.prototype.distanceTo = function (v) {
             return Math.sqrt(this.distanceToSquared(v));
@@ -432,6 +424,6 @@ define(["require", "exports", './Matrix4', './Quaternion', '../util/MathUtil'], 
             return new Vector3(this.x, this.y, this.z);
         };
         return Vector3;
-    })();
-    exports.Vector3 = Vector3;
+    })(AbstractMath3D_1.default);
+    exports.default = Vector3;
 });

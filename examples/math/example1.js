@@ -1,18 +1,18 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/geom/Matrix4', '../../src/easelts/geom/Vector3', '../../src/easelts/geom/Quaternion', '../../src/easelts/util/MathUtil', '../../src/createts/util/Ticker'], function (require, exports, Stage, Bitmap, m4, v3, q, MathUtil, Ticker) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/geom/Matrix4', '../../src/easelts/geom/Vector3', '../../src/easelts/geom/Quaternion', '../../src/easelts/util/MathUtil', '../../src/createts/util/Ticker'], function (require, exports, Stage_1, Bitmap_1, Matrix4_1, Vector3_1, Quaternion_1, MathUtil_1, Ticker_1) {
     var holder = document.getElementById('holder');
-    var stage = new Stage(holder, true);
-    var image = new Bitmap('../assets/image/ninepatch_red.png', 0, 0, '50%', '50%', '50%', '50%');
+    var stage = new Stage_1.default(holder, true);
+    var image = new Bitmap_1.default('../assets/image/ninepatch_red.png', 0, 0, '50%', '50%', '50%', '50%');
     stage.addChild(image);
-    var m = new m4.Matrix4();
-    var x = new m4.Matrix4();
-    var y = new m4.Matrix4();
-    var z = new m4.Matrix4();
+    var m = new Matrix4_1.default();
+    var x = new Matrix4_1.default();
+    var y = new Matrix4_1.default();
+    var z = new Matrix4_1.default();
     var alpha = 0;
     var beta = Math.PI;
     var gamma = Math.PI / 2;
-    var position = new v3.Vector3();
-    var rotation = new q.Quaternion();
-    var scale = new v3.Vector3();
+    var position = new Vector3_1.default();
+    var rotation = new Quaternion_1.default();
+    var scale = new Vector3_1.default();
     var test = function () {
         alpha += .01;
         beta += .01;
@@ -21,12 +21,12 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
         z.makeRotationZ(gamma);
         m.multiplyMatrices(x, y);
         m.multiply(z);
-        m.setPosition(new v3.Vector3(300, 250, 10));
+        m.setPosition(new Vector3_1.default(300, 250, 10));
         m.decompose(position, rotation, scale);
         image.x = position.x;
         image.y = position.y;
-        image.rotation = MathUtil.radToDeg(rotation.z);
+        image.rotation = MathUtil_1.default.radToDeg(rotation.z);
     };
-    var signal = Ticker.getInstance().addTickListener(test);
+    var signal = Ticker_1.default.getInstance().addTickListener(test);
     stage.start();
 });

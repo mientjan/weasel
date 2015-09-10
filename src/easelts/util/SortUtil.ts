@@ -1,9 +1,9 @@
-//import ref = require("lib/ReferenceDefinitions");
-//import DisplayObject = require("../display/DisplayObject");
-//import Point = require("../geom/Point");
-import Bounds = require("../geom/Bounds");
-import IVector2 = require("../interface/IVector2");
-import Vector2 = require("../geom/Vector2");
+//import ref from "lib/ReferenceDefinitions";
+//import DisplayObject from "../display/DisplayObject";
+//import Point from "../geom/Point";
+import Bounds from "../geom/Bounds";
+import IVector2 from "../interface/IVector2";
+import Vector2 from "../geom/Vector2";
 
 class SortUtil
 {
@@ -195,4 +195,4 @@ class SortUtil
 	}
 }
 
-export = SortUtil;
+export default SortUtil;

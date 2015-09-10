@@ -54,7 +54,7 @@ class UID
 	}
 }
 
-export = UID;
+export default UID;
 
 
 

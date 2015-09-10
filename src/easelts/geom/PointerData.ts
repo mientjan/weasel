@@ -26,8 +26,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import IPoint = require('./../interface/IVector2');
-import NumberUtil = require('./../util/NumberUtil');
+import IPoint from "./../interface/IVector2";
+import NumberUtil from "./../util/NumberUtil";
 
 /**
  * @module easelts
@@ -78,4 +78,4 @@ class PointerData implements IPoint
 	}
 }
 
-export = PointerData;
+export default PointerData;

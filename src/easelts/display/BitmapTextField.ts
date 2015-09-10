@@ -26,14 +26,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container = require('./Container');
-import Shape = require('./Shape');
-import Sprite = require('./Sprite');
-import Graphics = require('./Graphics');
-import VAlign = require('./bitmapfont/VAlign');
-import HAlign = require('./bitmapfont/HAlign');
-import BitmapFont = require('./BitmapFont');
-import ColorFilter = require('../filters/ColorFilter');
+import Container from "./Container";
+import Shape from "./Shape";
+import Sprite from "./Sprite";
+import Graphics from "./Graphics";
+import VAlign from "./bitmapfont/VAlign";
+import HAlign from "./bitmapfont/HAlign";
+import BitmapFont from "./BitmapFont";
+import ColorFilter from "../filters/ColorFilter";
 
 
 function hexToR(h)
@@ -228,4 +228,4 @@ class BitmapTextField extends Container
 
 	}
 }
-export = BitmapTextField;
+export default BitmapTextField;

@@ -38,5 +38,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return PointerData;
     })();
-    return PointerData;
+    exports.default = PointerData;
 });

@@ -1,10 +1,38 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * Sprite
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling
+ * Copyright (c) 2015 MediaMonks B.V.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../createts/event/Event', './DisplayObject'], function (require, exports, Event, DisplayObject) {
+define(["require", "exports", "../../createts/event/Event", "./DisplayObject"], function (require, exports, Event_1, DisplayObject_1) {
     var Sprite = (function (_super) {
         __extends(Sprite, _super);
         function Sprite(spriteSheet, frameOrAnimation) {
@@ -72,6 +100,8 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
             this._normalizeFrame();
         };
         Sprite.prototype.getBounds = function () {
+            // TODO: should this normalizeFrame?
+            //		console.log( super.getBounds(), this.spriteSheet.getFrameBounds(this.currentFrame, this._rectangle) );
             return _super.prototype.getBounds.call(this) || this.spriteSheet.getFrameBounds(this.currentFrame);
         };
         Sprite.prototype.clone = function () {
@@ -128,7 +158,7 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
         Sprite.prototype._dispatchAnimationEnd = function (animation, frame, paused, next, end) {
             var name = animation ? animation.name : null;
             if (this.hasEventListener("animationend")) {
-                var evt = new Event("animationend");
+                var evt = new Event_1.default("animationend");
                 this.dispatchEvent(evt);
             }
             var changed = (this._animation != animation || this._currentFrame != frame);
@@ -166,6 +196,6 @@ define(["require", "exports", '../../createts/event/Event', './DisplayObject'], 
             }
         };
         return Sprite;
-    })(DisplayObject);
-    return Sprite;
+    })(DisplayObject_1.default);
+    exports.default = Sprite;
 });

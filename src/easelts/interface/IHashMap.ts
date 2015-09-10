@@ -3,4 +3,4 @@ interface IHashMap<T>
 	[name:string]:T
 }
 
-export = IHashMap;
+export default IHashMap;

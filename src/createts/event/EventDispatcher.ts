@@ -32,7 +32,7 @@
 
 "use strict";
 
-import Event = require('./Event');
+import Event from "./Event";
 
 /**
  * EventDispatcher provides methods for managing queues of event listeners and dispatching events.
@@ -453,4 +453,4 @@ class EventDispatcher
 	}
 }
 
-export = EventDispatcher;
+export default EventDispatcher;

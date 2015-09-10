@@ -32,32 +32,27 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', './Container', '../geom/Size', '../geom/PointerData', '../event/PointerEvent', '../../createts/event/Signal', "../../createts/util/Interval", "../component/Stats"], function (require, exports, DisplayObject, Container, Size, PointerData, PointerEvent, Signal, Interval, Stats) {
+define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", "../geom/PointerData", "../event/PointerEvent", "../../createts/event/Signal", "../../createts/util/Interval", "../component/Stats", "../data/StageOption"], function (require, exports, DisplayObject_1, Container_1, Size_1, PointerData_1, PointerEvent_1, Signal_1, Interval_1, Stats_1, StageOption_1) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
-        function Stage(element, triggerResizeOnWindowResize, pixelRatio) {
+        function Stage(element, option) {
             var _this = this;
-            if (triggerResizeOnWindowResize === void 0) { triggerResizeOnWindowResize = false; }
-            if (pixelRatio === void 0) { pixelRatio = 1; }
             _super.call(this, '100%', '100%', 0, 0, 0, 0);
-            this.pixelRatio = pixelRatio;
-            this.tickstartSignal = new Signal();
-            this.tickendSignal = new Signal();
-            this.drawstartSignal = new Signal();
-            this.drawendSignal = new Signal();
+            this.tickstartSignal = new Signal_1.default();
+            this.tickendSignal = new Signal_1.default();
+            this.drawstartSignal = new Signal_1.default();
+            this.drawendSignal = new Signal_1.default();
             this.type = 2;
             this._isRunning = false;
             this._fps = 60;
             this._fpsCounter = null;
             this._eventListeners = null;
             this._onResizeEventListener = null;
-            this.autoClear = true;
             this.canvas = null;
             this.ctx = null;
             this.holder = null;
             this.mouseX = 0;
             this.mouseY = 0;
-            this.triggerResizeOnWindowResize = false;
             this.drawRect = null;
             this.snapToPixelEnabled = false;
             this.mouseInBounds = false;
@@ -70,6 +65,8 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             this._nextStage = null;
             this._prevStage = null;
             this.update = function (delta) {
+                var autoClear = _this._option.autoClear;
+                var autoClearColor = _this._option.autoClearColor;
                 if (!_this.canvas) {
                     return;
                 }
@@ -77,10 +74,14 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                     _this.onTick.call(_this, Math.min(delta, 100));
                 }
                 _this.drawstartSignal.emit();
-                DisplayObject._snapToPixelEnabled = _this.snapToPixelEnabled;
-                var r = _this.drawRect, ctx = _this.ctx;
-                ctx.setTransform(_this.pixelRatio, 0, 0, _this.pixelRatio, 0, 0);
-                if (_this.autoClear) {
+                DisplayObject_1.default._snapToPixelEnabled = _this.snapToPixelEnabled;
+                var r = _this.drawRect, ctx = _this.ctx, pixelRatio = _this._option.pixelRatio;
+                ctx.setTransform(pixelRatio, 0, 0, pixelRatio, .5, .5);
+                if (autoClear) {
+                    if (autoClearColor) {
+                        ctx.fillStyle = autoClearColor;
+                        ctx.fillRect(0, 0, _this.canvas.width + 1, _this.canvas.height + 1);
+                    }
                     if (r) {
                         ctx.clearRect(r.x, r.y, r.width, r.height);
                     }
@@ -105,14 +106,14 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 }
                 _this.drawendSignal.emit();
             };
-            this.triggerResizeOnWindowResize = triggerResizeOnWindowResize;
+            this._option = new StageOption_1.StageOption(option);
             var size;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
                         this.canvas = element;
                         this.holder = element.parentElement;
-                        size = new Size(this.canvas.width, this.canvas.height);
+                        size = new Size_1.default(this.canvas.width, this.canvas.height);
                         break;
                     }
                 default:
@@ -121,16 +122,17 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                         this.canvas = canvas;
                         this.holder = element;
                         this.holder.appendChild(canvas);
-                        size = new Size(this.holder.offsetWidth, this.holder.offsetHeight);
+                        size = new Size_1.default(this.holder.offsetWidth, this.holder.offsetHeight);
                         break;
                     }
             }
+            this.canvas.style['image-rendering'] = '-webkit-optimize-contrast';
             this.enableDOMEvents(true);
             this.setFps(this._fps);
             this.ctx = this.canvas.getContext('2d');
             this.setQuality(1);
             this.stage = this;
-            if (triggerResizeOnWindowResize) {
+            if (this._option.autoResize) {
                 this.enableAutoResize();
             }
             this.onResize(size.width, size.height);
@@ -174,7 +176,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         };
         Stage.prototype.setFpsCounter = function (value) {
             if (value) {
-                this._fpsCounter = new Stats;
+                this._fpsCounter = new Stats_1.default;
             }
             else {
                 this._fpsCounter = null;
@@ -276,7 +278,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             }
         };
         Stage.prototype.clone = function () {
-            var o = new Stage(null, this.triggerResizeOnWindowResize);
+            var o = new Stage(null, this._option.autoResize);
             this.cloneProps(o);
             return o;
         };
@@ -303,7 +305,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         Stage.prototype._getPointerData = function (id) {
             var data = this._pointerData[id];
             if (!data) {
-                data = this._pointerData[id] = new PointerData(0, 0);
+                data = this._pointerData[id] = new PointerData_1.default(0, 0);
                 if (this._primaryPointerID == null) {
                     this._primaryPointerID = id;
                 }
@@ -483,7 +485,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             if (!target || (!bubbles && !target.hasEventListener(type))) {
                 return;
             }
-            var evt = new PointerEvent(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
+            var evt = new PointerEvent_1.default(type, bubbles, false, o.x, o.y, nativeEvent, pointerId, pointerId == this._primaryPointerID, o.rawX, o.rawY);
             target.dispatchEvent(evt);
         };
         Stage.prototype.setFps = function (value) {
@@ -514,7 +516,7 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
                 this._ticker.destruct();
                 this._ticker = null;
             }
-            this._ticker = new Interval(this.getFps())
+            this._ticker = new Interval_1.default(this.getFps())
                 .attach(this.update);
             this._isRunning = true;
             return this;
@@ -531,11 +533,12 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
             return this._isRunning;
         };
         Stage.prototype.onResize = function (width, height) {
+            var pixelRatio = this._option.pixelRatio;
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {
-                this.canvas.width = width * this.pixelRatio;
-                this.canvas.height = height * this.pixelRatio;
+                this.canvas.width = width * pixelRatio;
+                this.canvas.height = height * pixelRatio;
                 this.canvas.style.width = '' + width + 'px';
                 this.canvas.style.height = '' + height + 'px';
                 _super.prototype.onResize.call(this, width, height);
@@ -553,6 +556,6 @@ define(["require", "exports", './DisplayObject', './Container', '../geom/Size', 
         Stage.EVENT_MOUSE_ENTER = 'mouseenter';
         Stage.EVENT_STAGE_MOUSE_MOVE = 'stagemousemove';
         return Stage;
-    })(Container);
-    return Stage;
+    })(Container_1.default);
+    exports.default = Stage;
 });

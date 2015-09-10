@@ -5,4 +5,4 @@ interface IPlayable
 	stop():IPlayable;
 }
 
-export = IPlayable;
+export default IPlayable;

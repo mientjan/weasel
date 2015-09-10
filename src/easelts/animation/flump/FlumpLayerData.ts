@@ -1,9 +1,9 @@
-import DisplayObject = require('../../display/DisplayObject');
-import Flump = require('../FlumpLibrary');
-import FlumpMovieLayer = require('./FlumpMovieLayer');
-import FlumpKeyframeData = require('./FlumpKeyframeData');
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
-import IHashMap = require("../../interface/IHashMap");
+import DisplayObject from "../../display/DisplayObject";
+import Flump from "../FlumpLibrary";
+import FlumpMovieLayer from "./FlumpMovieLayer";
+import FlumpKeyframeData from "./FlumpKeyframeData";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
+import IHashMap from "../../interface/IHashMap";
 
 class FlumpLayerData {
 
@@ -57,4 +57,4 @@ class FlumpLayerData {
 	}
 }
 
-export = FlumpLayerData;
+export default FlumpLayerData;

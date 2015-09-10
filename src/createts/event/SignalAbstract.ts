@@ -1,4 +1,4 @@
-import Event = require('./Event');
+import Event from "./Event";
 
 /*
  * Signal
@@ -29,7 +29,7 @@ import Event = require('./Event');
  * Signal provides method for managing queues of a single event listener and dispatching it.
  **/
 
-import SignalConnection = require('./SignalConnection');
+import SignalConnection from "./SignalConnection";
 
 class Task
 {
@@ -208,4 +208,4 @@ class SignalAbstract
 	}
 }
 
-export = SignalAbstract;
+export default SignalAbstract;

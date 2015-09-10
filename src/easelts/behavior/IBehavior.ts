@@ -2,7 +2,7 @@
  * Created by pieters on 09-Mar-15.
  */
 
-import DisplayObject = require('../display/DisplayObject');
+import DisplayObject from "../display/DisplayObject";
 
 interface IBehavior
 {
@@ -12,4 +12,4 @@ interface IBehavior
 	destruct():void
 }
 
-export = IBehavior;
+export default IBehavior;

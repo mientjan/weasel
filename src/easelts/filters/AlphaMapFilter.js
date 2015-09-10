@@ -1,10 +1,12 @@
-var __extends = this.__extends || function (d, b) {
+/// <reference path="./Filter.ts" />
+/// <reference path="../util/Methods.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../util/Methods', './Filter'], function (require, exports, Methods, Filter) {
+define(["require", "exports", "../util/Methods", "./Filter"], function (require, exports, Methods_1, Filter_1) {
     var AlphaMapFilter = (function (_super) {
         __extends(AlphaMapFilter, _super);
         function AlphaMapFilter(alphaMap) {
@@ -64,7 +66,7 @@ define(["require", "exports", '../util/Methods', './Filter'], function (require,
                 ctx = canvas.getContext("2d");
             }
             else {
-                canvas = Methods.createCanvas ? Methods.createCanvas() : document.createElement("canvas");
+                canvas = Methods_1.default.createCanvas ? Methods_1.default.createCanvas() : document.createElement("canvas");
                 canvas.width = map.width;
                 canvas.height = map.height;
                 ctx = canvas.getContext("2d");
@@ -80,6 +82,6 @@ define(["require", "exports", '../util/Methods', './Filter'], function (require,
             }
         };
         return AlphaMapFilter;
-    })(Filter);
-    return AlphaMapFilter;
+    })(Filter_1.default);
+    exports.default = AlphaMapFilter;
 });

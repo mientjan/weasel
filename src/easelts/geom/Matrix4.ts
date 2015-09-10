@@ -1,7 +1,7 @@
-import MathUtil = require('../util/MathUtil');
-import m4 = require('./Matrix4');
-import v3 = require('./Vector3');
-import q = require('./Quaternion');
+import Quaternion from "./Quaternion";
+import Vector3 from "./Vector3";
+import MathUtil from "../util/MathUtil";
+import AbstractMath3D from "./math3d/AbstractMath3D";
 
 
 /**
@@ -19,40 +19,8 @@ import q = require('./Quaternion');
  * @author bhouston / http://exocortex.com
  * @author WestLangley / http://github.com/WestLangley
  */
-export class Matrix4
+export default class Matrix4 extends AbstractMath3D
 {
-	private _quaternion:{[index:string]:q.Quaternion} = {};
-	private _vector3:{[index:string]:v3.Vector3} = {};
-	private _matrix4:{[index:string]:Matrix4} = {};
-
-	protected getQuaternion(value:string):q.Quaternion
-	{
-		if(!this._quaternion[value])
-		{
-			this._quaternion[value] = new q.Quaternion();
-		}
-		return this._quaternion[value];
-	}
-
-	protected getVector3(value:string):v3.Vector3
-	{
-		if(!this._vector3[value])
-		{
-			this._vector3[value] = new v3.Vector3();
-		}
-		return this._vector3[value];
-	}
-
-	protected getMatrix4(value:string):Matrix4
-	{
-		if(!this._matrix4[value])
-		{
-			this._matrix4[value] = new Matrix4();
-		}
-		return this._matrix4[value];
-	}
-
-
 	public elements:Float32Array = new Float32Array([
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -62,6 +30,7 @@ export class Matrix4
 
 	constructor()
 	{
+		super();
 	}
 
 	public set(n11:number, n12:number, n13:number, n14:number, n21:number, n22:number, n23:number, n24:number, n31:number, n32:number, n33:number, n34:number, n41:number, n42:number, n43:number, n44:number):Matrix4
@@ -118,7 +87,7 @@ export class Matrix4
 		return this;
 	}
 
-	public extractBasis(xAxis:v3.Vector3, yAxis:v3.Vector3, zAxis:v3.Vector3):Matrix4
+	public extractBasis(xAxis:Vector3, yAxis:Vector3, zAxis:Vector3):Matrix4
 	{
 		var te = this.elements;
 
@@ -129,7 +98,7 @@ export class Matrix4
 		return this;
 	}
 
-	public makeBasis(xAxis:v3.Vector3, yAxis:v3.Vector3, zAxis:v3.Vector3):Matrix4
+	public makeBasis(xAxis:Vector3, yAxis:Vector3, zAxis:Vector3):Matrix4
 	{
 		this.set(
 			xAxis.x, yAxis.x, zAxis.x, 0,
@@ -327,7 +296,7 @@ export class Matrix4
 
 	}
 
-	public lookAt(eye:v3.Vector3, target:v3.Vector3, up:v3.Vector3):Matrix4
+	public lookAt(eye:Vector3, target:Vector3, up:Vector3):Matrix4
 	{
 		var xLookAt = this.getVector3('xLookAt');
 		var yLookAt = this.getVector3('yLookAt');
@@ -584,7 +553,7 @@ export class Matrix4
 		return array;
 	}
 
-	public setPosition(v:v3.Vector3):Matrix4
+	public setPosition(v:Vector3):Matrix4
 	{
 		var te = this.elements;
 
@@ -653,7 +622,7 @@ export class Matrix4
 		return this;
 	}
 
-	public scale(v:v3.Vector3):Matrix4
+	public scale(v:Vector3):Matrix4
 	{
 		var te = this.elements;
 		var x = v.x, y = v.y, z = v.z;
@@ -745,7 +714,7 @@ export class Matrix4
 		return this;
 	}
 
-	public makeRotationAxis(axis:v3.Vector3, angle:number):Matrix4
+	public makeRotationAxis(axis:Vector3, angle:number):Matrix4
 	{
 		// Based on http://www.gamedev.net/reference/articles/article1199.asp
 		var c = Math.cos(angle);
@@ -785,7 +754,7 @@ export class Matrix4
 		return this;
 	}
 
-	public decompose(position:v3.Vector3, quaternion:any, scale:v3.Vector3):Matrix4
+	public decompose(position:Vector3, quaternion:any, scale:Vector3):Matrix4
 	{
 		var decomposeVector = this.getVector3('decomposeVector');
 		var decomposeMatrix = this.getMatrix4('decomposeMatrix');

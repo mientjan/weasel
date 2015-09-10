@@ -1,4 +1,22 @@
-define(["require", "exports", './Animate'], function (require, exports, Animate) {
+/*
+ * Scroller
+ * http://github.com/zynga/scroller
+ *
+ * Copyright 2015 Mient-jan Stelling.
+ * Copyright 2015 MediaMonks B.V.
+ * rewrite to typescript from zynga / scroller
+ * Licensed under the MIT License.
+ *
+ * Copyright 2011, Zynga Inc.
+ * Licensed under the MIT License.
+ * https://raw.github.com/zynga/scroller/master/MIT-LICENSE.txt
+ *
+ * Based on the work of: Unify Project (unify-project.org)
+ * http://unify-project.org
+ * Copyright 2011, Deutsche Telekom AG
+ * License: MIT + Apache (V2)
+ */
+define(["require", "exports", "./Animate"], function (require, exports, Animate_1) {
     var easeOutCubic = function (pos) {
         return (Math.pow((pos - 1), 3) + 1);
     };
@@ -147,7 +165,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
                 self.__zoomComplete = callback;
             }
             if (self.__isDecelerating) {
-                Animate.stop(self.__isDecelerating);
+                Animate_1.default.stop(self.__isDecelerating);
                 self.__isDecelerating = false;
             }
             var oldLevel = self.__zoomLevel;
@@ -182,7 +200,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
         Scroller.prototype.scrollTo = function (left, top, animate, zoom) {
             var self = this;
             if (self.__isDecelerating) {
-                Animate.stop(self.__isDecelerating);
+                Animate_1.default.stop(self.__isDecelerating);
                 self.__isDecelerating = false;
             }
             if (zoom != null && zoom !== self.__zoomLevel) {
@@ -249,12 +267,12 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
             var self = this;
             self.__interruptedAnimation = true;
             if (self.__isDecelerating) {
-                Animate.stop(self.__isDecelerating);
+                Animate_1.default.stop(self.__isDecelerating);
                 self.__isDecelerating = false;
                 self.__interruptedAnimation = true;
             }
             if (self.__isAnimating) {
-                Animate.stop(self.__isAnimatingId);
+                Animate_1.default.stop(self.__isAnimatingId);
                 self.__isAnimating = false;
                 self.__isAnimatingId = -1;
                 self.__interruptedAnimation = true;
@@ -396,6 +414,10 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
             self.__lastScale = scale;
         };
         Scroller.prototype.doTouchEnd = function (timeStamp) {
+            //if(timeStamp instanceof Date)
+            //{
+            //	timeStamp = timeStamp.valueOf();
+            //}
             if (typeof timeStamp !== "number") {
                 throw new Error("Invalid timestamp value: " + timeStamp);
             }
@@ -461,7 +483,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
             var self = this;
             var wasAnimating = self.__isAnimatingId;
             if (wasAnimating) {
-                Animate.stop(wasAnimating);
+                Animate_1.default.stop(wasAnimating);
                 self.__isAnimatingId = -1;
                 self.__isAnimating = !!self.__isAnimatingId;
             }
@@ -504,7 +526,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
                         }
                     }
                 };
-                self.__isAnimatingId = Animate.start(step, verify, completed, 1000, wasAnimating ? easeOutCubic : easeInOutCubic);
+                self.__isAnimatingId = Animate_1.default.start(step, verify, completed, 1000, wasAnimating ? easeOutCubic : easeInOutCubic);
                 self.__isAnimating = !!self.__isAnimatingId;
             }
             else {
@@ -565,7 +587,7 @@ define(["require", "exports", './Animate'], function (require, exports, Animate)
                 }
                 self.scrollTo(self.__scrollLeft, self.__scrollTop, self.options.snapping);
             };
-            self.__isDecelerating = !!Animate.start(step, verify, completed);
+            self.__isDecelerating = !!Animate_1.default.start(step, verify, completed);
         };
         Scroller.prototype.__stepThroughDeceleration = function (render) {
             var self = this;

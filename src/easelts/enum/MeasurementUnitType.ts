@@ -13,4 +13,4 @@ enum MeasurementUnitType {
 	VIEWPORT_HEIGHT,
 }
 
-export = MeasurementUnitType;
+export default MeasurementUnitType;

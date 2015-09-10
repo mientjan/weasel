@@ -27,9 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container = require('./Container');
-import SpriteSheet = require('./SpriteSheet');
-import Sprite = require('./Sprite');
+import Container from "./Container";
+import SpriteSheet from "./SpriteSheet";
+import Sprite from "./Sprite";
+import IContext2D from "../interface/IContext2D";
+import IDisplayObject from "../interface/IDisplayObject";
 
 class BitmapTextProperties
 {
@@ -40,7 +42,7 @@ class BitmapTextProperties
 	spaceWidth:number = 0;
 }
 
-class BitmapText extends Container
+class BitmapText extends Container<IDisplayObject|Sprite>
 {
 
 	// static properties:
@@ -62,8 +64,6 @@ class BitmapText extends Container
 	 * @private
 	 */
 	public static _spritePool = [];
-
-	// events:
 
 	// public properties:
 	/**
@@ -151,7 +151,7 @@ class BitmapText extends Container
 	/**
 	 * Docced in superclass.
 	 **/
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
+	public draw(ctx:IContext2D, ignoreCache:boolean):boolean
 	{
 		// throws maximumiteration
 		//		if(this.DisplayObject_draw(ctx, ignoreCache))
@@ -318,7 +318,7 @@ class BitmapText extends Container
 
 			if(childIndex < numKids)
 			{
-				sprite = kids[childIndex];
+				sprite = <Sprite> kids[childIndex];
 			}
 			else
 			{
@@ -337,7 +337,7 @@ class BitmapText extends Container
 
 		while(numKids > childIndex)
 		{
-			pool.push(sprite = kids.pop());
+			pool.push(sprite = <Sprite> kids.pop());
 			sprite.parent = null;
 			numKids--;
 		}
@@ -352,4 +352,4 @@ class BitmapText extends Container
 
 }
 
-export = BitmapText;
+export default BitmapText;

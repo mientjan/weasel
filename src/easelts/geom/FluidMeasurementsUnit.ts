@@ -1,4 +1,4 @@
-import MeasurementUnitType = require('../enum/MeasurementUnitType');
+import MeasurementUnitType from "../enum/MeasurementUnitType";
 
 class FluidMeasurementsUnit
 {
@@ -7,4 +7,4 @@ class FluidMeasurementsUnit
 	}
 }
 
-export = FluidMeasurementsUnit;
+export default FluidMeasurementsUnit;

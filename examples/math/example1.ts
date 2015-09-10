@@ -1,11 +1,11 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Bitmap = require('../../src/easelts/display/Bitmap');
-import m4 = require('../../src/easelts/geom/Matrix4');
-import v3 = require('../../src/easelts/geom/Vector3');
-import q = require('../../src/easelts/geom/Quaternion');
-import MathUtil = require('../../src/easelts/util/MathUtil');
+import Stage from '../../src/easelts/display/Stage';
+import Bitmap from '../../src/easelts/display/Bitmap';
+import Matrix4 from '../../src/easelts/geom/Matrix4';
+import Vector3 from '../../src/easelts/geom/Vector3';
+import Quaternion from '../../src/easelts/geom/Quaternion';
+import MathUtil from '../../src/easelts/util/MathUtil';
 
-import Ticker = require('../../src/createts/util/Ticker');
+import Ticker from '../../src/createts/util/Ticker';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
@@ -19,12 +19,12 @@ stage.addChild(image);
 //	image.x++;
 //}, 1000/60)
 
-var m = new m4.Matrix4();
+var m = new Matrix4();
 
 //
-var x = new m4.Matrix4();
-var y = new m4.Matrix4();
-var z = new m4.Matrix4();
+var x = new Matrix4();
+var y = new Matrix4();
+var z = new Matrix4();
 
 var alpha = 0;
 var beta = Math.PI;
@@ -37,9 +37,9 @@ var gamma = Math.PI/2;
 //
 //// this will keep drawing the image / you can also do a update when this image is loaded.
 //
-var position = new v3.Vector3();
-var rotation = new q.Quaternion();
-var scale = new v3.Vector3();
+var position = new Vector3();
+var rotation = new Quaternion();
+var scale = new Vector3();
 //
 
 var test  = () => {
@@ -52,7 +52,7 @@ var test  = () => {
 	m.multiplyMatrices( x, y );
 	m.multiply( z );
 
-	m.setPosition(new v3.Vector3(300,250,10));
+	m.setPosition(new Vector3(300,250,10));
 
 	m.decompose(position, rotation, scale);
 

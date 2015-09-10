@@ -1,12 +1,11 @@
-import DisplayObject = require("../display/DisplayObject");
-import Bounds = require("../geom/Bounds");
-import Size = require("../geom/Size");
-import Point = require("../geom/Point");
+import DisplayObject from "../display/DisplayObject";
+import Bounds from "../geom/Bounds";
+import Size from "../geom/Size";
+import Point from "../geom/Point";
 
 class ArrayUtil
 {
-	public static getMaxSize(arr:{width:number;height:number;
-	}[]):Size
+	public static getMaxSize(arr:Array<{width:number;height:number;}>):Size
 	{
 		var size = new Size(0, 0);
 		for(var i = 0; i < arr.length; i++)
@@ -18,8 +17,7 @@ class ArrayUtil
 		return size;
 	}
 
-	public static getSize(arr:{width:number;height:number;
-	}[]):Size
+	public static getSize(arr:Array<{width:number;height:number;}>):Size
 	{
 		var size = new Size(0, 0);
 		for(var i = 0; i < arr.length; i++)
@@ -30,6 +28,11 @@ class ArrayUtil
 
 		return size;
 	}
+
+	public static getRandom(arr:Array<any>):any
+	{
+		return arr[Math.random()*arr.length|0];
+	}
 }
 
-export = ArrayUtil;
+export default ArrayUtil;

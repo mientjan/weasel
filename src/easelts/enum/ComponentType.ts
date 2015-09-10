@@ -12,4 +12,4 @@ const enum ComponentType {
 	DEBUG
 }
 
-export = ComponentType;
+export default ComponentType;

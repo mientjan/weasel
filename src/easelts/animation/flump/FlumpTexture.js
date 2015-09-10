@@ -21,5 +21,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return FlumpTexture;
     })();
-    return FlumpTexture;
+    exports.default = FlumpTexture;
 });

@@ -1,7 +1,7 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap'], function (require, exports, Stage, Bitmap) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap'], function (require, exports, Stage_1, Bitmap_1) {
     var holder = document.getElementById('holder');
-    var stage = new Stage(holder, true);
-    var image = new Bitmap('../assets/image/ninepatch_red.png', 0, 0, 0, 0, 0, 0);
+    var stage = new Stage_1.default(holder, true);
+    var image = new Bitmap_1.default('../assets/image/ninepatch_red.png', 0, 0, 0, 0, 0, 0);
     stage.addChild(image);
     stage.start();
 });

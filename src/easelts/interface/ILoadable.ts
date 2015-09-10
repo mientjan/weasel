@@ -1,4 +1,4 @@
-import Promise = require('../../createts/util/Promise');
+import Promise from "../../createts/util/Promise";
 
 interface ILoadable<T>
 {
@@ -6,4 +6,4 @@ interface ILoadable<T>
 	load(onProgress:(progress:number) => any):Promise<T>
 }
 
-export = ILoadable;
+export default ILoadable;

@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-define(["require", "exports", '../../createts/event/Signal1', '../../createts/event/Signal'], function (require, exports, Signal1, Signal) {
+define(["require", "exports", "../../createts/event/Signal1", "../../createts/event/Signal"], function (require, exports, Signal1_1, Signal_1) {
     var Ticker = (function () {
         function Ticker() {
             var _this = this;
@@ -35,9 +35,9 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
             this._lastTime = 0;
             this._timerId = -1;
             this.signals = {
-                tick: new Signal1(),
-                started: new Signal(),
-                stopped: new Signal()
+                tick: new Signal1_1.default(),
+                started: new Signal_1.default(),
+                stopped: new Signal_1.default()
             };
             this._isUsingRAF = true;
             this._handleSynch = function () {
@@ -151,4 +151,5 @@ define(["require", "exports", '../../createts/event/Signal1', '../../createts/ev
         Ticker.maxDelta = 0;
         return Ticker;
     })();
+    exports.default = Ticker;
 });

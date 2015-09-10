@@ -5,4 +5,4 @@ class FlumpMtx
 	}
 }
 
-export = FlumpMtx;
+export default FlumpMtx;

@@ -47,8 +47,6 @@
  **/
 class Rectangle
 {
-
-
 	// public properties:
 	/**
 	 * X position.
@@ -135,4 +133,4 @@ class Rectangle
 	}
 }
 
-export = Rectangle;
+export default Rectangle;

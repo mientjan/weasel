@@ -8,4 +8,4 @@ const enum ValueType {
 	OBJECT 
 }
 
-export = ValueType;
+export default ValueType;

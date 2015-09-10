@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './SignalAbstract'], function (require, exports, SignalAbstract) {
+define(["require", "exports", "./SignalAbstract"], function (require, exports, SignalAbstract_1) {
     var Signal3 = (function (_super) {
         __extends(Signal3, _super);
         function Signal3() {
@@ -32,6 +32,6 @@ define(["require", "exports", './SignalAbstract'], function (require, exports, S
             this.didEmit(head);
         };
         return Signal3;
-    })(SignalAbstract);
-    return Signal3;
+    })(SignalAbstract_1.default);
+    exports.default = Signal3;
 });

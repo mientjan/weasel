@@ -28,14 +28,15 @@
  */
 
 
-import Bitmap = require('./Bitmap');
-import SpriteSheet = require('./SpriteSheet');
-import Sprite = require('./Sprite');
-import BitmapChar = require('./bitmapfont/BitmapChar');
-import CharLocation = require('./bitmapfont/CharLocation');
-import VAlign = require('./bitmapfont/VAlign');
-import HAlign = require('./bitmapfont/HAlign');
-import Container = require('./Container');
+import Bitmap from "./Bitmap";
+import SpriteSheet from "./SpriteSheet";
+import Sprite from "./Sprite";
+import BitmapChar from "./bitmapfont/BitmapChar";
+import CharLocation from "./bitmapfont/CharLocation";
+import VAlign from "./bitmapfont/VAlign";
+import HAlign from "./bitmapfont/HAlign";
+import Container from "./Container";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  *
@@ -54,22 +55,22 @@ class BitmapFont
 	public static CHAR_NEWLINE = 10;
 	public static CHAR_CARRIAGE_RETURN = 13;
 
-	mName:string;
-	mLineHeight;
-	mSize;
-	mBaseLine;
+	private mName:string;
+	private mLineHeight;
+	private mSize;
+	private mBaseLine;
 	protected texture:HTMLImageElement;
 	protected chars:BitmapChar[];
 //	mHelperImage:Bitmap;
-	mCharLocationPool = [];
+	private mCharLocationPool = [];
 
-	textWidth = 0;
-	textHeight = 0;
-	previousWidth = [];
+	private textWidth = 0;
+	private textHeight = 0;
+	private previousWidth = [];
 
-	width;
+	private width;
 
-	private _container:Container = null;
+	private _container:Container<IDisplayObject> = null;
 	private hasParsedFontXml:boolean = false;
 	private hasCalledCreateSpriteSheet:boolean = false;
 	private cachedArgumentsCreateSpriteSheet:any[];
@@ -488,4 +489,4 @@ class BitmapFont
 	}
 }
 
-export = BitmapFont;
+export default BitmapFont;

@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Event = require('../../createts/event/Event');
+import Event from "../../createts/event/Event";
 
 /**
  * @module easelts
@@ -237,4 +237,4 @@ class MouseEvent extends Event
 
 }
 
-export = MouseEvent;
+export default MouseEvent;

@@ -26,16 +26,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Methods = require('../util/Methods');
-import DisplayType = require('../enum/DisplayType');
-import Size = require('../geom/Size');
-import m2 = require('../geom/Matrix2');
-import Rectangle = require('../geom/Rectangle');
+import DisplayObject from "./DisplayObject";
+import * as Methods from "../util/Methods";
+import DisplayType from "../enum/DisplayType";
+import Size from "../geom/Size";
+import m2 from "../geom/Matrix2";
+import Rectangle from "../geom/Rectangle";
 
-import TimeEvent = require('../../createts/event/TimeEvent');
-import IDisplayObject = require("../interface/IDisplayObject");
-import Stage = require("./Stage");
+import TimeEvent from "../../createts/event/TimeEvent";
+import Stage from "./Stage";
+import Matrix2 from "../geom/Matrix2";
+import IDisplayObject from "../interface/IDisplayObject";
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -217,23 +218,23 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	{
 		var localCtx:CanvasRenderingContext2D = ctx;
 
-		if(super.draw(ctx, ignoreCache))
+		if(super.draw(localCtx, ignoreCache))
 		{
 			return true;
 		}
 
-		if(this._isRenderIsolated)
-		{
-			localCtx = this._renderIsolationCanvas.getContext('2d');
-
-			if(this._willUpdateRenderIsolation)
-			{
-				localCtx.clearRect(0, 0, this.width, this.height);
-			}
-		}
-
-		if(this._willUpdateRenderIsolation)
-		{
+		//if(this._isRenderIsolated)
+		//{
+		//	localCtx = this._renderIsolationCanvas.getContext('2d');
+		//
+		//	if(this._willUpdateRenderIsolation)
+		//	{
+		//		localCtx.clearRect(0, 0, this.width, this.height);
+		//	}
+		//}
+		//
+		//if(this._willUpdateRenderIsolation)
+		//{
 			// this ensures we don't have issues with display list changes that occur during a draw:
 			var list = this.children,
 				child;
@@ -253,14 +254,14 @@ class Container<T extends IDisplayObject> extends DisplayObject
 				child.draw(localCtx);
 				localCtx.restore();
 			}
-		}
+		//}
 
-		if(this._isRenderIsolated)
-		{
-
-			ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
-
-		}
+		//if(this._isRenderIsolated)
+		//{
+		//
+		//	ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
+		//
+		//}
 
 
 		return true;
@@ -936,7 +937,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 * @return {Rectangle}
 	 * @protected
 	 **/
-	public _getBounds(matrix:m2.Matrix2, ignoreTransform:boolean):Rectangle
+	public _getBounds(matrix:Matrix2, ignoreTransform:boolean):Rectangle
 	{
 		var bounds = super.getBounds();
 		if(bounds)
@@ -995,4 +996,4 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	}
 }
 
-export = Container;
+export default Container;

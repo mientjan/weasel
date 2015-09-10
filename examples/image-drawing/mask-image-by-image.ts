@@ -1,7 +1,7 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Bitmap = require('../../src/easelts/display/Bitmap');
-import Debug = require('../../src/easelts/display/Debug');
-import Container = require('../../src/easelts/display/Container');
+import Stage from '../../src/easelts/display/Stage';
+import Bitmap from '../../src/easelts/display/Bitmap';
+import Debug from '../../src/easelts/display/Debug';
+import Container from '../../src/easelts/display/Container';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

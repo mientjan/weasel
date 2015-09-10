@@ -1,5 +1,5 @@
-import Tween = require('../../tweents/Tween');
-import MovieClip = require('./MovieClip');
+import Tween from "../../tweents/Tween";
+import MovieClip from "./MovieClip";
 
 // MovieClipPlugin for TweenJS:
 /**
@@ -75,4 +75,4 @@ class MovieClipPlugin
 
 }
 
-export = MovieClipPlugin;
+export default MovieClipPlugin;

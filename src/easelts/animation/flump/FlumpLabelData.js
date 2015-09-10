@@ -7,5 +7,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return FlumpLabelData;
     })();
-    return FlumpLabelData;
+    exports.default = FlumpLabelData;
 });

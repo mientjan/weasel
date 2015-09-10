@@ -52,5 +52,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Rectangle;
     })();
-    return Rectangle;
+    exports.default = Rectangle;
 });

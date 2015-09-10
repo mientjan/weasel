@@ -26,9 +26,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import DisplayObject = require('./DisplayObject');
-import Point = require('../geom/Point');
-import TimeEvent = require('../../createts/event/TimeEvent');
+import DisplayObject from "./DisplayObject";
+import Point from "../geom/Point";
+import TimeEvent from "../../createts/event/TimeEvent";
 
 class DOMElement<T extends HTMLElement> extends DisplayObject
 {
@@ -300,4 +300,4 @@ class DOMElement<T extends HTMLElement> extends DisplayObject
 	}*/
 
 }
-export = DOMElement;
+export default DOMElement;

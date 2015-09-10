@@ -130,11 +130,11 @@
  * @extends EventDispatcher
  **/
 
-import EventDispatcher = require('../../createts/event/EventDispatcher');
-import Promise = require('../../createts/util/Promise');
-import HttpRequest = require('../../createts/util/HttpRequest');
-import Rectangle = require('../geom/Rectangle');
-import ILoadable = require('../interface/ILoadable');
+import EventDispatcher from "../../createts/event/EventDispatcher";
+import Promise from "../../createts/util/Promise";
+import HttpRequest from "../../createts/util/HttpRequest";
+import Rectangle from "../geom/Rectangle";
+import ILoadable from "../interface/ILoadable";
 
 class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 {
@@ -628,4 +628,4 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	}
 }
 
-export = SpriteSheet;
+export default SpriteSheet;

@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer', './FlumpLabelQueueData'], function (require, exports, DisplayObject, FlumpMovieLayer, FlumpLabelQueueData) {
+define(["require", "exports", "../../display/DisplayObject", "./FlumpMovieLayer", "./FlumpLabelQueueData"], function (require, exports, DisplayObject_1, FlumpMovieLayer_1, FlumpLabelQueueData_1) {
     var FlumpMovie = (function (_super) {
         __extends(FlumpMovie, _super);
         function FlumpMovie(flumpLibrary, name, width, height, x, y, regX, regY) {
@@ -33,7 +33,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             var movieLayers = new Array(length);
             for (var i = 0; i < length; i++) {
                 var layerData = layers[i];
-                movieLayers[i] = new FlumpMovieLayer(this, layerData);
+                movieLayers[i] = new FlumpMovieLayer_1.default(this, layerData);
             }
             this.flumpMovieLayers = movieLayers;
             this.frames = this.flumpMovieData.frames;
@@ -49,7 +49,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.visible = true;
             var labelQueueData;
             if (label == null || label == '*') {
-                labelQueueData = new FlumpLabelQueueData(label, 0, this.frames, times, 0);
+                labelQueueData = new FlumpLabelQueueData_1.default(label, 0, this.frames, times, 0);
                 this._labelQueue.push(labelQueueData);
             }
             else {
@@ -58,7 +58,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                     console.warn('unknown label:', label, 'on', this.name);
                     throw new Error('unknown label:' + label + ' | ' + this.name);
                 }
-                labelQueueData = new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times, 0);
+                labelQueueData = new FlumpLabelQueueData_1.default(queue.label, queue.index, queue.duration, times, 0);
                 this._labelQueue.push(labelQueueData);
             }
             if (complete) {
@@ -193,17 +193,15 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             return this;
         };
         FlumpMovie.prototype.draw = function (ctx, ignoreCache) {
-            var layers = this.flumpMovieLayers;
-            var length = layers.length;
-            var ga = ctx.globalAlpha;
+            var layers = this.flumpMovieLayers, length = layers.length, ga = ctx.globalAlpha, a, b, c, d, tx, ty, layer, mtx;
             for (var i = 0; i < length; i++) {
-                var layer = layers[i];
-                var mtx = layer._storedMtx;
-                var a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
+                layer = layers[i];
+                mtx = layer._storedMtx;
                 if (layer.visible) {
-                    ctx.save();
+                    a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
                     ctx.globalAlpha = ga * layer.alpha;
-                    ctx.transform.apply(ctx, [a, b, c, d, tx, ty]);
+                    ctx.save();
+                    ctx.transform(a, b, c, d, tx, ty);
                     layer.draw(ctx);
                     ctx.restore();
                 }
@@ -214,12 +212,10 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.frame = 0;
             this.time = 0.0;
             for (var fml in this.flumpMovieLayers) {
-                for (var symbol in fml._symbols) {
-                    symbol.reset();
-                }
+                this.flumpMovieLayers[fml].reset();
             }
         };
         return FlumpMovie;
-    })(DisplayObject);
-    return FlumpMovie;
+    })(DisplayObject_1.default);
+    exports.default = FlumpMovie;
 });

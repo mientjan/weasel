@@ -16,5 +16,5 @@ define(["require", "exports"], function (require, exports) {
         TickAnimateUtil._idCollection = {};
         return TickAnimateUtil;
     })();
-    return TickAnimateUtil;
+    exports.default = TickAnimateUtil;
 });

@@ -23,8 +23,8 @@
  * THE SOFTWARE.
  */
 
-import IVector2 = require('./../interface/IVector2');
-import NumberUtil = require('./../util/NumberUtil');
+import IVector2 from "./../interface/IVector2";
+import NumberUtil from "./../util/NumberUtil";
 
 /**
  * @module easelts
@@ -91,7 +91,7 @@ class Vector2 implements IVector2
 		return new Vector2(p >> 16 & 0xFFFF, p & 0xFFFF);
 	}
 
-	public set(x:number, y:number)
+	public set(x:number, y:number):Vector2
 	{
 		this.x = x;
 		this.y = y;
@@ -478,4 +478,4 @@ class Vector2 implements IVector2
 
 }
 
-export = Vector2;
+export default Vector2;

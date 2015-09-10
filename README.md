@@ -1,4 +1,4 @@
-# EaselTS
+# EaselTS [![Build Status](https://travis-ci.org/mientjan/EaselTS.svg?branch=typescript.1.5.3)](https://travis-ci.org/mientjan/EaselTS)
 
 is a complete rewrite of easeljs in typescript. Plus adding a lot of stuff that easeljs does not support.
 

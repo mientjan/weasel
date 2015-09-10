@@ -1,6 +1,6 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Bitmap = require('../../src/easelts/display/Bitmap');
-import Shape = require('../../src/easelts/display/Shape');
+import Stage from '../../src/easelts/display/Stage';
+import Bitmap from '../../src/easelts/display/Bitmap';
+import Shape from '../../src/easelts/display/Shape';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

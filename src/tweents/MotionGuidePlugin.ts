@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Tween = require('./Tween');
+import Tween from "./Tween";
 
 /**
  * @module tweents
@@ -453,4 +453,4 @@ class MotionGuidePlugin
 	}
 }
 
-export = MotionGuidePlugin;
+export default MotionGuidePlugin;

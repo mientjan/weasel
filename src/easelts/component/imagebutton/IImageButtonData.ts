@@ -5,4 +5,4 @@ interface IImageButtonData<T> {
 	disabled?:T;
 }
 
-export = IImageButtonData;
+export default IImageButtonData;

@@ -6,5 +6,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return FluidMeasurementsUnit;
     })();
-    return FluidMeasurementsUnit;
+    exports.default = FluidMeasurementsUnit;
 });

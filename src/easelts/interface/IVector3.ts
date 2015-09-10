@@ -56,4 +56,4 @@ interface IVector3
 	z:number;
 }
 
-export = IVector3;
+export default IVector3;

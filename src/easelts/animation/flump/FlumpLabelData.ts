@@ -12,4 +12,4 @@ class FlumpLabelData
 	}
 }
 
-export = FlumpLabelData;
+export default FlumpLabelData;

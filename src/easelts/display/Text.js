@@ -1,10 +1,38 @@
-var __extends = this.__extends || function (d, b) {
+/*
+ * Text
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2014-2015 Mient-jan Stelling.
+ * Copyright (c) 2015 mediamonks.com
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../geom/Rectangle', '../util/Methods'], function (require, exports, DisplayObject, Rectangle, Methods) {
+define(["require", "exports", "./DisplayObject", "../geom/Rectangle", "../util/Methods"], function (require, exports, DisplayObject_1, Rectangle_1, Methods) {
     var Text = (function (_super) {
         __extends(Text, _super);
         function Text(text, font, color, width, height, x, y, regX, regY) {
@@ -172,7 +200,10 @@ define(["require", "exports", './DisplayObject', '../geom/Rectangle', '../util/M
             for (var i = 3, l = data.length, p = 0; i < l; i += 4, ++p) {
                 var px = p % width;
                 var py = Math.floor(p / width);
-                if (data[i - 3] > 0 || data[i - 2] > 0 || data[i - 1] > 0 || data[i] > 0) {
+                if (data[i - 3] > 0 ||
+                    data[i - 2] > 0 ||
+                    data[i - 1] > 0 ||
+                    data[i] > 0) {
                     x0 = Math.min(x0, px);
                     y0 = Math.min(y0, py);
                     x1 = Math.max(x1, px);
@@ -184,7 +215,7 @@ define(["require", "exports", './DisplayObject', '../geom/Rectangle', '../util/M
             y0 += y;
             x1 += x;
             y1 += y;
-            return new Rectangle(x0, y0, x1 - x0, y1 - y0);
+            return new Rectangle_1.default(x0, y0, x1 - x0, y1 - y0);
         };
         Text.prototype.getMeasuredLineHeight = function () {
             return this._getMeasuredWidth("M") * 1.2;
@@ -329,11 +360,11 @@ define(["require", "exports", './DisplayObject', '../geom/Rectangle', '../util/M
         Text.H_OFFSETS = { start: 0, left: 0, center: -0.5, end: -1, right: -1 };
         Text.V_OFFSETS = { top: 0, hanging: -0.01, middle: -0.4, alphabetic: -0.8, ideographic: -0.85, bottom: -1 };
         return Text;
-    })(DisplayObject);
+    })(DisplayObject_1.default);
     var canvas = Methods.createCanvas();
     if (canvas.getContext) {
         Text._workingContext = canvas.getContext("2d");
         canvas.width = canvas.height = 1;
     }
-    return Text;
+    exports.default = Text;
 });

@@ -23,9 +23,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Graphics = require('./Graphics');
-import DisplayObject = require('./DisplayObject');
-import DisplayType = require('../enum/DisplayType');
+import Graphics from "./Graphics";
+import DisplayObject from "./DisplayObject";
+import DisplayType from "../enum/DisplayType";
 
 /**
  * @module easelts
@@ -139,4 +139,4 @@ class Shape extends DisplayObject
 	}
 }
 
-export = Shape;
+export default Shape;

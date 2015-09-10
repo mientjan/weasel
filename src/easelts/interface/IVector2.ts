@@ -51,4 +51,4 @@ interface IVector2
 	y:number;
 }
 
-export = IVector2;
+export default IVector2;

@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", "../display/DisplayObject"], function (require, exports, DisplayObject) {
+define(["require", "exports", "../display/DisplayObject"], function (require, exports, DisplayObject_1) {
     var now = (window.performance && window.performance.now) ? window.performance.now.bind(performance) : Date.now;
     var Stats = (function (_super) {
         __extends(Stats, _super);
@@ -63,6 +63,6 @@ define(["require", "exports", "../display/DisplayObject"], function (require, ex
             this.startTime = this.end();
         };
         return Stats;
-    })(DisplayObject);
-    return Stats;
+    })(DisplayObject_1.default);
+    exports.default = Stats;
 });

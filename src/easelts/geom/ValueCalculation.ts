@@ -1,9 +1,9 @@
-import FluidMeasurementsUnit = require('./FluidMeasurementsUnit');
-import FluidCalculation = require('./FluidCalculation');
+import FluidMeasurementsUnit from "./FluidMeasurementsUnit";
+import FluidCalculation from "./FluidCalculation";
 
-import CalculationType = require('../enum/CalculationType');
-import CalculationUnitType = require('../enum/CalculationUnitType');
-import MeasurementUnitType = require('../enum/MeasurementUnitType');
+import CalculationType from "../enum/CalculationType";
+import CalculationUnitType from "../enum/CalculationUnitType";
+import MeasurementUnitType from "../enum/MeasurementUnitType";
 
 
 /**
@@ -92,4 +92,4 @@ class ValueCalculation
 	}
 }
 
-export = ValueCalculation;
+export default ValueCalculation;

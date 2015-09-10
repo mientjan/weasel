@@ -4,8 +4,8 @@
  * @author bhouston / http://exocortex.com
  */
 
-import q = require('./Quaternion');
-import MathUtil = require('../util/MathUtil');
+import q from "./Quaternion";
+import MathUtil from "../util/MathUtil";
 
 class Euler
 {
@@ -344,4 +344,4 @@ class Euler
 
 }
 
-export = Euler;
+export default Euler;

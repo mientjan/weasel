@@ -38,5 +38,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Size;
     })();
-    return Size;
+    exports.default = Size;
 });

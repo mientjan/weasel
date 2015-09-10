@@ -1,14 +1,14 @@
-import Bitmap = require('../display/Bitmap');
-import BitmapNinePatch = require('./BitmapNinePatch');
+import Bitmap from "../display/Bitmap";
+import BitmapNinePatch from "./BitmapNinePatch";
 
-import DisplayObject = require('../display/DisplayObject');
-import DisplayType = require('../enum/DisplayType');
-import TimeEvent = require('../../createts/event/TimeEvent');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
-import IImageButtonData = require('./imagebutton/IImageButtonData');
-import Methods = require('../util/Methods');
-import ButtonBehavior = require('../behavior/ButtonBehavior');
+import DisplayObject from "../display/DisplayObject";
+import DisplayType from "../enum/DisplayType";
+import TimeEvent from "../../createts/event/TimeEvent";
+import Signal from "../../createts/event/Signal";
+import SignalConnection from "../../createts/event/SignalConnection";
+import IImageButtonData from "./imagebutton/IImageButtonData";
+import Methods from "../util/Methods";
+import ButtonBehavior from "../behavior/ButtonBehavior";
 
 /**
  * @class ImageSequence
@@ -99,4 +99,4 @@ class ImageButton extends DisplayObject
 	}
 }
 
-export = ImageButton;
+export default ImageButton;

@@ -26,9 +26,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Methods = require('../util/Methods');
-import DisplayType = require('../enum/DisplayType');
-import m2 = require('../geom/Matrix2');
+import * as Methods from "../util/Methods";
+import DisplayType from "../enum/DisplayType";
+import Matrix2 from "../geom/Matrix2";
 
 /**
  * @module easelts
@@ -576,9 +576,9 @@ class BeginPath
 class Fill
 {
 	public style:any;
-	public matrix:m2.Matrix2;
+	public matrix:Matrix2;
 
-	constructor(style?:any, matrix?:m2.Matrix2)
+	constructor(style?:any, matrix?:Matrix2)
 	{
 		this.style = style;
 		this.matrix = matrix;
@@ -1658,9 +1658,9 @@ class Graphics
 	 * will be applied relative to the parent transform.
 	 * @return {Graphics} The Graphics instance the method is called on (useful for chaining calls.)
 	 **/
-	public beginBitmapFill(image:HTMLImageElement, repetition:string, matrix?:m2.Matrix2):Graphics;
-	public beginBitmapFill(image:HTMLCanvasElement, repetition:string, matrix?:m2.Matrix2):Graphics;
-	public beginBitmapFill(image:any, repetition:string = 'repeat', matrix?:m2.Matrix2):Graphics
+	public beginBitmapFill(image:HTMLImageElement, repetition:string, matrix?:Matrix2):Graphics;
+	public beginBitmapFill(image:HTMLCanvasElement, repetition:string, matrix?:Matrix2):Graphics;
+	public beginBitmapFill(image:any, repetition:string = 'repeat', matrix?:Matrix2):Graphics
 	{
 		return this._setFill(new Graphics.Fill(null, matrix).bitmap(<HTMLImageElement>image, repetition));
 	}
@@ -2191,7 +2191,7 @@ class Graphics
 	 * @protected
 	 * @type {Function}
 	 **/
-	public bf:(image:any, repetition?:string, matrix?:m2.Matrix2) => Graphics = this.beginBitmapFill;
+	public bf:(image:any, repetition?:string, matrix?:Matrix2) => Graphics = this.beginBitmapFill;
 
 	/** Shortcut to endFill.
 	 * @method ef
@@ -2371,4 +2371,4 @@ class Graphics
 
 Graphics._canvas.width = Graphics._canvas.height = 1;
 
-export = Graphics;
+export default Graphics;

@@ -1,17 +1,11 @@
-define(["require", "exports", './Vector3'], function (require, exports, v3) {
+define(["require", "exports", "./Vector3"], function (require, exports, Vector3_1) {
     var Matrix3 = (function () {
         function Matrix3() {
             this.__v0 = null;
             this.elements = new Float32Array([
-                1,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                1
+                1, 0, 0,
+                0, 1, 0,
+                0, 0, 1
             ]);
         }
         Matrix3.prototype.set = function (n11, n12, n13, n21, n22, n23, n31, n32, n33) {
@@ -38,7 +32,7 @@ define(["require", "exports", './Vector3'], function (require, exports, v3) {
         };
         Matrix3.prototype.applyToVector3Array = function (array, offset, length) {
             if (!this.__v0) {
-                this.__v0 = new v3.Vector3(0, 0, 0);
+                this.__v0 = new Vector3_1.default(0, 0, 0);
             }
             var v1 = this.__v0;
             if (offset === undefined) {
@@ -77,6 +71,8 @@ define(["require", "exports", './Vector3'], function (require, exports, v3) {
             return a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g;
         };
         Matrix3.prototype.getInverse = function (matrix, throwOnInvertible) {
+            // input: THREE.Matrix4
+            // ( based on http://code.google.com/p/webgl-mjs/ )
             if (throwOnInvertible === void 0) { throwOnInvertible = false; }
             var me = matrix.elements;
             var te = this.elements;
@@ -131,6 +127,7 @@ define(["require", "exports", './Vector3'], function (require, exports, v3) {
             return array;
         };
         Matrix3.prototype.getNormalMatrix = function (m) {
+            // input: THREE.Matrix4
             this.getInverse(m).transpose();
             return this;
         };
@@ -154,15 +151,9 @@ define(["require", "exports", './Vector3'], function (require, exports, v3) {
         Matrix3.prototype.toArray = function () {
             var te = this.elements;
             return [
-                te[0],
-                te[1],
-                te[2],
-                te[3],
-                te[4],
-                te[5],
-                te[6],
-                te[7],
-                te[8]
+                te[0], te[1], te[2],
+                te[3], te[4], te[5],
+                te[6], te[7], te[8]
             ];
         };
         Matrix3.prototype.clone = function () {
@@ -170,5 +161,5 @@ define(["require", "exports", './Vector3'], function (require, exports, v3) {
         };
         return Matrix3;
     })();
-    exports.Matrix3 = Matrix3;
+    exports.default = Matrix3;
 });

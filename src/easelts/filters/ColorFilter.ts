@@ -25,7 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-import Filter = require('./Filter');
+import Filter from "./Filter";
 
 /**
  * Applies a color transform to DisplayObjects.
@@ -199,4 +199,4 @@ class ColorFilter extends Filter
 	}
 }
 
-export = ColorFilter;
+export default ColorFilter;

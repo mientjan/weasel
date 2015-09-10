@@ -1,44 +1,11 @@
-import am3 = require('./math3d/AbstractMath3d');
-import m4 = require('./Matrix4');
-import v3 = require('./Vector3');
+import Matrix4 from "./Matrix4";
+import Vector3 from "./Vector3";
+import AbstractMath3D from "./math3d/AbstractMath3D";
 
-export class Quaternion
+export default class Quaternion extends AbstractMath3D
 {
-	private _quaternion:{[index:string]:Quaternion} = {};
-	private _vector3:{[index:string]:v3.Vector3} = {};
-	private _matrix4:{[index:string]:m4.Matrix4} = {};
-
-	protected getQuaternion(value:string):Quaternion
-	{
-		if(!this._quaternion[value])
-		{
-			this._quaternion[value] = new Quaternion();
-		}
-		return this._quaternion[value];
-	}
-
-	protected getVector3(value:string):v3.Vector3
-	{
-		if(!this._vector3[value])
-		{
-			this._vector3[value] = new v3.Vector3();
-		}
-		return this._vector3[value];
-	}
-
-	protected getMatrix4(value:string):m4.Matrix4
-	{
-		if(!this._matrix4[value])
-		{
-			this._matrix4[value] = new m4.Matrix4();
-		}
-		return this._matrix4[value];
-	}
-
-
 	public static slerp(qa:Quaternion, qb, qm, t)
 	{
-
 		return qm.copy(qa).slerp(qb, t);
 	}
 
@@ -49,6 +16,8 @@ export class Quaternion
 
 	constructor(x:number = 0, y:number = 0, z:number = 0, w:number = 1)
 	{
+		super();
+
 		this._x = x;
 		this._y = y;
 		this._z = z;
@@ -235,7 +204,7 @@ export class Quaternion
 
 	}
 
-	// m4.Matrix4
+	// Matrix4
 	public setFromRotationMatrix(m:any)
 	{
 

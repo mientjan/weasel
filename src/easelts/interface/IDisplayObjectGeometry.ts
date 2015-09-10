@@ -23,8 +23,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Vector2 = require('./IVector2');
-import Vector3 = require('./IVector3');
+import Vector2 from "./IVector2";
+import Vector3 from "./IVector3";
 
 interface IDisplayObjectGeometry extends Vector2
 {
@@ -41,4 +41,4 @@ interface IDisplayObjectGeometry extends Vector2
 
 }
 
-export = IDisplayObjectGeometry;
+export default IDisplayObjectGeometry;

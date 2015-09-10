@@ -31,7 +31,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './DisplayObject', '../util/Methods'], function (require, exports, DisplayObject, Methods) {
+define(["require", "exports", "./DisplayObject", "../util/Methods"], function (require, exports, DisplayObject_1, Methods) {
     var Container = (function (_super) {
         __extends(Container, _super);
         function Container(width, height, x, y, regX, regY) {
@@ -86,30 +86,19 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
         };
         Container.prototype.draw = function (ctx, ignoreCache) {
             var localCtx = ctx;
-            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+            if (_super.prototype.draw.call(this, localCtx, ignoreCache)) {
                 return true;
             }
-            if (this._isRenderIsolated) {
-                localCtx = this._renderIsolationCanvas.getContext('2d');
-                if (this._willUpdateRenderIsolation) {
-                    localCtx.clearRect(0, 0, this.width, this.height);
+            var list = this.children, child;
+            for (var i = 0, l = list.length; i < l; i++) {
+                child = list[i];
+                if (!child.isVisible()) {
+                    continue;
                 }
-            }
-            if (this._willUpdateRenderIsolation) {
-                var list = this.children, child;
-                for (var i = 0, l = list.length; i < l; i++) {
-                    child = list[i];
-                    if (!child.isVisible()) {
-                        continue;
-                    }
-                    localCtx.save();
-                    child.updateContext(localCtx);
-                    child.draw(localCtx);
-                    localCtx.restore();
-                }
-            }
-            if (this._isRenderIsolated) {
-                ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
+                localCtx.save();
+                child.updateContext(localCtx);
+                child.draw(localCtx);
+                localCtx.restore();
             }
             return true;
         };
@@ -335,7 +324,7 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             }
         };
         Container.prototype._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener) {
-            var ctx = DisplayObject._hitTestContext;
+            var ctx = DisplayObject_1.default._hitTestContext;
             var mtx = this._matrix;
             activeListener = activeListener || (mouse && this.hasMouseEventListener());
             var children = this.children;
@@ -433,6 +422,6 @@ define(["require", "exports", './DisplayObject', '../util/Methods'], function (r
             _super.prototype.destruct.call(this);
         };
         return Container;
-    })(DisplayObject);
-    return Container;
+    })(DisplayObject_1.default);
+    exports.default = Container;
 });

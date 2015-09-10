@@ -1,14 +1,14 @@
-import DisplayObject = require('../../display/DisplayObject');
+import DisplayObject from "../../display/DisplayObject";
 
-import IHashMap = require('../../interface/IHashMap');
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
-import IPlayable = require('../../interface/IPlayable');
+import IHashMap from "../../interface/IHashMap";
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
+import IPlayable from "../../interface/IPlayable";
 
-import FlumpLibrary = require('../FlumpLibrary');
-import FlumpMovieLayer = require('./FlumpMovieLayer');
-import FlumpLabelData = require('./FlumpLabelData');
-import FlumpLabelQueueData = require('./FlumpLabelQueueData');
-import FlumpTexture = require("./FlumpTexture");
+import FlumpLibrary from "../FlumpLibrary";
+import FlumpMovieLayer from "./FlumpMovieLayer";
+import FlumpLabelData from "./FlumpLabelData";
+import FlumpLabelQueueData from "./FlumpLabelQueueData";
+import FlumpTexture from "./FlumpTexture";
 
 
 class FlumpMovie extends DisplayObject implements IPlayable
@@ -300,23 +300,25 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
 
-		var layers = this.flumpMovieLayers;
-		var length = layers.length;
-		var ga = ctx.globalAlpha;
+		var layers = this.flumpMovieLayers,
+				length = layers.length,
+				ga = ctx.globalAlpha,
+				a, b, c, d, tx, ty, layer:FlumpMovieLayer, mtx;
 
 		for(var i = 0; i < length; i++)
 		{
-			var layer:FlumpMovieLayer = layers[i];
-			var mtx = layer._storedMtx;
-			var a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
+			layer = layers[i];
+			mtx = layer._storedMtx;
 			if(layer.visible)
 			{
-				ctx.save();
+				a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
+
 				//layer.updateContext(ctx)
 				ctx.globalAlpha = ga * layer.alpha;
-				ctx.transform.apply(ctx, [a, b, c, d, tx, ty]);
-				layer.draw(ctx);
 
+				ctx.save();
+				ctx.transform(a, b, c, d, tx, ty);
+				layer.draw(ctx);
 				ctx.restore();
 			}
 		}
@@ -331,12 +333,9 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		for(var fml in this.flumpMovieLayers)
 		{
-			for(var symbol in fml._symbols)
-			{
-				symbol.reset();
-			}
+			this.flumpMovieLayers[fml].reset();
 		}
 	}
 }
 
-export = FlumpMovie;
+export default FlumpMovie;

@@ -14,5 +14,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return AbstractBehavior;
     })();
-    return AbstractBehavior;
+    exports.default = AbstractBehavior;
 });

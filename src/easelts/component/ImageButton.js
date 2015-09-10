@@ -1,10 +1,10 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBehavior'], function (require, exports, DisplayObject, ButtonBehavior) {
+define(["require", "exports", "../display/DisplayObject", "../behavior/ButtonBehavior"], function (require, exports, DisplayObject_1, ButtonBehavior_1) {
     var ImageButton = (function (_super) {
         __extends(ImageButton, _super);
         function ImageButton(data, width, height, x, y, regX, regY) {
@@ -14,7 +14,7 @@ define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBeh
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 7 /* BITMAP */;
+            this.type = 128;
             this._bitmaps = {
                 idle: null,
                 over: null,
@@ -22,7 +22,7 @@ define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBeh
                 disabled: null
             };
             this._bitmap = null;
-            this.addBehavior(new ButtonBehavior());
+            this.addBehavior(new ButtonBehavior_1.default());
             this._bitmaps.idle = data.idle;
             if (data.over)
                 this._bitmaps.over = data.over;
@@ -66,6 +66,6 @@ define(["require", "exports", '../display/DisplayObject', '../behavior/ButtonBeh
         };
         ImageButton.EVENT_DISABLED = 'disabled';
         return ImageButton;
-    })(DisplayObject);
-    return ImageButton;
+    })(DisplayObject_1.default);
+    exports.default = ImageButton;
 });

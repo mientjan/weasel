@@ -8,5 +8,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return CharLocation;
     })();
-    return CharLocation;
+    exports.default = CharLocation;
 });

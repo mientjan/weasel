@@ -6,4 +6,4 @@ class TouchInjectProperties
 	count:number = 0;
 }
 
-export = TouchInjectProperties;
+export default TouchInjectProperties;

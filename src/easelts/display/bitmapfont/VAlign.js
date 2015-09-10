@@ -7,5 +7,5 @@ define(["require", "exports"], function (require, exports) {
         VAlign.CENTER = "center";
         return VAlign;
     })();
-    return VAlign;
+    exports.default = VAlign;
 });

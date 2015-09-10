@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import SignalAbstract = require('./SignalAbstract');
+import SignalAbstract from "./SignalAbstract";
 
 class SignalConnection
 {
@@ -66,4 +66,4 @@ class SignalConnection
 	}
 }
 
-export = SignalConnection;
+export default SignalConnection;

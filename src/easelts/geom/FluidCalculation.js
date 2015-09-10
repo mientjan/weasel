@@ -1,4 +1,4 @@
-define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUnitType'], function (require, exports, FluidMeasurementsUnit, MeasurementUnitType) {
+define(["require", "exports", "./FluidMeasurementsUnit", "../enum/MeasurementUnitType"], function (require, exports, FluidMeasurementsUnit_1, MeasurementUnitType_1) {
     var FluidCalculation = (function () {
         function FluidCalculation() {
         }
@@ -19,14 +19,14 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
             }
             var unit;
             var match = FluidCalculation._valueUnitDisolvement.exec(val);
-            var mesUnitTypeString = match.length >= 3 ? match[2] : MeasurementUnitType[MeasurementUnitType.PIXEL];
+            var mesUnitTypeString = match.length >= 3 ? match[2] : MeasurementUnitType_1.default[MeasurementUnitType_1.default.PIXEL];
             var mesUnitType = FluidCalculation._measurementUnitTypeString.indexOf(mesUnitTypeString);
             if (match) {
                 var v = match.length >= 2 ? match[1] : match[0];
-                unit = new FluidMeasurementsUnit(FluidCalculation.toFloat(v), mesUnitType);
+                unit = new FluidMeasurementsUnit_1.default(FluidCalculation.toFloat(v), mesUnitType);
             }
             else {
-                unit = new FluidMeasurementsUnit(FluidCalculation.toFloat(val), mesUnitType);
+                unit = new FluidMeasurementsUnit_1.default(FluidCalculation.toFloat(val), mesUnitType);
             }
             return unit;
         };
@@ -82,7 +82,7 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
         };
         FluidCalculation.getCalcUnitSize = function (size, data) {
             switch (data.unit) {
-                case MeasurementUnitType.PROCENT:
+                case MeasurementUnitType_1.default.PROCENT:
                     {
                         return size * (data.value / 100);
                         break;
@@ -111,5 +111,5 @@ define(["require", "exports", './FluidMeasurementsUnit', '../enum/MeasurementUni
         FluidCalculation._spaceSplit = /\s+/;
         return FluidCalculation;
     })();
-    return FluidCalculation;
+    exports.default = FluidCalculation;
 });

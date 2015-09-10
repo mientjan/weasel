@@ -1,5 +1,5 @@
-import IFlumpLibrary = require('../../interface/IFlumpLibrary');
-import DisplayType = require('../../enum/DisplayType');
+import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
+import DisplayType from "../../enum/DisplayType";
 
 class FlumpTexture
 {
@@ -39,4 +39,4 @@ class FlumpTexture
 	}
 }
 
-export = FlumpTexture;
+export default FlumpTexture;

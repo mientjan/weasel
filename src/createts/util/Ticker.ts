@@ -26,9 +26,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Signal1 = require('../../createts/event/Signal1');
-import Signal = require('../../createts/event/Signal');
-import SignalConnection = require('../../createts/event/SignalConnection');
+import Signal1 from "../../createts/event/Signal1";
+import Signal from "../../createts/event/Signal";
+import SignalConnection from "../../createts/event/SignalConnection";
 
 /**
  * The Ticker provides  a centralized tick or heartbeat broadcast at a set interval. Listeners can subscribe to the tick
@@ -429,4 +429,4 @@ class Ticker
 	}
 }
 
-//export = Ticker;
+export default Ticker;

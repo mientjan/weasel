@@ -10,5 +10,5 @@ define(["require", "exports"], function (require, exports) {
         }
         return FlumpMtx;
     })();
-    return FlumpMtx;
+    exports.default = FlumpMtx;
 });

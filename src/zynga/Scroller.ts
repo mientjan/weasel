@@ -21,8 +21,8 @@
 // Easing Equations (c) 2003 Robert Penner, all rights reserved.
 // Open source under the BSD License.
 
-import Animate = require('./Animate');
-import IScrollerOptions = require('./IScrollerOptions');
+import Animate from "./Animate";
+import IScrollerOptions from "./IScrollerOptions";
 
 /**
  * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)

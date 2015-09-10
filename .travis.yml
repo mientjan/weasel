@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - '0.12'
+notifications:
+  email: false
+
+before_install:
+  - npm install -g typescript@1.5.3
+
+script:
+  - tsc --target ES5 --module amd examples/image-drawing/draw-image.ts
+  - tsc --target ES5 --module amd examples/image-drawing/flump-animation.ts
+  - tsc --target ES5 --module amd examples/image-drawing/mask-image.ts
+  - tsc --target ES5 --module amd examples/image-drawing/mask-image-by-image.ts
+  - tsc --target ES5 --module amd examples/image-drawing/projective-image.ts
+  - tsc --target ES5 --module amd examples/image-drawing/scale-image.ts
+  - tsc --target ES5 --module amd examples/math/example1.ts
