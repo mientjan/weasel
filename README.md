@@ -7,6 +7,7 @@ This version is still in its BETA stage.
 ## examples
 
 #### How to view the examples?
-Go to the root of this project and run "npm install -g http-server"
+Go to the root of this project and run `npm install -g http-server`
+then run `http-server ./`
 open the browser and go to localhost:8080 or what http-server says its running on
 and go to localhost:8080/examples
