@@ -741,15 +741,6 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         DisplayObject.EVENT_PRESS_UP = 'pressup';
         DisplayObject.EVENT_ROLL_OUT = 'rollout';
         DisplayObject.EVENT_ROLL_OVER = 'rollover';
-        DisplayObject.EVENT_POINTER_CLICK = 'click';
-        DisplayObject.EVENT_POINTER_DOWN = 'mousedown';
-        DisplayObject.EVENT_POINTER_MOVE = 'mousemove';
-        DisplayObject.EVENT_POINTER_UP = 'pressup';
-        DisplayObject.EVENT_POINTER_CANCEL = 'mousedown';
-        DisplayObject.EVENT_POINTER_ENTER = 'mouseover';
-        DisplayObject.EVENT_POINTER_LEAVE = 'mouseout';
-        DisplayObject.EVENT_POINTER_OUT = 'mouseout';
-        DisplayObject.EVENT_POINTER_OVER = 'mouseover';
         DisplayObject._MOUSE_EVENTS = [
             DisplayObject.EVENT_MOUSE_CLICK,
             DisplayObject.EVENT_MOUSE_DOWN,

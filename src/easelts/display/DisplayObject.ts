@@ -92,15 +92,15 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	/**
 	 * @todo replace mouse events with pointer events
 	 */
-	public static EVENT_POINTER_CLICK = 'click';
-	public static EVENT_POINTER_DOWN = 'mousedown';
-	public static EVENT_POINTER_MOVE = 'mousemove';
-	public static EVENT_POINTER_UP = 'pressup';
-	public static EVENT_POINTER_CANCEL = 'mousedown';
-	public static EVENT_POINTER_ENTER = 'mouseover';
-	public static EVENT_POINTER_LEAVE = 'mouseout';
-	public static EVENT_POINTER_OUT = 'mouseout';
-	public static EVENT_POINTER_OVER = 'mouseover';
+	//public static EVENT_POINTER_CLICK = 'click';
+	//public static EVENT_POINTER_DOWN = 'mousedown';
+	//public static EVENT_POINTER_MOVE = 'mousemove';
+	//public static EVENT_POINTER_UP = 'pressup';
+	//public static EVENT_POINTER_CANCEL = 'mousedown';
+	//public static EVENT_POINTER_ENTER = 'mouseover';
+	//public static EVENT_POINTER_LEAVE = 'mouseout';
+	//public static EVENT_POINTER_OUT = 'mouseout';
+	//public static EVENT_POINTER_OVER = 'mouseover';
 
 	/**
 	 * Listing of mouse event names. Used in _hasMouseEventListener.
