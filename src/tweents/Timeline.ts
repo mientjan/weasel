@@ -1,5 +1,5 @@
-import EventDispatcher = require('../createts/event/EventDispatcher')
-import Tween = require('./Tween')
+import EventDispatcher from '../createts/event/EventDispatcher';
+import Tween from './Tween';
 
 /*
  * Copyright (c) 2010 gskinner.com, inc.

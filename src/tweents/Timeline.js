@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Tween'], function (require, exports, Tween) {
+define(["require", "exports", '../createts/event/EventDispatcher', './Tween'], function (require, exports, EventDispatcher_1, Tween_1) {
     var Timeline = (function (_super) {
         __extends(Timeline, _super);
         function Timeline(tweens, labels, props) {
@@ -35,10 +35,10 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
                 this._paused = true;
             }
             else {
-                Tween._register(this, true);
+                Tween_1.default._register(this, true);
             }
             if (props && props.position != null) {
-                this.setPosition(props.position, Tween.NONE);
+                this.setPosition(props.position, Tween_1.default.NONE);
             }
         }
         Timeline.prototype.addTween = function (tween) {
@@ -61,7 +61,7 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
                 this.duration = tween.duration;
             }
             if (this._prevPos >= 0) {
-                tween.setPosition(this._prevPos, Tween.NONE);
+                tween.setPosition(this._prevPos, Tween_1.default.NONE);
             }
             return tween;
         };
@@ -166,7 +166,7 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
         };
         Timeline.prototype.setPaused = function (value) {
             this._paused = !!value;
-            Tween._register(this, !value);
+            Tween_1.default._register(this, !value);
         };
         Timeline.prototype.updateDuration = function () {
             this.duration = 0;
@@ -200,6 +200,6 @@ define(["require", "exports", './Tween'], function (require, exports, Tween) {
             }
         };
         return Timeline;
-    })(EventDispatcher);
+    })(EventDispatcher_1.default);
     exports.default = Timeline;
 });
