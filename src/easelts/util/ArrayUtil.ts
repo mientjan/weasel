@@ -1,7 +1,4 @@
-import DisplayObject from "../display/DisplayObject";
-import Bounds from "../geom/Bounds";
 import Size from "../geom/Size";
-import Point from "../geom/Point";
 
 class ArrayUtil
 {
