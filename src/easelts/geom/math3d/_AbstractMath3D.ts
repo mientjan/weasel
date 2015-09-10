@@ -1,8 +1,6 @@
-
 import Vector3 from "../Vector3";
 import Quaternion from "../Quaternion";
 import Matrix4 from "../Matrix4";
-
 
 export default class AbstractMath3D
 {

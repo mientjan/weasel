@@ -365,7 +365,7 @@ class BitmapProjective extends Bitmap
 		var padv = pady * dv;
 	
 		ctx.drawImage(
-			this.image,
+			<HTMLImageElement> this.image,
 			u1 * width,
 			v1 * height,
 			Math.min(u4 - u1 + padu, 1) * width,
