@@ -6,9 +6,12 @@ import HttpRequest from "../../createts/util/HttpRequest";
 import Promise from "../../createts/util/Promise";
 import SignalConnection from "../../createts/event/SignalConnection";
 import FlumpMovieData from "./flump/FlumpMovieData";
-import FlumpTexture from "./flump/FlumpTexture";
+import Texture from "../display/Texture";
 import FlumpTextureGroup from "./flump/FlumpTextureGroup";
 import FlumpMovie from "./flump/FlumpMovie";
+import FlumpTexture from "./flump/FlumpTexture";
+import { log } from '../../createts/util/Decorator';
+
 
 class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
@@ -55,6 +58,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 	public isOptimised:boolean = false;
 	public isLoaded:boolean = false;
 
+
 	constructor(basePath?:string)
 	{
 		if(basePath)
@@ -62,6 +66,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			this.url = basePath;
 		}
 	}
+
 
 	public load( onProgress?:(progress:number) => any):Promise<FlumpLibrary>
 	{
@@ -115,7 +120,6 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 					var textureGroup = textureGroups[i];
 					this.textureGroups.push(textureGroup);
 				}
-
 
 				this.isLoaded = true;
 				return this;
@@ -187,7 +191,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			}
 		}
 
-		throw new Error("no _symbol found: " + this);
+		throw new Error("no symbol found: " + name + ',' + this);
 	}
 
 	public getNameFromReferenceList(value:string|number):string
