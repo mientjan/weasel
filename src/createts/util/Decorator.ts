@@ -1,41 +1,62 @@
 import * as Functional from "./Functional";
 
-export function log(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>)
+// for auto import
+class Decorator {}
+
+export function log(name:string = '')
 {
-	var originalMethod = descriptor.value; // save a reference to the original method
+	return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) =>
+	{
+		var originalMethod = descriptor.value;
 
-	// NOTE: Do not use arrow syntax here. Use a function expression in
-	// order to use the correct value of `this` in this method (see notes below)
-	descriptor.value = function(...args: any[]) {
-		console.log("The method args are: " + JSON.stringify(args)); // pre
-		var result = originalMethod.apply(this, args);               // run and store the result
-		console.log("The return value is: " + result);               // post
-		return result;                                               // return the result of the original method
-	};
+		descriptor.value = function(...args: any[]) {
+			console.log('log|in:', propertyKey, '|' + name, JSON.stringify(args));
+			var result = originalMethod.apply(this, args);
+			console.log('log|out:', propertyKey, '|' + name, JSON.stringify(args));
+			return result;
+		};
 
-	return descriptor;
+		return descriptor;
+	}
 }
-
 
 export function debounce(wait:number)
 {
 	return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) =>
 	{
-		var originalMethod = descriptor.value; // save a reference to the original method
+		var originalMethod = descriptor.value;
 
 		descriptor.value = Functional.debounce(originalMethod, wait);
 
 		return descriptor;
 	}
 }
+
 export function throttle(threshhold:number)
 {
 	return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) =>
 	{
-		var originalMethod = descriptor.value; // save a reference to the original method
+		var originalMethod = descriptor.value;
 
 		descriptor.value = Functional.throttle(originalMethod, threshhold, target);
 
 		return descriptor;
+	}
+}
+
+export function readonly(target, key, descriptor) {
+	descriptor.writable = false;
+}
+
+export function enumerable(value:boolean = false) {
+	return function (target: Object, key:string, descriptor: TypedPropertyDescriptor<any>) {
+		descriptor.enumerable = value;
+	}
+}
+
+
+export function configurable(value:boolean = false) {
+	return function (target: Object, key:string, descriptor: TypedPropertyDescriptor<any>) {
+		descriptor.configurable = value;
 	}
 }
