@@ -5,7 +5,7 @@ import Vector3 from '../../src/easelts/geom/Vector3';
 import Quaternion from '../../src/easelts/geom/Quaternion';
 import MathUtil from '../../src/easelts/util/MathUtil';
 
-import Ticker from '../../src/createts/util/Ticker';
+import Interval from '../../src/createts/util/Interval';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
@@ -65,8 +65,7 @@ var test  = () => {
 	//console.log(scale.x, scale.y, scale.z);
 
 }
-var signal = Ticker.getInstance().addTickListener(test);
 
-//console.log(signal);
+var inter = new Interval(60).attach(test);
 
 stage.start();
