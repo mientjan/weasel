@@ -16,6 +16,7 @@ export function log(target: Object, propertyKey: string, descriptor: TypedProper
 	return descriptor;
 }
 
+
 export function debounce(wait:number)
 {
 	return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) =>
