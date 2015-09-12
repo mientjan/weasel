@@ -54,15 +54,15 @@ class FlumpTexture
 
 	constructor(bitmap:HTMLCanvasElement|HTMLVideoElement|HTMLImageElement, json:IFlumpLibrary.ITexture)
 	{
-		var view = bitmap;
+		const view = bitmap;
 
 		this.originX = json.origin[0];
 		this.originY = json.origin[1];
 
-		var x = json.rect[0];
-		var y = json.rect[1];
-		var width = json.rect[2];
-		var height = json.rect[3];
+		const x = json.rect[0];
+		const y = json.rect[1];
+		const width = json.rect[2];
+		const height = json.rect[3];
 
 		this.draw = function(ctx:IContext2D):boolean
 		{

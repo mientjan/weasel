@@ -48,7 +48,6 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             this._fpsCounter = null;
             this._eventListeners = null;
             this._onResizeEventListener = null;
-            this.canvas = null;
             this.ctx = null;
             this.holder = null;
             this.mouseX = 0;
@@ -67,7 +66,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             this.update = function (delta) {
                 var autoClear = _this._option.autoClear;
                 var autoClearColor = _this._option.autoClearColor;
-                if (!_this.canvas) {
+                if (!_this.ctx) {
                     return;
                 }
                 if (_this.tickOnUpdate) {
@@ -80,13 +79,13 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                 if (autoClear) {
                     if (autoClearColor) {
                         ctx.fillStyle = autoClearColor;
-                        ctx.fillRect(0, 0, _this.canvas.width + 1, _this.canvas.height + 1);
+                        ctx.fillRect(0, 0, _this.ctx.canvas.width + 1, _this.ctx.canvas.height + 1);
                     }
                     if (r) {
                         ctx.clearRect(r.x, r.y, r.width, r.height);
                     }
                     else {
-                        ctx.clearRect(0, 0, _this.canvas.width + 1, _this.canvas.height + 1);
+                        ctx.clearRect(0, 0, _this.ctx.canvas.width + 1, _this.ctx.canvas.height + 1);
                     }
                 }
                 ctx.save();
@@ -108,28 +107,29 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             };
             this._option = new StageOption_1.StageOption(option);
             var size;
+            var canvas;
             switch (element.tagName) {
                 case 'CANVAS':
                     {
-                        this.canvas = element;
+                        canvas = element;
                         this.holder = element.parentElement;
-                        size = new Size_1.default(this.canvas.width, this.canvas.height);
+                        size = new Size_1.default(canvas.width, canvas.height);
                         break;
                     }
                 default:
                     {
-                        var canvas = document.createElement('canvas');
-                        this.canvas = canvas;
+                        canvas = document.createElement('canvas');
                         this.holder = element;
                         this.holder.appendChild(canvas);
                         size = new Size_1.default(this.holder.offsetWidth, this.holder.offsetHeight);
                         break;
                     }
             }
-            this.canvas.style['image-rendering'] = '-webkit-optimize-contrast';
+            canvas.style['image-rendering'] = '-webkit-optimize-contrast';
+            this.ctx = canvas.getContext('2d');
+            this.ctx.globalCompositeOperation = 'source-over';
             this.enableDOMEvents(true);
             this.setFps(this._fps);
-            this.ctx = this.canvas.getContext('2d');
             this.setQuality(1);
             this.stage = this;
             if (this._option.autoResize) {
@@ -194,20 +194,20 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             }
         };
         Stage.prototype.clear = function () {
-            if (!this.canvas) {
+            if (!this.ctx) {
                 return;
             }
-            var ctx = this.canvas.getContext("2d");
+            var ctx = this.ctx.canvas.getContext("2d");
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+            ctx.clearRect(0, 0, this.ctx.canvas.width + 1, this.ctx.canvas.height + 1);
         };
         Stage.prototype.toDataURL = function (backgroundColor, mimeType) {
             if (!mimeType) {
                 mimeType = "image/png";
             }
-            var ctx = this.canvas.getContext('2d');
-            var w = this.canvas.width;
-            var h = this.canvas.height;
+            var ctx = this.ctx;
+            var w = this.ctx.canvas.width;
+            var h = this.ctx.canvas.height;
             var data;
             if (backgroundColor) {
                 data = ctx.getImageData(0, 0, w, h);
@@ -216,7 +216,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                 ctx.fillStyle = backgroundColor;
                 ctx.fillRect(0, 0, w, h);
             }
-            var dataURL = this.canvas.toDataURL(mimeType);
+            var dataURL = this.ctx.canvas.toDataURL(mimeType);
             if (backgroundColor) {
                 ctx.clearRect(0, 0, w + 1, h + 1);
                 ctx.putImageData(data, 0, 0);
@@ -256,7 +256,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                 }
                 this._eventListeners = null;
             }
-            else if (enable && !eventListeners && this.canvas) {
+            else if (enable && !eventListeners && this.ctx.canvas) {
                 var windowsObject = window['addEventListener'] ? window : document;
                 eventListeners = this._eventListeners = {};
                 eventListeners["mouseup"] = {
@@ -268,7 +268,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                     fn: function (e) { return _this._handleMouseMove(e); }
                 };
                 eventListeners["mousedown"] = {
-                    window: this.canvas,
+                    window: this.ctx.canvas,
                     fn: function (e) { return _this._handleMouseDown(e); }
                 };
                 for (name in eventListeners) {
@@ -326,7 +326,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             if (this._prevStage && owner === undefined) {
                 return;
             }
-            if (!this.canvas) {
+            if (!this.ctx) {
                 return;
             }
             var nextStage = this._nextStage;
@@ -343,11 +343,11 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             nextStage && nextStage._handlePointerMove(id, e, pageX, pageY, null);
         };
         Stage.prototype._updatePointerPosition = function (id, e, pageX, pageY) {
-            var rect = this._getElementRect(this.canvas);
+            var rect = this._getElementRect(this.ctx.canvas);
             pageX -= rect.left;
             pageY -= rect.top;
-            var w = this.canvas.width;
-            var h = this.canvas.height;
+            var w = this.ctx.canvas.width;
+            var h = this.ctx.canvas.height;
             pageX /= (rect.right - rect.left) / w;
             pageY /= (rect.bottom - rect.top) / h;
             var pointerData = this._getPointerData(id);
@@ -428,7 +428,7 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                 return;
             }
             var o = this._getPointerData(-1), e = o.posEvtObj;
-            var isEventTarget = eventTarget || e && (e.target == this.canvas);
+            var isEventTarget = eventTarget || e && (e.target == this.ctx.canvas);
             var target = null, common = -1, cursor = "", t, i, l;
             if (!owner && (clear || this.mouseInBounds && isEventTarget)) {
                 target = this._getObjectsUnderPoint(this.mouseX, this.mouseY, null, true);
@@ -446,9 +446,9 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
                 }
                 t = t.parent;
             }
-            this.canvas.style.cursor = cursor;
+            this.ctx.canvas.style.cursor = cursor;
             if (!owner && eventTarget) {
-                eventTarget.canvas.style.cursor = cursor;
+                eventTarget.ctx.canvas.style.cursor = cursor;
             }
             for (i = 0, l = list.length; i < l; i++) {
                 if (list[i] != oldList[i]) {
@@ -537,10 +537,10 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             width = width + 1 >> 1 << 1;
             height = height + 1 >> 1 << 1;
             if (this.width != width || this.height != height) {
-                this.canvas.width = width * pixelRatio;
-                this.canvas.height = height * pixelRatio;
-                this.canvas.style.width = '' + width + 'px';
-                this.canvas.style.height = '' + height + 'px';
+                this.ctx.canvas.width = width * pixelRatio;
+                this.ctx.canvas.height = height * pixelRatio;
+                this.ctx.canvas.style.width = '' + width + 'px';
+                this.ctx.canvas.style.height = '' + height + 'px';
                 _super.prototype.onResize.call(this, width, height);
                 if (!this._isRunning) {
                     this.update(0);

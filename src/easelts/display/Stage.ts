@@ -57,6 +57,7 @@ import SignalConnection from "../../createts/event/SignalConnection";
 import Interval from "../../createts/util/Interval";
 import Stats from "../component/Stats";
 import {StageOption} from "../data/StageOption";
+import IContext2D from "../interface/IContext2D";
 
 
 
@@ -151,8 +152,7 @@ class Stage extends Container<IDisplayObject>
 	 * @property canvas
 	 * @type HTMLCanvasElement
 	 **/
-	public canvas:HTMLCanvasElement = null;
-	public ctx:CanvasRenderingContext2D = null;
+	public ctx:IContext2D = null;
 
 	/**
 	 *
@@ -342,23 +342,23 @@ class Stage extends Container<IDisplayObject>
 		this._option = new StageOption(option);
 
 		var size:Size;
+		var canvas:HTMLCanvasElement;
 
 		switch(element.tagName)
 		{
 			case 'CANVAS':
 			{
-				this.canvas = <HTMLCanvasElement> element;
+				canvas = <HTMLCanvasElement> element;
 				this.holder = <HTMLBlockElement> element.parentElement;
 
-				size = new Size(this.canvas.width, this.canvas.height);
+				size = new Size(canvas.width, canvas.height);
 				break;
 			}
 
 			default:
 			{
-				var canvas = document.createElement('canvas');
+				canvas = document.createElement('canvas');
 
-				this.canvas = <HTMLCanvasElement> canvas;
 				this.holder = <HTMLBlockElement> element;
 				this.holder.appendChild(canvas);
 
@@ -367,10 +367,13 @@ class Stage extends Container<IDisplayObject>
 			}
 		}
 
-		this.canvas.style['image-rendering'] = '-webkit-optimize-contrast';
+		canvas.style['image-rendering'] = '-webkit-optimize-contrast';
+		this.ctx = canvas.getContext('2d');
+		this.ctx.globalCompositeOperation = 'source-over';
+
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
-		this.ctx = this.canvas.getContext('2d');
+
 		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
@@ -437,7 +440,7 @@ class Stage extends Container<IDisplayObject>
 		var autoClear = this._option.autoClear;
 		var autoClearColor = this._option.autoClearColor;
 
-		if(!this.canvas)
+		if(!this.ctx)
 		{
 			return;
 		}
@@ -467,7 +470,7 @@ class Stage extends Container<IDisplayObject>
 			if(autoClearColor)
 			{
 				ctx.fillStyle = autoClearColor;
-				ctx.fillRect(0,0,this.canvas.width + 1, this.canvas.height + 1);
+				ctx.fillRect(0,0,this.ctx.canvas.width + 1, this.ctx.canvas.height + 1);
 			}
 
 			if(r)
@@ -476,7 +479,7 @@ class Stage extends Container<IDisplayObject>
 			}
 			else
 			{
-				ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+				ctx.clearRect(0, 0, this.ctx.canvas.width + 1, this.ctx.canvas.height + 1);
 			}
 		}
 
@@ -558,13 +561,13 @@ class Stage extends Container<IDisplayObject>
 	 **/
 	public clear():void
 	{
-		if(!this.canvas)
+		if(!this.ctx)
 		{
 			return;
 		}
-		var ctx = this.canvas.getContext("2d");
+		var ctx = this.ctx.canvas.getContext("2d");
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+		ctx.clearRect(0, 0, this.ctx.canvas.width + 1, this.ctx.canvas.height + 1);
 	}
 
 	/**
@@ -584,9 +587,9 @@ class Stage extends Container<IDisplayObject>
 			mimeType = "image/png";
 		}
 
-		var ctx = this.canvas.getContext('2d');
-		var w = this.canvas.width;
-		var h = this.canvas.height;
+		var ctx = this.ctx;
+		var w = this.ctx.canvas.width;
+		var h = this.ctx.canvas.height;
 
 		var data;
 
@@ -610,7 +613,7 @@ class Stage extends Container<IDisplayObject>
 		}
 
 		//get the image data from the canvas
-		var dataURL = this.canvas.toDataURL(mimeType);
+		var dataURL = this.ctx.canvas.toDataURL(mimeType);
 
 		if(backgroundColor)
 		{
@@ -696,7 +699,7 @@ class Stage extends Container<IDisplayObject>
 			}
 			this._eventListeners = null;
 		}
-		else if(enable && !eventListeners && this.canvas)
+		else if(enable && !eventListeners && this.ctx.canvas)
 		{
 			var windowsObject = window['addEventListener'] ? <any> window : <any> document;
 			eventListeners = this._eventListeners = {};
@@ -713,7 +716,7 @@ class Stage extends Container<IDisplayObject>
 			};
 
 			eventListeners["mousedown"] = {
-				window: this.canvas,
+				window: this.ctx.canvas,
 				fn: e => this._handleMouseDown(e)
 			};
 
@@ -850,7 +853,7 @@ class Stage extends Container<IDisplayObject>
 		}
 
 		// redundant listener.
-		if(!this.canvas)
+		if(!this.ctx)
 		{
 			return;
 		}
@@ -886,12 +889,12 @@ class Stage extends Container<IDisplayObject>
 	 **/
 	public _updatePointerPosition(id:number, e:MouseEvent, pageX:number, pageY:number)
 	{
-		var rect = this._getElementRect(this.canvas);
+		var rect = this._getElementRect(this.ctx.canvas);
 		pageX -= rect.left;
 		pageY -= rect.top;
 
-		var w = this.canvas.width;
-		var h = this.canvas.height;
+		var w = this.ctx.canvas.width;
+		var h = this.ctx.canvas.height;
 		pageX /= (rect.right - rect.left) / w;
 		pageY /= (rect.bottom - rect.top) / h;
 		var pointerData = this._getPointerData(id);
@@ -1052,7 +1055,7 @@ class Stage extends Container<IDisplayObject>
 		var o = this._getPointerData(-1), e = o.posEvtObj;
 
 
-		var isEventTarget = eventTarget || e && (e.target == this.canvas);
+		var isEventTarget = eventTarget || e && (e.target == this.ctx.canvas);
 		var target = null, common = -1, cursor = "", t, i, l;
 
 		if(!owner && (clear || this.mouseInBounds && isEventTarget))
@@ -1078,10 +1081,10 @@ class Stage extends Container<IDisplayObject>
 			}
 			t = t.parent;
 		}
-		this.canvas.style.cursor = cursor;
+		this.ctx.canvas.style.cursor = cursor;
 		if(!owner && eventTarget)
 		{
-			eventTarget.canvas.style.cursor = cursor;
+			eventTarget.ctx.canvas.style.cursor = cursor;
 		}
 
 		// find common ancestor:
@@ -1294,11 +1297,11 @@ class Stage extends Container<IDisplayObject>
 
 		if(this.width != width || this.height != height)
 		{
-			this.canvas.width = width * pixelRatio;
-			this.canvas.height = height * pixelRatio;
+			this.ctx.canvas.width = width * pixelRatio;
+			this.ctx.canvas.height = height * pixelRatio;
 
-			this.canvas.style.width = '' + width + 'px';
-			this.canvas.style.height = '' + height + 'px';
+			this.ctx.canvas.style.width = '' + width + 'px';
+			this.ctx.canvas.style.height = '' + height + 'px';
 
 			super.onResize(width, height);
 
