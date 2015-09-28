@@ -22,9 +22,9 @@ class Debug extends Container<Shape|Text>
 
 		this._text.textAlign = 'center';
 		this._text.textBaseline = 'center';
+
 		this.addChild(this._shape);
 		this.addChild(this._text);
-		this.mouseEnabled = false;
 		this.tickChildren = false;
 
 		this.update();

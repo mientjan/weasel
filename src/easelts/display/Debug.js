@@ -29,7 +29,6 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./Text"],
             this._text.textBaseline = 'center';
             this.addChild(this._shape);
             this.addChild(this._text);
-            this.mouseEnabled = false;
             this.tickChildren = false;
             this.update();
         }
