@@ -7,8 +7,8 @@ import IDisplayObject from "../../src/easelts/interface/IDisplayObject";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true).setFpsCounter(true);
 //stage.autoClear = false;
-stage.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
-stage.canvas.style.transformStyle = 'preserve-3d';
+stage.ctx.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
+stage.ctx.canvas.style.transformStyle = 'preserve-3d';
 //var flump = new FlumpAnimation('../../assets/flump/smoke');
 //flump.
 

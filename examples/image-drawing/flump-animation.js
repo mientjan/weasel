@@ -1,8 +1,8 @@
 define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary', "../../src/easelts/util/ArrayUtil"], function (require, exports, Stage_1, FlumpLibrary_1, ArrayUtil_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, true).setFpsCounter(true);
-    stage.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
-    stage.canvas.style.transformStyle = 'preserve-3d';
+    stage.ctx.canvas.style.transform = 'translate3d(0,0,-1px) scale(1.000001);';
+    stage.ctx.canvas.style.transformStyle = 'preserve-3d';
     FlumpLibrary_1.default.load('../assets/flump/a-100-8x8l-1024/character').then(function (fl) {
         var names = [
             'SupermanSuduction1',
