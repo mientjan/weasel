@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/geom/Matrix4', '../../src/easelts/geom/Vector3', '../../src/easelts/geom/Quaternion', '../../src/easelts/util/MathUtil', '../../src/createts/util/Ticker'], function (require, exports, Stage_1, Bitmap_1, Matrix4_1, Vector3_1, Quaternion_1, MathUtil_1, Ticker_1) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/geom/Matrix4', '../../src/easelts/geom/Vector3', '../../src/easelts/geom/Quaternion', '../../src/easelts/util/MathUtil', '../../src/createts/util/Interval'], function (require, exports, Stage_1, Bitmap_1, Matrix4_1, Vector3_1, Quaternion_1, MathUtil_1, Interval_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, true);
     var image = new Bitmap_1.default('../assets/image/ninepatch_red.png', 0, 0, '50%', '50%', '50%', '50%');
@@ -27,6 +27,6 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
         image.y = position.y;
         image.rotation = MathUtil_1.default.radToDeg(rotation.z);
     };
-    var signal = Ticker_1.default.getInstance().addTickListener(test);
+    var inter = new Interval_1.default(60).attach(test);
     stage.start();
 });

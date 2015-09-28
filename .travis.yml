@@ -15,3 +15,4 @@ script:
   - tsc --target ES5 --module amd examples/image-drawing/projective-image.ts
   - tsc --target ES5 --module amd examples/image-drawing/scale-image.ts
   - tsc --target ES5 --module amd examples/math/example1.ts
+  - tsc --target ES5 --module amd --experimentalDecorators examples/tools/decorator.ts

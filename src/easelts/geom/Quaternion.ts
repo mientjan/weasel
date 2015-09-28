@@ -2,7 +2,7 @@ import Matrix4 from "./Matrix4";
 import Vector3 from "./Vector3";
 import AbstractMath3D from "./math3d/AbstractMath3D";
 
-export default class Quaternion extends AbstractMath3D
+class Quaternion extends AbstractMath3D
 {
 	public static slerp(qa:Quaternion, qb, qm, t)
 	{
@@ -566,3 +566,5 @@ export default class Quaternion extends AbstractMath3D
 	}
 
 }
+
+export default Quaternion;

@@ -55,7 +55,6 @@ define(["require", "exports", "../../display/DisplayObject", "./FlumpMovieLayer"
             else {
                 var queue = this.labels[label];
                 if (!queue) {
-                    console.warn('unknown label:', label, 'on', this.name);
                     throw new Error('unknown label:' + label + ' | ' + this.name);
                 }
                 labelQueueData = new FlumpLabelQueueData_1.default(queue.label, queue.index, queue.duration, times, 0);

@@ -115,7 +115,7 @@ define(["require", "exports", "../../createts/util/HttpRequest", "../../createts
                     return movie;
                 }
             }
-            throw new Error("no _symbol found: " + this);
+            throw new Error("no symbol found: " + name + ',' + this);
         };
         FlumpLibrary.prototype.getNameFromReferenceList = function (value) {
             if (this.referenceList && typeof value == 'number') {

@@ -84,7 +84,6 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 			if(!queue)
 			{
-				console.warn('unknown label:', label, 'on', this.name);
 				throw new Error('unknown label:' + label + ' | ' + this.name);
 			}
 

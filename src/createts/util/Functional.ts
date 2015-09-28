@@ -1,3 +1,8 @@
+class Functional
+{
+}
+
+
 export function debounce<T extends Function>(callback:T, wait:number, immediate:boolean = false):any
 {
 	var timeout:number = -1;
@@ -5,7 +10,8 @@ export function debounce<T extends Function>(callback:T, wait:number, immediate:
 	{
 		var self = this;
 
-		var callbackLater = function() {
+		var callbackLater = function()
+		{
 			timeout = -1;
 			callback.apply(self, args);
 		};
@@ -24,7 +30,7 @@ export function debounce<T extends Function>(callback:T, wait:number, immediate:
 export function throttle<T extends Function>(callback:T, threshhold:number, scope:any)
 {
 	var last:number, timer:number = -1;
-	return function (...args:Array<any>)
+	return function(...args:Array<any>)
 	{
 		var context = scope || this;
 		var now = +new Date();
@@ -32,7 +38,8 @@ export function throttle<T extends Function>(callback:T, threshhold:number, scop
 		if(last && now < last + threshhold)
 		{
 			clearTimeout(timer);
-			timer = setTimeout(function () {
+			timer = setTimeout(function()
+			{
 				last = now;
 				callback.apply(context, args);
 			}, threshhold);
@@ -44,3 +51,5 @@ export function throttle<T extends Function>(callback:T, threshhold:number, scop
 		}
 	};
 }
+
+

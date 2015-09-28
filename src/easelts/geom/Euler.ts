@@ -4,8 +4,8 @@
  * @author bhouston / http://exocortex.com
  */
 
-import q from "./Quaternion";
 import MathUtil from "../util/MathUtil";
+import Quaternion from "./Quaternion";
 
 class Euler
 {
@@ -229,7 +229,7 @@ class Euler
 
 	}
 
-	public setFromQuaternion( q:q.Quaternion, order:string = this._order, update:boolean = false ) {
+	public setFromQuaternion( q:Quaternion, order:string = this._order, update:boolean = false ) {
 
 		var clamp = MathUtil.clamp;
 
@@ -292,7 +292,7 @@ class Euler
 
 	}
 
-	private _reorder_q:q.Quaternion = new q.Quaternion(0,0,0);
+	private _reorder_q:Quaternion = new Quaternion(0,0,0);
 	public reorder( newOrder:string ) {
 		// WARNING: this discards revolution information -bhouston
 			var q = this._reorder_q;

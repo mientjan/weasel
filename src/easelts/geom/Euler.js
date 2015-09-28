@@ -3,14 +3,14 @@
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://exocortex.com
  */
-define(["require", "exports", "./Quaternion", "../util/MathUtil"], function (require, exports, Quaternion_1, MathUtil_1) {
+define(["require", "exports", "../util/MathUtil", "./Quaternion"], function (require, exports, MathUtil_1, Quaternion_1) {
     var Euler = (function () {
         function Euler(x, y, z, order) {
             this._x = 0;
             this._y = 0;
             this._z = 0;
             this._order = Euler.DefaultOrder;
-            this._reorder_q = new Quaternion_1.default.Quaternion(0, 0, 0);
+            this._reorder_q = new Quaternion_1.default(0, 0, 0);
             this._x = x || 0;
             this._y = y || 0;
             this._z = z || 0;
