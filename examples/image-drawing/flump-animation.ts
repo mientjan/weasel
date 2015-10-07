@@ -24,7 +24,7 @@ stage.ctx.canvas.style.transformStyle = 'preserve-3d';
 //
 //}).catch( error => console.log(error) );
 
-FlumpLibrary.load('../assets/flump/a-100-8x8l-1024/character').then((fl:FlumpLibrary) => {
+FlumpLibrary.load('../assets/flump/animations-100/character').then((fl:FlumpLibrary) => {
 
 	var names = [
 		'SupermanSuduction1',
