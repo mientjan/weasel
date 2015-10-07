@@ -43,14 +43,14 @@ import Filter from "./Filter";
  * <h4>Example</h4>
  * This example draws a red->blue box, caches it, and then uses the cache canvas as an alpha map on a 100x100 image.
  *
- *       var box = new createjs.Shape();
+ *       var box = new Shape();
  *       box.graphics.beginLinearGradientFill(["#ff0000", "#0000ff"], [0, 1], 0, 0, 0, 100)
  *       box.graphics.drawRect(0, 0, 100, 100);
  *       box.cache(0, 0, 100, 100);
  *
- *       var bmp = new createjs.Bitmap("path/to/image.jpg");
+ *       var bmp = new Bitmap("path/to/image.jpg");
  *       bmp.filters = [
- *           new createjs.AlphaMapFilter(box.cacheCanvas)
+ *           new AlphaMapFilter(box.cacheCanvas)
  *       ];
  *       bmp.cache(0, 0, 100, 100);
  *       stage.addChild(bmp);
