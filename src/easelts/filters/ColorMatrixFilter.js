@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", './Filter'], function (require, exports, Filter_1) {
     var ColorMatrixFilter = (function (_super) {
         __extends(ColorMatrixFilter, _super);
         function ColorMatrixFilter(matrix) {
@@ -54,6 +54,6 @@ define(["require", "exports"], function (require, exports) {
             return new ColorMatrixFilter(this.matrix);
         };
         return ColorMatrixFilter;
-    })(Filter);
+    })(Filter_1.default);
     exports.default = ColorMatrixFilter;
 });

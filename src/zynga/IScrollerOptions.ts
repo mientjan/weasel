@@ -16,4 +16,4 @@ interface IScrollerOptions {
 	penetrationAcceleration?: number;
 }
 
-export  = IScrollerOptions;
+export default IScrollerOptions;

@@ -30,7 +30,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "./Container"], function (require, exports, Container_1) {
     var SpriteContainer = (function (_super) {
         __extends(SpriteContainer, _super);
         function SpriteContainer(spriteSheet) {
@@ -86,6 +86,6 @@ define(["require", "exports"], function (require, exports) {
             return "[SpriteContainer (name=" + this.name + ")]";
         };
         return SpriteContainer;
-    })(Container);
+    })(Container_1.default);
     exports.default = SpriteContainer;
 });

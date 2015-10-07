@@ -654,5 +654,5 @@ define(["require", "exports", "./Animate"], function (require, exports, Animate_
         };
         return Scroller;
     })();
-    return Scroller;
+    exports.default = Scroller;
 });

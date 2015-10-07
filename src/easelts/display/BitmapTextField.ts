@@ -34,6 +34,7 @@ import VAlign from "./bitmapfont/VAlign";
 import HAlign from "./bitmapfont/HAlign";
 import BitmapFont from "./BitmapFont";
 import ColorFilter from "../filters/ColorFilter";
+import DisplayObject from "./DisplayObject";
 
 
 function hexToR(h)
@@ -69,7 +70,7 @@ function cutHex(h)
  * @param    vAlign: Verticle alignment: accepter parameters: "top","center",""bottom", default:"center"
  * @param    autoScale: true, scales the text to fit in the space, default: true
  */
-class BitmapTextField extends Container
+class BitmapTextField extends Container<DisplayObject>
 {
 	public static EVENT_TEXT_CHANGE = 'text_change';
 
@@ -88,7 +89,7 @@ class BitmapTextField extends Container
 		}
 		else
 		{
-//			console.log(fontName + " : is already registered");
+			//			console.log(fontName + " : is already registered");
 		}
 
 		return null;
@@ -103,7 +104,7 @@ class BitmapTextField extends Container
 	color:string;
 
 	border:Shape;
-	textContainer:Container;
+	textContainer:Container<DisplayObject>;
 
 	actualWidth:number;
 	containerWidth:number;
@@ -117,8 +118,7 @@ class BitmapTextField extends Container
 	constructor(width:number, height:number, textDisplay:string, fontName:string, fontSize:number,
 	            horizantalLetterSpacing:number = 1, verticalLetterSpacing:number = 1,
 	            hAlign:string = HAlign.CENTER, vAlign:string = VAlign.CENTER,
-	            autoScale:boolean = false
-	)
+	            autoScale:boolean = false)
 	{
 
 		super();
@@ -135,7 +135,7 @@ class BitmapTextField extends Container
 		this.addChild(this.border);
 
 		this.border.visible = false;
-		this.textContainer = new Container();
+		this.textContainer = new Container<DisplayObject>();
 		this.addChild(this.textContainer);
 
 		this.containerWidth = width;
@@ -150,7 +150,8 @@ class BitmapTextField extends Container
 		if(BitmapTextField.bitmapFonts[fontName])
 		{
 			this.font = BitmapTextField.bitmapFonts[fontName];
-			if(textDisplay.length > 0){
+			if(textDisplay.length > 0)
+			{
 				this.setText(textDisplay);
 			}
 		}
@@ -185,18 +186,21 @@ class BitmapTextField extends Container
 	{
 		return this.containerWidth;
 	}
+
 	//height of the container, the width given while creating text field
 
 	public getHeight()
 	{
 		return this.containerHeight;
 	}
+
 	//actual text width.
 
 	public getActualWidth()
 	{
 		return this.actualWidth;
 	}
+
 	//shows a red colored bounding box, useful for debugging.
 
 	public showBorder(visible)

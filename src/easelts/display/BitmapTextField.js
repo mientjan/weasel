@@ -132,6 +132,6 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./bitmapf
         BitmapTextField.EVENT_TEXT_CHANGE = 'text_change';
         BitmapTextField.bitmapFonts = [];
         return BitmapTextField;
-    })(Container);
+    })(Container_1.default);
     exports.default = BitmapTextField;
 });

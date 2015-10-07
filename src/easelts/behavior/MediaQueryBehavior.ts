@@ -3,7 +3,7 @@
  */
 import AbstractBehavior from "./AbstractBehavior";
 import DisplayObject from "../display/DisplayObject";
-import IMediaQuery from "../interface/IMediaQuery";
+import * as IMediaQuery from "../interface/IMediaQuery";
 import Point from "../geom/Point";
 import Size from "../geom/Size";
 import SignalConnection from "../../createts/event/SignalConnection";

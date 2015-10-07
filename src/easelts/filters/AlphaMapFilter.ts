@@ -30,7 +30,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Methods from "../util/Methods";
+import * as Methods from "../util/Methods";
 import Filter from "./Filter";
 
 /**

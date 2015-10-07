@@ -7,7 +7,7 @@ import TimeEvent from "../../createts/event/TimeEvent";
 import Signal from "../../createts/event/Signal";
 import SignalConnection from "../../createts/event/SignalConnection";
 import IImageButtonData from "./imagebutton/IImageButtonData";
-import Methods from "../util/Methods";
+import * as Methods from "../util/Methods";
 import ButtonBehavior from "../behavior/ButtonBehavior";
 
 /**

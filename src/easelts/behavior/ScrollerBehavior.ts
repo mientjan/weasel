@@ -15,8 +15,8 @@ class ScrollerBehavior extends AbstractBehavior
 	protected _scroller:Scroller = null;
 	protected _mousedown:boolean = false;
 
-	public owner:Container;
-	public holder:Container;
+	public owner:Container<DisplayObject>;
+	public holder:Container<DisplayObject>;
 
 	public options:IScrollerOptions;
 
@@ -27,7 +27,7 @@ class ScrollerBehavior extends AbstractBehavior
 		this.options = options;
 	}
 
-	public initialize(container:Container):void
+	public initialize(container:Container<DisplayObject>):void
 	{
 		super.initialize(container);
 
@@ -40,7 +40,7 @@ class ScrollerBehavior extends AbstractBehavior
 			throw new Error('owner can have only one child that holds all the gallery items');
 		}
 
-		this.holder = this.owner.children[0];
+		this.holder = <Container<DisplayObject>> this.owner.children[0];
 		this._scroller = new Scroller(this.onChange.bind(this), this.options);
 
 

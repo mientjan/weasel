@@ -28,7 +28,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Filter = require('./Filter')
+import Filter from './Filter';
 
 /**
  * Allows you to carry out complex color operations such as modifying saturation, brightness, or inverting. See the

@@ -6,7 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", "../util/Methods", "./Filter"], function (require, exports, Methods_1, Filter_1) {
+define(["require", "exports", "../util/Methods", "./Filter"], function (require, exports, Methods, Filter_1) {
     var AlphaMapFilter = (function (_super) {
         __extends(AlphaMapFilter, _super);
         function AlphaMapFilter(alphaMap) {
@@ -66,7 +66,7 @@ define(["require", "exports", "../util/Methods", "./Filter"], function (require,
                 ctx = canvas.getContext("2d");
             }
             else {
-                canvas = Methods_1.default.createCanvas ? Methods_1.default.createCanvas() : document.createElement("canvas");
+                canvas = Methods.createCanvas ? Methods.createCanvas() : document.createElement("canvas");
                 canvas.width = map.width;
                 canvas.height = map.height;
                 ctx = canvas.getContext("2d");

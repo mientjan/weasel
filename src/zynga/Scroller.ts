@@ -1512,4 +1512,4 @@ class Scroller
 	}
 }
 
-export  = Scroller;
+export default Scroller;

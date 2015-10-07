@@ -4,7 +4,7 @@ import IPlayable from "../interface/IPlayable";
 import DisplayObject from "../display/DisplayObject";
 import SpriteSheet from "../display/SpriteSheet";
 import DisplayType from "../enum/DisplayType";
-import Methods from "../util/Methods";
+import * as Methods from "../util/Methods";
 import TimeEvent from "../../createts/event/TimeEvent";
 import Promise from "../../createts/util/Promise";
 import Signal from "../../createts/event/Signal";

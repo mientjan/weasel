@@ -5,6 +5,7 @@ import Bounds from "../geom/Bounds";
 import IVector2 from "../interface/IVector2";
 import Vector2 from "../geom/Vector2";
 
+
 class SortUtil
 {
 	public static getBounds(list:IVector2[]):Bounds
