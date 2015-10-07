@@ -120,11 +120,15 @@ define(["require", "exports", "../../display/DisplayObject", "./FlumpKeyframeDat
                 this._symbolMovie.reset();
         };
         FlumpMovieLayer.prototype.draw = function (ctx, ignoreCache) {
-            if (this._symbolType == 8) {
-                this._symbolMovie.draw(ctx);
+            if (!this.visible || !this.alpha || this.scaleX == 0 || this.scaleY == 0) {
             }
-            else if (this._symbolType == 256) {
-                this._symbolTexture.draw(ctx);
+            else {
+                if (this._symbolType == 8) {
+                    this._symbolMovie.draw(ctx);
+                }
+                else if (this._symbolType == 256) {
+                    this._symbolTexture.draw(ctx);
+                }
             }
             return true;
         };

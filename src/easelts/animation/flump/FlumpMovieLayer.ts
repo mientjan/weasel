@@ -187,14 +187,20 @@ class FlumpMovieLayer extends DisplayObject
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		if(this._symbolType == DisplayType.DISPLAYOBJECT)
+		if(!this.visible || !this.alpha || this.scaleX == 0 || this.scaleY == 0)
 		{
-			this._symbolMovie.draw(ctx);
+
+		} else {
+			if(this._symbolType == DisplayType.DISPLAYOBJECT)
+			{
+				this._symbolMovie.draw(ctx);
+			}
+			else if(this._symbolType == DisplayType.TEXTURE)
+			{
+				this._symbolTexture.draw(ctx);
+			}
 		}
-		else if(this._symbolType == DisplayType.TEXTURE)
-		{
-			this._symbolTexture.draw(ctx);
-		}
+
 
 		return true;
 	}
