@@ -73,14 +73,10 @@ import IContext2D from "../interface/IContext2D";
  * This example creates a stage, adds a child to it, then uses {{#crossLink "Ticker"}}{{/crossLink}} to update the child
  * and redraw the stage using {{#crossLink "Stage/update"}}{{/crossLink}}.
  *
- *      var stage = new createjs.Stage("canvasElementId");
- *      var image = new createjs.Bitmap("imagePath.png");
+ *      var stage = new Stage("canvasElementId");
+ *      var image = new Bitmap("imagePath.png");
  *      stage.addChild(image);
- *      createjs.Ticker.addEventListener("tick", handleTick);
- *      function handleTick(event) {
- *          image.x += 10;
- *          stage.update();
- *      }
+ *      stage.start();
  *
  * @namespace easelts.display
  * @class Stage
