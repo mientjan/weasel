@@ -1,13 +1,13 @@
-import DisplayObject from "../../display/DisplayObject";
+import DisplayObject from '../../display/DisplayObject';
 
-import IHashMap from "../../interface/IHashMap";
-import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
-import IPlayable from "../../interface/IPlayable";
+import IHashMap from '../../interface/IHashMap';
+import * as IFlumpLibrary from '../../interface/IFlumpLibrary';
+import IPlayable from '../../interface/IPlayable';
 
-import FlumpLibrary from "../FlumpLibrary";
-import FlumpMovieLayer from "./FlumpMovieLayer";
-import FlumpLabelData from "./FlumpLabelData";
-import FlumpLabelQueueData from "./FlumpLabelQueueData";
+import FlumpLibrary from '../FlumpLibrary';
+import FlumpMovieLayer from './FlumpMovieLayer';
+import FlumpLabelData from './FlumpLabelData';
+import FlumpLabelQueueData from './FlumpLabelQueueData';
 import FlumpTexture from "./FlumpTexture";
 
 
@@ -17,7 +17,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public flumpMovieData;
 	public flumpMovieLayers:Array<FlumpMovieLayer>;
 
-	public labels:IHashMap<FlumpLabelData> = {};
+	private _labels:IHashMap<FlumpLabelData> = {};
 	private _labelQueue:Array<FlumpLabelQueueData> = [];
 	private _label:FlumpLabelQueueData = null;
 
@@ -31,14 +31,15 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public duration = 0.0;
 	public frame:number = 0;
 	public frames:number = 0;
+	public speed:number = 1;
 
 	// ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
 
-	constructor(flumpLibrary:FlumpLibrary, name:string, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor( flumpLibrary:FlumpLibrary, name:string, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
 
-		this.disableMouseInteraction();
+		//flumpLibrary.frameRate = 2;
 
 		this.name = name;
 		this.flumpLibrary = flumpLibrary;
@@ -72,19 +73,19 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		var labelQueueData:FlumpLabelQueueData;
 
-		if(label == null || label == '*')
+		if( label == null || label == '*' )
 		{
 			labelQueueData = new FlumpLabelQueueData(label, 0, this.frames, times, 0)
 			this._labelQueue.push(labelQueueData);
-
 		}
 		else
 		{
-			var queue = this.labels[label];
+			var queue = this._labels[label];
 
 			if(!queue)
 			{
-				throw new Error('unknown label:' + label + ' | ' + this.name);
+				console.warn('unknown label:', label, 'on',  this.name );
+				throw new Error('unknown label:' + label + ' | ' + this.name );
 			}
 
 			labelQueueData = new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times, 0);
@@ -97,8 +98,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			labelQueueData.then(complete);
 		}
 
-		if(!this._label)
-		{
+		if(!this._label){
 			this.gotoNextLabel();
 		}
 
@@ -126,8 +126,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			this._labelQueue.length = 0;
 		}
 
-		if(this._label)
-		{
+		if(this._label){
 			this._label.times = 1;
 		}
 		return this;
@@ -139,8 +138,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		if(triggerOnce)
 		{
-			this._frameCallback[frameNumber] = (delta:number) =>
-			{
+			this._frameCallback[frameNumber] = (delta:number) => {
 				callback.call(this, delta);
 				this.setFrameCallback(frameNumber, null);
 			};
@@ -161,7 +159,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		}
 
 		this._label = this._labelQueue.shift();
-		this.time = 0;
+		this.reset();
 
 		return this._label;
 	}
@@ -181,6 +179,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public onTick(delta:number):void
 	{
+		delta *= this.speed;
+
 		super.onTick(delta);
 
 		if(this.paused == false)
@@ -191,20 +191,18 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			var fromFrame = this.frame;
 			var toFrame = 0;
 
-			if(label)
+			if( label )
 			{
 				toFrame = this.frames * this.time / this.duration;
 
-				if(label.times != -1)
+				if( label.times != -1 )
 				{
-					if(label.times - Math.ceil((toFrame + 2) / label.duration) < 0)
+					if( label.times - Math.ceil((toFrame+2) / label.duration) < 0 )
 					{
-						if(this._labelQueue.length > 0)
+						if( this._labelQueue.length > 0 )
 						{
 							this.gotoNextLabel();
-						}
-						else
-						{
+						} else {
 							this.stop();
 							return;
 						}
@@ -213,7 +211,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 				toFrame = label.index + ( toFrame % label.duration );
 
-				if(this.hasFrameCallbacks)
+				if( this.hasFrameCallbacks )
 				{
 					this.handleFrameCallback(fromFrame, toFrame | 0, delta);
 				}
@@ -245,7 +243,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public handleFrameCallback(fromFrame:number, toFrame:number, delta:number):FlumpMovie
 	{
-		if(toFrame > fromFrame)
+		if( toFrame > fromFrame )
 		{
 			for(var index = fromFrame; index < toFrame; index++)
 			{
@@ -255,7 +253,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 				}
 			}
 		}
-		else if(toFrame < fromFrame)
+		else if( toFrame < fromFrame)
 		{
 			for(var index = fromFrame; index < this.frames; index++)
 			{
@@ -288,7 +286,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		{
 			var layer = layers[i];
 			layer.reset();
-			layer.onTick((value / this.frames) * this.duration);
+			layer.onTick( (value / this.frames) * this.duration );
 			layer.setFrame(value);
 
 		}
@@ -299,24 +297,29 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
 
-		var layers = this.flumpMovieLayers,
-				length = layers.length,
-				ga = ctx.globalAlpha,
-				a, b, c, d, tx, ty, layer:FlumpMovieLayer, mtx;
+		var layers = this.flumpMovieLayers;
+		var length = layers.length;
+		var ga = ctx.globalAlpha;
 
 		for(var i = 0; i < length; i++)
 		{
-			layer = layers[i];
-			mtx = layer._storedMtx;
+			var layer:FlumpMovieLayer = layers[i];
+
 			if(layer.visible)
 			{
-				a = mtx.a, b = mtx.b, c = mtx.c, d = mtx.d, tx = mtx.tx, ty = mtx.ty;
-
+				ctx.save();
 				//layer.updateContext(ctx)
 				ctx.globalAlpha = ga * layer.alpha;
 
-				ctx.save();
-				ctx.transform(a, b, c, d, tx, ty);
+				ctx.transform(
+					layer._storedMtx.a,
+					layer._storedMtx.b,
+					layer._storedMtx.c,
+					layer._storedMtx.d,
+					layer._storedMtx.tx,// + (this.x),
+					layer._storedMtx.ty// + (this.y)
+				);
+
 				layer.draw(ctx);
 				ctx.restore();
 			}
@@ -330,9 +333,16 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		this.frame = 0;
 		this.time = 0.0;
 
-		for(var fml in this.flumpMovieLayers)
+		for(var i = 0; i < this.flumpMovieLayers.length; i++)
 		{
-			this.flumpMovieLayers[fml].reset();
+			var layer = this.flumpMovieLayers[i];
+			layer.reset();
+
+			for(var symbol in layer._symbols)
+			{
+				layer._symbols[symbol].reset();
+			}
+
 		}
 	}
 }

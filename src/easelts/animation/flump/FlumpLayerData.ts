@@ -1,16 +1,14 @@
-import DisplayObject from "../../display/DisplayObject";
-import Flump from "../FlumpLibrary";
-import FlumpMovieLayer from "./FlumpMovieLayer";
-import FlumpKeyframeData from "./FlumpKeyframeData";
-import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
-import IHashMap from "../../interface/IHashMap";
+import DisplayObject from '../../display/DisplayObject';
+import Flump from '../FlumpLibrary';
+import FlumpMovieLayer from './FlumpMovieLayer';
+import FlumpKeyframeData from './FlumpKeyframeData';
+import * as IFlumpLibrary from '../../interface/IFlumpLibrary';
 
 class FlumpLayerData {
 
 	public name:string;
 	public flipbook:boolean;
 	public flumpKeyframeDatas:Array<FlumpKeyframeData> = [];
-	private keyframes = {};
 
 	public frames:number;
 
@@ -25,14 +23,6 @@ class FlumpLayerData {
 		{
 			var keyframe = keyframes[i];
 			keyFrameData = new FlumpKeyframeData(keyframe);
-			for(var j = keyFrameData.index; j <= (keyFrameData.index + keyFrameData.duration); j++)
-			{
-				if(!this.keyframes[j]){
-					this.keyframes[j] = keyFrameData;
-				}
-			}
-
-			keyFrameData.position = this.flumpKeyframeDatas.length;
 			this.flumpKeyframeDatas.push( keyFrameData );
 		}
 
@@ -41,19 +31,26 @@ class FlumpLayerData {
 
 	public getKeyframeForFrame(frame:number):FlumpKeyframeData
 	{
-		return this.keyframes[frame];
+		var datas = this.flumpKeyframeDatas;
+		for(var i = 1; i < datas.length; i++)
+		{
+			if (datas[i].index > frame) {
+				return datas[i - 1];
+			}
+		}
+
+		return datas[datas.length - 1];
 	}
 
 	public getKeyframeAfter( flumpKeyframeData:FlumpKeyframeData):FlumpKeyframeData
 	{
-		return this.flumpKeyframeDatas[flumpKeyframeData.position + 1];
-		//for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
-		//	if (this.flumpKeyframeDatas[i] === flumpKeyframeData)
-		//	{
-		//		return this.flumpKeyframeDatas[i + 1];
-		//	}
-		//}
-		//return null;
+		for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
+			if (this.flumpKeyframeDatas[i] === flumpKeyframeData)
+			{
+				return this.flumpKeyframeDatas[i + 1];
+			}
+		}
+		return null;
 	}
 }
 

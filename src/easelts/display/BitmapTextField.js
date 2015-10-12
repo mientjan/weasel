@@ -44,6 +44,19 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./bitmapf
     function cutHex(h) {
         return (h.charAt(0) == "#") ? h.substring(1, 7) : h;
     }
+    /**
+     *
+     * @param    width: width of the text field
+     * @param    height: height of the text field
+     * @param    text: text to be displayed
+     * @param    fontName: name of the font give while registering the font.
+     * @param    fontSize: size of the font, -1 to keep the font size as exported
+     * @param    horizantalLetterSpacing: Horizantal letter space
+     * @param    verticalLetterSpacing: line spacing
+     * @param    hAlign: Horizantal alignment: accepted parameters: "left","right","center", default:"center"
+     * @param    vAlign: Verticle alignment: accepter parameters: "top","center",""bottom", default:"center"
+     * @param    autoScale: true, scales the text to fit in the space, default: true
+     */
     var BitmapTextField = (function (_super) {
         __extends(BitmapTextField, _super);
         function BitmapTextField(width, height, textDisplay, fontName, fontSize, horizantalLetterSpacing, verticalLetterSpacing, hAlign, vAlign, autoScale) {
@@ -83,6 +96,12 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./bitmapf
                 throw new Error("BitmapTextField: Font is not registered " + fontName);
             }
         }
+        //One must register bitmapfont before creating a textfield..
+        /**
+         *
+         * @param    bitmapFont: BitmapFont instance
+         * @param    fontName: name of the font, this will be used later while creating the text field.
+         */
         BitmapTextField.registerBitmapFont = function (bitmapFont, fontName) {
             if (BitmapTextField.bitmapFonts[fontName] == null) {
                 BitmapTextField.bitmapFonts[fontName] = bitmapFont;
@@ -106,12 +125,15 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./bitmapf
         BitmapTextField.prototype.getWidth = function () {
             return this.containerWidth;
         };
+        //height of the container, the width given while creating text field
         BitmapTextField.prototype.getHeight = function () {
             return this.containerHeight;
         };
+        //actual text width.
         BitmapTextField.prototype.getActualWidth = function () {
             return this.actualWidth;
         };
+        //shows a red colored bounding box, useful for debugging.
         BitmapTextField.prototype.showBorder = function (visible) {
             if (visible == null) {
                 visible = true;

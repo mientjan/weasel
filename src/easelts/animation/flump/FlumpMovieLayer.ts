@@ -1,40 +1,39 @@
-import DisplayObject from "../../display/DisplayObject";
-import FlumpLibrary from "../FlumpLibrary";
-import FlumpLayerData from "./FlumpLayerData";
-import FlumpKeyframeData from "./FlumpKeyframeData";
-import FlumpTexture from "./FlumpTexture";
-import FlumpMovie from "./FlumpMovie";
-import FlumpLabelData from "./FlumpLabelData";
+import DisplayObject from '../../display/DisplayObject';
+import FlumpLibrary from '../FlumpLibrary';
+import FlumpLayerData from './FlumpLayerData';
+import FlumpKeyframeData from './FlumpKeyframeData';
+import FlumpTexture from './FlumpTexture';
+import FlumpMovie from './FlumpMovie';
+import FlumpLabelData from './FlumpLabelData';
 import IHashMap from "../../interface/IHashMap";
-import DisplayType from "../../enum/DisplayType";
-import FlumpMtx from "./FlumpMtx";
 
 class FlumpMovieLayer extends DisplayObject
 {
 	public name:string = '';
-	//private _frame:number = 0;
+	private _frame:number = 0;
 	public flumpLayerData:FlumpLayerData;
 
-	protected _symbolType:number = DisplayType.UNKNOWN;
-	protected _symbolMovie:FlumpMovie;
-	protected _symbolTexture:FlumpTexture;
-	protected _keyframeRef:any;
-
-	//protected _symbol:FlumpMovie|FlumpTexture;
-	protected _symbols:IHashMap<FlumpMovie|FlumpTexture> = {};
+	protected _symbol:FlumpMovie|FlumpTexture;
+	public _symbols:IHashMap<FlumpMovie|FlumpTexture> = {};
 	protected _symbolName:any = null;
 
-
-	public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
+	public _storedMtx = {
+		a: 1,
+		b: 0,
+		c: 0,
+		d: 1,
+		tx: 0,
+		ty: 0
+	};
 
 	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
 	{
 		super();
 
-		this.disableMouseInteraction()
-
 		this.flumpLayerData = flumpLayerData;
 		this.name = flumpLayerData.name;
+
+		var flumpLibrary = flumpMove.flumpLibrary;
 
 		for(var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++)
 		{
@@ -42,7 +41,7 @@ class FlumpMovieLayer extends DisplayObject
 
 			if(keyframe.label)
 			{
-				flumpMove.labels[keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+				flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
 			}
 
 			if(( ( <any> keyframe.ref) != -1 && ( <any> keyframe.ref) != null) && ( keyframe.ref in this._symbols ) == false)
@@ -59,149 +58,125 @@ class FlumpMovieLayer extends DisplayObject
 
 	public onTick(delta:number):void
 	{
-		if(this._symbolType == DisplayType.DISPLAYOBJECT )
+		if(this._symbol != null && !(this._symbol instanceof FlumpTexture))
 		{
-			this._symbolMovie.onTick(delta);
+			( <FlumpMovie> this._symbol ).onTick(delta);
 		}
 	}
+
 	public setFrame(frame:number):void
 	{
 		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(frame | 0);
 
 		if(!(keyframe instanceof FlumpKeyframeData))
 		{
-			this._symbolType = DisplayType.UNKNOWN;
+			this._symbol = null;
+			return;
+		}
 
-		} else {
+		if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
+		{
+			if(this._symbol != this._symbols[keyframe.ref])
+			{
+				this._symbol = this._symbols[keyframe.ref];
+				this._symbol.reset();
+			}
+		}
+		else
+		{
+			this._symbol = null;
+			return;
+		}
 
+
+		var x:number = keyframe.x;
+		var y:number = keyframe.y;
+		var scaleX:number = keyframe.scaleX;
+		var scaleY:number = keyframe.scaleY;
+		var skewX:number = keyframe.skewX;
+		var skewY:number = keyframe.skewY;
+		var pivotX:number = keyframe.pivotX;
+		var pivotY:number = keyframe.pivotY;
+		var alpha:number = keyframe.alpha;
+
+		var sinX = 0.0;
+		var cosX = 1.0;
+		var sinY = 0.0;
+		var cosY = 1.0;
+
+		if(keyframe.index != (frame | 0) && keyframe.tweened)
+		{
 			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
-			var x:number = keyframe.x;
-			var y:number = keyframe.y;
-			var scaleX:number = keyframe.scaleX;
-			var scaleY:number = keyframe.scaleY;
-			var skewX:number = keyframe.skewX;
-			var skewY:number = keyframe.skewY;
-			var pivotX:number = keyframe.pivotX;
-			var pivotY:number = keyframe.pivotY;
-			var alpha:number = keyframe.alpha;
 
-			var sinX = 0.0;
-			var cosX = 1.0;
-			var sinY = 0.0;
-			var cosY = 1.0;
-
-			if(keyframe.index != (frame | 0) && keyframe.tweened)
+			if(nextKeyframe instanceof FlumpKeyframeData)
 			{
+				var interped = (frame - keyframe.index) / keyframe.duration;
+				var ease = keyframe.ease;
 
-
-				if(nextKeyframe instanceof FlumpKeyframeData)
+				if(ease != 0)
 				{
-					var interped = (frame - keyframe.index) / keyframe.duration;
-					var ease = keyframe.ease;
-
-					if(ease != 0)
+					var t = 0.0;
+					if(ease < 0)
 					{
-						var t = 0.0;
-						if(ease < 0)
-						{
-							var inv = 1 - interped;
-							t = 1 - inv * inv;
-							ease = 0 - ease;
-						}
-						else
-						{
-							t = interped * interped;
-						}
-						interped = ease * t + (1 - ease) * interped;
+						var inv = 1 - interped;
+						t = 1 - inv * inv;
+						ease = 0 - ease;
 					}
-
-					x = x + (nextKeyframe.x - x) * interped;
-					y = y + (nextKeyframe.y - y) * interped;
-					scaleX = scaleX + (nextKeyframe.scaleX - scaleX) * interped;
-					scaleY = scaleY + (nextKeyframe.scaleY - scaleY) * interped;
-					skewX = skewX + (nextKeyframe.skewX - skewX) * interped;
-					skewY = skewY + (nextKeyframe.skewY - skewY) * interped;
-					alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
-				}
-			}
-
-			if(skewX != 0)
-			{
-				sinX = Math.sin(skewX);
-				cosX = Math.cos(skewX);
-			}
-
-			if(skewY != 0)
-			{
-				sinY = Math.sin(skewY);
-				cosY = Math.cos(skewY);
-			}
-
-			this._storedMtx.a = scaleX * cosY;
-			this._storedMtx.b = scaleX * sinY;
-			this._storedMtx.c = -scaleY * sinX;
-			this._storedMtx.d = scaleY * cosX;
-
-			this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
-			this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
-
-
-			this.alpha = alpha;
-			this.visible = keyframe.visible;
-
-			if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
-			{
-				if(this._keyframeRef != keyframe.ref)
-				{
-					var symbol = this._symbols[keyframe.ref];
-					this._keyframeRef = keyframe.ref;
-					this._symbolType = symbol.type;
-
-					if(symbol.type == DisplayType.DISPLAYOBJECT)
+					else
 					{
-						this._symbolMovie = <FlumpMovie> symbol;
-						this._symbolMovie.reset();
+						t = interped * interped;
 					}
-					else if(symbol.type == DisplayType.TEXTURE)
-					{
-						this._symbolTexture = <FlumpTexture> symbol;
-						this._symbolTexture.reset();
-					}
-
+					interped = ease * t + (1 - ease) * interped;
 				}
 
-			}
-			else
-			{
-				this._keyframeRef = null;
-				this._symbolType = DisplayType.UNKNOWN;
+				x = x + (nextKeyframe.x - x) * interped;
+				y = y + (nextKeyframe.y - y) * interped;
+				scaleX = scaleX + (nextKeyframe.scaleX - scaleX) * interped;
+				scaleY = scaleY + (nextKeyframe.scaleY - scaleY) * interped;
+				skewX = skewX + (nextKeyframe.skewX - skewX) * interped;
+				skewY = skewY + (nextKeyframe.skewY - skewY) * interped;
+				alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
 			}
 		}
 
+		if(skewX != 0)
+		{
+			sinX = Math.sin(skewX);
+			cosX = Math.cos(skewX);
+		}
+
+		if(skewY != 0)
+		{
+			sinY = Math.sin(skewY);
+			cosY = Math.cos(skewY);
+		}
+
+		this._storedMtx.a = scaleX * cosY;
+		this._storedMtx.b = scaleX * sinY;
+		this._storedMtx.c = -scaleY * sinX;
+		this._storedMtx.d = scaleY * cosX;
+
+		this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
+		this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
+
+
+		this.alpha = alpha;
+		this.visible = keyframe.visible;
+
+		this._frame = frame;
 	}
 
 	public reset()
 	{
-		if(this._symbolType == DisplayType.DISPLAYOBJECT) this._symbolMovie.reset();
+		if(this._symbol) this._symbol.reset();
 	}
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		if(!this.visible || !this.alpha || this.scaleX == 0 || this.scaleY == 0)
+		if(this._symbol != null && this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0)
 		{
-
-		} else {
-			if(this._symbolType == DisplayType.DISPLAYOBJECT)
-			{
-				this._symbolMovie.draw(ctx);
-			}
-			else if(this._symbolType == DisplayType.TEXTURE)
-			{
-				this._symbolTexture.draw(ctx);
-			}
+			this._symbol.draw(ctx);
 		}
-
-
 		return true;
 	}
 }

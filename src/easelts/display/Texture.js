@@ -1,4 +1,9 @@
 define(["require", "exports"], function (require, exports) {
+    /**
+     * Base class For all bitmap type drawing.
+     *
+     * @class Texture
+     */
     var Texture = (function () {
         function Texture(bitmap, source) {
             var view = bitmap, x = source.x, y = source.y, width = source.width, height = source.height;

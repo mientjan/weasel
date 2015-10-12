@@ -1,8 +1,8 @@
-import * as IFlumpLibrary from "../../interface/IFlumpLibrary";
-import FlumpTexture from "./FlumpTexture";
-import FlumpLibrary from "../FlumpLibrary";
-import IHashMap from "../../interface/IHashMap";
-import Promise from "../../../createts/util/Promise";
+import * as IFlumpLibrary from '../../interface/IFlumpLibrary';
+import FlumpTexture from './FlumpTexture';
+import FlumpLibrary from '../FlumpLibrary';
+import IHashMap from '../../interface/IHashMap';
+import Promise from '../../../createts/util/Promise';
 
 class FlumpTextureGroupAtlas
 {
@@ -27,37 +27,18 @@ class FlumpTextureGroupAtlas
 		});
 	}
 
-	public useCanvas:boolean = true;
-
-	public renderTexture:HTMLCanvasElement|HTMLImageElement;
+	public renderTexture:HTMLImageElement;
 	public flumpTextures:IHashMap<FlumpTexture> = {};
 
 	constructor( renderTexture:HTMLImageElement, json:IFlumpLibrary.IAtlas)
 	{
-		//if( this.useCanvas )
-		//{
-		//console.log(renderTexture.naturalWidth, renderTexture.naturalHeight);
-		
-			//var canvasElement = document.createElement('canvas');
-			//canvasElement.width = renderTexture.naturalWidth;
-			//canvasElement.height = renderTexture.naturalHeight;
-			//canvasElement.style['image-rendering'] = '-webkit-optimize-contrast';
-			//
-			//var ctx = canvasElement.getContext('2d');
-			//ctx['imageSmoothingEnabled'] = false;
-			//
-			//ctx.drawImage(renderTexture, 0, 0, renderTexture.naturalWidth, renderTexture.naturalHeight, 0, 0, renderTexture.naturalWidth, renderTexture.naturalHeight);
-			//
-			//this.renderTexture = <HTMLCanvasElement> canvasElement;
-		//} else {
-			this.renderTexture = <HTMLImageElement> renderTexture;
-		//}
+		this.renderTexture = renderTexture;
 
 		var textures = json.textures;
 		for(var i = 0; i < textures.length; i++)
 		{
 			var texture = textures[i];
-			this.flumpTextures[texture.symbol] = new FlumpTexture(this.renderTexture, texture);
+			this.flumpTextures[texture.symbol] = new FlumpTexture(renderTexture, texture);
 		}
 	}
 }

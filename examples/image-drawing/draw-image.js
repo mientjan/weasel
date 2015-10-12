@@ -3,5 +3,6 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
     var stage = new Stage_1.default(holder, true);
     var image = new Bitmap_1.default('../assets/image/ninepatch_red.png', 0, 0, 0, 0, 0, 0);
     stage.addChild(image);
+    // this will keep drawing the image / you can also do a update when this image is loaded.
     stage.start();
 });

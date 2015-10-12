@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", "./FlumpLabelData"], function (require, exports, FlumpLabelData_1) {
+define(["require", "exports", './FlumpLabelData'], function (require, exports, FlumpLabelData_1) {
     var FlumpLabelQueueData = (function (_super) {
         __extends(FlumpLabelQueueData, _super);
         function FlumpLabelQueueData(label, index, duration, times, delay) {

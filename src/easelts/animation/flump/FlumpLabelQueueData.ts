@@ -1,4 +1,4 @@
-import FlumpLabelData from "./FlumpLabelData";
+import FlumpLabelData from './FlumpLabelData';
 
 class FlumpLabelQueueData extends FlumpLabelData
 {

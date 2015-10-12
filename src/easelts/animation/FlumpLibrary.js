@@ -1,4 +1,4 @@
-define(["require", "exports", "../../createts/util/HttpRequest", "../../createts/util/Promise", "./flump/FlumpMovieData", "./flump/FlumpTextureGroup", "./flump/FlumpMovie"], function (require, exports, HttpRequest_1, Promise_1, FlumpMovieData_1, FlumpTextureGroup_1, FlumpMovie_1) {
+define(["require", "exports", '../../createts/util/HttpRequest', '../../createts/util/Promise', './flump/FlumpMovieData', './flump/FlumpTextureGroup', './flump/FlumpMovie'], function (require, exports, HttpRequest_1, Promise_1, FlumpMovieData_1, FlumpTextureGroup_1, FlumpMovie_1) {
     var FlumpLibrary = (function () {
         function FlumpLibrary(basePath) {
             this.movieData = [];
@@ -98,6 +98,7 @@ define(["require", "exports", "../../createts/util/HttpRequest", "../../createts
                     return movie;
                 }
             }
+            console.warn('no _symbol found: (' + name + ')');
             throw new Error("no _symbol found");
         };
         FlumpLibrary.prototype.createMovie = function (id) {
@@ -115,7 +116,8 @@ define(["require", "exports", "../../createts/util/HttpRequest", "../../createts
                     return movie;
                 }
             }
-            throw new Error("no symbol found: " + name + ',' + this);
+            console.warn('no _symbol found: (' + name + ') ', this);
+            throw new Error("no _symbol found: " + this);
         };
         FlumpLibrary.prototype.getNameFromReferenceList = function (value) {
             if (this.referenceList && typeof value == 'number') {

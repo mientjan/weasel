@@ -1,17 +1,14 @@
-import * as IFlumpLibrary from "../interface/IFlumpLibrary";
-import ILoadable from "../interface/ILoadable";
+import * as IFlumpLibrary from '../interface/IFlumpLibrary';
+import ILoadable from '../interface/ILoadable';
 
-import Signal from "../../createts/event/Signal";
-import HttpRequest from "../../createts/util/HttpRequest";
-import Promise from "../../createts/util/Promise";
-import SignalConnection from "../../createts/event/SignalConnection";
-import FlumpMovieData from "./flump/FlumpMovieData";
-import Texture from "../display/Texture";
-import FlumpTextureGroup from "./flump/FlumpTextureGroup";
-import FlumpMovie from "./flump/FlumpMovie";
-import FlumpTexture from "./flump/FlumpTexture";
-import { log } from '../../createts/util/Decorator';
-
+import Signal from '../../createts/event/Signal';
+import HttpRequest from '../../createts/util/HttpRequest';
+import Promise from '../../createts/util/Promise';
+import SignalConnection from '../../createts/event/SignalConnection';
+import FlumpMovieData from './flump/FlumpMovieData';
+import FlumpTexture from './flump/FlumpTexture';
+import FlumpTextureGroup from './flump/FlumpTextureGroup';
+import FlumpMovie from './flump/FlumpMovie';
 
 class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
@@ -58,7 +55,6 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 	public isOptimised:boolean = false;
 	public isLoaded:boolean = false;
 
-
 	constructor(basePath?:string)
 	{
 		if(basePath)
@@ -66,7 +62,6 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			this.url = basePath;
 		}
 	}
-
 
 	public load( onProgress?:(progress:number) => any):Promise<FlumpLibrary>
 	{
@@ -121,6 +116,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 					this.textureGroups.push(textureGroup);
 				}
 
+
 				this.isLoaded = true;
 				return this;
 			});
@@ -166,6 +162,8 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 
 		}
 
+		console.warn('no _symbol found: (' + name + ')');
+
 		throw new Error("no _symbol found");
 	}
 
@@ -191,7 +189,9 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			}
 		}
 
-		throw new Error("no symbol found: " + name + ',' + this);
+		console.warn('no _symbol found: (' + name + ') ', this);
+
+		throw new Error("no _symbol found: " + this);
 	}
 
 	public getNameFromReferenceList(value:string|number):string

@@ -1,16 +1,12 @@
-define(["require", "exports", "./FlumpTexture", "../../../createts/util/Promise"], function (require, exports, FlumpTexture_1, Promise_1) {
+define(["require", "exports", './FlumpTexture', '../../../createts/util/Promise'], function (require, exports, FlumpTexture_1, Promise_1) {
     var FlumpTextureGroupAtlas = (function () {
         function FlumpTextureGroupAtlas(renderTexture, json) {
-            //if( this.useCanvas )
-            //{
-            //console.log(renderTexture.naturalWidth, renderTexture.naturalHeight);
-            this.useCanvas = true;
             this.flumpTextures = {};
             this.renderTexture = renderTexture;
             var textures = json.textures;
             for (var i = 0; i < textures.length; i++) {
                 var texture = textures[i];
-                this.flumpTextures[texture.symbol] = new FlumpTexture_1.default(this.renderTexture, texture);
+                this.flumpTextures[texture.symbol] = new FlumpTexture_1.default(renderTexture, texture);
             }
         }
         FlumpTextureGroupAtlas.load = function (flumpLibrary, json) {
