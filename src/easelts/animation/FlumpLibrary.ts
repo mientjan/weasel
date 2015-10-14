@@ -35,6 +35,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 		} else {
 			flumpLibrary.url = baseDir;
 		}
+
 		
 		return HttpRequest.getJSON(url).then((json:IFlumpLibrary.ILibrary) =>
 		{

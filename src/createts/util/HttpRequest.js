@@ -52,9 +52,9 @@ define(["require", "exports", "./Promise"], function (require, exports, Promise_
                 client.open(method, uri);
                 client.send();
                 client.onload = function () {
-                    if (this.status == 200) {
+                    if (this.status === 200 || this.status === 0) {
                         // Performs the function "resolve" when this.status is equal to 200
-                        resolve(this.response);
+                        resolve(this.response || this.responseText);
                     }
                     else {
                         // Performs the function "reject" when this.status is different than 200
