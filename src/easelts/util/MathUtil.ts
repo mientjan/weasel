@@ -1,3 +1,4 @@
+import IVector2 from "../interface/IVector2";
 /**
  * @class MathUtil
  */
@@ -105,8 +106,8 @@ class MathUtil
 	}
 
 	/**
-	 * 	Random float from <0, 1> with 16 bits of randomness
-	 * 	(standard Math.random() creates repetitive patterns when applied over larger space)
+	 *    Random float from <0, 1> with 16 bits of randomness
+	 *    (standard Math.random() creates repetitive patterns when applied over larger space)
 	 *
 	 * @method random16
 	 * @returns {number}
@@ -178,6 +179,56 @@ class MathUtil
 	public static isPowerOfTwo(value:number):boolean
 	{
 		return ( value & ( value - 1 ) ) === 0 && value !== 0;
+	}
+
+	/**
+	 * @method getDistance
+	 * @param point0
+	 * @param point1
+	 * @returns {number}
+	 */
+	public static getDistance(point0:IVector2, point1:IVector2):number
+	{
+		var dx = point1.x - point0.x,
+			dy = point1.y - point0.y;
+		return Math.abs(Math.sqrt(dx * dx + dy * dy));
+	}
+
+	/**
+	 * @method getClosestVector2
+	 * @param point0
+	 * @param point1
+	 * @returns {number}
+	 */
+	public static getDistanceFast(point0:IVector2, point1:IVector2):number
+	{
+		var dx = point1.x - point0.x,
+			dy = point1.y - point0.y;
+		return Math.abs(dx * dx + dy * dy);
+	}
+
+	/**
+	 * @method getClosestVector2
+	 * @param value
+	 * @param points
+	 * @returns {IVector2}
+	 */
+	public static getClosestVector2(value:IVector2, points:Array<IVector2>):IVector2
+	{
+		var prevDist = 99999999999;
+		var point = null;
+		var index = null;
+		for(var i = 0; i < points.length; i++)
+		{
+			var dist = MathUtil.getDistanceFast(value, points[i]);
+			if(dist < prevDist)
+			{
+				prevDist = dist;
+				point = points[i];
+			}
+		}
+
+		return point;
 	}
 }
 
