@@ -40,7 +40,7 @@ class NinePatch
 
 		if(!this.texture.isLoaded())
 		{
-			this.texture.load(() => this.onLoad());
+			this.texture.load().then(() => this.onLoad());
 		}
 		else
 		{
@@ -50,19 +50,24 @@ class NinePatch
 
 	protected onLoad()
 	{
+		if(!this._isLoaded)
+		{
+			var source = new Rectangle(0, 0, 10, 10);
+			var dest = new Rectangle(0, 0, 10, 10);
+			var texture = this.texture;
 
-		var source = new Rectangle(0, 0, 10, 10);
-		var dest = new Rectangle(0, 0, 10, 10);
-		var texture = this.texture;
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
+			this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
 
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._textures.push(new TexturePosition(texture, source.x, source.y, source.width, source.height, dest.x, dest.y, dest.width, dest.height));
-		this._isLoaded = true;
+			this._isLoaded = true;
+		}
 	}
 
 	/**

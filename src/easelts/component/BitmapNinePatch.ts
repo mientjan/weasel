@@ -11,7 +11,6 @@ class BitmapNinePatch extends DisplayObject {
 	public type:DisplayType = DisplayType.TEXTURE;
 
 	private _patch:NinePatch;
-	private _patchCoordinates:NinePatchCoordinates;
 
 	public _isLoaded:boolean = false;
 
@@ -20,8 +19,10 @@ class BitmapNinePatch extends DisplayObject {
 
 		this._patch = ninePatch;
 
+		console.log(this._patch.texture.isLoaded());
+
 		if( !this._patch.texture.isLoaded() ){
-			this._patch.texture.load(this.onLoad.bind(this));
+			this._patch.texture.load().then(this.onLoad.bind(this));
 		} else {
 			this.onLoad();
 		}
@@ -29,6 +30,8 @@ class BitmapNinePatch extends DisplayObject {
 
 	private onLoad():void
 	{
+		console.log('ONLOAD!!', this);
+		
 		this._isLoaded = true;
 	}
 
@@ -63,9 +66,12 @@ class BitmapNinePatch extends DisplayObject {
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
+
 		if(!this._isLoaded){
 			return false;
 		}
+
+
 
 		if(super.draw(ctx, ignoreCache))
 		{

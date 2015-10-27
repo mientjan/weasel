@@ -1,7 +1,6 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary', "../../src/easelts/util/ArrayUtil", "../../src/easelts/display/StageWebGL"], function (require, exports, Stage_1, FlumpLibrary_1, ArrayUtil_1, StageWebGL_1) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary', "../../src/easelts/util/ArrayUtil"], function (require, exports, Stage_1, FlumpLibrary_1, ArrayUtil_1) {
     var holder = document.getElementById('holder');
-    var stage = new Stage_1.default(holder, true).setFpsCounter(true);
-    var stage = new StageWebGL_1.default(holder, true).setFpsCounter(true);
+    var stage = new Stage_1.default(holder, { autoResize: true }).setFpsCounter(true);
     //stage.autoClear = false;
     //var flump = new FlumpAnimation('../../assets/flump/smoke');
     //flump.

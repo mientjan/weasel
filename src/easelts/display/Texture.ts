@@ -4,6 +4,7 @@ import IDisplayObject from "../interface/IDisplayObject";
 import Signal from "../../createts/event/Signal";
 import Promise from "../../createts/util/Promise";
 import ILoadable from "../interface/ILoadable";
+import {log} from "../../createts/util/Decorator";
 
 /**
  * Base class For all bitmap type drawing.
@@ -56,13 +57,21 @@ class Texture implements ILoadable<Texture>
 			});
 		}
 
-		return new Promise<Texture>((resolve:(result:Texture) => any, reject:Function) => this._load(resolve) );
+		return new Promise<Texture>((resolve:(result:Texture) => any, reject:Function) => {
+			this._load(() => {
+				console.log('RESOLVED');
+				
+				resolve(this);
+			})
+		} );
 	}
 
-	protected _load(onComplete:(result:Texture) => any)
+	protected _load(onComplete:(result:Texture) => any):void
 	{
 		var bitmap:any = this.bitmap;
 		var tagName:string = '';
+
+		console.log('_load');
 
 		if( bitmap ){
 			tagName = bitmap.tagName.toLowerCase();

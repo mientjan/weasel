@@ -32,12 +32,18 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
                     resolve(_this);
                 });
             }
-            return new Promise_1.default(function (resolve, reject) { return _this._load(resolve); });
+            return new Promise_1.default(function (resolve, reject) {
+                _this._load(function () {
+                    console.log('RESOLVED');
+                    resolve(_this);
+                });
+            });
         };
         Texture.prototype._load = function (onComplete) {
             var _this = this;
             var bitmap = this.bitmap;
             var tagName = '';
+            console.log('_load');
             if (bitmap) {
                 tagName = bitmap.tagName.toLowerCase();
             }

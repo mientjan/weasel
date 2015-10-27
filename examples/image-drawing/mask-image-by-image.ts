@@ -5,7 +5,7 @@ import Container from '../../src/easelts/display/Container';
 import CanvasBuffer from "../../src/easelts/display/buffer/CanvasBuffer";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
-var stage = new Stage(holder, true);
+var stage = new Stage(holder, {autoResize:true});
 
 var container = new Container().setBuffer(new CanvasBuffer(500, 500))
 var image = new Bitmap('../assets/image/ninepatch_red.png', '100%', '100%', 0, 0, 0, 0);

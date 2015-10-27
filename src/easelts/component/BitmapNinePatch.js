@@ -18,14 +18,16 @@ define(["require", "exports", "../display/DisplayObject", "../geom/Size"], funct
             this.type = 2048;
             this._isLoaded = false;
             this._patch = ninePatch;
+            console.log(this._patch.texture.isLoaded());
             if (!this._patch.texture.isLoaded()) {
-                this._patch.texture.load(this.onLoad.bind(this));
+                this._patch.texture.load().then(this.onLoad.bind(this));
             }
             else {
                 this.onLoad();
             }
         }
         BitmapNinePatch.prototype.onLoad = function () {
+            console.log('ONLOAD!!', this);
             this._isLoaded = true;
         };
         BitmapNinePatch.prototype.isLoaded = function () {
