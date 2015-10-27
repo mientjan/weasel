@@ -18,7 +18,7 @@ define(["require", "exports", "./AbstractBehavior", "../display/Stage"], functio
         }
         FollowMouseBehavior.prototype.initialize = function (displayObject) {
             _super.prototype.initialize.call(this, displayObject);
-            this.owner.enableMouseInteraction();
+            this.owner.setMouseInteraction(true);
             this.owner.cursor = 'pointer';
             this._stage = this.owner.stage;
             if (!this._stage) {

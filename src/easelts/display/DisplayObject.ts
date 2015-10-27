@@ -670,6 +670,21 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		return this.height;
 	}
 
+	public setScale(scale:number):any
+	{
+		this.scaleX = scale;
+		this.scaleY = scale;
+
+		return this;
+	}
+
+	public setXY(x:number|string, y:number|string):any
+	{
+		this.setX(x);
+		this.setY(y);
+		return this;
+	}
+
 	/**
 	 * @method setX
 	 * @param {string|number} x
@@ -889,18 +904,9 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @method enableMouseInteraction
 	 * @return void
 	 */
-	public enableMouseInteraction():void
+	public setMouseInteraction(value:boolean):void
 	{
-		this.mouseEnabled = true;
-	}
-
-	/**
-	 * @method disableMouseInteraction
-	 * @return void
-	 */
-	public disableMouseInteraction():void
-	{
-		this.mouseEnabled = false;
+		this.mouseEnabled = value;
 	}
 
 	/**
@@ -1901,7 +1907,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 			this.parent.removeChild(this);
 		}
 
-		this.parent = null;
+		this.parent = <any> null;
 		this.destructAllBehaviors();
 
 		super.destruct();

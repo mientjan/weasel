@@ -2,6 +2,7 @@ import EventDispatcher from "../createts/event/EventDispatcher";
 //import Ticker from "../createts/util/Ticker";
 import Ease from "../tweents/Ease";
 import Interval from "../createts/util/Interval";
+import IHashMap from "../easelts/interface/IHashMap";
 
 
 /*
@@ -158,7 +159,7 @@ class Tween extends EventDispatcher
 	 * @type Object
 	 * @static
 	 */
-	public static IGNORE = {};
+	public static IGNORE:IHashMap<any> = {};
 
 	/**
 	 * @property _listeners
@@ -166,7 +167,7 @@ class Tween extends EventDispatcher
 	 * @static
 	 * @protected
 	 */
-	public static _tweens = [];
+	public static _tweens:Array<Tween> = [];
 
 	/**
 	 * @property _plugins
@@ -174,7 +175,7 @@ class Tween extends EventDispatcher
 	 * @static
 	 * @protected
 	 */
-	public static _plugins = {};
+	public static _plugins:IHashMap<any> = {};
 
 	public static start():void
 	{

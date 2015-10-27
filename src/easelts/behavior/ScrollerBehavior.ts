@@ -31,7 +31,7 @@ class ScrollerBehavior extends AbstractBehavior
 	{
 		super.initialize(container);
 
-		this.owner.enableMouseInteraction();
+		this.owner.setMouseInteraction(true);
 		this.owner.cursor = 'pointer';
 
 		if(this.owner.children.length == 0

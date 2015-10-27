@@ -15,7 +15,7 @@ import SignalConnection from "../../createts/event/SignalConnection";
  */
 class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, IPlayable
 {
-	public type:DisplayType = DisplayType.BITMAP;
+	public type:DisplayType = DisplayType.TEXTURE;
 
 	public _playing = false;
 	public _timeIndex:number = -1;
@@ -32,7 +32,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 	public fps:number;
 	public spriteSheet:SpriteSheet = null;
 
-	public isLoaded:boolean = false;
+	protected _isLoaded:boolean = false;
 
 	/**
 	 *
@@ -72,9 +72,14 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		this._frameTime = 1000 / this.fps;
 	}
 
+	public isLoaded():boolean
+	{
+		return this._isLoaded;
+	}
+
 	public load( onProgress?:(progress:number) => any):Promise<ImageSequence>
 	{
-		if( this.isLoaded)
+		if( this._isLoaded )
 		{
 			onProgress(1);
 
@@ -84,7 +89,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		}
 
 		return this.spriteSheet.load(onProgress).then(spriteSheet => {
-			this.isLoaded = true;
+			this._isLoaded = true;
 			this.parseLoad();
 
 			return this;

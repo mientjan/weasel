@@ -119,11 +119,11 @@ class Stage extends Container<IDisplayObject>
 	// public properties:
 	public type:DisplayType = DisplayType.STAGE;
 
-	private _option:StageOption;
-	private _isRunning:boolean = false;
-	private _fps:number = 60;
-	private _fpsCounter:Stats = null;
-	private _ticker:Interval;
+	protected _option:StageOption;
+	protected _isRunning:boolean = false;
+	protected _fps:number = 60;
+	protected _fpsCounter:Stats = null;
+	protected _ticker:Interval;
 
 	public _eventListeners:{
 		[name:string]: {
@@ -149,6 +149,7 @@ class Stage extends Container<IDisplayObject>
 	 * @type HTMLCanvasElement
 	 **/
 	public ctx:IContext2D = null;
+	public canvas:HTMLCanvasElement = null;
 
 	/**
 	 *
@@ -363,14 +364,12 @@ class Stage extends Container<IDisplayObject>
 			}
 		}
 
-		canvas.style['image-rendering'] = '-webkit-optimize-contrast';
-		this.ctx = canvas.getContext('2d');
-		this.ctx.globalCompositeOperation = 'source-over';
+		this.canvas = canvas;
+
 
 		this.enableDOMEvents(true);
 		this.setFps(this._fps);
 
-		this.setQuality(QualityType.LOW);
 		this.stage = this;
 
 		if( this._option.autoResize ){
@@ -431,13 +430,15 @@ class Stage extends Container<IDisplayObject>
 	 * @method update
 	 * @param {TimeEvent} [timeEvent=0]
 	 **/
-	public update = (delta:number):void =>
+	public update(delta:number):void
 	{
 		var autoClear = this._option.autoClear;
 		var autoClearColor = this._option.autoClearColor;
 
 		if(!this.ctx)
 		{
+			this.ctx = this.getContext();
+
 			return;
 		}
 
@@ -504,52 +505,7 @@ class Stage extends Container<IDisplayObject>
 		this.drawendSignal.emit();
 	}
 
-	/**
-	 * Propagates a tick event through the display list. This is automatically called by {{#crossLink "Stage/update"}}{{/crossLink}}
-	 * unless {{#crossLink "Stage/tickOnUpdate:property"}}{{/crossLink}} is set to false.
-	 *
-	 * Any parameters passed to `tick()` will be included as an array in the "param" property of the event object dispatched
-	 * to {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}} event handlers. Additionally, if the first parameter
-	 * is a {{#crossLink "Ticker/tick:event"}}{{/crossLink}} event object (or has equivalent properties), then the delta,
-	 * time, runTime, and paused properties will be copied to the event object.
-	 *
-	 * Some time-based features in EaselJS (for example {{#crossLink "Sprite/framerate"}}{{/crossLink}} require that
-	 * a {{#crossLink "Ticker/tick:event"}}{{/crossLink}} event object (or equivalent) be passed as the first parameter
-	 * to tick(). For example:
-	 *
-	 *        Ticker.on("tick", handleTick);
-	 *        function handleTick(evtObj) {
-	 * 	    	// do some work here, then update the stage, passing through the tick event object as the first param
-	 * 	    	// and some custom data as the second and third param:
-	 * 	    	myStage.update(evtObj, "hello", 2014);
-	 * 	    }
-	 *
-	 *        // ...
-	 *        myDisplayObject.on("tick", handleDisplayObjectTick);
-	 *        function handleDisplayObjectTick(evt) {
-	 * 	    	console.log(evt.params[0]); // the original tick evtObj
-	 * 	    	console.log(evt.delta, evt.paused); // ex. "17 false"
-	 * 	    	console.log(evt.params[1], evt.params[2]); // "hello 2014"
-	 * 	    }
-	 *
-	 * @method onTick
-	 * @param {*} [params]* Params to include when ticking descendants. The first param should usually be a tick event.
-	 **/
-	public tick(delta:number):void
-	{
-		if( delta > 1000 )
-		{
-			delta = 1000;
-		}
 
-		if( delta > 0 && this.tickEnabled)
-		{
-			this.tickstartSignal.emit();
-			this.onTick(delta);
-			this.tickendSignal.emit();
-		}
-
-	}
 
 	/**
 	 * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
@@ -657,8 +613,8 @@ class Stage extends Container<IDisplayObject>
 		{
 			return void 0;
 		}
-		this.enableMouseInteraction();
 
+		this.setMouseInteraction(true);
 
 		this._mouseOverIntervalID = setInterval(() =>
 		{
@@ -695,7 +651,7 @@ class Stage extends Container<IDisplayObject>
 			}
 			this._eventListeners = null;
 		}
-		else if(enable && !eventListeners && this.ctx.canvas)
+		else if(enable && !eventListeners && this.canvas)
 		{
 			var windowsObject = window['addEventListener'] ? <any> window : <any> document;
 			eventListeners = this._eventListeners = {};
@@ -712,7 +668,7 @@ class Stage extends Container<IDisplayObject>
 			};
 
 			eventListeners["mousedown"] = {
-				window: this.ctx.canvas,
+				window: this.canvas,
 				fn: e => this._handleMouseDown(e)
 			};
 
@@ -731,6 +687,11 @@ class Stage extends Container<IDisplayObject>
 				o.window.addEventListener(name, o.fn, false);
 			}
 		}
+	}
+
+	public getContext():CanvasRenderingContext2D
+	{
+		return this.canvas.getContext('2d');
 	}
 
 	/**
@@ -885,12 +846,12 @@ class Stage extends Container<IDisplayObject>
 	 **/
 	public _updatePointerPosition(id:number, e:MouseEvent, pageX:number, pageY:number)
 	{
-		var rect = this._getElementRect(this.ctx.canvas);
+		var rect = this._getElementRect(this.canvas);
 		pageX -= rect.left;
 		pageY -= rect.top;
 
-		var w = this.ctx.canvas.width;
-		var h = this.ctx.canvas.height;
+		var w = this.canvas.width;
+		var h = this.canvas.height;
 		pageX /= (rect.right - rect.left) / w;
 		pageY /= (rect.bottom - rect.top) / h;
 		var pointerData = this._getPointerData(id);
@@ -1210,18 +1171,11 @@ class Stage extends Container<IDisplayObject>
 		window.removeEventListener('resize', <any> this._onResizeEventListener);
 	}
 
-	public enableMouseInteraction():void
+	public setMouseInteraction(value:boolean):void
 	{
-		this.enableDOMEvents(true);
+		this.enableDOMEvents(value);
 
-		super.enableMouseInteraction();
-	}
-
-	public disableMouseInteraction():void
-	{
-		this.enableDOMEvents(false);
-
-		super.disableMouseInteraction();
+		super.setMouseInteraction(value);
 	}
 
 	/**
@@ -1239,7 +1193,7 @@ class Stage extends Container<IDisplayObject>
 		}
 
 		this._ticker = new Interval(this.getFps())
-				.attach(this.update);
+				.attach(this.update.bind(this));
 
 		this._isRunning = true;
 
@@ -1293,11 +1247,11 @@ class Stage extends Container<IDisplayObject>
 
 		if(this.width != width || this.height != height)
 		{
-			this.ctx.canvas.width = width * pixelRatio;
-			this.ctx.canvas.height = height * pixelRatio;
+			this.canvas.width = width * pixelRatio;
+			this.canvas.height = height * pixelRatio;
 
-			this.ctx.canvas.style.width = '' + width + 'px';
-			this.ctx.canvas.style.height = '' + height + 'px';
+			this.canvas.style.width = '' + width + 'px';
+			this.canvas.style.height = '' + height + 'px';
 
 			super.onResize(width, height);
 

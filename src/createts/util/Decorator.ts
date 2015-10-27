@@ -44,7 +44,7 @@ export function throttle(threshhold:number)
 	}
 }
 
-export function readonly(target, key, descriptor) {
+export function readonly(target:Object, key:string, descriptor: TypedPropertyDescriptor<any>) {
 	descriptor.writable = false;
 }
 
@@ -53,7 +53,6 @@ export function enumerable(value:boolean = false) {
 		descriptor.enumerable = value;
 	}
 }
-
 
 export function configurable(value:boolean = false) {
 	return function (target: Object, key:string, descriptor: TypedPropertyDescriptor<any>) {

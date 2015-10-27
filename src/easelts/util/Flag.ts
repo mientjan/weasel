@@ -1,35 +1,38 @@
+/**
+ *
+ */
 class Flag<T>
 {
 	public value:number = 0;
 
-	public isPowerOfTwo(n:number)
+	public contains(value:number|T)
 	{
-		return n !== 0 && (n & (n - 1)) === 0;
+		var n = <number> value;
+		return (this.value & n) === value;
 	}
 
-	public contains(val:number)
+	public add(value:number|T)
 	{
-		return (this.value & val) === val;
+		var n = <number> value;
+		this.value |= n;
+		return this.contains(value);
 	}
 
-	public add(val:number)
+	public remove(value:number|T)
 	{
-		this.value |= val;
-		return this.contains(val);
+		var n = <number> value;
+
+		this.value = (this.value ^ n) & this.value;
+		return !this.contains(value);
 	}
 
-	public remove(val:number)
+	public equals(value:number|T)
 	{
-		this.value = (this.value ^ val) & this.value;
-		return !this.contains(val);
+		var n = <number> value;
+		return this.value === (n + 0);
 	}
 
-	public equals(val:number)
-	{
-		return this.value === (val + 0);
-	}
-
-	public valueOf()
+	public valueOf():number
 	{
 		return this.value;
 	}

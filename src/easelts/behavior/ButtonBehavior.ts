@@ -24,7 +24,7 @@ class ButtonBehavior extends AbstractBehavior
 	{
 		super.initialize(displayObject);
 
-		this.owner.enableMouseInteraction();
+		this.owner.setMouseInteraction(true);
 		this.owner.cursor = 'pointer';
 
 		if(typeof(this.owner['onClick']) == 'function')

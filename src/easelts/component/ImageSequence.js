@@ -5,29 +5,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", "../display/DisplayObject", "../../createts/util/Promise"], function (require, exports, DisplayObject_1, Promise_1) {
-    /**
-     * @class ImageSequence
-     */
     var ImageSequence = (function (_super) {
         __extends(ImageSequence, _super);
-        /**
-         *
-         * @param {string[]} images
-         * @param {number} fps
-         * @param {string|number} width
-         * @param {string|number} height
-         * @param {string|number} x
-         * @param {string|number} y
-         * @param {string|number} regX
-         * @param {string|number} regY
-         */
         function ImageSequence(spriteSheet, fps, width, height, x, y, regX, regY) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 128 /* BITMAP */;
+            this.type = 2048;
             this._playing = false;
             this._timeIndex = -1;
             this._frame = 0;
@@ -38,7 +24,7 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._onComplete = null;
             this.paused = true;
             this.spriteSheet = null;
-            this.isLoaded = false;
+            this._isLoaded = false;
             this.spriteSheet = spriteSheet;
             this.fps = fps;
             if (this.isLoaded) {
@@ -53,16 +39,19 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._length = this.spriteSheet.getNumFrames(animations[0]);
             this._frameTime = 1000 / this.fps;
         };
+        ImageSequence.prototype.isLoaded = function () {
+            return this._isLoaded;
+        };
         ImageSequence.prototype.load = function (onProgress) {
             var _this = this;
-            if (this.isLoaded) {
+            if (this._isLoaded) {
                 onProgress(1);
                 return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
                 });
             }
             return this.spriteSheet.load(onProgress).then(function (spriteSheet) {
-                _this.isLoaded = true;
+                _this._isLoaded = true;
                 _this.parseLoad();
                 return _this;
             }).catch(function () {

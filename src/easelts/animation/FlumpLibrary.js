@@ -4,8 +4,8 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
             this.movieData = [];
             this.textureGroups = [];
             this.fps = 0;
+            this._isLoaded = false;
             this.isOptimised = false;
-            this.isLoaded = false;
             if (basePath) {
                 this.url = basePath;
             }
@@ -31,9 +31,12 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
                 return flumpLibrary.processData(json, onProcess);
             });
         };
+        FlumpLibrary.prototype.isLoaded = function () {
+            return this._isLoaded;
+        };
         FlumpLibrary.prototype.load = function (onProgress) {
             var _this = this;
-            if (this.isLoaded) {
+            if (this._isLoaded) {
                 onProgress(1);
                 return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
@@ -69,7 +72,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
                     var textureGroup = textureGroups[i];
                     _this.textureGroups.push(textureGroup);
                 }
-                _this.isLoaded = true;
+                _this._isLoaded = true;
                 return _this;
             });
         };

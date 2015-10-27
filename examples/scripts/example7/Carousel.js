@@ -1,10 +1,11 @@
-var __extends = this.__extends || function (d, b) {
+///<reference path="../../assets/scripts/lib/gsap/greensock.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../src/easelts/display/Container'], function (require, exports, Container) {
+define(["require", "exports"], function (require, exports) {
     var Carousel = (function (_super) {
         __extends(Carousel, _super);
         function Carousel(width, height, x, y, regX, regY) {
@@ -85,7 +86,7 @@ define(["require", "exports", '../../../src/easelts/display/Container'], functio
             }
         };
         Carousel.prototype.onResize = function (width, height) {
-            _super.prototype.onResize.call(this, width, height);
+            _super.onResize.call(this, width, height);
             this.reset();
         };
         return Carousel;

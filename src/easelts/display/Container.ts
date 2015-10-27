@@ -35,6 +35,7 @@ import Rectangle from "../geom/Rectangle";
 
 import TimeEvent from "../../createts/event/TimeEvent";
 import Stage from "./Stage";
+import CanvasBuffer from "./buffer/CanvasBuffer";
 import Matrix2 from "../geom/Matrix2";
 import IDisplayObject from "../interface/IDisplayObject";
 
@@ -95,15 +96,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 **/
 	public tickChildren:boolean = true;
 
-	private _isRenderIsolated:boolean = false;
-	private _willUpdateRenderIsolation:boolean = true;
-
-	/**
-	 *
-	 * @type {HTMLCanvasElement}
-	 * @private
-	 */
-	protected _renderIsolationCanvas:HTMLCanvasElement = null;
+	protected _buffer:CanvasBuffer = null;
 
 	/**
 	 * @constructor
@@ -133,74 +126,13 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	}
 
 	/**
-	 * All render calls done in this Container are done on a seperate canvas. This way you can add multiple COMPOSITE_OPERATIONS in you draw loops.
-	 * @param value
-	 * @returns {Container}
-	 */
-	public setRenderIsolation(value:boolean):Container<T>
-	{
-		if(this._isRenderIsolated && !value)
-		{
-			this._isRenderIsolated = value;
-			this._renderIsolationCanvas = null;
-		}
-		else if(!this._isRenderIsolated && value)
-		{
-			this._isRenderIsolated = value;
-			this._renderIsolationCanvas = Methods.createCanvas();
-		}
-
-		return this;
-	}
-
-	/**
-	 * @method isRenderIsolated
-	 * @returns {boolean}
-	 */
-	public isRenderIsolated():boolean
-	{
-		return this._isRenderIsolated
-	}
-
-	/**
-	 * @method willUpdateRenderIsolation
-	 * @returns {boolean}
-	 */
-	public willUpdateRenderIsolation():boolean
-	{
-		return this._willUpdateRenderIsolation
-	}
-
-	/**
-	 * When set to false, no internal calls will be to update the view. Basicle it works like a cache'd container.
-	 *
-	 * @metho
-	 * @param {boolean} value
-	 */
-	public setUpdateRenderIsolation(value:boolean):void
-	{
-		if(!this._isRenderIsolated)
-		{
-			throw new Error('draw calls are not isolated, first call setRenderIsolation(true)')
-		}
-
-		this._willUpdateRenderIsolation = value;
-	}
-
-	/**
-	 *
 	 * @method enableMouseInteraction
+	 * @return void
 	 */
-	public enableMouseInteraction():void
+	public setMouseInteraction(value:boolean):void
 	{
-		this.mouseChildren = true;
-		super.enableMouseInteraction();
-	}
-
-	public disableMouseInteraction():void
-	{
-		this.mouseChildren = false;
-		super.disableMouseInteraction();
+		this.mouseChildren = value;
+		super.setMouseInteraction(value);
 	}
 
 	/**
@@ -216,53 +148,44 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		var localCtx:CanvasRenderingContext2D = ctx;
+		if(this._buffer)
+		{
+			var localCtx = this._buffer.context;
+		}
+		else
+		{
+			var localCtx:CanvasRenderingContext2D = ctx;
+		}
 
 		if(super.draw(localCtx, ignoreCache))
 		{
 			return true;
 		}
 
-		//if(this._isRenderIsolated)
-		//{
-		//	localCtx = this._renderIsolationCanvas.getContext('2d');
-		//
-		//	if(this._willUpdateRenderIsolation)
-		//	{
-		//		localCtx.clearRect(0, 0, this.width, this.height);
-		//	}
-		//}
-		//
-		//if(this._willUpdateRenderIsolation)
-		//{
-			// this ensures we don't have issues with display list changes that occur during a draw:
-			var list = this.children,
-				child;
+		// this ensures we don't have issues with display list changes that occur during a draw:
+		var list = this.children,
+			child;
 
-			for(var i = 0, l = list.length; i < l; i++)
+		for(var i = 0, l = list.length; i < l; i++)
+		{
+			child = list[i];
+
+			if(!child.isVisible())
 			{
-				child = list[i];
-
-				if(!child.isVisible())
-				{
-					continue;
-				}
-
-				// draw the child:
-				localCtx.save();
-				child.updateContext(localCtx);
-				child.draw(localCtx);
-				localCtx.restore();
+				continue;
 			}
-		//}
 
-		//if(this._isRenderIsolated)
-		//{
-		//
-		//	ctx.drawImage(this._renderIsolationCanvas, 0, 0, this.width, this.height);
-		//
-		//}
+			// draw the child:
+			localCtx.save();
+			child.updateContext(localCtx);
+			child.draw(localCtx);
+			localCtx.restore();
+		}
 
+		if(this._buffer)
+		{
+			this._buffer.draw(ctx);
+		}
 
 		return true;
 	}
@@ -789,10 +712,10 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		var newWidth = this.width;
 		var newHeight = this.height;
 
-		if(this._isRenderIsolated)
+		if(this._buffer)
 		{
-			this._renderIsolationCanvas.width = newWidth;
-			this._renderIsolationCanvas.height = newHeight;
+			this._buffer.width = newWidth;
+			this._buffer.height = newHeight;
 		}
 
 		for(var i = 0; i < this.children.length; i++)
@@ -990,7 +913,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		}
 
 		this.removeAllChildren();
-		this.disableMouseInteraction();
+		this.setMouseInteraction(false);
 
 		super.destruct();
 	}

@@ -4,23 +4,24 @@ import Bitmap from "../display/Bitmap";
 import DisplayObject from "../display/DisplayObject";
 import Rectangle from "../geom/Rectangle";
 import DisplayType from "../enum/DisplayType";
+import Size from "../geom/Size";
 
 class BitmapNinePatch extends DisplayObject {
 
-	public type:DisplayType = DisplayType.BITMAP;
+	public type:DisplayType = DisplayType.TEXTURE;
 
 	private _patch:NinePatch;
 	private _patchCoordinates:NinePatchCoordinates;
 
-	public loaded:boolean = false;
+	public _isLoaded:boolean = false;
 
 	constructor(ninePatch:NinePatch, width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0){
 		super(width, height, x, y, regX, regY);
 
 		this._patch = ninePatch;
 
-		if( !this._patch.bitmap.loaded ){
-			this._patch.bitmap.addEventListener(Bitmap.EVENT_LOAD, this.onLoad.bind(this) );
+		if( !this._patch.texture.isLoaded() ){
+			this._patch.texture.load(this.onLoad.bind(this));
 		} else {
 			this.onLoad();
 		}
@@ -28,12 +29,18 @@ class BitmapNinePatch extends DisplayObject {
 
 	private onLoad():void
 	{
-		this.loaded = true;
+		this._isLoaded = true;
+	}
+
+	private isLoaded():boolean
+	{
+		return this._isLoaded;
 	}
 
 	public setContentSize(width:number, height:number):BitmapNinePatch
 	{
-		var imageSize = this._patch.bitmap.getImageSize();
+		var imageSize = new Size(this._patch.texture.width, this._patch.texture.height);
+
 		this.setWidth(
 			this._patch.rectangle.x
 			+ Math.max(this._patch.rectangle.width, width)
@@ -56,7 +63,7 @@ class BitmapNinePatch extends DisplayObject {
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
 	{
-		if(!this.loaded){
+		if(!this._isLoaded){
 			return false;
 		}
 
@@ -65,70 +72,13 @@ class BitmapNinePatch extends DisplayObject {
 			return true;
 		}
 
-		var image = this._patch.bitmap.image;
-		var coordinates = this._patch.getCoordinates(this.width, this.height);
-		var sourceColumn = coordinates.sourceColumn;
-		var sourceRow = coordinates.sourceRow;
-		var destColumn = coordinates.destColumn;
-		var destRow = coordinates.destRow;
+		var textures = this._patch.getTextures(this.width, this.height);
 
-		ctx.save();
-
-		// left top
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[0], sourceRow[0], sourceColumn[1], sourceRow[1],
-			destColumn[0], destRow[0], destColumn[1], destRow[1]
-		);
-
-		// center top
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[1], sourceRow[0], sourceColumn[2] - sourceColumn[1], sourceRow[1],
-			destColumn[1], destRow[0], destColumn[2] - destColumn[1], destRow[1]
-		);
-
-		// right top
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[2], sourceRow[0], sourceColumn[3] - sourceColumn[2], sourceRow[1],
-			destColumn[2], destRow[0], destColumn[3] - destColumn[2], destRow[1]
-		);
-
-		// left middle
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[0], sourceRow[1], sourceColumn[1], sourceRow[2] - sourceRow[1],
-			destColumn[0], destRow[1], destColumn[1], destRow[2] - destRow[1]
-		);
-
-		// center middle
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[1], sourceRow[1], sourceColumn[2] - sourceColumn[1], sourceRow[2] - sourceRow[1],
-			destColumn[1], destRow[1], destColumn[2] - destColumn[1], destRow[2] - destRow[1]
-		);
-
-		// right middle
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[2], sourceRow[1], sourceColumn[3] - sourceColumn[2], sourceRow[2] - sourceRow[1],
-			destColumn[2], destRow[1], destColumn[3] - destColumn[2], destRow[2] - destRow[1]
-		);
-
-		// left bottom
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[0], sourceRow[2], sourceColumn[1], sourceRow[3] - sourceRow[2],
-			destColumn[0], destRow[2], destColumn[1], destRow[3] - destRow[2]
-		);
-
-		// center bottom
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[1], sourceRow[2], sourceColumn[2] - sourceColumn[1], sourceRow[3] - sourceRow[2],
-			destColumn[1], destRow[2], destColumn[2] - destColumn[1], destRow[3] - destRow[2]
-		);
-
-		// right bottom
-		ctx.drawImage(<HTMLImageElement> image,
-			sourceColumn[2], sourceRow[2], sourceColumn[3] - sourceColumn[2], sourceRow[3] - sourceRow[2],
-			destColumn[2], destRow[2], destColumn[3] - destColumn[2], destRow[3] - destRow[2]
-		);
-
-		ctx.restore();
+		for(var i = 0; i < textures.length; i++)
+		{
+			var texture = textures[i];
+			texture.draw(ctx);
+		}
 
 		return true;
 	}

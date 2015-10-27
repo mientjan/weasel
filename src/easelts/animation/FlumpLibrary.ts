@@ -53,8 +53,8 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 
 	public fps:number = 0;
 
+	public _isLoaded:boolean = false;
 	public isOptimised:boolean = false;
-	public isLoaded:boolean = false;
 
 	constructor(basePath?:string)
 	{
@@ -64,9 +64,14 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 		}
 	}
 
+	public isLoaded():boolean
+	{
+		return this._isLoaded;
+	}
+
 	public load( onProgress?:(progress:number) => any):Promise<FlumpLibrary>
 	{
-		if( this.isLoaded)
+		if( this._isLoaded )
 		{
 			onProgress(1);
 
@@ -118,7 +123,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 				}
 
 
-				this.isLoaded = true;
+				this._isLoaded = true;
 				return this;
 			});
 	}

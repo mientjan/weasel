@@ -152,7 +152,7 @@ export default class Matrix2
 	 * @param {Number} [tx=0] Specifies the tx property for the new matrix.
 	 * @param {Number} [ty=0] Specifies the ty property for the new matrix.
 	 */
-	constructor(a:number, b:number, c:number, d:number, tx:number, ty:number)
+	constructor(a:number = 1, b:number = 0, c:number = 0, d:number = 1, tx:number = 0, ty:number = 0)
 	{
 		this.a = a;
 		this.b = b;

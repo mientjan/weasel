@@ -1,3 +1,4 @@
+import RGBA from "../data/RGBA";
 export interface IStageOption
 {
 	/**
@@ -6,8 +7,9 @@ export interface IStageOption
 	 * @type {boolean}
 	 * @default false
 	 */
+	webgl?:boolean;
 	autoResize?:boolean;
 	pixelRatio?:number;
 	willAutoClear?:boolean;
-	autoClearColor?:string;
+	autoClearColor?:string|RGBA;
 }

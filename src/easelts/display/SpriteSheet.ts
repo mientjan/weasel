@@ -280,7 +280,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	public _regY = 0;
 
 
-	public isLoaded:boolean = false;
+	protected _isLoaded:boolean = false;
 	public url:string = null;
 
 	/**
@@ -424,7 +424,12 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 			}
 		}
 
-		this.isLoaded = true;
+		this._isLoaded = true;
+	}
+
+	public isLoaded():boolean
+	{
+		return this._isLoaded;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<SpriteSheet>

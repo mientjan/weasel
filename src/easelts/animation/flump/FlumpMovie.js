@@ -7,7 +7,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer', './FlumpLabelQueueData'], function (require, exports, DisplayObject_1, FlumpMovieLayer_1, FlumpLabelQueueData_1) {
     var FlumpMovie = (function (_super) {
         __extends(FlumpMovie, _super);
-        // ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
         function FlumpMovie(flumpLibrary, name, width, height, x, y, regX, regY) {
             if (width === void 0) { width = 1; }
             if (height === void 0) { height = 1; }
@@ -26,7 +25,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.frame = 0;
             this.frames = 0;
             this.speed = 1;
-            //flumpLibrary.frameRate = 2;
             this.name = name;
             this.flumpLibrary = flumpLibrary;
             this.flumpMovieData = flumpLibrary.getFlumpMovieData(name);
@@ -43,7 +41,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             for (var i = 0; i < this.frames; i++) {
                 this._frameCallback[i] = null;
             }
-            // convert to milliseconds
             this.duration = (this.frames / flumpLibrary.frameRate) * 1000;
         }
         FlumpMovie.prototype.play = function (times, label, complete) {
@@ -91,6 +88,11 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             }
             return this;
         };
+        FlumpMovie.prototype.kill = function () {
+            this._labelQueue.length = 0;
+            this._label = null;
+            return this;
+        };
         FlumpMovie.prototype.setFrameCallback = function (frameNumber, callback, triggerOnce) {
             var _this = this;
             if (triggerOnce === void 0) { triggerOnce = false; }
@@ -115,6 +117,18 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this.reset();
             return this._label;
         };
+        FlumpMovie.prototype.gotoAndStop = function (frameOrLabel) {
+            var frame;
+            if (typeof frameOrLabel === 'string') {
+                frame = this._labels[frameOrLabel].index;
+            }
+            else {
+                frame = frameOrLabel;
+            }
+            var label = new FlumpLabelQueueData_1.default(null, frame, 1, 1, 0);
+            this._labelQueue.push(label);
+            return this;
+        };
         FlumpMovie.prototype.stop = function () {
             this.paused = true;
             if (this._label) {
@@ -134,9 +148,11 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                 if (label) {
                     toFrame = this.frames * this.time / this.duration;
                     if (label.times != -1) {
-                        if (label.times - Math.ceil((toFrame + 2) / label.duration) < 0) {
+                        if (toFrame > label.times * label.duration) {
                             if (this._labelQueue.length > 0) {
                                 this.gotoNextLabel();
+                                label = this._label;
+                                toFrame = this.frames * this.time / this.duration;
                             }
                             else {
                                 this.stop();
@@ -150,9 +166,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                     }
                 }
                 else {
-                    // inner flumpmovie
                     toFrame = (this.frames * (this.time % this.duration)) / this.duration;
-                    //
                     if (toFrame < this.frames) {
                         toFrame = toFrame % this.duration;
                     }
@@ -188,14 +202,16 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             return this;
         };
         FlumpMovie.prototype.setFrame = function (value) {
+            //console.log('setFrame', value, this.name);
             var layers = this.flumpMovieLayers;
             var length = layers.length;
-            //( this.frames / flumpLibrary.frameRate ) * 1000;
             for (var i = 0; i < length; i++) {
                 var layer = layers[i];
-                layer.reset();
-                layer.onTick((value / this.frames) * this.duration);
-                layer.setFrame(value);
+                if (layer.enabled) {
+                    layer.reset();
+                    layer.onTick((value / this.frames) * this.duration);
+                    layer.setFrame(value);
+                }
             }
             return this;
         };
@@ -205,12 +221,10 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             var ga = ctx.globalAlpha;
             for (var i = 0; i < length; i++) {
                 var layer = layers[i];
-                if (layer.visible) {
+                if (layer.visible && layer.enabled) {
                     ctx.save();
-                    //layer.updateContext(ctx)
                     ctx.globalAlpha = ga * layer.alpha;
-                    ctx.transform(layer._storedMtx.a, layer._storedMtx.b, layer._storedMtx.c, layer._storedMtx.d, layer._storedMtx.tx, layer._storedMtx.ty // + (this.y)
-                    );
+                    ctx.transform(layer._storedMtx.a, layer._storedMtx.b, layer._storedMtx.c, layer._storedMtx.d, layer._storedMtx.tx, layer._storedMtx.ty);
                     layer.draw(ctx);
                     ctx.restore();
                 }

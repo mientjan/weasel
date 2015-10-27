@@ -11,6 +11,9 @@ import FlumpLabelQueueData from './FlumpLabelQueueData';
 import FlumpTexture from "./FlumpTexture";
 
 
+/**
+ * @author Mient-jan Stelling
+ */
 class FlumpMovie extends DisplayObject implements IPlayable
 {
 	public flumpLibrary:FlumpLibrary;
@@ -132,6 +135,14 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		return this;
 	}
 
+	public kill():FlumpMovie
+	{
+		this._labelQueue.length = 0;
+		this._label = null;
+
+		return this;
+	}
+
 	public setFrameCallback(frameNumber:number, callback:() => any, triggerOnce:boolean = false):FlumpMovie
 	{
 		this.hasFrameCallbacks = true;
@@ -164,6 +175,23 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		return this._label;
 	}
 
+	public gotoAndStop(frameOrLabel:number|string):FlumpMovie
+	{
+		var frame:number;
+		if (typeof frameOrLabel === 'string')
+		{
+			frame = this._labels[frameOrLabel].index;
+		}
+		else
+		{
+			frame = frameOrLabel;
+		}
+		var label = new FlumpLabelQueueData(null, frame, 1, 1, 0);
+		this._labelQueue.push(label);
+
+		return this;
+	}
+
 	public stop():FlumpMovie
 	{
 		this.paused = true;
@@ -179,6 +207,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public onTick(delta:number):void
 	{
+		//if (this.paused) return;
+		//console.log('--------------');
 		delta *= this.speed;
 
 		super.onTick(delta);
@@ -195,14 +225,22 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			{
 				toFrame = this.frames * this.time / this.duration;
 
+				//console.log('toFrame: ', toFrame, this.frames);
+
 				if( label.times != -1 )
 				{
-					if( label.times - Math.ceil((toFrame+2) / label.duration) < 0 )
+					if (toFrame > label.times * label.duration)
+					//if ( label.times - Math.ceil((toFrame+2) / label.duration) < 0 )
 					{
+						//console.log('>>> label ended');
 						if( this._labelQueue.length > 0 )
 						{
+							//console.log('next');
 							this.gotoNextLabel();
+							label = this._label;
+							toFrame = this.frames * this.time / this.duration;
 						} else {
+							//console.log('stop');
 							this.stop();
 							return;
 						}
@@ -210,6 +248,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 				}
 
 				toFrame = label.index + ( toFrame % label.duration );
+
+				//console.log('onTick label: ', toFrame, this.name);
 
 				if( this.hasFrameCallbacks )
 				{
@@ -219,7 +259,6 @@ class FlumpMovie extends DisplayObject implements IPlayable
 			}
 			else
 			{
-
 				// inner flumpmovie
 				toFrame = (this.frames * (this.time % this.duration)) / this.duration;
 				//
@@ -227,6 +266,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 				{
 					toFrame = toFrame % this.duration;
 				}
+
+				//console.log('onTick inner: ', toFrame, this.name);
 			}
 
 
@@ -277,6 +318,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public setFrame(value:number):FlumpMovie
 	{
+		//console.log('setFrame', value, this.name);
+
 		var layers = this.flumpMovieLayers;
 		var length = layers.length;
 
@@ -285,10 +328,12 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		for(var i = 0; i < length; i++)
 		{
 			var layer = layers[i];
-			layer.reset();
-			layer.onTick( (value / this.frames) * this.duration );
-			layer.setFrame(value);
-
+			if (layer.enabled)
+			{
+				layer.reset();
+				layer.onTick( (value / this.frames) * this.duration );
+				layer.setFrame(value);
+			}
 		}
 
 		return this;
@@ -305,7 +350,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		{
 			var layer:FlumpMovieLayer = layers[i];
 
-			if(layer.visible)
+			if(layer.visible && layer.enabled)
 			{
 				ctx.save();
 				//layer.updateContext(ctx)

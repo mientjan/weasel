@@ -1,4 +1,5 @@
 import {IStageOption} from "../interface/IStageOption";
+import RGBA from "./RGBA";
 
 export class StageOption implements IStageOption
 {
@@ -26,7 +27,7 @@ export class StageOption implements IStageOption
 	 * @default true
 	 **/
 	public autoClear:boolean = true;
-	public autoClearColor:string = null;
+	public autoClearColor:RGBA = new RGBA();
 
 	constructor(option:IStageOption)
 	{

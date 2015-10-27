@@ -57,7 +57,7 @@ class Animate
 	public static requestAnimationFrame = (function()
 	{
 		// Check for request animation Frame support
-		var requestFrame = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFrame'] || window['oRequestAnimationFrame'];
+		var requestFrame = window.requestAnimationFrame || (<Function> window['webkitRequestAnimationFrame']) || <Function> window['mozRequestAnimationFrame'] || <Function> window['oRequestAnimationFrame'];
 		var isNative = !!requestFrame;
 
 		if(requestFrame && !/requestAnimationFrame\(\)\s*\{\s*\[native code\]\s*\}/i.test(requestFrame.toString()))

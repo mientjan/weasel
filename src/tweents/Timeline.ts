@@ -87,7 +87,7 @@ class Timeline extends EventDispatcher
 	 * @type Object
 	 * @readonly
 	 **/
-	position = null;
+	position:any = null;
 
 	// private properties:
 	/**

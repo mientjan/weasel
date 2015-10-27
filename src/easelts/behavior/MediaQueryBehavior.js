@@ -14,7 +14,6 @@ define(["require", "exports", "./AbstractBehavior"], function (require, exports,
             this._data = {};
             this._restore = {};
             this.onResizeMatchAll = function () {
-                console.time('MediaQueryBehavior');
                 var matchFound = false;
                 for (var mediaQuery in _this._data) {
                     if (window.matchMedia(mediaQuery).matches) {
@@ -23,7 +22,6 @@ define(["require", "exports", "./AbstractBehavior"], function (require, exports,
                         _this.setData(_this.owner, data);
                     }
                 }
-                console.timeEnd('MediaQueryBehavior');
                 if (!matchFound) {
                     _this.setData(_this.owner, _this._restore);
                 }

@@ -17,6 +17,9 @@ class FlumpMovieLayer extends DisplayObject
 	public _symbols:IHashMap<FlumpMovie|FlumpTexture> = {};
 	protected _symbolName:any = null;
 
+	// disable layer from code
+	public enabled:boolean = true;
+
 	public _storedMtx = {
 		a: 1,
 		b: 0,

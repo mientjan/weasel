@@ -17,7 +17,7 @@ class ImageButton extends DisplayObject
 {
 	public static EVENT_DISABLED = 'disabled';
 
-	public type:DisplayType = DisplayType.BITMAP;
+	public type:DisplayType = DisplayType.TEXTURE;
 
 	private _bitmaps:IImageButtonData<Bitmap|BitmapNinePatch> = {
 		idle: null,

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "amd",
+    "target": "ES5",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "declaration": false,
+    "sourceMap": false
+  },
+  "exclude": [
+    "test",
+    "node_modules",
+    "tools",
+    "tools/tasks",
+    "tools/tasks/node_modules"
+  ]
+}

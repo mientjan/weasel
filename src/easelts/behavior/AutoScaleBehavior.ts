@@ -17,9 +17,7 @@ class AutoScaleBehavior extends AbstractBehavior
 	private _alwaysCover:boolean = false;
 	private _alwaysVisible:boolean = false;
 
-
 	private _resizeSignalConnection:SignalConnection;
-
 
 	constructor(downScaleBreakPoint?:Size, downScaleLimit?:Size, upScaleBreakPoint?:Size, upScaleLimit?:Size)
 	{

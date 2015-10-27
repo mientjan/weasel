@@ -67,7 +67,6 @@ class MediaQueryBehavior extends AbstractBehavior
 
 	private onResizeMatchAll = ():void =>
 	{
-		console.time('MediaQueryBehavior');
 		var matchFound:boolean = false;
 		for(var mediaQuery in this._data)
 		{
@@ -78,7 +77,6 @@ class MediaQueryBehavior extends AbstractBehavior
 				this.setData(this.owner, data);
 			}
 		}
-		console.timeEnd('MediaQueryBehavior');
 
 		if(!matchFound){
 			this.setData(this.owner, this._restore);

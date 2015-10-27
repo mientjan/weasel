@@ -1,8 +1,8 @@
-import Stage from '../../src/easelts/display/Stage';
+import StageWebGL from '../../src/easelts/display/StageWebGL';
 import Bitmap from '../../src/easelts/display/Bitmap';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
-var stage = new Stage(holder, true);
+var stage = new StageWebGL(holder);
 
 var image = new Bitmap('../assets/image/ninepatch_red.png', 0, 0, 0, 0, 0, 0);
 stage.addChild(image);

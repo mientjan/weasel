@@ -230,6 +230,33 @@ class MathUtil
 
 		return point;
 	}
+
+	/**
+	 * Given a number, this function returns the closest number that is a power of two
+	 * this function is taken from Starling Framework as its pretty neat ;)
+	 *
+	 * @param number {number}
+	 * @return {number} the closest number that is a power of two
+	 */
+	public getNextPowerOfTwo(value:number):number
+	{
+		// test asd
+		if (value > 0 && (value & (value - 1)) === 0)
+		{
+			return value;
+		}
+		else
+		{
+			var result = 1;
+
+			while (result < value)
+			{
+				result <<= 1;
+			}
+
+			return result;
+		}
+	}
 }
 
 export default MathUtil;

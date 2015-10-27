@@ -27,7 +27,7 @@ import IScrollerOptions from "./IScrollerOptions";
 /**
  * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
  **/
-var easeOutCubic = function(pos)
+var easeOutCubic = function(pos:number)
 {
 	return (Math.pow((pos - 1), 3) + 1);
 };
@@ -35,7 +35,7 @@ var easeOutCubic = function(pos)
 /**
  * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
  **/
-var easeInOutCubic = function(pos)
+var easeInOutCubic = function(pos:number)
 {
 	if((pos /= 0.5) < 1)
 	{
@@ -276,7 +276,8 @@ class Scroller
 
 		this.__callback = callback;
 
-		for(var key in options)
+		var key:string;
+		for(key in options)
 		{
 			if(options.hasOwnProperty(key))
 			{
@@ -344,7 +345,7 @@ class Scroller
 	 * @param left {Integer ? 0} Left position of outer element
 	 * @param top {Integer ? 0} Top position of outer element
 	 */
-	public setPosition(left, top)
+	public setPosition(left:number, top:number)
 	{
 
 		var self = this;
@@ -379,7 +380,7 @@ class Scroller
 	 * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
 	 * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
 	 */
-	public activatePullToRefresh(height, activateCallback, deactivateCallback, startCallback)
+	public activatePullToRefresh(height:number, activateCallback:Function, deactivateCallback:Function, startCallback:Function)
 	{
 
 		var self = this;
@@ -474,7 +475,7 @@ class Scroller
 	 * @param originTop {Number ? null} Zoom in at given top coordinate
 	 * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
 	 */
-	public zoomTo(level, animate, originLeft, originTop, callback?:Function)
+	public zoomTo(level:number, animate:boolean, originLeft:number, originTop:number, callback?:Function)
 	{
 
 		var self = this;
@@ -555,7 +556,7 @@ class Scroller
 	 * @param originTop {Number ? 0} Zoom in at given top coordinate
 	 * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
 	 */
-	public zoomBy(factor, animate, originLeft, originTop, callback)
+	public zoomBy(factor:number, animate:boolean, originLeft:number, originTop:number, callback:Function)
 	{
 
 		var self = this;
@@ -573,7 +574,7 @@ class Scroller
 	 * @param animate {Boolean?false} Whether the scrolling should happen using an animation
 	 * @param zoom {Number?null} Zoom level to go to
 	 */
-	public scrollTo(left, top, animate, zoom?) {
+	public scrollTo(left:number, top:number, animate:boolean, zoom?:number) {
 
 		var self = this;
 
@@ -654,7 +655,7 @@ class Scroller
 	 * @param top {Number ? 0} Scroll x-axis by given offset
 	 * @param animate {Boolean ? false} Whether to animate the given change
 	 */
-	public scrollBy(left, top, animate)
+	public scrollBy(left:number, top:number, animate:boolean)
 	{
 
 		var self = this;
@@ -676,7 +677,7 @@ class Scroller
 	/**
 	 * Mouse wheel handler for zooming support
 	 */
-	public doMouseZoom(wheelDelta, timeStamp, pageX, pageY)
+	public doMouseZoom(wheelDelta:number, timeStamp:number, pageX:number, pageY:number)
 	{
 
 		var self = this;
@@ -690,7 +691,7 @@ class Scroller
 	/**
 	 * Touch start handler for scrolling support
 	 */
-	public doTouchStart(touches, timeStamp)
+	public doTouchStart(touches:Array<any>, timeStamp:number|Date)
 	{
 
 		// Array-like check is enough here
@@ -731,7 +732,7 @@ class Scroller
 		}
 
 		// Use center point when dealing with two fingers
-		var currentTouchLeft, currentTouchTop;
+		var currentTouchLeft:number, currentTouchTop:number;
 		var isSingleTouch = touches.length === 1;
 		if(isSingleTouch)
 		{
@@ -786,7 +787,7 @@ class Scroller
 	/**
 	 * Touch move handler for scrolling support
 	 */
-	public doTouchMove(touches:any[], timeStamp:any, scale = null)
+	public doTouchMove(touches:any[], timeStamp:number|Date, scale:number = null)
 	{
 
 		// Array-like check is enough here
@@ -814,7 +815,7 @@ class Scroller
 		}
 
 
-		var currentTouchLeft, currentTouchTop;
+		var currentTouchLeft:number, currentTouchTop:number;
 
 		// Compute move based around of center of fingers
 		if(touches.length === 2)
@@ -1194,7 +1195,7 @@ class Scroller
 			var diffTop = top - oldTop;
 			var diffZoom = zoom - oldZoom;
 
-			var step = function(percent, now, render)
+			var step = function(percent:number, now:number, render:boolean)
 			{
 				if(render)
 				{
@@ -1211,12 +1212,12 @@ class Scroller
 				}
 			};
 
-			var verify = function(id)
+			var verify = function(id:number)
 			{
 				return self.__isAnimatingId === id;
 			};
 
-			var completed = function(renderedFramesPerSecond, animationId, wasFinished)
+			var completed = function(renderedFramesPerSecond:number, animationId:number, wasFinished:boolean)
 			{
 				if(animationId === self.__isAnimatingId)
 				{
@@ -1299,7 +1300,7 @@ class Scroller
 	 * Called when a touch sequence end and the speed of the finger was high enough
 	 * to switch into deceleration mode.
 	 */
-	public __startDeceleration(timeStamp)
+	public __startDeceleration(timeStamp:number)
 	{
 
 		var self = this;
@@ -1331,7 +1332,7 @@ class Scroller
 		}
 
 		// Wrap class method
-		var step = function(percent, now, render)
+		var step = function(percent:number, now:number, render:boolean)
 		{
 			self.__stepThroughDeceleration(render);
 		};
@@ -1351,7 +1352,7 @@ class Scroller
 			return shouldContinue;
 		};
 
-		var completed = function(renderedFramesPerSecond, animationId, wasFinished)
+		var completed = function(renderedFramesPerSecond:number, animationId:number, wasFinished:boolean)
 		{
 			self.__isDecelerating = false;
 			if(self.__didDecelerationComplete)
@@ -1374,7 +1375,7 @@ class Scroller
 	 *
 	 * @param inMemory {Boolean?false} Whether to not render the current step, but keep it in memory only. Used internally only!
 	 */
-	public __stepThroughDeceleration(render)
+	public __stepThroughDeceleration(render:boolean)
 	{
 
 		var self = this;

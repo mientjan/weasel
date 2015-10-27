@@ -34,7 +34,6 @@ define(["require", "exports", "./AbstractBehavior", "../display/Container", "../
                 if (!_this._mousedown) {
                     return;
                 }
-                //console.log('onMouseUp', e.timeStamp, e.pageX, e.pageY);
                 _this._scroller.doTouchEnd(e.timeStamp);
                 _this._mousedown = false;
             };
@@ -42,7 +41,7 @@ define(["require", "exports", "./AbstractBehavior", "../display/Container", "../
         }
         ScrollerBehavior.prototype.initialize = function (container) {
             _super.prototype.initialize.call(this, container);
-            this.owner.enableMouseInteraction();
+            this.owner.setMouseInteraction(true);
             this.owner.cursor = 'pointer';
             if (this.owner.children.length == 0
                 || this.owner.children.length > 1) {
@@ -50,24 +49,9 @@ define(["require", "exports", "./AbstractBehavior", "../display/Container", "../
             }
             this.holder = this.owner.children[0];
             this._scroller = new Scroller_1.default(this.onChange.bind(this), this.options);
-            // hijack onResize of owner.
-            // @todo needs event
-            //var onResize = this.owner.onResize;
-            //this.owner.onResize = (e) => {
-            //	onResize.call(this.owner, e);
-            //	this.onResize(e);
-            //}
-            //
-            //if( this.owner._parentSizeIsKnown){
-            //	this.onResize(new Size(this.owner.parent.width, this.owner.parent.height));
-            //}
             this.owner.addEventListener(Container_1.default.EVENT_MOUSE_DOWN, this.onMouseDown);
             this.owner.addEventListener(Container_1.default.EVENT_PRESS_MOVE, this.onMouseMove);
             this.owner.addEventListener(Container_1.default.EVENT_PRESS_UP, this.onMouseUp);
-            //container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
-            //	scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
-            //}, false);
-            //console.log('initialize', container);
         };
         ScrollerBehavior.prototype.setDimensions = function (containerWidth, containerHeight, contentWidth, contentHeight) {
             this._scroller.setDimensions(containerWidth, containerHeight, contentWidth, contentHeight);
@@ -82,7 +66,6 @@ define(["require", "exports", "./AbstractBehavior", "../display/Container", "../
         ScrollerBehavior.prototype.onChange = function (left, top, zoom) {
             this.holder.x = -left;
             this.holder.y = -top;
-            // zoom?;
         };
         ScrollerBehavior.prototype.destruct = function () {
             this.owner.removeEventListener(Container_1.default.EVENT_MOUSE_DOWN, this.onMouseDown);

@@ -1,8 +1,8 @@
 /*
  * Event
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -26,49 +26,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * A collection of Classes that are shared across all the CreateJS libraries.  The classes are included in the minified
- * files of each library and are available on the createsjs namespace directly.
- *
- * <h4>Example</h4>
- *
- *      myObject.addEventListener("change", createjs.proxy(myMethod, scope));
- *
- * @module CreateJS
- * @main CreateJS
- */
+
+import DisplayObject from "../../easelts/display/DisplayObject";
 class Event
 {
-	/**
-	 * Contains properties and methods shared by all events for use with
-	 * {{#crossLink "EventDispatcher"}}{{/crossLink}}.
-	 *
-	 * Note that Event objects are often reused, so you should never
-	 * rely on an event object's state outside of the call stack it was received in.
-	 * @class Event
-	 * @param {String} type The event type.
-	 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
-	 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
-	 * @constructor
-	 **/
-	constructor(type:any, bubbles = null, cancelable = null)
-	{
-		this.type = type;
-		this.bubbles = bubbles;
-		this.cancelable = cancelable;
-		this.timeStamp = (new Date()).getTime();
-	}
-
-	// events:
-
-	// public properties:
-
-	/**
-	 * The type of event.
-	 * @property type
-	 * @type String
-	 **/
-	public type = null;
+	public type:string = null;
 
 	/**
 	 * The object that generated an event.
@@ -77,7 +39,7 @@ class Event
 	 * @default null
 	 * @readonly
 	 */
-	public target = null;
+	public target:DisplayObject = null;
 
 	/**
 	 * The current target that a bubbling event is being dispatched from. For non-bubbling events, this will
@@ -89,7 +51,7 @@ class Event
 	 * @default null
 	 * @readonly
 	 */
-	public currentTarget = null;
+	public currentTarget:DisplayObject = null;
 
 	/**
 	 * For bubbling events, this indicates the current event phase:<OL>
@@ -170,6 +132,33 @@ class Event
 	 * @readonly
 	 */
 	public removed = false;
+
+	/**
+	 * Contains properties and methods shared by all events for use with
+	 * {{#crossLink "EventDispatcher"}}{{/crossLink}}.
+	 *
+	 * Note that Event objects are often reused, so you should never
+	 * rely on an event object's state outside of the call stack it was received in.
+	 * @class Event
+	 * @param {String} type The event type.
+	 * @param {Boolean} bubbles Indicates whether the event will bubble through the display list.
+	 * @param {Boolean} cancelable Indicates whether the default behaviour of this event can be cancelled.
+	 * @constructor
+	 **/
+	constructor(type:string, bubbles:boolean = false, cancelable:boolean = false)
+	{
+		this.type = type;
+		this.bubbles = bubbles;
+		this.cancelable = cancelable;
+		this.timeStamp = (new Date()).getTime();
+	}
+
+	/**
+	 * The type of event.
+	 * @property type
+	 * @type String
+	 **/
+
 
 	// constructor:
 	/**

@@ -1,10 +1,11 @@
-var __extends = this.__extends || function (d, b) {
+///<reference path="../../assets/scripts/lib/gsap/greensock.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../src/easelts/display/Container', '../../../src/easelts/display/Text', '../../../src/easelts/component/BitmapNinePatch', '../../../src/easelts/component/bitmapninepatch/NinePatch', '../../../src/easelts/geom/Rectangle', '../../../src/easelts/behavior/ButtonBehavior'], function (require, exports, Container, Text, BitmapNinePatch, NinePatch, Rectangle, ButtonBehavior) {
+define(["require", "exports", '../../../src/easelts/display/Text', '../../../src/easelts/component/BitmapNinePatch', '../../../src/easelts/component/bitmapninepatch/NinePatch', '../../../src/easelts/geom/Rectangle', '../../../src/easelts/behavior/ButtonBehavior'], function (require, exports, Text, BitmapNinePatch, NinePatch, Rectangle, ButtonBehavior) {
     var TopButton = (function (_super) {
         __extends(TopButton, _super);
         function TopButton() {

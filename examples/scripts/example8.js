@@ -15,7 +15,9 @@ define(["require", "exports", '../../src/easelts/display/Stage', '../../src/ease
     stage.addChild(t0);
     stage.addChild(s0);
     var rect = t0.getExactSize();
-    s0.graphics.setStrokeStyle(1).beginStroke("#FF0000").rect(rect.x0, rect.y0, rect.width, rect.height);
-    s0.graphics.setStrokeStyle(2).beginStroke("#FFFF00").rect(t0.x, t0.y, t0.getMeasuredWidth(), t0.getMeasuredHeight());
+    s0.graphics.setStrokeStyle(1).beginStroke("#FF0000")
+        .rect(rect.x0, rect.y0, rect.width, rect.height);
+    s0.graphics.setStrokeStyle(2).beginStroke("#FFFF00")
+        .rect(t0.x, t0.y, t0.getMeasuredWidth(), t0.getMeasuredHeight());
     stage.start();
 });

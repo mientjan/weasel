@@ -13,6 +13,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this._frame = 0;
             this._symbols = {};
             this._symbolName = null;
+            this.enabled = true;
             this._storedMtx = {
                 a: 1,
                 b: 0,
@@ -35,7 +36,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             }
             this.setFrame(0);
         }
-        //Matrix get transformationMatrix => _transformationMatrix;
         FlumpMovieLayer.prototype.onTick = function (delta) {
             if (this._symbol != null && !(this._symbol instanceof FlumpTexture_1.default)) {
                 this._symbol.onTick(delta);

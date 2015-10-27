@@ -3,9 +3,11 @@ import FlumpLibrary from '../../src/easelts/animation/FlumpLibrary';
 import FlumpMovie from '../../src/easelts/animation/flump/FlumpMovie';
 import ArrayUtil from "../../src/easelts/util/ArrayUtil";
 import IDisplayObject from "../../src/easelts/interface/IDisplayObject";
+import StageWebGL from "../../src/easelts/display/StageWebGL";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true).setFpsCounter(true);
+var stage = new StageWebGL(holder, true).setFpsCounter(true);
 //stage.autoClear = false;
 //var flump = new FlumpAnimation('../../assets/flump/smoke');
 //flump.

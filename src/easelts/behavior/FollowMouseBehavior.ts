@@ -13,7 +13,7 @@ class FollowMouseBehavior extends AbstractBehavior
 	{
 		super.initialize(displayObject);
 
-		this.owner.enableMouseInteraction();
+		this.owner.setMouseInteraction(true);
 		this.owner.cursor = 'pointer';
 
 		this._stage = this.owner.stage;
