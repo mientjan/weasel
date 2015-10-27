@@ -63,13 +63,22 @@ class Debug extends Container<Shape|Text>
 				this._shape.graphics.beginFill(Graphics.getRGB(0, 0, 0))
 					.drawRect(this.width - w >> 1, this.height - h >> 1, w, h);
 			}
+
+			this.cache(0, 0, this.width, this.height);
 		}
 	}
 
 	public onResize(width:number, height:number):void
 	{
+		var oldWidth = this.width;
+		var oldHeight = this.height;
+
 		super.onResize(width, height);
-		this.update();
+
+		if(oldWidth != this.width || oldHeight != this.height)
+		{
+			this.update();
+		}
 	}
 }
 

@@ -55,11 +55,16 @@ define(["require", "exports", "./Container", "./Shape", "./Graphics", "./Text"],
                     this._shape.graphics.beginFill(Graphics_1.default.getRGB(0, 0, 0))
                         .drawRect(this.width - w >> 1, this.height - h >> 1, w, h);
                 }
+                this.cache(0, 0, this.width, this.height);
             }
         };
         Debug.prototype.onResize = function (width, height) {
+            var oldWidth = this.width;
+            var oldHeight = this.height;
             _super.prototype.onResize.call(this, width, height);
-            this.update();
+            if (oldWidth != this.width || oldHeight != this.height) {
+                this.update();
+            }
         };
         return Debug;
     })(Container_1.default);
