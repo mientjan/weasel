@@ -97,6 +97,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	public tickChildren:boolean = true;
 
 	protected _buffer:CanvasBuffer = null;
+	protected _bufferResize:boolean = true;
 
 	/**
 	 * @constructor
@@ -135,6 +136,13 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		super.setMouseInteraction(value);
 	}
 
+	public setBuffer(buffer:CanvasBuffer, resizeFull:boolean = true):Container<T>
+	{
+		this._buffer = buffer;
+		this._bufferResize = resizeFull;
+		return this;
+	}
+
 	/**
 	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
 	 * Returns true if the draw was handled (useful for overriding functionality).
@@ -148,6 +156,11 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
+		if(super.draw(ctx, ignoreCache))
+		{
+			return true;
+		}
+
 		if(this._buffer)
 		{
 			var localCtx = this._buffer.context;
@@ -157,16 +170,11 @@ class Container<T extends IDisplayObject> extends DisplayObject
 			var localCtx:CanvasRenderingContext2D = ctx;
 		}
 
-		if(super.draw(localCtx, ignoreCache))
-		{
-			return true;
-		}
-
 		// this ensures we don't have issues with display list changes that occur during a draw:
 		var list = this.children,
 			child;
 
-		for(var i = 0, l = list.length; i < l; i++)
+		for(var i = 0, l = list.length; i < l; ++i)
 		{
 			child = list[i];
 
@@ -185,6 +193,7 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		if(this._buffer)
 		{
 			this._buffer.draw(ctx);
+			this._buffer.clear();
 		}
 
 		return true;
@@ -712,10 +721,9 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		var newWidth = this.width;
 		var newHeight = this.height;
 
-		if(this._buffer)
+		if(this._bufferResize && this._buffer)
 		{
-			this._buffer.width = newWidth;
-			this._buffer.height = newHeight;
+			this._buffer.setSize(newWidth, newHeight);
 		}
 
 		for(var i = 0; i < this.children.length; i++)

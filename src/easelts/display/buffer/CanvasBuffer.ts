@@ -21,61 +21,65 @@ class CanvasBuffer implements IBuffer
 	public transparent:boolean = true;
 	public background:RGBA = null;
 
+	protected _width:number;
+	protected _height:number;
+
 	constructor(width:number, height:number, element:HTMLCanvasElement = document.createElement('canvas'))
 	{
 		this.element = element;
 		this.context = this.element.getContext('2d');
 
-		this.element.width = width;
-		this.element.height = height;
+		this.setSize(width, height);
 	}
 
 	set width(value:number)
 	{
+		this._width = value;
 		this.element.width = value;
 	}
 
 	get width():number
 	{
-		return this.element.width;
+		return this._width;
 	}
 
 	set height(value:number)
 	{
-		this.element.height = value;
+		this._height = value;
 	}
 
 	get height():number
 	{
-		return this.element.height;
+		return this._height;
 	}
 
 	public draw(ctx:CanvasRenderingContext2D):void
 	{
-		ctx.drawImage(this.element, 0, 0, this.element.width, this.element.height, 0, 0, this.element.width, this.element.height);
+		var w = this._width, h = this._height;
+		ctx.drawImage(this.element, 0, 0, w, h, 0, 0, w, h);
 	}
 
 	public reset():void
 	{
 		this.context.setTransform(1, 0, 0, 1, 0, 0);
-		this.context.clearRect(0, 0, this.element.width, this.element.height);
+		this.context.clearRect(0, 0, this._width, this._height);
 	}
 
 	public clear():void
 	{
-		if(this.transparent)
-		{
-			this.context.clearRect(0, 0, this.element.width, this.element.height);
-		} else {
-			this.context.fillStyle = this.background.toString();
-			this.context.fillRect(0, 0, this.width, this.height);
-		}
+		//if(this.transparent)
+		//{
+			this.context.clearRect(0, 0, this._width, this._height);
+		//} else {
+		//	this.context.fillStyle = this.background.toString();
+		//	this.context.fillRect(0, 0, this._width, this._height);
+		//}
 	}
 
 	public setSize(width:number, height:number):void
 	{
-		this.element.width = width;
-		this.element.height = height;
+		this.element.width = this._width = width;
+		this.element.height = this._height = height;
 	}
 
 	public destruct():void

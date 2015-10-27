@@ -6,14 +6,14 @@ define(["require", "exports"], function (require, exports) {
             this.background = null;
             this.element = element;
             this.context = this.element.getContext('2d');
-            this.element.width = width;
-            this.element.height = height;
+            this.setSize(width, height);
         }
         Object.defineProperty(CanvasBuffer.prototype, "width", {
             get: function () {
-                return this.element.width;
+                return this._width;
             },
             set: function (value) {
+                this._width = value;
                 this.element.width = value;
             },
             enumerable: true,
@@ -21,33 +21,28 @@ define(["require", "exports"], function (require, exports) {
         });
         Object.defineProperty(CanvasBuffer.prototype, "height", {
             get: function () {
-                return this.element.height;
+                return this._height;
             },
             set: function (value) {
-                this.element.height = value;
+                this._height = value;
             },
             enumerable: true,
             configurable: true
         });
         CanvasBuffer.prototype.draw = function (ctx) {
-            ctx.drawImage(this.element, 0, 0, this.element.width, this.element.height, 0, 0, this.element.width, this.element.height);
+            var w = this._width, h = this._height;
+            ctx.drawImage(this.element, 0, 0, w, h, 0, 0, w, h);
         };
         CanvasBuffer.prototype.reset = function () {
             this.context.setTransform(1, 0, 0, 1, 0, 0);
-            this.context.clearRect(0, 0, this.element.width, this.element.height);
+            this.context.clearRect(0, 0, this._width, this._height);
         };
         CanvasBuffer.prototype.clear = function () {
-            if (this.transparent) {
-                this.context.clearRect(0, 0, this.element.width, this.element.height);
-            }
-            else {
-                this.context.fillStyle = this.background.toString();
-                this.context.fillRect(0, 0, this.width, this.height);
-            }
+            this.context.clearRect(0, 0, this._width, this._height);
         };
         CanvasBuffer.prototype.setSize = function (width, height) {
-            this.element.width = width;
-            this.element.height = height;
+            this.element.width = this._width = width;
+            this.element.height = this._height = height;
         };
         CanvasBuffer.prototype.destruct = function () {
             this.context = null;

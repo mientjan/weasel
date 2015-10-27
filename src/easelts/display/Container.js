@@ -47,6 +47,7 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             this.mouseChildren = true;
             this.tickChildren = true;
             this._buffer = null;
+            this._bufferResize = true;
         }
         Container.prototype.isVisible = function () {
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length));
@@ -55,18 +56,24 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             this.mouseChildren = value;
             _super.prototype.setMouseInteraction.call(this, value);
         };
+        Container.prototype.setBuffer = function (buffer, resizeFull) {
+            if (resizeFull === void 0) { resizeFull = true; }
+            this._buffer = buffer;
+            this._bufferResize = resizeFull;
+            return this;
+        };
         Container.prototype.draw = function (ctx, ignoreCache) {
+            if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
+                return true;
+            }
             if (this._buffer) {
                 var localCtx = this._buffer.context;
             }
             else {
                 var localCtx = ctx;
             }
-            if (_super.prototype.draw.call(this, localCtx, ignoreCache)) {
-                return true;
-            }
             var list = this.children, child;
-            for (var i = 0, l = list.length; i < l; i++) {
+            for (var i = 0, l = list.length; i < l; ++i) {
                 child = list[i];
                 if (!child.isVisible()) {
                     continue;
@@ -78,6 +85,7 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             }
             if (this._buffer) {
                 this._buffer.draw(ctx);
+                this._buffer.clear();
             }
             return true;
         };
@@ -284,9 +292,8 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             _super.prototype.onResize.call(this, width, height);
             var newWidth = this.width;
             var newHeight = this.height;
-            if (this._buffer) {
-                this._buffer.width = newWidth;
-                this._buffer.height = newHeight;
+            if (this._bufferResize && this._buffer) {
+                this._buffer.setSize(newWidth, newHeight);
             }
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
