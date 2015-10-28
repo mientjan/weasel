@@ -1,8 +1,9 @@
 ///<reference path="../../assets/scripts/lib/gsap/greensock.d.ts" />
 
 import Container from '../../../src/easelts/display/Container';
+import DisplayObject from "../../../src/easelts/display/DisplayObject";
 
-class Carousel extends Container
+class Carousel extends Container<DisplayObject>
 {
 	prevScrollX = 0;
 	prevScrollY = 0;
@@ -12,7 +13,7 @@ class Carousel extends Container
 	{
 		super(width, height, x, y, regX, regY);
 
-		this.enableMouseInteraction();
+		this.setMouseInteraction(true);
 	}
 
 	public setPage(value:number)
@@ -124,4 +125,4 @@ class Carousel extends Container
 	}
 }
 
-export = Carousel;
+export default Carousel;

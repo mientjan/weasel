@@ -1,4 +1,4 @@
-define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../display/TexturePosition"], function (require, exports, Rectangle_1, Size_1, TexturePosition_1) {
+define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../display/Texture", "../../display/TexturePosition"], function (require, exports, Rectangle_1, Size_1, Texture_1, TexturePosition_1) {
     var NinePatch = (function () {
         function NinePatch(texture, rectangle) {
             var _this = this;
@@ -6,7 +6,12 @@ define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../
             this._prevHeight = -1;
             this._textures = [];
             this._isLoaded = false;
-            this.texture = texture;
+            if (typeof texture == 'string') {
+                this.texture = new Texture_1.default(texture);
+            }
+            else {
+                this.texture = texture;
+            }
             if (!(rectangle instanceof Rectangle_1.default)) {
                 this.rectangle = new Rectangle_1.default(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
             }

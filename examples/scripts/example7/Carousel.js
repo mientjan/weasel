@@ -12,7 +12,7 @@ define(["require", "exports", '../../../src/easelts/display/Container'], functio
             this.prevScrollX = 0;
             this.prevScrollY = 0;
             this._page = 0;
-            this.enableMouseInteraction();
+            this.setMouseInteraction(true);
         }
         Carousel.prototype.setPage = function (value) {
             this.reset();
@@ -90,5 +90,6 @@ define(["require", "exports", '../../../src/easelts/display/Container'], functio
         };
         return Carousel;
     })(Container_1.default);
-    return Carousel;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Carousel;
 });

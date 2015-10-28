@@ -24,9 +24,14 @@ class NinePatch
 	 * @param imageOrString
 	 * @param rectangle
 	 */
-	constructor(texture:Texture, rectangle:Rectangle|Array<number>)
+	constructor(texture:Texture|string, rectangle:Rectangle|Array<number>)
 	{
-		this.texture = texture;
+		if(typeof texture == 'string')
+		{
+			this.texture = new Texture(<string> texture);
+		} else {
+			this.texture = <Texture> texture;
+		}
 
 		if(!(rectangle instanceof Rectangle))
 		{

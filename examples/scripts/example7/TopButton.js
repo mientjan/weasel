@@ -19,5 +19,6 @@ define(["require", "exports", '../../../src/easelts/display/Container', '../../.
         }
         return TopButton;
     })(Container_1.default);
-    return TopButton;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = TopButton;
 });
