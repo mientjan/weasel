@@ -741,6 +741,13 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		return this.y;
 	}
 
+	public setRegXY(x:number|string, y:number|string):any
+	{
+		this.setRegX(x);
+		this.setRegY(x);
+		return this;
+	}
+
 	/**
 	 * @method setRegX
 	 * @param {number|string} value

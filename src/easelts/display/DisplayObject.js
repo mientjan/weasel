@@ -207,6 +207,11 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         DisplayObject.prototype.getY = function () {
             return this.y;
         };
+        DisplayObject.prototype.setRegXY = function (x, y) {
+            this.setRegX(x);
+            this.setRegY(x);
+            return this;
+        };
         DisplayObject.prototype.setRegX = function (value) {
             this._regX_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._regX_type) {
