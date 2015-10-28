@@ -11,5 +11,6 @@ define(["require", "exports"], function (require, exports) {
         }
         return RendererOptions;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = RendererOptions;
 });

@@ -460,7 +460,7 @@ class Stage extends Container<IDisplayObject>
 		/**
 		 *
 		 */
-		ctx.setTransform(pixelRatio, 0, 0, pixelRatio, .5, .5 );
+		ctx.setTransform(1, 0, 0, 1, 0, 0 );
 
 		if(autoClear)
 		{

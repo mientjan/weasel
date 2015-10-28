@@ -136,5 +136,6 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
         ;
         return Texture;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Texture;
 });

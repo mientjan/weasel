@@ -6,4 +6,6 @@ define(["require", "exports"], function (require, exports) {
         ValueType[ValueType["STRING"] = 2] = "STRING";
         ValueType[ValueType["OBJECT"] = 3] = "OBJECT";
     })(ValueType || (ValueType = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ValueType;
 });

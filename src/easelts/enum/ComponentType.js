@@ -10,4 +10,6 @@ define(["require", "exports"], function (require, exports) {
         ComponentType[ComponentType["SHAPE"] = 6] = "SHAPE";
         ComponentType[ComponentType["DEBUG"] = 7] = "DEBUG";
     })(ComponentType || (ComponentType = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ComponentType;
 });

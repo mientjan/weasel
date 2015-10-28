@@ -6,4 +6,6 @@ define(["require", "exports"], function (require, exports) {
         CalculationUnitType[CalculationUnitType["MULTIPLICATION"] = 2] = "MULTIPLICATION";
         CalculationUnitType[CalculationUnitType["DIVISION"] = 3] = "DIVISION";
     })(CalculationUnitType || (CalculationUnitType = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = CalculationUnitType;
 });

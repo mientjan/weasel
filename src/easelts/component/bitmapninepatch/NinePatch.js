@@ -77,5 +77,6 @@ define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../
         };
         return NinePatch;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NinePatch;
 });

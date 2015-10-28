@@ -14,4 +14,6 @@ define(["require", "exports"], function (require, exports) {
         DisplayType[DisplayType["BITMAPTEXT"] = 1024] = "BITMAPTEXT";
         DisplayType[DisplayType["TEXTURE"] = 2048] = "TEXTURE";
     })(DisplayType || (DisplayType = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DisplayType;
 });

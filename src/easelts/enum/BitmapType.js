@@ -6,4 +6,6 @@ define(["require", "exports"], function (require, exports) {
         BitmapType[BitmapType["VIDEO"] = 2] = "VIDEO";
         BitmapType[BitmapType["CANVAS"] = 3] = "CANVAS";
     })(BitmapType || (BitmapType = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BitmapType;
 });

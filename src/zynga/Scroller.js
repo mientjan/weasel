@@ -655,5 +655,6 @@ define(["require", "exports", "./Animate"], function (require, exports, Animate_
         };
         return Scroller;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Scroller;
 });

@@ -39,5 +39,6 @@ define(["require", "exports", "../geom/Rectangle"], function (require, exports, 
         };
         return TexturePosition;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TexturePosition;
 });

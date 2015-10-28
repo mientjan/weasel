@@ -129,5 +129,6 @@ define(["require", "exports", "../geom/Size", "../geom/Vector2", "../geom/Bounds
         };
         return ArrayUtil;
     })();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ArrayUtil;
 });
