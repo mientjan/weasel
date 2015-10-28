@@ -15,7 +15,7 @@ define(["require", "exports", "../../src/createts/util/Decorator"], function (re
         FooBar.prototype.logStatement = function () { };
         Object.defineProperty(FooBar.prototype, "logStatement",
             __decorate([
-                Decorator_1.log
+                Decorator_1.log()
             ], FooBar.prototype, "logStatement", Object.getOwnPropertyDescriptor(FooBar.prototype, "logStatement")));
         return FooBar;
     })();

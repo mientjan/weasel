@@ -10,7 +10,7 @@ import {debounce, throttle, log} from "../../src/createts/util/Decorator";
 class FooBar { sadasdasdasd
 	constructor(){}
 
-	@log
+	@log()
 	logStatement(){}
 
 }
