@@ -128,7 +128,7 @@ function requestAnimationFrame(timeUpdate:number):void
 		if(fc.accum > fc.mspf )
 		{
 			fc.accum -= fc.mspf;
-			fc.signal.emit(fc.time - fc.ptime);
+			fc.signal.emit(fc.mspf);
 			fc.ptime = fc.time;
 		}
 	}

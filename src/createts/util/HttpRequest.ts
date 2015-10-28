@@ -32,6 +32,9 @@ import IHashMap from "../../easelts/interface/IHashMap";
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @class HttpRequest
+ */
 class HttpRequest
 {
 	/**

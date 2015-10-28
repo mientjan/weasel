@@ -81,7 +81,7 @@ define(["require", "exports", "../../createts/event/Signal1"], function (require
             fc.accum += delta;
             if (fc.accum > fc.mspf) {
                 fc.accum -= fc.mspf;
-                fc.signal.emit(fc.time - fc.ptime);
+                fc.signal.emit(fc.mspf);
                 fc.ptime = fc.time;
             }
         }
