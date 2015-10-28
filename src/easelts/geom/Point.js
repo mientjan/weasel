@@ -31,6 +31,11 @@ define(["require", "exports", "./../util/NumberUtil"], function (require, export
             this.x = x;
             this.y = y;
         }
+        Point.prototype.setXY = function (x, y) {
+            this.x = x;
+            this.y = y;
+            return this;
+        };
         Point.prototype.copy = function (point) {
             return new Point(point.x, point.y);
         };

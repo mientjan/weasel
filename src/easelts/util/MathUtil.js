@@ -8,6 +8,30 @@ define(["require", "exports"], function (require, exports) {
         MathUtil.clampBottom = function (x, a) {
             return x < a ? a : x;
         };
+        MathUtil.contains = function (value, index, margin) {
+            var bool = false;
+            if (index - margin < value && index + margin > value) {
+                bool = true;
+            }
+            return bool;
+        };
+        MathUtil.containsVector2 = function (value, index, margin) {
+            var bool = false;
+            if (MathUtil.contains(value.x, index.x, margin.x)
+                && MathUtil.contains(value.y, index.y, margin.y)) {
+                bool = true;
+            }
+            return bool;
+        };
+        MathUtil.containsVector3 = function (value, index, margin) {
+            var bool = false;
+            if (MathUtil.contains(value.x, index.x, margin.x)
+                && MathUtil.contains(value.y, index.y, margin.y)
+                && MathUtil.contains(value.z, index.z, margin.z)) {
+                bool = true;
+            }
+            return bool;
+        };
         MathUtil.mapLinear = function (x, a1, a2, b1, b2) {
             return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
         };

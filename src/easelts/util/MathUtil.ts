@@ -1,4 +1,6 @@
 import IVector2 from "../interface/IVector2";
+import IVector3 from "../interface/IVector3";
+
 /**
  * @class MathUtil
  */
@@ -32,6 +34,44 @@ class MathUtil
 	public static clampBottom(x:number, a:number):number
 	{
 		return x < a ? a : x;
+	}
+
+	public static contains(value:number, index:number, margin:number):boolean
+	{
+		var bool = false;
+		if(index - margin < value && index + margin > value)
+		{
+			bool = true
+		}
+
+		return bool;
+	}
+
+	public static containsVector2(value:IVector2, index:IVector2, margin:IVector2):boolean
+	{
+		var bool = false;
+
+		if( MathUtil.contains(value.x, index.x, margin.x)
+				&& MathUtil.contains(value.y, index.y, margin.y))
+		{
+			bool = true
+		}
+
+		return bool;
+	}
+
+	public static containsVector3(value:IVector3, index:IVector3, margin:IVector3):boolean
+	{
+		var bool = false;
+
+		if( MathUtil.contains(value.x, index.x, margin.x)
+				&& MathUtil.contains(value.y, index.y, margin.y)
+				&& MathUtil.contains(value.z, index.z, margin.z))
+		{
+			bool = true
+		}
+
+		return bool;
 	}
 
 	/**

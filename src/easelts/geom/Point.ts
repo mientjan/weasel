@@ -75,6 +75,20 @@ class Point implements IPoint
 	}
 
 	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @returns {Point}
+	 */
+	public setXY(x:number,y:number):Point
+	{
+		this.x = x;
+		this.y = y;
+
+		return this;
+	}
+
+	/**
 	 * Copies all properties from the specified point to this point.
 	 * @method copy
 	 * @param {Point} point The point to copy properties from.
