@@ -189,9 +189,8 @@ class MathUtil
 	 */
 	public static getDistance(point0:IVector2, point1:IVector2):number
 	{
-		var dx = point1.x - point0.x,
-			dy = point1.y - point0.y;
-		return Math.abs(Math.sqrt(dx * dx + dy * dy));
+
+		return Math.abs(Math.sqrt(this.getDistanceSquared(point0, point1)));
 	}
 
 	/**
@@ -200,11 +199,11 @@ class MathUtil
 	 * @param point1
 	 * @returns {number}
 	 */
-	public static getDistanceFast(point0:IVector2, point1:IVector2):number
+	public static getDistanceSquared(point0:IVector2, point1:IVector2):number
 	{
 		var dx = point1.x - point0.x,
 			dy = point1.y - point0.y;
-		return Math.abs(dx * dx + dy * dy);
+		return dx * dx + dy * dy;
 	}
 
 	/**
@@ -220,7 +219,7 @@ class MathUtil
 		var index = null;
 		for(var i = 0; i < points.length; i++)
 		{
-			var dist = MathUtil.getDistanceFast(value, points[i]);
+			var dist = Math.abs(MathUtil.getDistanceSquared(value, points[i]));
 			if(dist < prevDist)
 			{
 				prevDist = dist;

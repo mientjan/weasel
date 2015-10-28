@@ -111,16 +111,6 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         DisplayObject.prototype.initialize = function () {
             this['constructor'].apply(this, arguments);
         };
-        DisplayObject.prototype.dot = function (v) {
-            return this.x * v.x + this.y * v.y;
-        };
-        DisplayObject.prototype.distanceToSquared = function (v) {
-            var dx = this.x - v.x, dy = this.y - v.y;
-            return dx * dx + dy * dy;
-        };
-        DisplayObject.prototype.distanceTo = function (v) {
-            return Math.sqrt(this.distanceToSquared(v));
-        };
         DisplayObject.prototype.setWidth = function (value) {
             this._width_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._width_type) {

@@ -57,19 +57,18 @@ define(["require", "exports"], function (require, exports) {
             return (value & (value - 1)) === 0 && value !== 0;
         };
         MathUtil.getDistance = function (point0, point1) {
-            var dx = point1.x - point0.x, dy = point1.y - point0.y;
-            return Math.abs(Math.sqrt(dx * dx + dy * dy));
+            return Math.abs(Math.sqrt(this.getDistanceSquared(point0, point1)));
         };
-        MathUtil.getDistanceFast = function (point0, point1) {
+        MathUtil.getDistanceSquared = function (point0, point1) {
             var dx = point1.x - point0.x, dy = point1.y - point0.y;
-            return Math.abs(dx * dx + dy * dy);
+            return dx * dx + dy * dy;
         };
         MathUtil.getClosestVector2 = function (value, points) {
             var prevDist = 99999999999;
             var point = null;
             var index = null;
             for (var i = 0; i < points.length; i++) {
-                var dist = MathUtil.getDistanceFast(value, points[i]);
+                var dist = Math.abs(MathUtil.getDistanceSquared(value, points[i]));
                 if (dist < prevDist) {
                     prevDist = dist;
                     point = points[i];

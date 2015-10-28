@@ -559,37 +559,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	}
 
 	/**
-	 * @method dot
-	 * @param v
-	 * @returns {number}
-	 */
-	public dot(v:IVector2):number
-	{
-		return this.x * v.x + this.y * v.y;
-	}
-
-	/**
-	 * @method distanceToSquared
-	 * @param v
-	 * @returns {number}
-	 */
-	public distanceToSquared(v:IVector2):number
-	{
-		var dx = this.x - v.x, dy = this.y - v.y;
-		return dx * dx + dy * dy;
-	}
-
-	/**
-	 * distanceTo
-	 * @param {IVector2} v
-	 * @returns {any}
-	 */
-	public distanceTo(v:IVector2):number
-	{
-		return Math.sqrt(this.distanceToSquared(v));
-	}
-
-	/**
 	 * @method setWidth
 	 * @param {string|number} width
 	 */
