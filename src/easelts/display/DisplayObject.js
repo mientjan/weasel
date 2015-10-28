@@ -70,9 +70,13 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             this.regY = 0;
             this._regY_type = 2;
             this._regY_percent = .0;
-            this.rotation = 0;
             this.scaleX = 1;
+            this._scaleX_type = 2;
+            this._scaleX_percent = .0;
             this.scaleY = 1;
+            this._scaleY_type = 2;
+            this._scaleY_percent = .0;
+            this.rotation = 0;
             this.skewX = 0;
             this.skewY = 0;
             this.shadow = null;
@@ -155,11 +159,6 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         DisplayObject.prototype.getHeight = function () {
             return this.height;
         };
-        DisplayObject.prototype.setScale = function (scale) {
-            this.scaleX = scale;
-            this.scaleY = scale;
-            return this;
-        };
         DisplayObject.prototype.setXY = function (x, y) {
             this.setX(x);
             this.setY(y);
@@ -210,7 +209,6 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             return this.y;
         };
         DisplayObject.prototype.setRegX = function (value) {
-            this.isDirty = true;
             this._regX_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._regX_type) {
                 case 1: {
@@ -226,13 +224,13 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                     break;
                 }
             }
+            this.isDirty = true;
             return this;
         };
         DisplayObject.prototype.getRegX = function () {
             return this.regX;
         };
         DisplayObject.prototype.setRegY = function (value) {
-            this.isDirty = true;
             this._regY_type = FluidCalculation_1.default.getCalculationTypeByValue(value);
             switch (this._regY_type) {
                 case 1: {
@@ -248,10 +246,24 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                     break;
                 }
             }
+            this.isDirty = true;
             return this;
         };
         DisplayObject.prototype.getRegY = function () {
             return this.regY;
+        };
+        DisplayObject.prototype.setScaleX = function (value) {
+            this.scaleX = value;
+            return this;
+        };
+        DisplayObject.prototype.setScaleY = function (value) {
+            this.scaleY = value;
+            return this;
+        };
+        DisplayObject.prototype.setScale = function (scale) {
+            this.setScaleX(scale);
+            this.setScaleY(scale);
+            return this;
         };
         DisplayObject.prototype.addBehavior = function (behavior) {
             if (!this._behaviorList) {
@@ -681,11 +693,11 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         };
         DisplayObject.prototype.onResize = function (width, height) {
             this.isDirty = false;
-            if (this._width_type == 1) {
-                this.width = this._width_percent * width;
+            if (this._scaleX_type == 1) {
+                this.width = this._scaleX_percent * width;
             }
-            else if (this._width_type == 3) {
-                this.width = FluidCalculation_1.default.calcUnit(width, this._width_calc);
+            if (this._scaleY_type == 1) {
+                this.width = this._scaleY_percent * width;
             }
             if (this._height_type == 1) {
                 this.height = this._height_percent * height;

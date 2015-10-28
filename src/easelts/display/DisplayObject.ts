@@ -315,14 +315,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	protected _regY_calc:Array<FluidMeasurementsUnit|CalculationUnitType>;
 
 	/**
-	 * The rotation in degrees for this display object.
-	 * @property rotation
-	 * @type {Number}
-	 * @default 0
-	 **/
-	public rotation:number = 0;
-
-	/**
 	 * The factor to stretch this display object horizontally. For example, setting scaleX to 2 will stretch the display
 	 * object to twice its nominal width. To horizontally flip an object, set the scale to a negative number.
 	 * @property scaleX
@@ -330,6 +322,8 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @default 1
 	 **/
 	public scaleX:number = 1;
+	protected _scaleX_type:CalculationType = CalculationType.STATIC;
+	protected _scaleX_percent:number = .0;
 
 	/**
 	 * The factor to stretch this display object vertically. For example, setting scaleY to 0.5 will stretch the display
@@ -339,6 +333,16 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @default 1
 	 **/
 	public scaleY:number = 1;
+	protected _scaleY_type:CalculationType = CalculationType.STATIC;
+	protected _scaleY_percent:number = .0;
+
+	/**
+	 * The rotation in degrees for this display object.
+	 * @property rotation
+	 * @type {Number}
+	 * @default 0
+	 **/
+	public rotation:number = 0;
 
 	/**
 	 * The factor to skew this display object horizontally.
@@ -639,14 +643,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		return this.height;
 	}
 
-	public setScale(scale:number):any
-	{
-		this.scaleX = scale;
-		this.scaleY = scale;
-
-		return this;
-	}
-
+	/**
+	 * @method setXY
+	 * @param {number|string} x
+	 * @param {number|string} y
+	 * @returns {DisplayObject}
+	 */
 	public setXY(x:number|string, y:number|string):any
 	{
 		this.setX(x);
@@ -746,7 +748,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 */
 	public setRegX(value:number|string):any
 	{
-		this.isDirty = true;
 
 		this._regX_type = FluidCalculation.getCalculationTypeByValue(value);
 
@@ -768,6 +769,8 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 			}
 		}
 
+		this.isDirty = true;
+
 		return this;
 	}
 
@@ -787,7 +790,6 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 */
 	public setRegY(value:number|string):any
 	{
-		this.isDirty = true;
 
 		this._regY_type = FluidCalculation.getCalculationTypeByValue(value);
 
@@ -809,6 +811,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 			}
 		}
 
+		this.isDirty = true;
 		return this;
 	}
 
@@ -819,6 +822,88 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public getRegY():number
 	{
 		return this.regY;
+	}
+
+
+	/**
+	 * @method setRegY
+	 * @param {number|string} value
+	 * @returns {DisplayObject}
+	 */
+	public setScaleX(value:number):any
+	{
+		this.scaleX = <number> value;
+		//this._scaleX_type = FluidCalculation.getCalculationTypeByValue(value);
+		//
+		//switch( this._scaleX_type )
+		//{
+		//	case CalculationType.PERCENT:{
+		//		this._scaleX_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+		//		break;
+		//	}
+		//
+		//	case CalculationType.CALC:{
+		//		//this._scaleX_calc = FluidCalculation.dissolveCalcElements( <string> value);
+		//		break;
+		//	}
+		//
+		//	case CalculationType.STATIC:{
+		//		this.scaleX = <number> value;
+		//		break;
+		//	}
+		//}
+
+		//this.isDirty = true;
+
+		return this;
+	}
+
+
+	/**
+	 * @method setRegY
+	 * @param {number|string} value
+	 * @returns {DisplayObject}
+	 */
+	public setScaleY(value:number):any
+	{
+		this.scaleY = <number> value;
+		//this._scaleY_type = FluidCalculation.getCalculationTypeByValue(value);
+		//
+		//switch( this._scaleY_type )
+		//{
+		//	case CalculationType.PERCENT:{
+		//		this._scaleY_percent = FluidCalculation.getPercentageParcedValue( <string> value);
+		//		break;
+		//	}
+		//
+		//	case CalculationType.CALC:{
+		//
+		//		//this._scaleY_calc = FluidCalculation.dissolveCalcElements( <string> value);
+		//		break;
+		//	}
+		//
+		//	case CalculationType.STATIC:{
+		//		this.scaleY = <number> value;
+		//		break;
+		//	}
+		//}
+		//
+		//this.isDirty = true;
+
+		return this;
+	}
+
+	/**
+	 * @method setScale
+	 * @param {number} scale
+	 * @returns {DisplayObject}
+	 */
+	public setScale(scale:number):any
+	{
+		this.setScaleX(scale);
+		this.setScaleY(scale);
+
+		return this;
 	}
 
 	public addBehavior(behavior:IBehavior):DisplayObject
@@ -1809,13 +1894,14 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		// is no longer dirty
 		this.isDirty = false;
 
-		if(this._width_type == CalculationType.PERCENT)
+		if(this._scaleX_type == CalculationType.PERCENT)
 		{
-			this.width = this._width_percent * width;
+			this.width = this._scaleX_percent * width;
 		}
-		else if(this._width_type == CalculationType.CALC)
+
+		if(this._scaleY_type == CalculationType.PERCENT)
 		{
-			this.width = FluidCalculation.calcUnit(width, this._width_calc);
+			this.width = this._scaleY_percent * width;
 		}
 
 		if(this._height_type == CalculationType.PERCENT)
