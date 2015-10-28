@@ -6,6 +6,7 @@
  *
  * The MIT License (MIT)
  *
+ * Copyright (c) 2015 Mient-jan Stelling
  * Copyright (c) 2015 Erik Möller
  * Copyright (c) 2015 Paul Irish
  * Copyright (c) 2015 Tino Zijdel
