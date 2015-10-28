@@ -1,9 +1,9 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Shape = require('../../src/easelts/display/Shape');
-import FollowMouseBehavior = require('../../src/easelts/behavior/FollowMouseBehavior');
+import Stage from '../../src/easelts/display/Stage';
+import Shape from '../../src/easelts/display/Shape';
+import FollowMouseBehavior from '../../src/easelts/behavior/FollowMouseBehavior';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
-var stage = new Stage(holder);
+var stage = new Stage(holder, {});
 stage.start();
 
 var spiral = new Shape();

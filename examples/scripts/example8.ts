@@ -1,9 +1,9 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Debug = require('../../src/easelts/display/Debug');
+import Stage from '../../src/easelts/display/Stage';
+import Debug from '../../src/easelts/display/Debug';
 
-import Rectangle = require('../../src/easelts/geom/Rectangle');
-import Text = require('../../src/easelts/display/Text');
-import Shape = require('../../src/easelts/display/Shape');
+import Rectangle from '../../src/easelts/geom/Rectangle';
+import Text from '../../src/easelts/display/Text';
+import Shape from '../../src/easelts/display/Shape';
 
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
@@ -27,7 +27,7 @@ stage.addChild(s0);
 var rect = t0.getExactSize();
 
 s0.graphics.setStrokeStyle(1).beginStroke("#FF0000")
-    .rect(rect.x0, rect.y0, rect.width, rect.height);
+    .rect(rect.x, rect.y, rect.width, rect.height);
 
 s0.graphics.setStrokeStyle(2).beginStroke("#FFFF00")
     .rect(t0.x, t0.y, t0.getMeasuredWidth(), t0.getMeasuredHeight());

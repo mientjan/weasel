@@ -2,10 +2,9 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", '../../../src/easelts/display/Container'], function (require, exports, Container_1) {
     var Carousel = (function (_super) {
         __extends(Carousel, _super);
         function Carousel(width, height, x, y, regX, regY) {
@@ -86,10 +85,10 @@ define(["require", "exports"], function (require, exports) {
             }
         };
         Carousel.prototype.onResize = function (width, height) {
-            _super.onResize.call(this, width, height);
+            _super.prototype.onResize.call(this, width, height);
             this.reset();
         };
         return Carousel;
-    })(Container);
+    })(Container_1.default);
     return Carousel;
 });

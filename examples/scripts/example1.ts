@@ -1,5 +1,5 @@
-import Stage = require('../../src/easelts/display/Stage');
-import Debug = require('../../src/easelts/display/Debug');
+import Stage from '../../src/easelts/display/Stage';
+import Debug from '../../src/easelts/display/Debug';
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

@@ -1,10 +1,10 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Shape', '../../src/easelts/behavior/FollowMouseBehavior'], function (require, exports, Stage, Shape, FollowMouseBehavior) {
+define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Shape', '../../src/easelts/behavior/FollowMouseBehavior'], function (require, exports, Stage_1, Shape_1, FollowMouseBehavior_1) {
     var holder = document.getElementById('holder');
-    var stage = new Stage(holder);
+    var stage = new Stage_1.default(holder, {});
     stage.start();
-    var spiral = new Shape();
+    var spiral = new Shape_1.default();
     stage.addChild(spiral);
-    spiral.addBehavior(new FollowMouseBehavior);
+    spiral.addBehavior(new FollowMouseBehavior_1.default);
     var a = 1;
     var b = 4;
     var total = 720;
