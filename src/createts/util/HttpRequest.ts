@@ -1,5 +1,6 @@
 import Promise from "./Promise";
 import ILoadable from "../../easelts/interface/ILoadable";
+import IHashMap from "../../easelts/interface/IHashMap";
 
 /*
  * HttpRequest
@@ -33,7 +34,15 @@ import ILoadable from "../../easelts/interface/ILoadable";
 
 class HttpRequest
 {
-	private static request(method:string, url:string, args:{[name:string]:string}):Promise<any>
+	/**
+	 * @static
+	 * @method request
+	 * @param {string} method
+	 * @param {string} url
+	 * @param {Array<string>} args
+	 * @returns {Promise}
+	 */
+	private static request(method:string, url:string, args:IHashMap<string>):Promise<any>
 	{
 		// Creating a promise
 		var promise = new Promise(function(resolve:Function, reject:Function) {
@@ -78,18 +87,37 @@ class HttpRequest
 		return promise;
 	}
 
-	public static getString(url:string, query:{[name:string]:any} = {}):Promise<string>
+	/**
+	 *
+	 * @param {string} url
+	 * @param {IHashMap<any>} query
+	 * @returns {Promise<string>}
+	 */
+	public static getString(url:string, query:IHashMap<any> = {}):Promise<string>
 	{
 		return HttpRequest.request('GET', url, query);
 	}
 
-	public static getJSON(url:string, query:{[name:string]:any} = {}):Promise<any>
+	/**
+	 *
+	 * @param {string} url
+	 * @param {IHashMap<any>} query
+	 * @returns {Promise}
+	 */
+	public static getJSON(url:string, query:IHashMap<any> = {}):Promise<any>
 	{
 		return HttpRequest.getString(url, query).then((response:string) => {
 			return JSON.parse(response);
 		});
 	}
 
+	/**
+	 * @static
+	 * @method wait
+	 * @param {Array<Promise<any>>} list
+	 * @param {(progress:number) => any} onProgress
+	 * @returns {Promise}
+	 */
 	public static wait(list:Array<Promise<any>>, onProgress:(progress:number) => any = (progress:number) => {}):Promise<Array<any>>
 	{
 		return new Promise(function(resolve:(response:any) => any)
@@ -113,6 +141,12 @@ class HttpRequest
 		});
 	}
 
+	/**
+	 * @method waitForLoadable
+	 * @param {Array<ILoadable<any>>} list
+	 * @param {(progress:number) => any} onProgress
+	 * @returns {Promise}
+	 */
 	public static waitForLoadable(list:Array<ILoadable<any>>, onProgress:(progress:number) => any = (progress:number) => {}):Promise<Array<any>>
 	{
 		var count = list.length;
