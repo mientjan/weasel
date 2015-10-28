@@ -1907,14 +1907,13 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		// is no longer dirty
 		this.isDirty = false;
 
-		if(this._scaleX_type == CalculationType.PERCENT)
+		if(this._width_type == CalculationType.PERCENT)
 		{
-			this.width = this._scaleX_percent * width;
+			this.width = this._width_percent * width;
 		}
-
-		if(this._scaleY_type == CalculationType.PERCENT)
+		else if(this._width_type == CalculationType.CALC)
 		{
-			this.width = this._scaleY_percent * width;
+			this.width = FluidCalculation.calcUnit(width, this._width_calc);
 		}
 
 		if(this._height_type == CalculationType.PERCENT)
@@ -1961,11 +1960,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		{
 			this.y = Math.round(FluidCalculation.calcUnit(height, this._y_calc));
 		}
-		
+
 		if (this._resizeSignal && this._resizeSignal.hasListeners())
 		{
 			this._resizeSignal.emit(width, height);
 		}
+
 	}
 
 	public destruct():void

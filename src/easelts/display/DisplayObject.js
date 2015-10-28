@@ -697,11 +697,11 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         };
         DisplayObject.prototype.onResize = function (width, height) {
             this.isDirty = false;
-            if (this._scaleX_type == 1) {
-                this.width = this._scaleX_percent * width;
+            if (this._width_type == 1) {
+                this.width = this._width_percent * width;
             }
-            if (this._scaleY_type == 1) {
-                this.width = this._scaleY_percent * width;
+            else if (this._width_type == 3) {
+                this.width = FluidCalculation_1.default.calcUnit(width, this._width_calc);
             }
             if (this._height_type == 1) {
                 this.height = this._height_percent * height;
