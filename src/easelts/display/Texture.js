@@ -20,7 +20,7 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
                 this.load();
             }
         }
-        Texture.prototype.isLoaded = function () {
+        Texture.prototype.hasLoaded = function () {
             return this._isLoaded;
         };
         Texture.prototype.load = function (onProgress) {
@@ -120,7 +120,7 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
         };
         Texture.prototype.bindTexture = function (ctx) {
             var bitmap = this.bitmap;
-            if (this.isLoaded()) {
+            if (this.hasLoaded()) {
                 if (!this.webGLTexture) {
                     var texture = this.webGLTexture = ctx.createTexture();
                     ctx.bindTexture(ctx.TEXTURE_2D, texture);

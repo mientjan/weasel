@@ -17,8 +17,8 @@ define(["require", "exports", "../display/DisplayObject", "../geom/Size"], funct
             this.type = 2048;
             this._isLoaded = false;
             this._patch = ninePatch;
-            console.log(this._patch.texture.isLoaded());
-            if (!this._patch.texture.isLoaded()) {
+            console.log(this._patch.texture.hasLoaded());
+            if (!this._patch.texture.hasLoaded()) {
                 this._patch.texture.load().then(this.onLoad.bind(this));
             }
             else {

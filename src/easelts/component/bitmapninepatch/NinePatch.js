@@ -18,7 +18,7 @@ define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../
             else {
                 this.rectangle = rectangle;
             }
-            if (!this.texture.isLoaded()) {
+            if (!this.texture.hasLoaded()) {
                 this.texture.load().then(function () { return _this.onLoad(); });
             }
             else {

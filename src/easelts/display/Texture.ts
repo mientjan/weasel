@@ -41,7 +41,7 @@ class Texture implements ILoadable<Texture>
 		}
 	}
 
-	public isLoaded():boolean
+	public hasLoaded():boolean
 	{
 		return this._isLoaded
 	}
@@ -181,7 +181,7 @@ class Texture implements ILoadable<Texture>
 	{
 		var bitmap = this.bitmap;
 
-		if(this.isLoaded())
+		if(this.hasLoaded())
 		{
 			// Create and use a new texture for this image if it doesn't already have one:
 			if(!this.webGLTexture)

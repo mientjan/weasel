@@ -43,7 +43,7 @@ class NinePatch
 			this.rectangle = rectangle;
 		}
 
-		if(!this.texture.isLoaded())
+		if(!this.texture.hasLoaded())
 		{
 			this.texture.load().then(() => this.onLoad());
 		}

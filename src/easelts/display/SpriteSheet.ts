@@ -427,14 +427,14 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 		this._isLoaded = true;
 	}
 
-	public isLoaded():boolean
+	public hasLoaded():boolean
 	{
 		return this._isLoaded;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<SpriteSheet>
 	{
-		if( this.isLoaded)
+		if( this.hasLoaded() )
 		{
 			onProgress(1);
 

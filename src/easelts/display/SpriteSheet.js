@@ -176,12 +176,12 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             }
             this._isLoaded = true;
         };
-        SpriteSheet.prototype.isLoaded = function () {
+        SpriteSheet.prototype.hasLoaded = function () {
             return this._isLoaded;
         };
         SpriteSheet.prototype.load = function (onProgress) {
             var _this = this;
-            if (this.isLoaded) {
+            if (this.hasLoaded()) {
                 onProgress(1);
                 return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);

@@ -19,9 +19,9 @@ class BitmapNinePatch extends DisplayObject {
 
 		this._patch = ninePatch;
 
-		console.log(this._patch.texture.isLoaded());
+		console.log(this._patch.texture.hasLoaded());
 
-		if( !this._patch.texture.isLoaded() ){
+		if( !this._patch.texture.hasLoaded() ){
 			this._patch.texture.load().then(this.onLoad.bind(this));
 		} else {
 			this.onLoad();
