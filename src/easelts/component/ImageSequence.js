@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", "../display/DisplayObject", "../../createts/util/Promise"], function (require, exports, DisplayObject_1, Promise_1) {
+define(["require", "exports", "../display/DisplayObject", "../display/SpriteSheet", "../../createts/util/Promise"], function (require, exports, DisplayObject_1, SpriteSheet_1, Promise_1) {
     var ImageSequence = (function (_super) {
         __extends(ImageSequence, _super);
         function ImageSequence(spriteSheet, fps, width, height, x, y, regX, regY) {
@@ -12,7 +12,7 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
             _super.call(this, width, height, x, y, regX, regY);
-            this.type = 2048;
+            this.type = 128;
             this._playing = false;
             this._timeIndex = -1;
             this._frame = 0;
@@ -23,13 +23,23 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._onComplete = null;
             this.paused = true;
             this.spriteSheet = null;
-            this._isLoaded = false;
+            this._hasLoaded = false;
             this.spriteSheet = spriteSheet;
             this.fps = fps;
-            if (this.isLoaded) {
+            if (this.hasLoaded()) {
                 this.parseLoad();
             }
         }
+        ImageSequence.createFromString = function (images, fps, width, height) {
+            var sequenceStructure = {
+                "images": images.map(function (src) { return src; }),
+                "frames": images.map(function (src, index) { return [0, 0, width, height, index, 0, 0]; }),
+                "animations": {
+                    "animation": [0, images.length - 1]
+                }
+            };
+            return new ImageSequence(new SpriteSheet_1.default(sequenceStructure), fps, width, height);
+        };
         ImageSequence.prototype.parseLoad = function () {
             var animations = this.spriteSheet.getAnimations();
             if (animations.length > 1) {
@@ -38,19 +48,20 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._length = this.spriteSheet.getNumFrames(animations[0]);
             this._frameTime = 1000 / this.fps;
         };
-        ImageSequence.prototype.isLoaded = function () {
-            return this._isLoaded;
+        ImageSequence.prototype.hasLoaded = function () {
+            return this._hasLoaded;
         };
         ImageSequence.prototype.load = function (onProgress) {
             var _this = this;
-            if (this._isLoaded) {
-                onProgress(1);
+            if (this.hasLoaded()) {
+                if (onProgress)
+                    onProgress(1);
                 return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
                 });
             }
             return this.spriteSheet.load(onProgress).then(function (spriteSheet) {
-                _this._isLoaded = true;
+                _this._hasLoaded = true;
                 _this.parseLoad();
                 return _this;
             }).catch(function () {
@@ -61,7 +72,7 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             var frame = this._frame;
             var width = this.width;
             var height = this.height;
-            if (this._frame > -1 && this.isLoaded) {
+            if (this._frame > -1 && this._hasLoaded) {
                 var frameObject = this.spriteSheet.getFrame(frame);
                 if (!frameObject) {
                     return false;
@@ -81,6 +92,14 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._loopInfinite = times == -1 ? true : false;
             this._onComplete = onComplete;
             this._playing = true;
+            return this;
+        };
+        ImageSequence.prototype.gotoAndStop = function (frame) {
+            if (frame === void 0) { frame = 1; }
+            this._frame = frame;
+            this._times = 1;
+            this._loopInfinite = false;
+            this._playing = false;
             return this;
         };
         ImageSequence.prototype.stop = function (triggerOnComplete) {

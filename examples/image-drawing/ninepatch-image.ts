@@ -9,9 +9,8 @@ import Debug from "../../src/easelts/display/Debug";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, {autoResize:true});
 
-var ninePatch = new NinePatch(new Texture('../assets/image/ninepatch_red.png'), new Rectangle(100, 100, 300, 300));
+var ninePatch = new NinePatch('../assets/image/ninepatch_red.png', new Rectangle(100, 100, 300, 300));
 var image = new BitmapNinePatch(ninePatch);
-//var image = new Bitmap('../assets/image/ninepatch_red.png', '100%', '100%', 0, 0, 0, 0);
 stage.addChild(new Debug);
 stage.addChild(image);
 

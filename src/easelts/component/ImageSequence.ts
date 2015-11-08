@@ -6,16 +6,32 @@ import SpriteSheet from "../display/SpriteSheet";
 import DisplayType from "../enum/DisplayType";
 import * as Methods from "../util/Methods";
 import TimeEvent from "../../createts/event/TimeEvent";
-import Promise from "../../createts/util/Promise";
 import Signal from "../../createts/event/Signal";
 import SignalConnection from "../../createts/event/SignalConnection";
+import Promise from "../../createts/util/Promise";
 
 /**
  * @class ImageSequence
  */
 class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, IPlayable
 {
-	public type:DisplayType = DisplayType.TEXTURE;
+
+	public static createFromString(images:string[], fps:number, width:number, height:number):ImageSequence
+	{
+		var sequenceStructure = {
+
+			"images": images.map(src => src),
+			"frames": images.map((src, index) => [0, 0, width, height, index, 0, 0]),
+			"animations": {
+				"animation": [0, images.length - 1]
+			}
+
+		};
+
+		return new ImageSequence(new SpriteSheet(sequenceStructure), fps, width, height);
+	}
+
+	public type:DisplayType = DisplayType.BITMAP;
 
 	public _playing = false;
 	public _timeIndex:number = -1;
@@ -32,7 +48,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 	public fps:number;
 	public spriteSheet:SpriteSheet = null;
 
-	protected _isLoaded:boolean = false;
+	protected _hasLoaded:boolean = false;
 
 	/**
 	 *
@@ -52,7 +68,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		this.spriteSheet = spriteSheet;
 		this.fps = fps;
 
-		if(this.isLoaded)
+		if(this.hasLoaded())
 		{
 			this.parseLoad();
 		}
@@ -72,16 +88,16 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		this._frameTime = 1000 / this.fps;
 	}
 
-	public isLoaded():boolean
+	public hasLoaded():boolean
 	{
-		return this._isLoaded;
+		return this._hasLoaded;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<ImageSequence>
 	{
-		if( this._isLoaded )
+		if( this.hasLoaded())
 		{
-			onProgress(1);
+			if(onProgress) onProgress(1);
 
 			return new Promise<ImageSequence>((resolve:Function, reject:Function) => {
 				resolve(this);
@@ -89,9 +105,8 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		}
 
 		return this.spriteSheet.load(onProgress).then(spriteSheet => {
-			this._isLoaded = true;
+			this._hasLoaded = true;
 			this.parseLoad();
-
 			return this;
 		}).catch(() => {
 			throw new Error('could not load library');
@@ -104,7 +119,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		var width = this.width;
 		var height = this.height;
 
-		if( this._frame > -1 && this.isLoaded )
+		if( this._frame > -1 && this._hasLoaded )
 		{
 			var frameObject = this.spriteSheet.getFrame(frame);
 
@@ -131,6 +146,16 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 		this._loopInfinite = times == -1 ? true : false;
 		this._onComplete = onComplete;
 		this._playing = true;
+
+		return this;
+	}
+
+	public gotoAndStop(frame = 1):ImageSequence
+	{
+		this._frame = frame;
+		this._times = 1;
+		this._loopInfinite = false;
+		this._playing = false;
 
 		return this;
 	}

@@ -46,7 +46,8 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             this.mouseChildren = true;
             this.tickChildren = true;
             this._buffer = null;
-            this._bufferResize = true;
+            this._willBufferAutoResize = true;
+            this._willBufferUpdate = true;
         }
         Container.prototype.isVisible = function () {
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && (this.cacheCanvas || this.children.length));
@@ -55,36 +56,45 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             this.mouseChildren = value;
             _super.prototype.setMouseInteraction.call(this, value);
         };
-        Container.prototype.setBuffer = function (buffer, resizeFull) {
-            if (resizeFull === void 0) { resizeFull = true; }
+        Container.prototype.setBuffer = function (buffer, autoResize) {
+            if (autoResize === void 0) { autoResize = true; }
             this._buffer = buffer;
-            this._bufferResize = resizeFull;
+            this._willBufferAutoResize = autoResize;
+            return this;
+        };
+        Container.prototype.setBufferUpdate = function (value) {
+            this._willBufferUpdate = value;
             return this;
         };
         Container.prototype.draw = function (ctx, ignoreCache) {
+            var willBufferUpdate = this._willBufferUpdate;
+            var bufferAvailable = this._buffer ? true : false;
+            var buffer = this._buffer;
+            var list = this.children, child;
             if (_super.prototype.draw.call(this, ctx, ignoreCache)) {
                 return true;
             }
-            if (this._buffer) {
-                var localCtx = this._buffer.context;
+            if (bufferAvailable) {
+                var localCtx = buffer.context;
             }
             else {
                 var localCtx = ctx;
             }
-            var list = this.children, child;
-            for (var i = 0, l = list.length; i < l; ++i) {
-                child = list[i];
-                if (!child.isVisible()) {
-                    continue;
+            if ((bufferAvailable && willBufferUpdate) || !bufferAvailable) {
+                for (var i = 0, l = list.length; i < l; ++i) {
+                    child = list[i];
+                    if (!child.isVisible()) {
+                        continue;
+                    }
+                    localCtx.save();
+                    child.updateContext(localCtx);
+                    child.draw(localCtx);
+                    localCtx.restore();
                 }
-                localCtx.save();
-                child.updateContext(localCtx);
-                child.draw(localCtx);
-                localCtx.restore();
             }
-            if (this._buffer) {
-                this._buffer.draw(ctx);
-                this._buffer.clear();
+            if (buffer) {
+                buffer.draw(ctx);
+                buffer.clear();
             }
             return true;
         };
@@ -291,10 +301,12 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
             _super.prototype.onResize.call(this, width, height);
             var newWidth = this.width;
             var newHeight = this.height;
-            if (this._bufferResize && this._buffer) {
-                this._buffer.setSize(newWidth, newHeight);
+            var buffer = this._buffer;
+            var willAutoResize = this._willBufferAutoResize;
+            if (willAutoResize && buffer) {
+                buffer.setSize(newWidth, newHeight);
             }
-            for (var i = 0; i < this.children.length; i++) {
+            for (var i = 0, l = this.children.length; i < l; i++) {
                 var child = this.children[i];
                 child.onResize(newWidth, newHeight);
             }

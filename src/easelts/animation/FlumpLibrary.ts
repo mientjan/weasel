@@ -9,6 +9,7 @@ import FlumpMovieData from './flump/FlumpMovieData';
 import FlumpTexture from './flump/FlumpTexture';
 import FlumpTextureGroup from './flump/FlumpTextureGroup';
 import FlumpMovie from './flump/FlumpMovie';
+import EventDispatcher from "../../createts/event/EventDispatcher";
 
 class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
@@ -52,9 +53,10 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 	public referenceList:Array<string>;
 
 	public fps:number = 0;
-
-	public _isLoaded:boolean = false;
 	public isOptimised:boolean = false;
+
+	protected _hasLoaded:boolean = false;
+	protected _isLoading:boolean = false;
 
 	constructor(basePath?:string)
 	{
@@ -64,14 +66,19 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 		}
 	}
 
-	public isLoaded():boolean
+	public hasLoaded():boolean
 	{
-		return this._isLoaded;
+		return this._hasLoaded;
+	}
+
+	public isLoading():boolean
+	{
+		return this._isLoading;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<FlumpLibrary>
 	{
-		if( this._isLoaded )
+		if( this.hasLoaded() )
 		{
 			onProgress(1);
 
@@ -123,7 +130,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 				}
 
 
-				this._isLoaded = true;
+				this._hasLoaded = true;
 				return this;
 			});
 	}

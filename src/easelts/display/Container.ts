@@ -97,7 +97,8 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	public tickChildren:boolean = true;
 
 	protected _buffer:CanvasBuffer = null;
-	protected _bufferResize:boolean = true;
+	protected _willBufferAutoResize:boolean = true;
+	protected _willBufferUpdate:boolean = true;
 
 	/**
 	 * @constructor
@@ -136,10 +137,16 @@ class Container<T extends IDisplayObject> extends DisplayObject
 		super.setMouseInteraction(value);
 	}
 
-	public setBuffer(buffer:CanvasBuffer, resizeFull:boolean = true):Container<T>
+	public setBuffer(buffer:CanvasBuffer, autoResize:boolean = true):Container<T>
 	{
 		this._buffer = buffer;
-		this._bufferResize = resizeFull;
+		this._willBufferAutoResize = autoResize;
+		return this;
+	}
+
+	public setBufferUpdate(value:boolean):Container<T>
+	{
+		this._willBufferUpdate = value;
 		return this;
 	}
 
@@ -156,44 +163,49 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	 **/
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
+		var willBufferUpdate = this._willBufferUpdate;
+		var bufferAvailable = this._buffer ? true : false;
+		var buffer = this._buffer;
+		var list = this.children,
+				child;
+
 		if(super.draw(ctx, ignoreCache))
 		{
 			return true;
 		}
 
-		if(this._buffer)
+		if(bufferAvailable)
 		{
-			var localCtx = this._buffer.context;
+			var localCtx = buffer.context;
 		}
 		else
 		{
 			var localCtx:CanvasRenderingContext2D = ctx;
 		}
 
-		// this ensures we don't have issues with display list changes that occur during a draw:
-		var list = this.children,
-			child;
-
-		for(var i = 0, l = list.length; i < l; ++i)
+		if( (bufferAvailable && willBufferUpdate) || !bufferAvailable)
 		{
-			child = list[i];
-
-			if(!child.isVisible())
+			for(var i = 0, l = list.length; i < l; ++i)
 			{
-				continue;
-			}
+				child = list[i];
 
-			// draw the child:
-			localCtx.save();
-			child.updateContext(localCtx);
-			child.draw(localCtx);
-			localCtx.restore();
+				if(!child.isVisible())
+				{
+					continue;
+				}
+
+				// draw the child:
+				localCtx.save();
+				child.updateContext(localCtx);
+				child.draw(localCtx);
+				localCtx.restore();
+			}
 		}
 
-		if(this._buffer)
+		if(buffer)
 		{
-			this._buffer.draw(ctx);
-			this._buffer.clear();
+			buffer.draw(ctx);
+			buffer.clear();
 		}
 
 		return true;
@@ -720,13 +732,15 @@ class Container<T extends IDisplayObject> extends DisplayObject
 
 		var newWidth = this.width;
 		var newHeight = this.height;
+		var buffer = this._buffer;
+		var willAutoResize = this._willBufferAutoResize;
 
-		if(this._bufferResize && this._buffer)
+		if(willAutoResize && buffer)
 		{
-			this._buffer.setSize(newWidth, newHeight);
+			buffer.setSize(newWidth, newHeight);
 		}
 
-		for(var i = 0; i < this.children.length; i++)
+		for(var i = 0, l = this.children.length; i < l; i++)
 		{
 			var child = this.children[i];
 			child.onResize(newWidth, newHeight);
