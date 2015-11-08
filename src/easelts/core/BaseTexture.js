@@ -1,7 +1,6 @@
 define(["require", "exports", "../util/UID", "../util/MathUtil"], function (require, exports, UID_1, MathUtil_1) {
     var BaseTexture = (function () {
         function BaseTexture(source, scaleMode, resolution) {
-            //EventEmitter.call(this);
             if (resolution === void 0) { resolution = 1; }
             this.uid = UID_1.default.get();
             this.width = 100;
@@ -17,43 +16,9 @@ define(["require", "exports", "../util/UID", "../util/MathUtil"], function (requ
             this.isPowerOfTwo = false;
             this.mipmap = false;
             this._glTextures = [];
-            if (source) {
-                this.loadSource(source);
-            }
             this.scaleMode = scaleMode;
             this.resolution = resolution;
         }
-        BaseTexture.fromImage = function (imageUrl, crossorigin, scaleType) {
-            if (crossorigin === void 0) { crossorigin = 'auto'; }
-            if (scaleType === void 0) { scaleType = 0; }
-            var baseTexture = utils.BaseTextureCache[imageUrl];
-            if (crossorigin === undefined && imageUrl.indexOf('data:') !== 0) {
-                crossorigin = true;
-            }
-            if (!baseTexture) {
-                var image = document.createElement('img');
-                if (crossorigin) {
-                    image.crossOrigin = '';
-                }
-                baseTexture = new BaseTexture(image, scaleMode);
-                baseTexture.imageUrl = imageUrl;
-                image.src = imageUrl;
-                utils.BaseTextureCache[imageUrl] = baseTexture;
-                baseTexture.resolution = utils.getResolutionOfUrl(imageUrl);
-            }
-            return baseTexture;
-        };
-        BaseTexture.fromCanvas = function (canvas, scaleMode) {
-            if (!canvas._pixiId) {
-                canvas._pixiId = 'canvas_' + utils.uid();
-            }
-            var baseTexture = utils.BaseTextureCache[canvas._pixiId];
-            if (!baseTexture) {
-                baseTexture = new BaseTexture(canvas, scaleMode);
-                utils.BaseTextureCache[canvas._pixiId] = baseTexture;
-            }
-            return baseTexture;
-        };
         BaseTexture.prototype.hasLoaded = function () {
             return this._hasLoaded;
         };
@@ -62,7 +27,7 @@ define(["require", "exports", "../util/UID", "../util/MathUtil"], function (requ
             this.realHeight = this.source.naturalHeight || this.source.height;
             this.width = this.realWidth / this.resolution;
             this.height = this.realHeight / this.resolution;
-            this.isPowerOfTwo = MathUtil_1.default.isPowerOfTwo(this.realWidth, this.realHeight);
+            this.isPowerOfTwo = MathUtil_1.default.isPowerOfTwo(this.realWidth) && MathUtil_1.default.isPowerOfTwo(this.realHeight);
         };
         BaseTexture.prototype.loadSource = function (source) {
             var _this = this;
@@ -72,7 +37,7 @@ define(["require", "exports", "../util/UID", "../util/MathUtil"], function (requ
                 this.source.onerror = null;
             }
             this.source = source;
-            if ((this.source.complete || this.source.getContext)) {
+            if ((this.source['complete'] || this.source['getContext'])) {
                 this._sourceLoaded();
             }
             else if (!source.getContext) {
@@ -85,9 +50,6 @@ define(["require", "exports", "../util/UID", "../util/MathUtil"], function (requ
                 source.onerror = function () {
                     source.onload = null;
                     source.onerror = null;
-                    if (!scope.isLoading) {
-                        return;
-                    }
                     this._hasLoaded = false;
                 };
                 if (source.complete && source.src) {
@@ -107,6 +69,7 @@ define(["require", "exports", "../util/UID", "../util/MathUtil"], function (requ
                     }
                 }
             }
+             * /;
         };
         ;
         BaseTexture.prototype._sourceLoaded = function () {
