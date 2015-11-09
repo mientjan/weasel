@@ -138,7 +138,27 @@ import ILoadable from "../interface/ILoadable";
 
 class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 {
-	public static load(url:string, spriteSheet:SpriteSheet = new SpriteSheet(''), onProcess?:(process:number) => any ):Promise<SpriteSheet>
+	public static createSequenceDataFromString(images:string[], width:number, height:number):any
+	{
+		var sequenceStructure = {
+
+			"images": images.map(src => src),
+			"frames": images.map((src, index) => [0, 0, width, height, index, 0, 0]),
+			"animations": {
+				"animation": [0, images.length - 1]
+			}
+
+		};
+
+		return sequenceStructure;
+	}
+
+	public static createFromString(images:string[], width:number, height:number):SpriteSheet
+	{
+		return new SpriteSheet(SpriteSheet.createSequenceDataFromString(images, width, height));
+	}
+
+	public static load(url:string, spriteSheet:SpriteSheet = new SpriteSheet(''), onProgress?:(process:number) => any ):Promise<SpriteSheet>
 	{
 		var baseDir = url;
 
@@ -173,7 +193,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 
 				spriteSheet.initialize(json);
 
-				onProcess(1);
+				if(onProgress) onProgress(1);
 
 				return spriteSheet;
 			});
@@ -246,7 +266,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	 * @protected
 	 * @type Number
 	 **/
-	public _loadCount = 0;
+	public loadCount = 0;
 
 	// only used for simple frame defs:
 	/**
@@ -280,7 +300,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	public _regY = 0;
 
 
-	protected _isLoaded:boolean = false;
+	public _hasLoaded:boolean = false;
 	public url:string = null;
 
 	/**
@@ -328,7 +348,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 				a.push(img);
 				if(!img.getContext && !img.complete)
 				{
-					this._loadCount++;
+					this.loadCount++;
 					this.complete = false;
 					(function(o)
 					{
@@ -363,7 +383,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 			this._regX = o.regX || 0;
 			this._regY = o.regY || 0;
 			this._numFrames = o.count;
-			if(this._loadCount == 0)
+			if(this.loadCount == 0)
 			{
 				this._calculateFrames();
 			}
@@ -424,22 +444,43 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 			}
 		}
 
-		this._isLoaded = true;
 	}
 
 	public hasLoaded():boolean
 	{
-		return this._isLoaded;
+		return this._hasLoaded;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<SpriteSheet>
 	{
-		if( this.hasLoaded() )
+		if(this.hasLoaded())
 		{
-			onProgress(1);
+			if(onProgress) onProgress(1);
 
 			return new Promise<SpriteSheet>((resolve:Function, reject:Function) => {
 				resolve(this);
+			});
+		}
+
+		if(this._animations.length > 0)
+		{
+			return new Promise<SpriteSheet>((resolve:Function, reject:Function) => {
+
+				var total = this.loadCount;
+				var kill = setInterval(() => {
+
+					if(onProgress){
+						onProgress((total - this.loadCount) / total);
+					}
+
+					if(this.loadCount == 0)
+					{
+						this._hasLoaded = true;
+						resolve(this);
+						clearInterval(kill);
+					}
+				});
+
 			});
 		}
 
@@ -461,24 +502,27 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	 * @param {String} animation The name of the animation to get a frame count for.
 	 * @return {Number} The number of frames in the animation, or in the entire sprite sheet if the animation param is omitted.
 	 */
-	public getNumFrames(animation)
+	public getNumFrames(animation?:string):number
 	{
+		var result:number = 0;
 		if(animation == null)
 		{
-			return this._frames ? this._frames.length : this._numFrames;
+			result =  this._frames ? this._frames.length : this._numFrames;
 		}
 		else
 		{
 			var data = this._data[animation];
 			if(data == null)
 			{
-				return 0;
+				result = 0;
 			}
 			else
 			{
-				return data.frames.length;
+				result = data.frames.length;
 			}
 		}
+
+		return result;
 	}
 
 	/**
@@ -503,7 +547,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	 * @param {String} name The name of the animation to get.
 	 * @return {Object} a generic object with frames, speed, name, and next properties.
 	 **/
-	public getAnimation(name)
+	public getAnimation(name:string):Object
 	{
 		return this._data[name];
 	}
@@ -575,7 +619,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 		o._frameHeight = this._frameHeight;
 		o._frameWidth = this._frameWidth;
 		o._numFrames = this._numFrames;
-		o._loadCount = this._loadCount;
+		o.loadCount = this.loadCount;
 		return o;
 	}
 
@@ -586,7 +630,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	 **/
 	public _handleImageLoad()
 	{
-		if(--this._loadCount == 0)
+		if(--this.loadCount == 0)
 		{
 			this._calculateFrames();
 			this.complete = true;

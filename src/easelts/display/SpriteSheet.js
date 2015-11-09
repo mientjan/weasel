@@ -1,31 +1,3 @@
-/*
- * SpriteSheet
- *
- * Copyright (c) 2010 gskinner.com, inc.
- * Copyright (c) 2015 Mient-jan Stelling.
- * Copyright (c) 2015 MediaMonks B.V.
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -42,13 +14,13 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             this._frames = null;
             this._images = null;
             this._data = null;
-            this._loadCount = 0;
+            this.loadCount = 0;
             this._frameHeight = 0;
             this._frameWidth = 0;
             this._numFrames = 0;
             this._regX = 0;
             this._regY = 0;
-            this._isLoaded = false;
+            this._hasLoaded = false;
             this.url = null;
             if (typeof dataOrUrl == 'string') {
                 this.url = dataOrUrl;
@@ -57,7 +29,20 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                 this.initialize(dataOrUrl);
             }
         }
-        SpriteSheet.load = function (url, spriteSheet, onProcess) {
+        SpriteSheet.createSequenceDataFromString = function (images, width, height) {
+            var sequenceStructure = {
+                "images": images.map(function (src) { return src; }),
+                "frames": images.map(function (src, index) { return [0, 0, width, height, index, 0, 0]; }),
+                "animations": {
+                    "animation": [0, images.length - 1]
+                }
+            };
+            return sequenceStructure;
+        };
+        SpriteSheet.createFromString = function (images, width, height) {
+            return new SpriteSheet(SpriteSheet.createSequenceDataFromString(images, width, height));
+        };
+        SpriteSheet.load = function (url, spriteSheet, onProgress) {
             if (spriteSheet === void 0) { spriteSheet = new SpriteSheet(''); }
             var baseDir = url;
             if (url.indexOf('.json') > -1) {
@@ -80,7 +65,8 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                     }
                 }
                 spriteSheet.initialize(json);
-                onProcess(1);
+                if (onProgress)
+                    onProgress(1);
                 return spriteSheet;
             });
         };
@@ -101,7 +87,7 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                     }
                     a.push(img);
                     if (!img.getContext && !img.complete) {
-                        this._loadCount++;
+                        this.loadCount++;
                         this.complete = false;
                         (function (o) {
                             img.onload = function () {
@@ -128,7 +114,7 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                 this._regX = o.regX || 0;
                 this._regY = o.regY || 0;
                 this._numFrames = o.count;
-                if (this._loadCount == 0) {
+                if (this.loadCount == 0) {
                     this._calculateFrames();
                 }
             }
@@ -174,17 +160,32 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                     this._data[name] = anim;
                 }
             }
-            this._isLoaded = true;
         };
         SpriteSheet.prototype.hasLoaded = function () {
-            return this._isLoaded;
+            return this._hasLoaded;
         };
         SpriteSheet.prototype.load = function (onProgress) {
             var _this = this;
             if (this.hasLoaded()) {
-                onProgress(1);
+                if (onProgress)
+                    onProgress(1);
                 return new Promise_1.default(function (resolve, reject) {
                     resolve(_this);
+                });
+            }
+            if (this._animations.length > 0) {
+                return new Promise_1.default(function (resolve, reject) {
+                    var total = _this.loadCount;
+                    var kill = setInterval(function () {
+                        if (onProgress) {
+                            onProgress((total - _this.loadCount) / total);
+                        }
+                        if (_this.loadCount == 0) {
+                            _this._hasLoaded = true;
+                            resolve(_this);
+                            clearInterval(kill);
+                        }
+                    });
                 });
             }
             if (!this.url) {
@@ -195,18 +196,20 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             });
         };
         SpriteSheet.prototype.getNumFrames = function (animation) {
+            var result = 0;
             if (animation == null) {
-                return this._frames ? this._frames.length : this._numFrames;
+                result = this._frames ? this._frames.length : this._numFrames;
             }
             else {
                 var data = this._data[animation];
                 if (data == null) {
-                    return 0;
+                    result = 0;
                 }
                 else {
-                    return data.frames.length;
+                    result = data.frames.length;
                 }
             }
+            return result;
         };
         SpriteSheet.prototype.getAnimations = function () {
             return this._animations.slice(0);
@@ -238,11 +241,11 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             o._frameHeight = this._frameHeight;
             o._frameWidth = this._frameWidth;
             o._numFrames = this._numFrames;
-            o._loadCount = this._loadCount;
+            o.loadCount = this.loadCount;
             return o;
         };
         SpriteSheet.prototype._handleImageLoad = function () {
-            if (--this._loadCount == 0) {
+            if (--this.loadCount == 0) {
                 this._calculateFrames();
                 this.complete = true;
                 this.dispatchEvent("complete");
