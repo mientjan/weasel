@@ -16,15 +16,17 @@ class AnimationQueue extends QueueList
 
 	public onTick(delta:number):void
 	{
-		this._time += delta;
+		var time = this._time += delta;
+
 
 		if(this.current != null || this.next() != null)
 		{
-			var times = this.current.times;
-			var from = this.current.from;
-			var duration = this.current.duration;
+			var current = this.current;
+			var from = current.from;
+			var duration = current.duration;
+			var times = current.times;
 
-			var frame = (duration * this._time / (duration * this._fpms));
+			var frame = (duration * time / (duration * this._fpms));
 
 			this.frame = from + (frame % duration);
 
@@ -37,14 +39,18 @@ class AnimationQueue extends QueueList
 
 	public next():Queue
 	{
-		this._time = this._time % this._fpms;
-
+		this.reset();
 		return super.next();
 	}
 
 	public getFrame():number
 	{
 		return this.frame|0
+	}
+
+	public reset():void
+	{
+		this._time = this._time % this._fpms;
 	}
 }
 

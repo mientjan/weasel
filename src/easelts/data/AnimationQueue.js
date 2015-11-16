@@ -15,12 +15,13 @@ define(["require", "exports", "./QueueList"], function (require, exports, QueueL
             this._fpms = unit / fps;
         }
         AnimationQueue.prototype.onTick = function (delta) {
-            this._time += delta;
+            var time = this._time += delta;
             if (this.current != null || this.next() != null) {
-                var times = this.current.times;
-                var from = this.current.from;
-                var duration = this.current.duration;
-                var frame = (duration * this._time / (duration * this._fpms));
+                var current = this.current;
+                var from = current.from;
+                var duration = current.duration;
+                var times = current.times;
+                var frame = (duration * time / (duration * this._fpms));
                 this.frame = from + (frame % duration);
                 if (times > -1 && times - (frame / duration) < 0) {
                     this.next();
@@ -28,11 +29,14 @@ define(["require", "exports", "./QueueList"], function (require, exports, QueueL
             }
         };
         AnimationQueue.prototype.next = function () {
-            this._time = this._time % this._fpms;
+            this.reset();
             return _super.prototype.next.call(this);
         };
         AnimationQueue.prototype.getFrame = function () {
             return this.frame | 0;
+        };
+        AnimationQueue.prototype.reset = function () {
+            this._time = this._time % this._fpms;
         };
         return AnimationQueue;
     })(QueueList_1.default);

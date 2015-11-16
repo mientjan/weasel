@@ -1,4 +1,4 @@
-define(["require", "exports", '../../createts/util/HttpRequest', '../../createts/util/Promise', './flump/FlumpMovieData', './flump/FlumpTextureGroup', './flump/FlumpMovie'], function (require, exports, HttpRequest_1, Promise_1, FlumpMovieData_1, FlumpTextureGroup_1, FlumpMovie_1) {
+define(["require", "exports", '../../createts/util/HttpRequest', '../../createts/util/Promise', './flump/FlumpMovieData', './flump/FlumpTextureGroup', './flump/FlumpMovie', "../data/Queue"], function (require, exports, HttpRequest_1, Promise_1, FlumpMovieData_1, FlumpTextureGroup_1, FlumpMovie_1, Queue_1) {
     var FlumpLibrary = (function () {
         function FlumpLibrary(basePath) {
             this.movieData = [];
@@ -101,6 +101,7 @@ define(["require", "exports", '../../createts/util/HttpRequest', '../../createts
                 var movieData = this.movieData[i];
                 if (movieData.id == name) {
                     var movie = new FlumpMovie_1.default(this, name);
+                    movie.getQueue().add(new Queue_1.default(null, 0, movie.frames, -1, 0));
                     movie.paused = paused;
                     return movie;
                 }

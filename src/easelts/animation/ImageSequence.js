@@ -20,7 +20,7 @@ define(["require", "exports", "../display/DisplayObject", "../../createts/util/P
             this._hasLoaded = false;
             this.spriteSheet = spriteSheet;
             this._fps = fps;
-            this._queue = new AnimationQueue_1.default(fps);
+            this._queue = new AnimationQueue_1.default(fps, 1000);
         }
         ImageSequence.prototype.hasLoaded = function () {
             return this._hasLoaded;

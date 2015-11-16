@@ -102,6 +102,7 @@ class SpriteSheetUtils
 		{
 			frameOrAnimation = spriteSheet.getAnimation(frameOrAnimation).frames[0];
 		}
+
 		var data = spriteSheet.getFrame(frameOrAnimation);
 		if(!data)
 		{

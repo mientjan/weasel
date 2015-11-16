@@ -24,6 +24,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	private _labels:IHashMap<FlumpLabelData> = {};
 	private _labelQueue:Array<FlumpLabelQueueData> = [];
 	private _label:FlumpLabelQueueData = null;
+
 	protected _queue:AnimationQueue = null;
 
 	private hasFrameCallbacks:boolean = false;
@@ -32,19 +33,18 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public paused:boolean = true;
 
 	public name:string;
-	public time:number = 0.0;
-	public duration = 0.0;
+	//public time:number = 0.0;
+	//public duration = 0.0;
 	public frame:number = 0;
 	public frames:number = 0;
 	public speed:number = 1;
+	public fps:number = 1;
 
 	// ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
 
 	constructor( flumpLibrary:FlumpLibrary, name:string, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
 	{
 		super(width, height, x, y, regX, regY);
-
-		//flumpLibrary.frameRate = 2;
 
 		this.name = name;
 		this.flumpLibrary = flumpLibrary;
@@ -63,61 +63,69 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		this.flumpMovieLayers = movieLayers;
 		this.frames = this.flumpMovieData.frames;
 		this._frameCallback = new Array(this.frames);
+
 		for(var i = 0; i < this.frames; i++)
 		{
 			this._frameCallback[i] = null;
 		}
 
-		// convert to milliseconds
-		this.duration = ( this.frames / flumpLibrary.frameRate ) * 1000;
-
-		this._queue = new AnimationQueue(flumpLibrary.frameRate);
+		this.fps = flumpLibrary.frameRate;
+		this.getQueue();
 	}
 
-	public play(times:number = 1, label:string = null, complete?:() => any):FlumpMovie
+	public getQueue():AnimationQueue
+	{
+		if(!this._queue)
+		{
+			this._queue = new AnimationQueue(this.fps, 1000);
+		}
+
+		return this._queue;
+	}
+
+	public play(times:number = 1, label:string|Array<number> = null, complete?:() => any):FlumpMovie
 	{
 		this.visible = true;
 
-		var labelQueueData:FlumpLabelQueueData;
-		var queue:Queue = null;
-
-		if( label == null || label == '*' )
+		if(label instanceof Array)
 		{
-			labelQueueData = new FlumpLabelQueueData(label, 0, this.frames, times, 0)
-			queue = new Queue(label, 0, this.frames, times, 0);
-		}
-		else
+			if(label.length == 1)
+			{
+				var queue = new Queue(null, label[0], this.frames, times, 0);
+			} else {
+				var queue = new Queue(null, label[0], label[1], times, 0);
+			}
+		} else if( label == null || label == '*')
 		{
-			var queueLabel = this._labels[label];
+			var queue = new Queue(null, 0, this.frames, times, 0);
+		} else {
+			var queueLabel = this._labels[<string> label];
 
 			if(!queueLabel)
 			{
-				console.warn('unknown label:', queueLabel, 'on',  this.name );
 				throw new Error('unknown label:' + queueLabel + ' | ' + this.name );
 			}
 
-			labelQueueData = new FlumpLabelQueueData(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
-			queue = new Queue(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
-
+			var queue = new Queue(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
 		}
 
-		this._labelQueue.push(labelQueueData);
+		if(complete)
+		{
+			queue.then(complete);
+		}
+
 		this._queue.add(queue);
 
 		if(complete)
 		{
-			labelQueueData.then(complete);
 			queue.then(complete);
-		}
-
-		if(!this._label){
-			this.gotoNextLabel();
 		}
 
 		this.paused = false;
 
 		return this;
 	}
+
 
 	public resume():FlumpMovie
 	{
@@ -133,22 +141,27 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public end(all:boolean = false):FlumpMovie
 	{
-		if(all)
-		{
-			this._labelQueue.length = 0;
-		}
-
-		if(this._label){
-			this._label.times = 1;
-		}
+		this._queue.end(all);
 		return this;
+	}
+
+	public stop():FlumpMovie
+	{
+		this.paused = true;
+
+		this._queue.kill();
+
+		return this;
+	}
+
+	public next():Queue
+	{
+		return this._queue.next();
 	}
 
 	public kill():FlumpMovie
 	{
-		this._labelQueue.length = 0;
-		this._label = null;
-
+		this._queue.kill();
 		return this;
 	}
 
@@ -170,20 +183,6 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		return this;
 	}
 
-	private gotoNextLabel():FlumpLabelQueueData
-	{
-		if(this._label)
-		{
-			this._label.finish();
-			this._label.destruct();
-		}
-
-		this._label = this._labelQueue.shift();
-		this.reset();
-
-		return this._label;
-	}
-
 	public gotoAndStop(frameOrLabel:number|string):FlumpMovie
 	{
 		var frame:number;
@@ -195,26 +194,33 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		{
 			frame = frameOrLabel;
 		}
-		var label = new FlumpLabelQueueData(null, frame, 1, 1, 0);
-		this._labelQueue.push(label);
-
-		return this;
-	}
-
-	public stop():FlumpMovie
-	{
-		this.paused = true;
-
-		if(this._label)
-		{
-			this._label.finish();
-			this._label.destruct();
-		}
+		var queue = new Queue(null, frame, 1, 1, 0);
+		this._queue.add(queue);
 
 		return this;
 	}
 
 	public onTick(delta:number):void
+	{
+		super.onTick(delta);
+
+		delta *= this.speed;
+
+		if(this.paused == false)
+		{
+			this._queue.onTick(delta);
+			this.frame = this._queue.getFrame();
+
+			for(var i = 0; i < this.flumpMovieLayers.length; i++)
+			{
+				var layer = this.flumpMovieLayers[i];
+				layer.onTick(delta);
+				layer.setFrame(this.frame);
+			}
+		}
+	}
+/*
+	public onTick2(delta:number):void
 	{
 		super.onTick(delta);
 
@@ -288,7 +294,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 			this.frame = toFrame;
 		}
-	}
+	}*/
 
 	public handleFrameCallback(fromFrame:number, toFrame:number, delta:number):FlumpMovie
 	{
@@ -323,7 +329,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		return this;
 	}
-
+/*
 	public setFrame(value:number):FlumpMovie
 	{
 		//console.log('setFrame', value, this.name);
@@ -345,7 +351,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		}
 
 		return this;
-	}
+	}*/
 
 	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
@@ -384,7 +390,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	public reset():void
 	{
 		this.frame = 0;
-		this.time = 0.0;
+		this._queue.reset();
+		//this.time = 0.0;
 
 		for(var i = 0; i < this.flumpMovieLayers.length; i++)
 		{
