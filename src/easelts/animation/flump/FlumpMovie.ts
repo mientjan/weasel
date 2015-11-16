@@ -9,7 +9,8 @@ import FlumpMovieLayer from './FlumpMovieLayer';
 import FlumpLabelData from './FlumpLabelData';
 import FlumpLabelQueueData from './FlumpLabelQueueData';
 import FlumpTexture from "./FlumpTexture";
-
+import AnimationQueue from '../../data/AnimationQueue';
+import Queue from '../../data/Queue';
 
 /**
  * @author Mient-jan Stelling
@@ -23,6 +24,7 @@ class FlumpMovie extends DisplayObject implements IPlayable
 	private _labels:IHashMap<FlumpLabelData> = {};
 	private _labelQueue:Array<FlumpLabelQueueData> = [];
 	private _label:FlumpLabelQueueData = null;
+	protected _queue:AnimationQueue = null;
 
 	private hasFrameCallbacks:boolean = false;
 	private _frameCallback:Array<(delta:number) => any>;
@@ -68,6 +70,8 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 		// convert to milliseconds
 		this.duration = ( this.frames / flumpLibrary.frameRate ) * 1000;
+
+		this._queue = new AnimationQueue(flumpLibrary.frameRate);
 	}
 
 	public play(times:number = 1, label:string = null, complete?:() => any):FlumpMovie
@@ -75,30 +79,35 @@ class FlumpMovie extends DisplayObject implements IPlayable
 		this.visible = true;
 
 		var labelQueueData:FlumpLabelQueueData;
+		var queue:Queue = null;
 
 		if( label == null || label == '*' )
 		{
 			labelQueueData = new FlumpLabelQueueData(label, 0, this.frames, times, 0)
-			this._labelQueue.push(labelQueueData);
+			queue = new Queue(label, 0, this.frames, times, 0);
 		}
 		else
 		{
-			var queue = this._labels[label];
+			var queueLabel = this._labels[label];
 
-			if(!queue)
+			if(!queueLabel)
 			{
-				console.warn('unknown label:', label, 'on',  this.name );
-				throw new Error('unknown label:' + label + ' | ' + this.name );
+				console.warn('unknown label:', queueLabel, 'on',  this.name );
+				throw new Error('unknown label:' + queueLabel + ' | ' + this.name );
 			}
 
-			labelQueueData = new FlumpLabelQueueData(queue.label, queue.index, queue.duration, times, 0);
+			labelQueueData = new FlumpLabelQueueData(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
+			queue = new Queue(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
 
-			this._labelQueue.push(labelQueueData);
 		}
+
+		this._labelQueue.push(labelQueueData);
+		this._queue.add(queue);
 
 		if(complete)
 		{
 			labelQueueData.then(complete);
+			queue.then(complete);
 		}
 
 		if(!this._label){
@@ -207,14 +216,13 @@ class FlumpMovie extends DisplayObject implements IPlayable
 
 	public onTick(delta:number):void
 	{
-		//if (this.paused) return;
-		//console.log('--------------');
-		delta *= this.speed;
-
 		super.onTick(delta);
+
+		delta *= this.speed;
 
 		if(this.paused == false)
 		{
+			this._queue.onTick(delta);
 			this.time += delta;
 
 			var label = this._label;

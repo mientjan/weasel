@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer', './FlumpLabelQueueData'], function (require, exports, DisplayObject_1, FlumpMovieLayer_1, FlumpLabelQueueData_1) {
+define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer', './FlumpLabelQueueData', '../../data/AnimationQueue', '../../data/Queue'], function (require, exports, DisplayObject_1, FlumpMovieLayer_1, FlumpLabelQueueData_1, AnimationQueue_1, Queue_1) {
     var FlumpMovie = (function (_super) {
         __extends(FlumpMovie, _super);
         function FlumpMovie(flumpLibrary, name, width, height, x, y, regX, regY) {
@@ -17,6 +17,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             this._labels = {};
             this._labelQueue = [];
             this._label = null;
+            this._queue = null;
             this.hasFrameCallbacks = false;
             this.paused = true;
             this.time = 0.0;
@@ -41,27 +42,32 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
                 this._frameCallback[i] = null;
             }
             this.duration = (this.frames / flumpLibrary.frameRate) * 1000;
+            this._queue = new AnimationQueue_1.default(flumpLibrary.frameRate);
         }
         FlumpMovie.prototype.play = function (times, label, complete) {
             if (times === void 0) { times = 1; }
             if (label === void 0) { label = null; }
             this.visible = true;
             var labelQueueData;
+            var queue = null;
             if (label == null || label == '*') {
                 labelQueueData = new FlumpLabelQueueData_1.default(label, 0, this.frames, times, 0);
-                this._labelQueue.push(labelQueueData);
+                queue = new Queue_1.default(label, 0, this.frames, times, 0);
             }
             else {
-                var queue = this._labels[label];
-                if (!queue) {
-                    console.warn('unknown label:', label, 'on', this.name);
-                    throw new Error('unknown label:' + label + ' | ' + this.name);
+                var queueLabel = this._labels[label];
+                if (!queueLabel) {
+                    console.warn('unknown label:', queueLabel, 'on', this.name);
+                    throw new Error('unknown label:' + queueLabel + ' | ' + this.name);
                 }
-                labelQueueData = new FlumpLabelQueueData_1.default(queue.label, queue.index, queue.duration, times, 0);
-                this._labelQueue.push(labelQueueData);
+                labelQueueData = new FlumpLabelQueueData_1.default(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
+                queue = new Queue_1.default(queueLabel.label, queueLabel.index, queueLabel.duration, times, 0);
             }
+            this._labelQueue.push(labelQueueData);
+            this._queue.add(queue);
             if (complete) {
                 labelQueueData.then(complete);
+                queue.then(complete);
             }
             if (!this._label) {
                 this.gotoNextLabel();
@@ -137,9 +143,10 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             return this;
         };
         FlumpMovie.prototype.onTick = function (delta) {
-            delta *= this.speed;
             _super.prototype.onTick.call(this, delta);
+            delta *= this.speed;
             if (this.paused == false) {
+                this._queue.onTick(delta);
                 this.time += delta;
                 var label = this._label;
                 var fromFrame = this.frame;
@@ -201,7 +208,6 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpMovieLayer'
             return this;
         };
         FlumpMovie.prototype.setFrame = function (value) {
-            //console.log('setFrame', value, this.name);
             var layers = this.flumpMovieLayers;
             var length = layers.length;
             for (var i = 0; i < length; i++) {
