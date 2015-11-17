@@ -525,7 +525,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:Matrix2 = new Matrix2(0, 0, 0, 0, 0, 0);
+	public _matrix:Matrix2 = new Matrix2();
 
 	/**
 	 * @property _rectangle
@@ -1403,7 +1403,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public getMatrix(matrix?:Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new Matrix2(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new Matrix2())
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1427,7 +1427,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		}
 		else
 		{
-			matrix = new Matrix2(0, 0, 0, 0, 0, 0);
+			matrix = new Matrix2();
 		}
 		var o = this;
 		while(o != null)
