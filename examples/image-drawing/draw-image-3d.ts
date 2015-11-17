@@ -2,7 +2,11 @@ import Bitmap from '../../src/easelts/display/Bitmap';
 import Stage from "../../src/easelts/display/Stage";
 import Vector3 from "../../src/easelts/geom/Vector3";
 
-var v3 = new Vector3();
+var v3_0 = new Vector3();
+var v3_1 = new Vector3();
+var v3_2 = new Vector3();
+
+
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, {});

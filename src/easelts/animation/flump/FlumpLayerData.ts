@@ -16,15 +16,19 @@ class FlumpLayerData {
 	{
 		this.name = json.name;
 		this.flipbook = 'flipbook' in json ? !!json.flipbook : false;
-		//
+		
 		var keyframes = json.keyframes;
 		var keyFrameData:FlumpKeyframeData = null;
+		
 		for(var i = 0; i < keyframes.length; i++)
 		{
 			var keyframe = keyframes[i];
 			keyFrameData = new FlumpKeyframeData(keyframe);
 			this.flumpKeyframeDatas.push( keyFrameData );
 		}
+
+		console.log(keyFrameData);
+		
 
 		this.frames = keyFrameData.index + keyFrameData.duration;
 	}

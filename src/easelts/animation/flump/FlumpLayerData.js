@@ -11,6 +11,7 @@ define(["require", "exports", './FlumpKeyframeData'], function (require, exports
                 keyFrameData = new FlumpKeyframeData_1.default(keyframe);
                 this.flumpKeyframeDatas.push(keyFrameData);
             }
+            console.log(keyFrameData);
             this.frames = keyFrameData.index + keyFrameData.duration;
         }
         FlumpLayerData.prototype.getKeyframeForFrame = function (frame) {

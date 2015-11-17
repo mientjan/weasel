@@ -1,12 +1,13 @@
 import Vector3 from "../Vector3";
 import Quaternion from "../Quaternion";
 import Matrix4 from "../Matrix4";
+import IHashMap from "../../interface/IHashMap";
 
-export default class AbstractMath3D
+class AbstractMath3D
 {
-	private _quaternion:{[index:string]:Quaternion} = {};
-	private _vector3:{[index:string]:Vector3} = {};
-	private _matrix4:{[index:string]:Matrix4} = {};
+	private _quaternion:IHashMap<Quaternion> = {};
+	private _vector3:IHashMap<Vector3> = {};
+	private _matrix4:IHashMap<Matrix4> = {};
 
 	protected getQuaternion(value:string):Quaternion
 	{
@@ -35,3 +36,5 @@ export default class AbstractMath3D
 		return this._matrix4[value];
 	}
 }
+
+export default AbstractMath3D;
