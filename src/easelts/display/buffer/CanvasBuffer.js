@@ -40,6 +40,9 @@ define(["require", "exports"], function (require, exports) {
         CanvasBuffer.prototype.clear = function () {
             this.context.clearRect(0, 0, this._width, this._height);
         };
+        CanvasBuffer.prototype.getDataUrl = function (type, args) {
+            return this.element.toDataURL(type, args);
+        };
         CanvasBuffer.prototype.setSize = function (width, height) {
             this.element.width = this._width = width;
             this.element.height = this._height = height;

@@ -76,12 +76,29 @@ class CanvasBuffer implements IBuffer
 		//}
 	}
 
+	/**
+	 * Returns the content of the current canvas as an image that you can use as a source for another canvas or an HTML element.
+	 * @param type The standard MIME type for the image format to return. If you do not specify this parameter, the default value is a PNG format image.
+	 */
+	public getDataUrl(type:string, args:any[])
+	{
+		return this.element.toDataURL(type, args);
+	}
+
+	/**
+	 *
+	 * @param width
+	 * @param height
+	 */
 	public setSize(width:number, height:number):void
 	{
 		this.element.width = this._width = width;
 		this.element.height = this._height = height;
 	}
 
+	/**
+	 *
+	 */
 	public destruct():void
 	{
 		this.context = null;
