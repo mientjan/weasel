@@ -34,11 +34,11 @@ export function debounce(wait:number)
 
 export function throttle(threshhold:number)
 {
-	return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) =>
+	return function(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>)
 	{
 		var originalMethod = descriptor.value;
 
-		descriptor.value = Functional.throttle(originalMethod, threshhold, target);
+		descriptor.value = Functional.throttle(originalMethod, threshhold);
 
 		return descriptor;
 	}
