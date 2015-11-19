@@ -809,6 +809,24 @@ class StrokeStyle
 	public path = false;
 }
 
+class StrokeDash
+{
+	segments:Array<number>;
+	offset:number;
+
+	constructor(segments:Array<number>, offset:number)
+	{
+		this.segments = segments;
+		this.offset = offset;
+	}
+
+	public exec(ctx)
+	{
+		ctx.setLineDash(this.segments);
+		ctx.lineDashOffset = this.offset;
+	}
+}
+
 
 /**
  * Graphics command object. See {{#crossLink "Graphics"}}{{/crossLink}} and {{#crossLink "Graphics/append"}}{{/crossLink}} for more information.
@@ -1925,6 +1943,11 @@ class Graphics
 	public drawPolyStar(x:number, y:number, radius:number, sides:number, pointSize:number, angle:number):Graphics
 	{
 		return this.append(new Graphics.PolyStar(x, y, radius, sides, pointSize, angle));
+	}
+
+	public setStrokeDash(segments:Array<number>, offset:number = 0):Graphics
+	{
+		return this.append(new StrokeDash(segments, offset));
 	}
 
 	/**
