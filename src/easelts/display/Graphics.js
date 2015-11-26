@@ -290,6 +290,17 @@ define(["require", "exports", "../util/Methods"], function (require, exports, Me
         };
         return StrokeStyle;
     })();
+    var StrokeDash = (function () {
+        function StrokeDash(segments, offset) {
+            this.segments = segments;
+            this.offset = offset;
+        }
+        StrokeDash.prototype.exec = function (ctx) {
+            ctx.setLineDash(this.segments);
+            ctx.lineDashOffset = this.offset;
+        };
+        return StrokeDash;
+    })();
     var Circle = (function () {
         function Circle(x, y, radius) {
             this.x = x;
@@ -534,6 +545,10 @@ define(["require", "exports", "../util/Methods"], function (require, exports, Me
         };
         Graphics.prototype.drawPolyStar = function (x, y, radius, sides, pointSize, angle) {
             return this.append(new Graphics.PolyStar(x, y, radius, sides, pointSize, angle));
+        };
+        Graphics.prototype.setStrokeDash = function (segments, offset) {
+            if (offset === void 0) { offset = 0; }
+            return this.append(new StrokeDash(segments, offset));
         };
         Graphics.prototype.append = function (command, clean) {
             this._activeInstructions.push(command);

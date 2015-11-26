@@ -33,6 +33,7 @@ import BitmapType from "../enum/BitmapType";
 import Rectangle from "../geom/Rectangle";
 import Signal from "../../createts/event/Signal";
 import Size from "../geom/Size";
+import ILoadable from "../interface/ILoadable";
 
 /**
  * A Bitmap represents an Image, Canvas, or Video in the display list. A Bitmap can be instantiated using an existing

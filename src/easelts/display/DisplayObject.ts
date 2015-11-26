@@ -129,6 +129,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public static COMPOSITE_OPERATION_DESTINATION_ATOP = 'destination-atop';
 	public static COMPOSITE_OPERATION_DESTINATION_IN = 'destination-in';
 	public static COMPOSITE_OPERATION_DESTINATION_OUT = 'destination-out';
+
+	/**
+	 * Objects below 30px could trigger a error that the operation is not executed.
+	 * especialy with a ctx.arc
+	 * @type {string}
+	 */
 	public static COMPOSITE_OPERATION_DESTINATION_OVER = 'destination-over';
 
 	public static COMPOSITE_OPERATION_LIGHTER = 'lighter';

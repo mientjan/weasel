@@ -1,5 +1,6 @@
 import IBuffer from "../../interface/IBuffer";
 import RGBA from "../../data/RGBA";
+import Rectangle from "../../geom/Rectangle";
 
 /**
  * Creates a Canvas element of the given size.
@@ -84,6 +85,54 @@ class CanvasBuffer implements IBuffer
 	{
 		return this.element.toDataURL(type, args);
 	}
+
+	/**
+	 *
+	 * @returns {Rectangle}
+	 */
+
+	public getImageData(x:number = 0, y:number = 0, width:number = this._width, height:number = this._height):ImageData
+	{
+		return this.context.getImageData(x, y, width, height);
+	}
+
+	/**
+	 *
+	 * @returns {Rectangle}
+	 */
+	public getDrawBounds():Rectangle
+	{
+		var width = Math.ceil(this.width);
+		var height = Math.ceil(this.height);
+
+		var pixels = this.getImageData();
+
+		var data = pixels.data,
+			x0 = width,
+			y0 = height,
+			x1 = 0,
+			y1 = 0;
+
+		for(var i = 3, l = data.length, p = 0; i < l; i += 4, ++p)
+		{
+			var px = p % width;
+			var py = Math.floor(p / width);
+
+			if(data[i - 3] > 0 ||
+				data[i - 2] > 0 ||
+				data[i - 1] > 0 ||
+				data[i] > 0)
+			{
+				x0 = Math.min(x0, px);
+				y0 = Math.min(y0, py);
+				x1 = Math.max(x1, px);
+				y1 = Math.max(y1, py);
+			}
+		}
+
+		return new Rectangle(x0, y0, x1 - x0, y1 - y0);
+	}
+
 
 	/**
 	 *
