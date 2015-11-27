@@ -14,8 +14,9 @@ define(["require", "exports", "../display/Shape"], function (require, exports, S
             if (y === void 0) { y = 0; }
             if (regX === void 0) { regX = 0; }
             if (regY === void 0) { regY = 0; }
-            _super.call(this, undefined, width, height, x, y, regX, regY);
+            _super.call(this, void 0, width, height, x, y, regX, regY);
             this._color = color;
+            this.setColor();
         }
         Object.defineProperty(RectangleColor.prototype, "color", {
             get: function () {
@@ -28,7 +29,9 @@ define(["require", "exports", "../display/Shape"], function (require, exports, S
             enumerable: true,
             configurable: true
         });
-        RectangleColor.prototype.setColor = function () {
+        RectangleColor.prototype.setColor = function (color) {
+            if (color === void 0) { color = this._color; }
+            this._color = color;
             this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
         };
         RectangleColor.prototype.onResize = function (width, height) {
