@@ -37,12 +37,21 @@ class RectangleColor extends Shape
 		this.setColor();
 	}
 
+	/**
+	 * @method setColor
+	 * @param {string} color
+	 */
 	public setColor(color:string = this._color):void
 	{
 		this._color = color;
 		this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
 	}
 
+	/**
+	 * @method onResize
+	 * @param {width} width
+	 * @param {height} height
+	 */
 	public onResize(width:number, height:number):void
 	{
 		super.onResize(width, height);
