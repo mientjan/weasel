@@ -1,6 +1,5 @@
-# EaselTS [![Build Status](https://travis-ci.org/mientjan/EaselTS.svg?branch=master)](https://travis-ci.org/mientjan/EaselTS)
-
-is a complete rewrite of easeljs in typescript. Plus adding a lot of stuff that easeljs does not support.
+# weasel [![Build Status](https://travis-ci.org/mientjan/weasel.svg?branch=master)](https://travis-ci.org/mientjan/weasel)
+Weasel library provides a full, hierarchical display list, a core interaction model, and helper classes to make working with the HTML5 Canvas element much easier. This started as fork of CreateJS/EaselJS and all credit should go to that library.
 
 This version is still in its BETA stage.
 
