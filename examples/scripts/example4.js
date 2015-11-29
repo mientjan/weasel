@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Debug', '../../src/easelts/display/Bitmap', '../../src/easelts/behavior/ButtonBehavior'], function (require, exports, Stage_1, Debug_1, Bitmap_1, ButtonBehavior_1) {
+define(["require", "exports", "../../src/draw/display/Stage", "../../src/draw/display/Debug", "../../src/draw/display/Bitmap", "../../src/draw/behavior/ButtonBehavior"], function (require, exports, Stage_1, Debug_1, Bitmap_1, ButtonBehavior_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, true);
     stage.enableMouseOver();

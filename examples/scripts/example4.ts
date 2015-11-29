@@ -1,8 +1,9 @@
-import Stage from '../../src/easelts/display/Stage';
-import Debug from '../../src/easelts/display/Debug';
-import Bitmap from '../../src/easelts/display/Bitmap';
-import ButtonBehavior from '../../src/easelts/behavior/ButtonBehavior';
 
+
+import Stage from "../../src/draw/display/Stage";
+import Debug from "../../src/draw/display/Debug";
+import Bitmap from "../../src/draw/display/Bitmap";
+import ButtonBehavior from "../../src/draw/behavior/ButtonBehavior";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
 stage.enableMouseOver();

@@ -1,14 +1,10 @@
-import Stage from '../../src/easelts/display/Stage';
-import Debug from '../../src/easelts/display/Debug';
-import Carousel from './example7/Carousel';
-import BitmapNinePatch from '../../src/easelts/component/BitmapNinePatch';
-import NinePatch from '../../src/easelts/component/bitmapninepatch/NinePatch';
-import Rectangle from '../../src/easelts/geom/Rectangle';
-import TopButton from './example7/TopButton';
-import BottomButton from './example7/BottomButton';
 
-import ButtonBehavior from '../../src/easelts/behavior/ButtonBehavior';
 
+import Stage from "../../src/draw/display/Stage";
+import Carousel from "./example7/Carousel";
+import Debug from "../../src/draw/display/Debug";
+import TopButton from "./example7/TopButton";
+import BottomButton from "./example7/BottomButton";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);
 stage.enableMouseOver();

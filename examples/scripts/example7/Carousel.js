@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", '../../../src/easelts/display/Container'], function (require, exports, Container_1) {
+define(["require", "exports", "../../../src/draw/display/Container"], function (require, exports, Container_1) {
     var Carousel = (function (_super) {
         __extends(Carousel, _super);
         function Carousel(width, height, x, y, regX, regY) {

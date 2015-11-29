@@ -5,7 +5,9 @@ import BitmapNinePatch from "../../../src/draw/component/BitmapNinePatch";
 import Rectangle from "../../../src/draw/geom/Rectangle";
 import NinePatch from "../../../src/draw/component/bitmapninepatch/NinePatch";
 import DisplayObject from "../../../src/draw/display/DisplayObject";
+import Text from "../../../src/draw/display/Text";
 import Container from "../../../src/draw/display/Container";
+
 class TopButton extends Container<DisplayObject>
 {
 	private _ninepatch:NinePatch = new NinePatch('assets/image/ninepatch_blue.png', new Rectangle(5, 12, 139, 8) );
