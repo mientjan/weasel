@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/geom/Matrix4', '../../src/easelts/geom/Vector3', '../../src/easelts/geom/Quaternion', '../../src/easelts/util/MathUtil', '../../src/createts/util/Interval'], function (require, exports, Stage_1, Bitmap_1, Matrix4_1, Vector3_1, Quaternion_1, MathUtil_1, Interval_1) {
+define(["require", "exports", '../../src/util/MathUtil', '../../src/util/Interval', "../../src/draw/display/Stage", "../../src/draw/display/Bitmap", "../../src/util/math/Matrix4", "../../src/util/math/Vector3", "../../src/util/math/Quaternion"], function (require, exports, MathUtil_1, Interval_1, Stage_1, Bitmap_1, Matrix4_1, Vector3_1, Quaternion_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, true);
     var image = new Bitmap_1.default('../assets/image/ninepatch_red.png', 0, 0, '50%', '50%', '50%', '50%');

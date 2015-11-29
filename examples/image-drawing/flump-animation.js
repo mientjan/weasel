@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/animation/FlumpLibrary', "../../src/easelts/util/ArrayUtil"], function (require, exports, Stage_1, FlumpLibrary_1, ArrayUtil_1) {
+define(["require", "exports", "../../src/draw/animation/FlumpLibrary", "../../src/draw/display/Stage", "../../src/util/ArrayUtil"], function (require, exports, FlumpLibrary_1, Stage_1, ArrayUtil_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, { autoResize: true }).setFpsCounter(true);
     FlumpLibrary_1.default.load('../assets/flump/animations-100/character').then(function (fl) {

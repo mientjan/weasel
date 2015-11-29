@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Bitmap', '../../src/easelts/display/Container', "../../src/easelts/display/buffer/CanvasBuffer"], function (require, exports, Stage_1, Bitmap_1, Container_1, CanvasBuffer_1) {
+define(["require", "exports", "../../src/draw/display/Stage", "../../src/draw/display/Container", "../../src/draw/display/buffer/CanvasBuffer", "../../src/draw/display/Bitmap"], function (require, exports, Stage_1, Container_1, CanvasBuffer_1, Bitmap_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, { autoResize: true });
     var container = new Container_1.default().setBuffer(new CanvasBuffer_1.default(500, 500), true);

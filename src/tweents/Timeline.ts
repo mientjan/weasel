@@ -1,4 +1,4 @@
-import EventDispatcher from '../createts/event/EventDispatcher';
+import EventDispatcher from '../util/event/EventDispatcher';
 import Tween from './Tween';
 
 /*

@@ -1,9 +1,8 @@
-import Stage from '../../src/easelts/display/Stage';
-import Bitmap from '../../src/easelts/display/Bitmap';
-import Debug from '../../src/easelts/display/Debug';
-import Container from '../../src/easelts/display/Container';
-import CanvasBuffer from "../../src/easelts/display/buffer/CanvasBuffer";
 
+import Stage from "../../src/draw/display/Stage";
+import Container from "../../src/draw/display/Container";
+import CanvasBuffer from "../../src/draw/display/buffer/CanvasBuffer";
+import Bitmap from "../../src/draw/display/Bitmap";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, {autoResize:true});
 

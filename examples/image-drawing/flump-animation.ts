@@ -1,11 +1,10 @@
-import Stage from '../../src/easelts/display/Stage';
-import FlumpLibrary from '../../src/easelts/animation/FlumpLibrary';
-import FlumpMovie from '../../src/easelts/animation/flump/FlumpMovie';
-import ArrayUtil from "../../src/easelts/util/ArrayUtil";
-import IDisplayObject from "../../src/easelts/interface/IDisplayObject";
-import StageWebGL from "../../src/easelts/display/StageWebGL";
-import {StageOption} from "../../src/easelts/data/StageOption";
 
+
+import FlumpLibrary from "../../src/draw/animation/FlumpLibrary";
+import Stage from "../../src/draw/display/Stage";
+import FlumpMovie from "../../src/draw/animation/flump/FlumpMovie";
+import ArrayUtil from "../../src/util/ArrayUtil";
+import IDisplayObject from "../../src/draw/interface/IDisplayObject";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, {autoResize:true}).setFpsCounter(true);
 

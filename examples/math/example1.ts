@@ -1,11 +1,12 @@
-import Stage from '../../src/easelts/display/Stage';
-import Bitmap from '../../src/easelts/display/Bitmap';
-import Matrix4 from '../../src/easelts/geom/Matrix4';
-import Vector3 from '../../src/easelts/geom/Vector3';
-import Quaternion from '../../src/easelts/geom/Quaternion';
-import MathUtil from '../../src/easelts/util/MathUtil';
 
-import Interval from '../../src/createts/util/Interval';
+import MathUtil from '../../src/util/MathUtil';
+
+import Interval from '../../src/util/Interval';
+import Stage from "../../src/draw/display/Stage";
+import Bitmap from "../../src/draw/display/Bitmap";
+import Matrix4 from "../../src/util/math/Matrix4";
+import Vector3 from "../../src/util/math/Vector3";
+import Quaternion from "../../src/util/math/Quaternion";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

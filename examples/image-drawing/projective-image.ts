@@ -1,10 +1,10 @@
-import Stage from '../../src/easelts/display/Stage';
-import Shape from '../../src/easelts/display/Shape';
-import BitmapNinePatch from '../../src/easelts/component/BitmapNinePatch';
-import MouseEvent from '../../src/easelts/event/MouseEvent';
-import ButtonBehavior from '../../src/easelts/behavior/ButtonBehavior';
-import NinePatch from '../../src/easelts/component/bitmapninepatch/NinePatch';
-import BitmapProjective from '../../src/easelts/display/BitmapProjective';
+
+
+import Stage from "../../src/draw/display/Stage";
+import ButtonBehavior from "../../src/draw/behavior/ButtonBehavior";
+import Shape from "../../src/draw/display/Shape";
+import BitmapProjective from "../../src/draw/display/BitmapProjective";
+import MouseEvent from "../../src/util/event/MouseEvent";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

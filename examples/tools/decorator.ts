@@ -5,7 +5,7 @@
 
 
 //import {debounce, throttle, log} from "../../src/createts/util/Decorator";
-import {debounce, throttle, log} from "../../src/createts/util/Decorator";
+import {debounce, throttle, log} from "../../src/util/Decorator";
 
 class FooBar { sadasdasdasd
 	constructor(){}

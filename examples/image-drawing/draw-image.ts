@@ -1,7 +1,7 @@
-import Bitmap from '../../src/easelts/display/Bitmap';
-import Stage from "../../src/easelts/display/Stage";
-import Vector3 from "../../src/easelts/geom/Vector3";
 
+import Vector3 from "../../src/util/math/Vector3";
+import Stage from "../../src/draw/display/Stage";
+import Bitmap from "../../src/draw/display/Bitmap";
 var v3 = new Vector3();
 
 var holder = <HTMLBlockElement> document.getElementById('holder');

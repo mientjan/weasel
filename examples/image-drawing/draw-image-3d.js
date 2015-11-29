@@ -1,4 +1,4 @@
-define(["require", "exports", "../../src/easelts/display/Stage", "../../src/easelts/geom/Vector3", "../../src/easelts/geom/Matrix4"], function (require, exports, Stage_1, Vector3_1, Matrix4_1) {
+define(["require", "exports", "../../src/util/math/Vector3", "../../src/util/math/Matrix4", "../../src/draw/display/Stage"], function (require, exports, Vector3_1, Matrix4_1, Stage_1) {
     var v3_0 = new Vector3_1.default();
     var v3_1 = new Vector3_1.default();
     var v3_2 = new Vector3_1.default();

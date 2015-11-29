@@ -1,10 +1,7 @@
-import Stage from '../../src/easelts/display/Stage';
-import Debug from '../../src/easelts/display/Debug';
 
-import Rectangle from '../../src/easelts/geom/Rectangle';
-import Text from '../../src/easelts/display/Text';
-import Shape from '../../src/easelts/display/Shape';
-
+import Stage from "../../src/draw/display/Stage";
+import Shape from "../../src/draw/display/Shape";
+import Text from "../../src/draw/display/Text";
 
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, true);

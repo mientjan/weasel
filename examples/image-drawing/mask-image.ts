@@ -1,7 +1,7 @@
-import Stage from '../../src/easelts/display/Stage';
-import Bitmap from '../../src/easelts/display/Bitmap';
-import Shape from '../../src/easelts/display/Shape';
 
+import Stage from "../../src/draw/display/Stage";
+import Bitmap from "../../src/draw/display/Bitmap";
+import Shape from "../../src/draw/display/Shape";
 var holder = <HTMLBlockElement> document.getElementById('holder');
 var stage = new Stage(holder, {autoResize:true});
 

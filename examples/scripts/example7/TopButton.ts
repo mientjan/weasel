@@ -1,13 +1,11 @@
 ///<reference path="../../assets/scripts/lib/gsap/greensock.d.ts" />
 
-import Container from '../../../src/easelts/display/Container';
-import Text from '../../../src/easelts/display/Text';
-import BitmapNinePatch from '../../../src/easelts/component/BitmapNinePatch';
-import NinePatch from '../../../src/easelts/component/bitmapninepatch/NinePatch';
-import Rectangle from '../../../src/easelts/geom/Rectangle';
-import ButtonBehavior from '../../../src/easelts/behavior/ButtonBehavior';
-import DisplayObject from "../../../src/easelts/display/DisplayObject";
-
+import ButtonBehavior from "../../../src/draw/behavior/ButtonBehavior";
+import BitmapNinePatch from "../../../src/draw/component/BitmapNinePatch";
+import Rectangle from "../../../src/draw/geom/Rectangle";
+import NinePatch from "../../../src/draw/component/bitmapninepatch/NinePatch";
+import DisplayObject from "../../../src/draw/display/DisplayObject";
+import Container from "../../../src/draw/display/Container";
 class TopButton extends Container<DisplayObject>
 {
 	private _ninepatch:NinePatch = new NinePatch('assets/image/ninepatch_blue.png', new Rectangle(5, 12, 139, 8) );

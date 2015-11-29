@@ -1,8 +1,8 @@
-import Bitmap from '../../src/easelts/display/Bitmap';
-import Stage from "../../src/easelts/display/Stage";
-import Vector3 from "../../src/easelts/geom/Vector3";
-import Matrix4 from "../../src/easelts/geom/Matrix4";
 
+
+import Vector3 from "../../src/util/math/Vector3";
+import Matrix4 from "../../src/util/math/Matrix4";
+import Stage from "../../src/draw/display/Stage";
 var v3_0 = new Vector3();
 var v3_1 = new Vector3();
 var v3_2 = new Vector3();

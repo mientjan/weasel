@@ -1,4 +1,4 @@
-define(["require", "exports", '../../src/easelts/display/Stage', '../../src/easelts/display/Shape', '../../src/easelts/behavior/FollowMouseBehavior'], function (require, exports, Stage_1, Shape_1, FollowMouseBehavior_1) {
+define(["require", "exports", "../../src/draw/display/Stage", "../../src/draw/display/Shape", "../../src/draw/behavior/FollowMouseBehavior"], function (require, exports, Stage_1, Shape_1, FollowMouseBehavior_1) {
     var holder = document.getElementById('holder');
     var stage = new Stage_1.default(holder, {});
     stage.start();
