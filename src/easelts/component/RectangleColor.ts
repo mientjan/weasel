@@ -29,18 +29,29 @@ class RectangleColor extends Shape
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(color:string = '#000000', width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor(color:string = '#000000', width:number|string = '100%', height:number|string = '100%', x:number|string = 0, y:number|string = 0, regX:number|string = 0, regY:number|string = 0)
 	{
-		super(undefined, width, height, x, y, regX, regY);
+		super(void 0, width, height, x, y, regX, regY);
 
 		this._color = color;
+		this.setColor();
 	}
 
-	private setColor():void
+	/**
+	 * @method setColor
+	 * @param {string} color
+	 */
+	public setColor(color:string = this._color):void
 	{
+		this._color = color;
 		this.graphics.clear().beginFill(this._color).drawRect(0, 0, this.width, this.height);
 	}
 
+	/**
+	 * @method onResize
+	 * @param {width} width
+	 * @param {height} height
+	 */
 	public onResize(width:number, height:number):void
 	{
 		super.onResize(width, height);

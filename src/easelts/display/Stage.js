@@ -108,21 +108,22 @@ define(["require", "exports", "./DisplayObject", "./Container", "../geom/Size", 
             configurable: true
         });
         Stage.prototype.setQuality = function (value) {
+            var ctx = this.getContext();
             switch (value) {
                 case 1:
                     {
-                        this.ctx['mozImageSmoothingEnabled'] = false;
-                        this.ctx['webkitImageSmoothingEnabled'] = false;
-                        this.ctx['msImageSmoothingEnabled'] = false;
-                        this.ctx['imageSmoothingEnabled'] = false;
+                        ctx['mozImageSmoothingEnabled'] = false;
+                        ctx['webkitImageSmoothingEnabled'] = false;
+                        ctx['msImageSmoothingEnabled'] = false;
+                        ctx['imageSmoothingEnabled'] = false;
                         break;
                     }
                 case 0:
                     {
-                        this.ctx['mozImageSmoothingEnabled'] = true;
-                        this.ctx['webkitImageSmoothingEnabled'] = true;
-                        this.ctx['msImageSmoothingEnabled'] = true;
-                        this.ctx['imageSmoothingEnabled'] = true;
+                        ctx['mozImageSmoothingEnabled'] = true;
+                        ctx['webkitImageSmoothingEnabled'] = true;
+                        ctx['msImageSmoothingEnabled'] = true;
+                        ctx['imageSmoothingEnabled'] = true;
                         break;
                     }
             }

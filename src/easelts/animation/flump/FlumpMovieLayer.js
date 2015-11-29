@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpTexture', './FlumpLabelData'], function (require, exports, DisplayObject_1, FlumpKeyframeData_1, FlumpTexture_1, FlumpLabelData_1) {
+define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeData', './FlumpTexture', './FlumpLabelData', "./FlumpMtx"], function (require, exports, DisplayObject_1, FlumpKeyframeData_1, FlumpTexture_1, FlumpLabelData_1, FlumpMtx) {
     var FlumpMovieLayer = (function (_super) {
         __extends(FlumpMovieLayer, _super);
         function FlumpMovieLayer(flumpMove, flumpLayerData) {
@@ -13,14 +13,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             this._symbols = {};
             this._symbolName = null;
             this.enabled = true;
-            this._storedMtx = {
-                a: 1,
-                b: 0,
-                c: 0,
-                d: 1,
-                tx: 0,
-                ty: 0
-            };
+            this._storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
             this.flumpLayerData = flumpLayerData;
             this.name = flumpLayerData.name;
             var flumpLibrary = flumpMove.flumpLibrary;
@@ -69,7 +62,7 @@ define(["require", "exports", '../../display/DisplayObject', './FlumpKeyframeDat
             var cosX = 1.0;
             var sinY = 0.0;
             var cosY = 1.0;
-            if (keyframe.index != (frame | 0) && keyframe.tweened) {
+            if (keyframe.index < frame && keyframe.tweened) {
                 var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
                 if (nextKeyframe instanceof FlumpKeyframeData_1.default) {
                     var interped = (frame - keyframe.index) / keyframe.duration;

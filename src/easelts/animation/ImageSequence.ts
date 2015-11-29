@@ -45,7 +45,7 @@ class ImageSequence extends DisplayObject implements ILoadable<ImageSequence>, I
 
 		this.spriteSheet = spriteSheet;
 		this._fps = fps;
-		this._queue = new AnimationQueue(fps);
+		this._queue = new AnimationQueue(fps, 1000);
 	}
 
 	public hasLoaded():boolean

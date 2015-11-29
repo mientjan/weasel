@@ -6,6 +6,7 @@ import FlumpTexture from './FlumpTexture';
 import FlumpMovie from './FlumpMovie';
 import FlumpLabelData from './FlumpLabelData';
 import IHashMap from "../../interface/IHashMap";
+import FlumpMtx = require("./FlumpMtx");
 
 class FlumpMovieLayer extends DisplayObject
 {
@@ -20,14 +21,7 @@ class FlumpMovieLayer extends DisplayObject
 	// disable layer from code
 	public enabled:boolean = true;
 
-	public _storedMtx = {
-		a: 1,
-		b: 0,
-		c: 0,
-		d: 1,
-		tx: 0,
-		ty: 0
-	};
+	public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
 
 	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
 	{
@@ -107,7 +101,7 @@ class FlumpMovieLayer extends DisplayObject
 		var sinY = 0.0;
 		var cosY = 1.0;
 
-		if(keyframe.index != (frame | 0) && keyframe.tweened)
+		if(keyframe.index < frame && keyframe.tweened)
 		{
 			var nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
 

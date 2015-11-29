@@ -7,7 +7,23 @@ import MathUtil from "../util/MathUtil";
 import AbstractMath3D from "./math3d/AbstractMath3D";
 import Matrix3 from "./Matrix3";
 
-export default class Vector3 extends AbstractMath3D
+
+/**
+ * All credit should go to everyone at Threejs
+ *
+ * @class Matrix4
+ * @author mrdoob / http://mrdoob.com/
+ * @author supereggbert / http://www.paulbrunt.co.uk/
+ * @author philogb / http://blog.thejit.org/
+ * @author jordi_ros / http://plattsoft.com
+ * @author D1plo1d / http://github.com/D1plo1d
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author timknip / http://www.floorplanner.com/
+ * @author bhouston / http://exocortex.com
+ * @author WestLangley / http://github.com/WestLangley
+ */
+class Vector3 extends AbstractMath3D
 {
 	public x:number;
 	public y:number;
@@ -812,3 +828,5 @@ export default class Vector3 extends AbstractMath3D
 		return new Vector3(this.x, this.y, this.z);
 	}
 }
+
+export default Vector3;

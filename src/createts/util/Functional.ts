@@ -27,7 +27,7 @@ export function debounce<T extends Function>(callback:T, wait:number, immediate:
 	};
 }
 
-export function throttle<T extends Function>(callback:T, threshhold:number, scope:any)
+export function throttle<T extends Function>(callback:T, threshhold:number, scope?:any)
 {
 	var last:number, timer:number = -1;
 	return function(...args:Array<any>)

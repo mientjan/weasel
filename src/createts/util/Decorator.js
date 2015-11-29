@@ -33,7 +33,7 @@ define(["require", "exports", "./Functional"], function (require, exports, Funct
     function throttle(threshhold) {
         return function (target, propertyKey, descriptor) {
             var originalMethod = descriptor.value;
-            descriptor.value = Functional.throttle(originalMethod, threshhold, target);
+            descriptor.value = Functional.throttle(originalMethod, threshhold);
             return descriptor;
         };
     }

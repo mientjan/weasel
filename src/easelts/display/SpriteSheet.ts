@@ -547,7 +547,7 @@ class SpriteSheet extends EventDispatcher implements ILoadable<SpriteSheet>
 	 * @param {String} name The name of the animation to get.
 	 * @return {Object} a generic object with frames, speed, name, and next properties.
 	 **/
-	public getAnimation(name:string):Object
+	public getAnimation(name:string):any
 	{
 		return this._data[name];
 	}

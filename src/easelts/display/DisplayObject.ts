@@ -1,8 +1,8 @@
 /*
  * DisplayObject
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -129,6 +129,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public static COMPOSITE_OPERATION_DESTINATION_ATOP = 'destination-atop';
 	public static COMPOSITE_OPERATION_DESTINATION_IN = 'destination-in';
 	public static COMPOSITE_OPERATION_DESTINATION_OUT = 'destination-out';
+
+	/**
+	 * Objects below 30px could trigger a error that the operation is not executed.
+	 * especialy with a ctx.arc
+	 * @type {string}
+	 */
 	public static COMPOSITE_OPERATION_DESTINATION_OVER = 'destination-over';
 
 	public static COMPOSITE_OPERATION_LIGHTER = 'lighter';
@@ -525,7 +531,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 * @type {Matrix2D}
 	 * @default null
 	 **/
-	public _matrix:Matrix2 = new Matrix2(0, 0, 0, 0, 0, 0);
+	public _matrix:Matrix2 = new Matrix2();
 
 	/**
 	 * @property _rectangle
@@ -1403,7 +1409,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public getMatrix(matrix?:Matrix2)
 	{
 		var o = this;
-		return (matrix ? matrix.identity() : new Matrix2(0, 0, 0, 0, 0, 0))
+		return (matrix ? matrix.identity() : new Matrix2())
 			.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
 			.appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
 	}
@@ -1427,7 +1433,7 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		}
 		else
 		{
-			matrix = new Matrix2(0, 0, 0, 0, 0, 0);
+			matrix = new Matrix2();
 		}
 		var o = this;
 		while(o != null)

@@ -10,6 +10,7 @@ import FlumpTexture from './flump/FlumpTexture';
 import FlumpTextureGroup from './flump/FlumpTextureGroup';
 import FlumpMovie from './flump/FlumpMovie';
 import EventDispatcher from "../../createts/event/EventDispatcher";
+import Queue from "../data/Queue";
 
 class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
@@ -169,6 +170,7 @@ class FlumpLibrary implements ILoadable<FlumpLibrary>
 			if(movieData.id == name)
 			{
 				var movie = new FlumpMovie(this, name);
+				movie.getQueue().add(new Queue(null, 0, movie.frames, -1, 0))
 				movie.paused = paused;
 				return movie;
 			}

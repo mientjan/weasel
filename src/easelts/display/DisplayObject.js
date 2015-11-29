@@ -1,8 +1,8 @@
 /*
  * DisplayObject
- * Visit http://createjs.com/ for documentation, updates and examples.
  *
  * Copyright (c) 2010 gskinner.com, inc.
+ * Copyright (c) 2015 Mient-jan Stelling.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -94,7 +94,7 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
             this._cacheScale = 1;
             this._cacheDataURLID = 0;
             this._cacheDataURL = null;
-            this._matrix = new Matrix2_1.default(0, 0, 0, 0, 0, 0);
+            this._matrix = new Matrix2_1.default();
             this._rectangle = new Rectangle_1.default(0, 0, 0, 0);
             this._bounds = null;
             this._off = false;
@@ -490,7 +490,7 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
         };
         DisplayObject.prototype.getMatrix = function (matrix) {
             var o = this;
-            return (matrix ? matrix.identity() : new Matrix2_1.default(0, 0, 0, 0, 0, 0))
+            return (matrix ? matrix.identity() : new Matrix2_1.default())
                 .appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY)
                 .appendProperties(o.alpha, o.shadow, o.compositeOperation, 1);
         };
@@ -499,7 +499,7 @@ define(["require", "exports", "../../createts/event/EventDispatcher", "../../cre
                 matrix.identity();
             }
             else {
-                matrix = new Matrix2_1.default(0, 0, 0, 0, 0, 0);
+                matrix = new Matrix2_1.default();
             }
             var o = this;
             while (o != null) {
