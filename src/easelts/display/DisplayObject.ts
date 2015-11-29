@@ -34,6 +34,7 @@ import Signal2 from "../../createts/event/Signal2";
 
 // utils
 import UID from "../util/UID";
+import Promise from "../../createts/util/Promise";
 import * as Methods from "../util/Methods";
 
 // display
@@ -66,6 +67,7 @@ import IDisplayType from "../interface/IDisplayType";
 import IBehavior from "../behavior/IBehavior";
 import IContext2D from "../interface/IContext2D";
 import IDisplayObject from "../interface/IDisplayObject";
+import ILoadable from "../interface/ILoadable";
 
 /**
  * @author Mient-jan Stelling <mientjan.stelling@gmail.com>
@@ -384,12 +386,12 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 **/
 	public stage:Stage = null;
 
-	public _behaviorList:IBehavior[] = null;
+	protected _behaviorList:IBehavior[] = null;
 
 	/**
 	 *
 	 */
-	private _resizeSignal:Signal2<number, number> = null;
+	protected _resizeSignal:Signal2<number, number> = null;
 
 	/**
 	 *
@@ -549,6 +551,14 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	 **/
 	protected _bounds:Rectangle = null;
 
+	protected _hasLoaded:boolean = true;
+
+	/**
+	 * when true will not render, some added hack by the createjs exporter.
+	 *
+	 * @type {boolean}
+	 * @private
+	 */
 	public _off:boolean = false;
 
 	constructor(width:any = '100%', height:any = '100%', x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
@@ -566,6 +576,25 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 	public initialize()
 	{
 		this['constructor'].apply(this, arguments);
+	}
+
+	/**
+	 * Indicates if object has been loaded
+	 * @returns {boolean}
+	 */
+	public hasLoaded():boolean
+	{
+		return this._hasLoaded;
+	}
+
+	/**
+	 *
+	 * @param onProgress
+	 * @returns {*|Promise}
+	 */
+	public load(onProgress?:(progress:number)=>any):Promise<DisplayObject>
+	{
+		return Promise.resolve(this);
 	}
 
 	/**
@@ -1355,6 +1384,44 @@ class DisplayObject extends EventDispatcher implements IDisplayObject
 		this.regX = regX;
 		this.regY = regY;
 
+		return this;
+	}
+
+	/**
+	 * @method setSize
+	 * @param {number|string} width
+	 * @param {number|string} height
+	 * @returns {DisplayObject}
+	 */
+	public setSize(width:number|string, height:number|string):DisplayObject
+	{
+		this.setWidth(width);
+		this.setHeight(height);
+		return this;
+	}
+
+	/**
+	 * @method setPosition
+	 * @param {number|string} x
+	 * @param {number|string} y
+	 * @returns {DisplayObject}
+	 */
+	public setPosition(x:number|string, y:number|string):DisplayObject
+	{
+		this.setX(x);
+		this.setY(y);
+		return this;
+	}
+
+	/**
+	 * @method setVector2
+	 * @param {IVector2} v
+	 * @returns {DisplayObject}
+	 */
+	public setVector2(v:IVector2):DisplayObject
+	{
+		this.setX(v.x);
+		this.setY(v.y);
 		return this;
 	}
 

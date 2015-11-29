@@ -28,7 +28,7 @@ class NinePatch
 	{
 		if(typeof texture == 'string')
 		{
-			this.texture = new Texture(<string> texture);
+			this.texture = Texture.createFromString(<string> texture);
 		} else {
 			this.texture = <Texture> texture;
 		}

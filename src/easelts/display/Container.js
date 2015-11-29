@@ -30,7 +30,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", "./DisplayObject"], function (require, exports, DisplayObject_1) {
+define(["require", "exports", "./DisplayObject", "../../createts/util/HttpRequest"], function (require, exports, DisplayObject_1, HttpRequest_1) {
     var Container = (function (_super) {
         __extends(Container, _super);
         function Container(width, height, x, y, regX, regY) {
@@ -65,6 +65,13 @@ define(["require", "exports", "./DisplayObject"], function (require, exports, Di
         Container.prototype.setBufferUpdate = function (value) {
             this._willBufferUpdate = value;
             return this;
+        };
+        Container.prototype.load = function (onProgress) {
+            var _this = this;
+            return HttpRequest_1.default.waitForLoadable(this.children, onProgress).then(function () {
+                _this._hasLoaded = true;
+                return _this;
+            });
         };
         Container.prototype.draw = function (ctx, ignoreCache) {
             var willBufferUpdate = this._willBufferUpdate;

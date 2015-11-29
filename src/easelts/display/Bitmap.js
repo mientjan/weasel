@@ -31,104 +31,41 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", "./DisplayObject", "../geom/Size"], function (require, exports, DisplayObject_1, Size_1) {
+define(["require", "exports", "./DisplayObject", "./Texture"], function (require, exports, DisplayObject_1, Texture_1) {
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
         function Bitmap(imageOrUri, width, height, x, y, regX, regY) {
-            var _this = this;
             if (width === void 0) { width = 0; }
             if (height === void 0) { height = 0; }
             _super.call(this, width, height, x, y, regX, regY);
             this.type = 128;
-            this.bitmapType = 0;
-            this.loaded = false;
-            this.image = null;
+            this.source = null;
             this._imageNaturalWidth = null;
             this._imageNaturalHeight = null;
             this._isTiled = false;
             this.sourceRect = null;
             this.destinationRect = null;
-            var image;
-            if (typeof imageOrUri == "string") {
-                image = document.createElement("img");
-                image.src = imageOrUri;
+            if (typeof imageOrUri == 'string') {
+                this.source = Texture_1.default.createFromString(imageOrUri, false);
+            }
+            else if (imageOrUri instanceof Texture_1.default) {
+                this.source = imageOrUri;
             }
             else {
-                image = imageOrUri;
-            }
-            var tagName = '';
-            if (image) {
-                tagName = image.tagName.toLowerCase();
-            }
-            switch (tagName) {
-                case 'img':
-                    {
-                        this.image = image;
-                        this.bitmapType = 1;
-                        if ((this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2)) {
-                            this.onLoad();
-                        }
-                        else {
-                            this.image.addEventListener('load', function () { return _this.onLoad(); });
-                        }
-                        break;
-                    }
-                case 'video':
-                    {
-                        this.image = image;
-                        this.bitmapType = 2;
-                        if (this.width == 0 || this.height == 0) {
-                            throw new Error('width and height must be set when using canvas / video');
-                        }
-                        this.onLoad();
-                        break;
-                    }
-                case 'canvas':
-                    {
-                        this.image = image;
-                        this.bitmapType = 3;
-                        if (this.width == 0 || this.height == 0) {
-                            throw new Error('width and height must be set when using canvas / video');
-                        }
-                        this.onLoad();
-                        break;
-                    }
+                this.source = new Texture_1.default(imageOrUri);
             }
         }
-        Bitmap.prototype.onLoad = function () {
-            if (this.bitmapType == 1) {
-                this._imageNaturalWidth = this.image.naturalWidth;
-                this._imageNaturalHeight = this.image.naturalHeight;
-                if (!this.width) {
-                    this.width = this._imageNaturalWidth;
-                }
-                if (!this.height) {
-                    this.height = this._imageNaturalHeight;
-                }
-            }
-            else {
-                if (!this.width) {
-                    this.width = this.image.width;
-                }
-                if (!this.height) {
-                    this.height = this.image.height;
-                }
-            }
-            this.isDirty = true;
-            this.loaded = true;
-            this.dispatchEvent(Bitmap.EVENT_LOAD);
+        Bitmap.prototype.hasLoaded = function () {
+            return this.source.hasLoaded();
         };
-        Bitmap.prototype.addEventListener = function (name, listener, useCaption) {
-            if (this.loaded && name == Bitmap.EVENT_LOAD) {
-                listener.call(this);
-            }
-            else {
-                _super.prototype.addEventListener.call(this, name, listener, useCaption);
-            }
-            return this;
+        Bitmap.prototype.load = function (onProgress) {
+            var _this = this;
+            return this.source.load(onProgress).then(function () {
+                return _this;
+            });
         };
         Bitmap.prototype.isVisible = function () {
-            var hasContent = this.cacheCanvas || this.loaded;
+            var hasContent = this.cacheCanvas || this.hasLoaded();
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
         };
         Bitmap.prototype.draw = function (ctx, ignoreCache) {
@@ -139,86 +76,37 @@ define(["require", "exports", "./DisplayObject", "../geom/Size"], function (requ
             var destRect = this.destinationRect;
             var width = this.width;
             var height = this.height;
+            var source = this.source;
             if (sourceRect && !destRect) {
-                ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
+                source.draw(ctx, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
             }
             else if (!sourceRect && destRect) {
-                ctx.drawImage(this.image, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
+                source.draw(ctx, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
             }
             else if (sourceRect && destRect) {
-                ctx.drawImage(this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
+                source.draw(ctx, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
             }
             else {
-                if (this.bitmapType == 1) {
-                    if (this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0) {
-                        this._imageNaturalWidth = this.image.naturalWidth;
-                        this._imageNaturalHeight = this.image.naturalHeight;
-                    }
-                    if (this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0) {
-                        if (width == 0) {
-                            this.width = width = this._imageNaturalWidth;
-                        }
-                        if (height == 0) {
-                            this.height = height = this._imageNaturalHeight;
-                        }
-                        ctx.drawImage(this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
-                    }
-                }
-                else {
-                    ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height);
-                }
+                source.draw(ctx, 0, 0, source.width, source.height, 0, 0, width, height);
             }
             return true;
-        };
-        Bitmap.prototype.tile = function (maxWidth, maxHeight) {
-            var _this = this;
-            if (maxHeight === void 0) {
-                maxHeight = maxWidth;
-            }
-            if (this.loaded) {
-                if (this.bitmapType != 1) {
-                    throw new Error('tiling is only possible with images');
-                }
-                if (this._imageNaturalWidth > maxWidth
-                    || this._imageNaturalHeight > maxHeight) {
-                    if (this.width < maxWidth && this.height < maxHeight) {
-                        this.cache(0, 0, this.width, this.height);
-                    }
-                    else {
-                        this.cache(0, 0, this.width, this.height, Math.min(maxWidth / this.width, maxHeight / this.height));
-                    }
-                }
-            }
-            else {
-                this.addEventListener(Bitmap.EVENT_LOAD, function () { return _this.tile(maxWidth, maxHeight); });
-            }
-            return this;
         };
         Bitmap.prototype.getBounds = function () {
             var rect = _super.prototype.getBounds.call(this);
             if (rect) {
                 return rect;
             }
-            var o = this.sourceRect || this.image;
-            return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
+            var obj = this.sourceRect || this.source;
+            return this.hasLoaded() ? this._rectangle.setProperies(0, 0, obj.width, obj.height) : null;
         };
         Bitmap.prototype.getImageSize = function () {
-            var width = 0;
-            var height = 0;
-            if (this.bitmapType == 0
-                || this.bitmapType == 3
-                || this.bitmapType == 2) {
-                var width = this.image.width;
-                var height = this.image.height;
+            if (!this.hasLoaded()) {
+                throw new Error('bitmap has not yet been loaded, getImageSize can only be called when bitmap has been loaded');
             }
-            else if (this.bitmapType == 1) {
-                var width = this.image.naturalWidth;
-                var height = this.image.naturalHeight;
-            }
-            return new Size_1.default(width, height);
+            return this.source.getSize();
         };
         Bitmap.prototype.clone = function () {
-            var o = new Bitmap(this.image);
+            var o = new Bitmap(this.source);
             if (this.sourceRect)
                 o.sourceRect = this.sourceRect.clone();
             if (this.destinationRect)
@@ -230,14 +118,14 @@ define(["require", "exports", "./DisplayObject", "../geom/Size"], function (requ
             return "[Bitmap (name=" + this.name + ")]";
         };
         Bitmap.prototype.destruct = function () {
-            this.image = null;
+            this.source.destruct();
+            this.source = null;
             this.sourceRect = null;
             this.destinationRect = null;
             this._imageNaturalWidth = null;
             this._imageNaturalHeight = null;
             _super.prototype.destruct.call(this);
         };
-        Bitmap.EVENT_LOAD = 'load';
         return Bitmap;
     })(DisplayObject_1.default);
     Object.defineProperty(exports, "__esModule", { value: true });

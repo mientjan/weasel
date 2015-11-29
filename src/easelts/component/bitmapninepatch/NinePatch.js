@@ -7,7 +7,7 @@ define(["require", "exports", "../../geom/Rectangle", "../../geom/Size", "../../
             this._textures = [];
             this._isLoaded = false;
             if (typeof texture == 'string') {
-                this.texture = new Texture_1.default(texture);
+                this.texture = Texture_1.default.createFromString(texture);
             }
             else {
                 this.texture = texture;

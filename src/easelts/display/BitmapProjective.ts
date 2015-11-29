@@ -34,6 +34,7 @@ import IVector2 from "../interface/IVector2";
 import Vector2 from "../geom/Vector2";
 import Signal from "../../createts/event/Signal";
 import Size from "../geom/Size";
+import Texture from "./Texture";
 
 /**
  * @author Mient-jan Stelling
@@ -64,7 +65,7 @@ class BitmapProjective extends Bitmap
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(imageOrUri:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, points:Array<Array<number>>, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri:HTMLImageElement|HTMLCanvasElement|Texture|string, points:Array<Array<number>>, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(imageOrUri, 0, 0, x, y, regX, regY);
 
@@ -92,7 +93,7 @@ class BitmapProjective extends Bitmap
 			this._points = points;
 			var rect = this.getPointsRectangle(this._points);
 
-			if( this.loaded )
+			if( this.hasLoaded() )
 			{
 				this.cache(rect.x, rect.y, rect.width, rect.height);
 
@@ -109,31 +110,34 @@ class BitmapProjective extends Bitmap
 		throw new Error('can not remove cache from this Bitmap');
 	}
 
-	public onLoad()
-	{
-		super.onLoad();
 
-		// can be that onload
-		if(this._points)
-		{
-			var rect = this.getPointsRectangle(this._points);
-			this.cache(rect.x, rect.x, rect.width, rect.height);
-		}
-	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
-	{
-		if(super.DisplayObject_draw(ctx, ignoreCache))
-		{
-			return true;
-		}
 
-		ctx.save();
-		this.updatePoints(ctx);
-		ctx.restore();
+	//public onLoad()
+	//{
+	//	super.onLoad();
+	//
+	//	// can be that onload
+	//	if(this._points)
+	//	{
+	//		var rect = this.getPointsRectangle(this._points);
+	//		this.cache(rect.x, rect.x, rect.width, rect.height);
+	//	}
+	//}
 
-		return true;
-	}
+	//public draw(ctx:CanvasRenderingContext2D, ignoreCache:boolean):boolean
+	//{
+	//	if(super.DisplayObject_draw(ctx, ignoreCache))
+	//	{
+	//		return true;
+	//	}
+	//
+	//	ctx.save();
+	//	this.updatePoints(ctx);
+	//	ctx.restore();
+	//
+	//	return true;
+	//}
 
 	protected getPointsRectangle(points:Array<Array<number>>):Rectangle
 	{
@@ -173,8 +177,8 @@ class BitmapProjective extends Bitmap
 			var width = rect.width; // maxX - minX;
 			var height = rect.height; // maxY - minY;
 
-			var imageWidth = this.image.width;
-			var imageHeight = this.image.height;
+			var imageWidth = this.source.width;
+			var imageHeight = this.source.height;
 
 			var transform = this.getProjectiveTransform(points);
 
@@ -363,16 +367,15 @@ class BitmapProjective extends Bitmap
 		var dv = (v4 - v1);
 		var padu = padx * du;
 		var padv = pady * dv;
-	
-		ctx.drawImage(
-			<HTMLImageElement> this.image,
+
+		this.source.draw(ctx,
 			u1 * width,
 			v1 * height,
 			Math.min(u4 - u1 + padu, 1) * width,
 			Math.min(v4 - v1 + padv, 1) * height,
 			dx, dy,
-			1 + padx, 1 + pady
-		);
+			1 + padx, 1 + pady)
+
 		ctx.restore();
 	}
 
@@ -388,11 +391,9 @@ class BitmapProjective extends Bitmap
 
 	public destruct():void
 	{
-		this.image = null;
-		this.sourceRect = null;
-		this.destinationRect = null;
-		this._imageNaturalWidth = null;
-		this._imageNaturalHeight = null;
+
+		this._points.length = 0;
+		this._points = null;
 
 		super.destruct();
 	}

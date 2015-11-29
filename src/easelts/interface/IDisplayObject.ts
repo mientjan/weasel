@@ -24,16 +24,18 @@
  */
 
 import DisplayType from "../enum/DisplayType";
-import IDisplayType from "./IDisplayType";
 import Stage from "../display/Stage";
 import Container from "../display/Container";
 import Rectangle from "../geom/Rectangle";
 import IRectangle from "./IRectangle";
 import Shape from "../display/Shape";
 import Matrix2 from "../geom/Matrix2";
+import ILoadable from "./ILoadable";
 
-interface IDisplayObject extends IDisplayType
+interface IDisplayObject extends ILoadable<any>
 {
+	type:DisplayType;
+
 	updateContext(ctx:CanvasRenderingContext2D);
 	draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean);
 	setStage(stage:Stage);

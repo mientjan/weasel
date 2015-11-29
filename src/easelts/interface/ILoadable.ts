@@ -10,7 +10,11 @@ interface ILoadable<T>
 	 */
 	hasLoaded():boolean;
 
-	load(onProgress:(progress:number) => any):Promise<T>
+	/**
+	 *
+	 * @param onProgress
+	 */
+	load(onProgress?:(progress:number) => any):Promise<T>
 }
 
 export default ILoadable;

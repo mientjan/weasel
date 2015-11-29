@@ -296,6 +296,22 @@ class MathUtil
 			return result;
 		}
 	}
+
+	public static modulo(v:number, length:number):number
+	{
+		return v - (v / length | 0) * length;
+	}
+
+	/**
+	 * number between 0 and 1
+	 * @param v
+	 * @returns {number}
+	 */
+	public pingPong(v:number, length:number = 1):number
+	{
+		v = MathUtil.modulo(v, length);
+		return 1 - Math.abs(v - .5) * 2;
+	}
 }
 
 export default MathUtil;

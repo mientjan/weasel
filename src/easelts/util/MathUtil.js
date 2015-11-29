@@ -112,6 +112,14 @@ define(["require", "exports"], function (require, exports) {
                 return result;
             }
         };
+        MathUtil.modulo = function (v, length) {
+            return v - (v / length | 0) * length;
+        };
+        MathUtil.prototype.pingPong = function (v, length) {
+            if (length === void 0) { length = 1; }
+            v = MathUtil.modulo(v, length);
+            return 1 - Math.abs(v - .5) * 2;
+        };
         MathUtil.degreeToRadiansFactor = Math.PI / 180;
         MathUtil.radianToDegreesFactor = 180 / Math.PI;
         return MathUtil;

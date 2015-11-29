@@ -1,89 +1,72 @@
-define(["require", "exports", "../../createts/util/Promise"], function (require, exports, Promise_1) {
+define(["require", "exports", "../../createts/util/Promise", "../geom/Size"], function (require, exports, Promise_1, Size_1) {
     var Texture = (function () {
-        function Texture(bitmap, autoLoad) {
-            if (autoLoad === void 0) { autoLoad = false; }
-            this.bitmapType = 0;
+        function Texture(source, autoload) {
+            if (autoload === void 0) { autoload = false; }
             this.webGLTexture = null;
             this.width = 0;
             this.height = 0;
             this._loadPromise = null;
-            this._isLoaded = false;
-            if (typeof bitmap == 'string') {
-                var img = document.createElement('img');
-                img.src = bitmap;
-                this.bitmap = img;
-            }
-            else {
-                this.bitmap = bitmap;
-            }
-            if (autoLoad) {
+            this._hasLoaded = false;
+            this.source = source;
+            if (autoload) {
                 this.load();
             }
         }
+        Texture.createFromString = function (source, autoload) {
+            if (autoload === void 0) { autoload = false; }
+            var img = document.createElement('img');
+            return new Texture(img, autoload);
+        };
         Texture.prototype.hasLoaded = function () {
-            return this._isLoaded;
+            return this._hasLoaded;
+        };
+        Texture.prototype.isLoading = function () {
+            return this._loadPromise != null;
         };
         Texture.prototype.load = function (onProgress) {
             var _this = this;
-            if (this._isLoaded) {
-                if (onProgress)
-                    onProgress(1);
-                return new Promise_1.default(function (resolve, reject) {
-                    resolve(_this);
-                });
+            if (!this._hasLoaded) {
+                if (!this._loadPromise) {
+                    this._loadPromise = new Promise_1.default(function (resolve, reject) {
+                        return _this._load(function (scope) {
+                            resolve(scope);
+                            _this._loadPromise = null;
+                        }, reject);
+                    });
+                }
+                return this._loadPromise;
             }
-            return new Promise_1.default(function (resolve, reject) {
-                _this._load(function () {
-                    console.log('RESOLVED');
-                    resolve(_this);
-                });
-            });
+            if (onProgress)
+                onProgress(1);
+            return Promise_1.default.resolve(this);
         };
-        Texture.prototype._load = function (onComplete) {
-            var _this = this;
-            var bitmap = this.bitmap;
+        Texture.prototype._load = function (onComplete, onError) {
+            var bitmap = this.source;
             var tagName = '';
-            console.log('_load');
             if (bitmap) {
                 tagName = bitmap.tagName.toLowerCase();
             }
             switch (tagName) {
                 case 'img':
                     {
-                        if ((bitmap['complete'] || bitmap['getContext'] || bitmap['readyState'] >= 2)) {
+                        if ((bitmap['complete'] || bitmap['readyState'] >= 2)) {
                             this.initImage(bitmap);
                         }
                         else {
-                            bitmap.addEventListener('load', function () {
-                                _this.initImage(bitmap);
-                                onComplete(_this);
-                            });
-                        }
-                        break;
-                    }
-                case 'video':
-                    {
-                        this.bitmapType = 2;
-                        if (this.width == 0 || this.height == 0) {
-                            throw new Error('width and height must be set when using canvas / video');
-                        }
-                        if (bitmap.readyState == 1) {
-                            this.initVideo(bitmap);
-                        }
-                        else {
-                            bitmap.addEventListener('loadedmetadata', function () {
-                                _this.initVideo(bitmap);
-                                onComplete(_this);
-                            });
+                            bitmap.onload = (function (scope) {
+                                return function (ev) {
+                                    scope.initImage(this);
+                                    onComplete(scope);
+                                };
+                            })(this);
+                            if (onError) {
+                                bitmap.onerror = onerror;
+                            }
                         }
                         break;
                     }
                 case 'canvas':
                     {
-                        this.bitmapType = 3;
-                        if (this.width == 0 || this.height == 0) {
-                            throw new Error('width and height must be set when using canvas / video');
-                        }
                         this.initCanvas(bitmap);
                         onComplete(this);
                         break;
@@ -93,17 +76,12 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
         Texture.prototype.initImage = function (image) {
             this.width = image.naturalWidth;
             this.height = image.naturalHeight;
-            this._isLoaded = true;
+            this._hasLoaded = true;
         };
         Texture.prototype.initCanvas = function (canvas) {
             this.width = canvas.width;
             this.height = canvas.height;
-            this._isLoaded = true;
-        };
-        Texture.prototype.initVideo = function (video) {
-            this.width = video.width;
-            this.height = video.height;
-            this._isLoaded = true;
+            this._hasLoaded = true;
         };
         Texture.prototype.getWidth = function () {
             return this.width;
@@ -112,14 +90,14 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
             return this.height;
         };
         Texture.prototype.draw = function (ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
-            ctx.drawImage(this.bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
+            ctx.drawImage(this.source, sx, sy, sw, sh, dx, dy, dw, dh);
             return true;
         };
         Texture.prototype.drawWebGL = function (ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
             return true;
         };
         Texture.prototype.bindTexture = function (ctx) {
-            var bitmap = this.bitmap;
+            var bitmap = this.source;
             if (this.hasLoaded()) {
                 if (!this.webGLTexture) {
                     var texture = this.webGLTexture = ctx.createTexture();
@@ -133,7 +111,16 @@ define(["require", "exports", "../../createts/util/Promise"], function (require,
                 return texture;
             }
         };
-        ;
+        Texture.prototype.getSize = function () {
+            return new Size_1.default(this.width, this.height);
+        };
+        Texture.prototype.destruct = function () {
+            this.source = null;
+            if (this.webGLTexture) {
+                delete this.webGLTexture;
+            }
+            this._loadPromise = null;
+        };
         return Texture;
     })();
     Object.defineProperty(exports, "__esModule", { value: true });

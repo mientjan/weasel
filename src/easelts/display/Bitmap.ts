@@ -28,6 +28,8 @@
  */
 
 import DisplayObject from "./DisplayObject";
+import Texture from "./Texture";
+import Promise from "../../createts/util/Promise";
 import DisplayType from "../enum/DisplayType";
 import BitmapType from "../enum/BitmapType";
 import Rectangle from "../geom/Rectangle";
@@ -64,27 +66,17 @@ import ILoadable from "../interface/ILoadable";
  * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
  * If it is a URI, a new Image object will be constructed and assigned to the .image property.
  **/
-class Bitmap extends DisplayObject
+class Bitmap extends DisplayObject implements ILoadable<Bitmap>
 {
-
-	public static EVENT_LOAD:string = 'load';
-	// public properties:
-
 	public type:DisplayType = DisplayType.BITMAP;
-	public bitmapType:BitmapType = BitmapType.UNKNOWN;
-
-	/**
-	 * is Bitmap Loaded
-	 * @type {boolean}
-	 */
-	public loaded:boolean = false;
 
 	/**
 	 * The image to render. This can be an Image, a Canvas, or a Video.
 	 * @property image
 	 * @type HTMLImageElement | HTMLCanvasElement | HTMLVideoElement
 	 **/
-	public image:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement = null;
+	public source:Texture = null;
+	//public image:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement = null;
 
 	protected _imageNaturalWidth:number = null;
 	protected _imageNaturalHeight:number = null;
@@ -109,7 +101,7 @@ class Bitmap extends DisplayObject
 	/**
 	 * @class Bitmap
 	 * @constructor
-	 * @param {string|HTMLImageElement} imageOrUri The source object or URI to an image to
+	 * @param {HTMLImageElement|HTMLCanvasElement|string} imageOrUri The source object or URI to an image to
 	 * display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use.
 	 * If it is a URI, a new Image object will be constructed and assigned to the `.image` property.
 	 * @param {string|number} width
@@ -119,115 +111,39 @@ class Bitmap extends DisplayObject
 	 * @param {string|number} regX
 	 * @param {string|number} regY
 	 */
-	constructor(imageOrUri?:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
+	constructor(imageOrUri?:HTMLImageElement|HTMLCanvasElement|Texture|string, width:any = 0, height:any = 0, x?:any, y?:any, regX?:any, regY?:any)
 	{
 		super(width, height, x, y, regX, regY);
 
-		var image:any;
-
-		if(typeof imageOrUri == "string")
+		if(typeof imageOrUri == 'string')
 		{
-			image = <HTMLImageElement> document.createElement("img");
-			image.src = <string> imageOrUri;
-		} else {
-			image = imageOrUri;
+			this.source = Texture.createFromString( <string> imageOrUri, false);
 		}
-
-		var tagName:string = '';
-
-		if( image ){
-			tagName = image.tagName.toLowerCase();
-		}
-
-		switch(tagName)
+		else if(imageOrUri instanceof Texture)
 		{
-			case 'img':
-			{
-				this.image = <HTMLImageElement> image;
-				this.bitmapType = BitmapType.IMAGE;
-
-				if( (this.image['complete'] || this.image['getContext'] || this.image['readyState'] >= 2) ){
-					this.onLoad();
-				} else {
-					( <HTMLImageElement> this.image).addEventListener('load', () => this.onLoad() );
-				}
-				break;
-			}
-
-			case 'video':
-			{
-				this.image = <HTMLVideoElement> image;
-				this.bitmapType = BitmapType.VIDEO;
-
-				if( this.width == 0 || this.height == 0 ){
-					throw new Error('width and height must be set when using canvas / video');
-				}
-
-				this.onLoad();
-				break;
-			}
-
-			case 'canvas':
-			{
-				this.image = <HTMLCanvasElement> image;
-				this.bitmapType = BitmapType.CANVAS;
-
-				if( this.width == 0 || this.height == 0 ){
-					throw new Error('width and height must be set when using canvas / video');
-				}
-
-				this.onLoad();
-				break;
-			}
-		}
-	}
-
-	protected onLoad()
-	{
-		if(this.bitmapType == BitmapType.IMAGE )
-		{
-			this._imageNaturalWidth = ( <HTMLImageElement> this.image ).naturalWidth;
-			this._imageNaturalHeight = ( <HTMLImageElement> this.image ).naturalHeight;
-
-			if(!this.width)
-			{
-				this.width = this._imageNaturalWidth;
-			}
-
-			if(!this.height)
-			{
-				this.height = this._imageNaturalHeight;
-			}
-		} else {
-			if(!this.width)
-			{
-				this.width = this.image.width;
-			}
-
-			if(!this.height)
-			{
-				this.height = this.image.height;
-			}
-		}
-
-		this.isDirty = true;
-		this.loaded = true;
-
-		this.dispatchEvent(Bitmap.EVENT_LOAD);
-	}
-
-	public addEventListener(name:string, listener?:Function, useCaption?:boolean):Bitmap
-	{
-		if(this.loaded && name == Bitmap.EVENT_LOAD)
-		{
-			listener.call(this)
+			this.source = imageOrUri;
 		}
 		else
 		{
-			super.addEventListener(name, listener, useCaption);
+			this.source = new Texture( <HTMLImageElement|HTMLCanvasElement> imageOrUri);
 		}
+	}
 
-		return this;
+	public hasLoaded():boolean
+	{
+		return this.source.hasLoaded();
+	}
+
+	/**
+	 * @method load
+	 * @param onProgress
+	 * @returns {Promise<Bitmap>}
+	 */
+	public load(onProgress:(progress:number)=>any):Promise<Bitmap>
+	{
+		return this.source.load(onProgress).then(() => {
+			return this;
+		});
 	}
 
 	/**
@@ -239,7 +155,7 @@ class Bitmap extends DisplayObject
 	 **/
 	public isVisible():boolean
 	{
-		var hasContent = this.cacheCanvas || this.loaded;
+		var hasContent = this.cacheCanvas || this.hasLoaded();
 		return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && hasContent);
 	}
 
@@ -266,88 +182,26 @@ class Bitmap extends DisplayObject
 		var destRect = this.destinationRect;
 		var width = this.width;
 		var height = this.height;
+		var source = this.source;
 
 		if(sourceRect && !destRect)
 		{
-			ctx.drawImage( <HTMLImageElement> this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height);
+			source.draw(ctx, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, 0, 0, width, height );
 		}
 		else if(!sourceRect && destRect)
 		{
-			ctx.drawImage( <HTMLImageElement> this.image, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height);
+			source.draw(ctx, 0, 0, width, height, destRect.x, destRect.y, destRect.width, destRect.height );
 		}
 		else if(sourceRect && destRect)
 		{
-			ctx.drawImage( <HTMLImageElement> this.image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height);
+			source.draw(ctx, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destRect.x, destRect.y, destRect.width, destRect.height );
 		}
 		else
 		{
-			if( this.bitmapType == BitmapType.IMAGE )
-			{
-				if( this._imageNaturalWidth == 0 || this._imageNaturalHeight == 0)
-				{
-					this._imageNaturalWidth = ( <HTMLImageElement> this.image).naturalWidth;
-					this._imageNaturalHeight = ( <HTMLImageElement> this.image).naturalHeight;
-				}
-
-				if( this._imageNaturalWidth != 0 && this._imageNaturalHeight != 0)
-				{
-					if( width == 0 )
-					{
-						this.width = width = this._imageNaturalWidth;
-					}
-
-					if( height == 0 ){
-						this.height = height = this._imageNaturalHeight;
-					}
-
-					ctx.drawImage( <HTMLImageElement> this.image, 0, 0, this._imageNaturalWidth, this._imageNaturalHeight, 0, 0, width, height);
-				}
-			} else {
-				ctx.drawImage( <HTMLImageElement> this.image, 0, 0, this.image.width, this.image.height, 0, 0, width, height );
-			}
+			source.draw(ctx, 0, 0, source.width, source.height, 0, 0, width, height );
 		}
 
 		return true;
-	}
-
-	public tile(maxWidth:number, maxHeight?:number):Bitmap
-	{
-		if(maxHeight === void 0)
-		{
-			maxHeight = maxWidth;
-		}
-
-		if(this.loaded)
-		{
-			if(this.bitmapType != BitmapType.IMAGE)
-			{
-				throw new Error('tiling is only possible with images');
-			}
-
-			if (this._imageNaturalWidth > maxWidth
-				|| this._imageNaturalHeight > maxHeight)
-			{
-
-				if(this.width < maxWidth && this.height < maxHeight)
-				{
-					this.cache(0,0, this.width, this.height);
-				}
-				else
-				{
-					// dirty way of caching
-					this.cache(0,0, this.width, this.height, Math.min(maxWidth/this.width, maxHeight/this.height));
-					
-
-				}
-			}
-
-		}
-		else
-		{
-			this.addEventListener(Bitmap.EVENT_LOAD, () => this.tile(maxWidth, maxHeight) );
-		}
-
-		return this;
 	}
 
 	/**
@@ -360,29 +214,22 @@ class Bitmap extends DisplayObject
 		{
 			return rect;
 		}
-		var o = <{width:number;height:number;}> this.sourceRect || this.image;
-		return this.loaded ? this._rectangle.setProperies(0, 0, o.width, o.height) : null;
+		var obj = <{width:number;height:number;}> this.sourceRect || this.source;
+		return this.hasLoaded() ? this._rectangle.setProperies(0, 0, obj.width, obj.height) : null;
 	}
 
+	/**
+	 * returns source size of texture
+	 * @returns {Size}
+	 */
 	public getImageSize():Size
 	{
-		var width = 0;
-		var height = 0;
-
-		if( this.bitmapType == BitmapType.UNKNOWN
-			|| this.bitmapType == BitmapType.CANVAS
-			|| this.bitmapType == BitmapType.VIDEO
-		){
-			var width = this.image.width;
-			var height = this.image.height;
-		} else if( this.bitmapType == BitmapType.IMAGE)
+		if(!this.hasLoaded())
 		{
-			var width = (<HTMLImageElement> this.image).naturalWidth;
-			var height = (<HTMLImageElement> this.image).naturalHeight;
+			throw new Error('bitmap has not yet been loaded, getImageSize can only be called when bitmap has been loaded');
 		}
 
-
-		return new Size(width, height);
+		return this.source.getSize();
 	}
 
 	/**
@@ -392,7 +239,7 @@ class Bitmap extends DisplayObject
 	 **/
 	public clone():Bitmap
 	{
-		var o = new Bitmap(this.image);
+		var o = new Bitmap(this.source);
 
 		if(this.sourceRect) o.sourceRect = this.sourceRect.clone();
 		if(this.destinationRect) o.destinationRect = this.destinationRect.clone();
@@ -414,7 +261,8 @@ class Bitmap extends DisplayObject
 
 	public destruct():void
 	{
-		this.image = null;
+		this.source.destruct();
+		this.source = null;
 		this.sourceRect = null;
 		this.destinationRect = null;
 		this._imageNaturalWidth = null;

@@ -1,10 +1,7 @@
-import Rectangle from "../geom/Rectangle";
-import BitmapType from "../enum/BitmapType";
-import IDisplayObject from "../interface/IDisplayObject";
-import Signal from "../../createts/event/Signal";
-import Promise from "../../createts/util/Promise";
+
 import ILoadable from "../interface/ILoadable";
-import {log} from "../../createts/util/Decorator";
+import Promise from "../../createts/util/Promise";
+import Size from "../geom/Size";
 
 /**
  * Base class For all bitmap type drawing.
@@ -13,65 +10,74 @@ import {log} from "../../createts/util/Decorator";
  */
 class Texture implements ILoadable<Texture>
 {
-	public bitmapType:BitmapType = BitmapType.UNKNOWN;
+	public static createFromString(source:string, autoload:boolean = false):Texture
+	{
+		var img = document.createElement('img');
+		return new Texture(img, autoload);
+	}
 
-	public bitmap:HTMLImageElement;
-	public webGLTexture:WebGLTexture = null;
+	protected source:HTMLCanvasElement|HTMLImageElement;
+	protected webGLTexture:WebGLTexture = null;
 
 	public width:number = 0;
 	public height:number = 0;
 
 	protected _loadPromise:Promise<Texture> = null;
-	protected _isLoaded:boolean = false;
+	protected _hasLoaded:boolean = false;
 
-	constructor(bitmap:string|HTMLImageElement, autoLoad:boolean = false)
+	constructor(source:HTMLCanvasElement|HTMLImageElement, autoload:boolean = false)
 	{
-		if(typeof bitmap == 'string')
-		{
-			var img = <HTMLImageElement> document.createElement('img');
-			img.src = <string> bitmap;
-			this.bitmap = img;
-		} else {
-			this.bitmap = <HTMLImageElement> bitmap;
-		}
+		this.source = source;
 
-		if(autoLoad)
+		if(autoload)
 		{
 			this.load();
 		}
 	}
 
+	/**
+	 *
+	 * @returns {boolean}
+	 */
 	public hasLoaded():boolean
 	{
-		return this._isLoaded
+		return this._hasLoaded;
+	}
+
+	/**
+	 *
+	 * @returns {boolean}
+	 */
+	public isLoading():boolean
+	{
+		return this._loadPromise != null;
 	}
 
 	public load( onProgress?:(progress:number) => any):Promise<Texture>
 	{
-		if( this._isLoaded )
+		if(!this._hasLoaded)
 		{
-			if(onProgress) onProgress(1);
+			if(!this._loadPromise)
+			{
+				this._loadPromise = new Promise<Texture>((resolve:(result:Texture) => any, reject:() => any) =>
+					this._load((scope) => {
+						resolve(scope);
+						this._loadPromise = null;
+					}, reject)
+				);
+			}
 
-			return new Promise<Texture>((resolve:Function, reject:Function) => {
-				resolve(this);
-			});
+			return this._loadPromise;
 		}
 
-		return new Promise<Texture>((resolve:(result:Texture) => any, reject:Function) => {
-			this._load(() => {
-				console.log('RESOLVED');
-				
-				resolve(this);
-			})
-		} );
+		if(onProgress) onProgress(1);
+		return Promise.resolve(this);
 	}
 
-	protected _load(onComplete:(result:Texture) => any):void
+	protected _load(onComplete:(result:Texture) => any, onError?:() => any):void
 	{
-		var bitmap:any = this.bitmap;
+		var bitmap:any = this.source;
 		var tagName:string = '';
-
-		console.log('_load');
 
 		if( bitmap ){
 			tagName = bitmap.tagName.toLowerCase();
@@ -81,47 +87,26 @@ class Texture implements ILoadable<Texture>
 		{
 			case 'img':
 			{
-				if( (bitmap['complete'] || bitmap['getContext'] || bitmap['readyState'] >= 2) ){
+				if( (bitmap['complete'] || bitmap['readyState'] >= 2) ){
 					this.initImage(bitmap);
 				} else {
-					( <HTMLImageElement> bitmap).addEventListener('load', () => {
-						this.initImage(bitmap);
-						onComplete(this);
-					} );
-				}
-				break;
-			}
+					( <HTMLImageElement> bitmap).onload = (function(scope){
+						return function(ev:Event){
+							scope.initImage(this);
+							onComplete(scope);
+						}
+					})(this);
 
-			case 'video':
-			{
-				// image = <HTMLVideoElement> image;
-				this.bitmapType = BitmapType.VIDEO;
-
-				if( this.width == 0 || this.height == 0 ){
-					throw new Error('width and height must be set when using canvas / video');
-				}
-
-				if( ( <HTMLVideoElement> bitmap ).readyState == 1 )
-				{
-					this.initVideo(bitmap);
-				} else {
-					( <HTMLImageElement> bitmap).addEventListener('loadedmetadata', () => {
-						this.initVideo(bitmap);
-						onComplete(this);
-					} );
+					if(onError)
+					{
+						( <HTMLImageElement> bitmap).onerror = <any> onerror;
+					}
 				}
 				break;
 			}
 
 			case 'canvas':
 			{
-				// image = <HTMLCanvasElement> image;
-				this.bitmapType = BitmapType.CANVAS;
-
-				if( this.width == 0 || this.height == 0 ){
-					throw new Error('width and height must be set when using canvas / video');
-				}
-
 				this.initCanvas(bitmap);
 				onComplete(this);
 				break;
@@ -134,7 +119,7 @@ class Texture implements ILoadable<Texture>
 		this.width = image.naturalWidth;
 		this.height = image.naturalHeight;
 
-		this._isLoaded = true;
+		this._hasLoaded = true;
 	}
 
 
@@ -143,15 +128,7 @@ class Texture implements ILoadable<Texture>
 		this.width = canvas.width;
 		this.height = canvas.height;
 
-		this._isLoaded = true;
-	}
-
-	protected initVideo(video:HTMLVideoElement):void
-	{
-		this.width = video.width;
-		this.height = video.height;
-
-		this._isLoaded = true;
+		this._hasLoaded = true;
 	}
 
 	public getWidth():number
@@ -164,10 +141,9 @@ class Texture implements ILoadable<Texture>
 		return this.height;
 	}
 
-
 	public draw(ctx:CanvasRenderingContext2D, sx:number, sy:number, sw:number, sh:number, dx:number, dy:number, dw:number, dh:number):boolean
 	{
-		ctx.drawImage( <HTMLImageElement> this.bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
+		ctx.drawImage( <HTMLImageElement> this.source, sx, sy, sw, sh, dx, dy, dw, dh);
 		return true;
 	}
 
@@ -179,7 +155,7 @@ class Texture implements ILoadable<Texture>
 
 	public bindTexture(ctx:WebGLRenderingContext)
 	{
-		var bitmap = this.bitmap;
+		var bitmap = this.source;
 
 		if(this.hasLoaded())
 		{
@@ -188,15 +164,36 @@ class Texture implements ILoadable<Texture>
 			{
 				var texture:WebGLTexture = this.webGLTexture = ctx.createTexture();
 				ctx.bindTexture(ctx.TEXTURE_2D, texture);
-				ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, bitmap);
+				ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, <any> bitmap);
 				ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.NEAREST);
 				ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
 				ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
 				ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
 			}
+
 			return texture;
 		}
-	};
+	}
+
+	/**
+	 * returns source size of texture
+	 * @returns {Size}
+	 */
+	public getSize():Size
+	{
+		return new Size(this.width, this.height);
+	}
+
+	public destruct()
+	{
+		this.source = null;
+		if(this.webGLTexture)
+		{
+			delete this.webGLTexture;
+		}
+
+		this._loadPromise = null;
+	}
 }
 
 export default Texture;

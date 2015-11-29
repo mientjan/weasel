@@ -38,6 +38,9 @@ import Stage from "./Stage";
 import CanvasBuffer from "./buffer/CanvasBuffer";
 import Matrix2 from "../geom/Matrix2";
 import IDisplayObject from "../interface/IDisplayObject";
+import HttpRequest from "../../createts/util/HttpRequest";
+import Promise from "../../createts/util/Promise";
+import ILoadable from "../interface/ILoadable";
 
 /**
  * A Container is a nestable display list that allows you to work with compound display elements. For  example you could
@@ -60,7 +63,7 @@ import IDisplayObject from "../interface/IDisplayObject";
  * @extends DisplayObject
  * @constructor
  **/
-class Container<T extends IDisplayObject> extends DisplayObject
+class Container<T extends IDisplayObject> extends DisplayObject implements ILoadable<T>
 {
 	// public properties:
 	public type:DisplayType = DisplayType.CONTAINER;
@@ -148,6 +151,14 @@ class Container<T extends IDisplayObject> extends DisplayObject
 	{
 		this._willBufferUpdate = value;
 		return this;
+	}
+
+	public load(onProgress?:(progress:number)=>any):Promise<T>
+	{
+		return HttpRequest.waitForLoadable(this.children, onProgress).then(() => {
+			this._hasLoaded = true;
+			return this;
+		})
 	}
 
 	/**

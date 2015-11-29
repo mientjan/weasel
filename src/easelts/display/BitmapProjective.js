@@ -55,7 +55,7 @@ define(["require", "exports", "./Bitmap", "../geom/Rectangle", "../geom/Vector2"
                 }
                 this._points = points;
                 var rect = this.getPointsRectangle(this._points);
-                if (this.loaded) {
+                if (this.hasLoaded()) {
                     this.cache(rect.x, rect.y, rect.width, rect.height);
                 }
             }
@@ -65,22 +65,6 @@ define(["require", "exports", "./Bitmap", "../geom/Rectangle", "../geom/Vector2"
         };
         BitmapProjective.prototype.uncache = function () {
             throw new Error('can not remove cache from this Bitmap');
-        };
-        BitmapProjective.prototype.onLoad = function () {
-            _super.prototype.onLoad.call(this);
-            if (this._points) {
-                var rect = this.getPointsRectangle(this._points);
-                this.cache(rect.x, rect.x, rect.width, rect.height);
-            }
-        };
-        BitmapProjective.prototype.draw = function (ctx, ignoreCache) {
-            if (_super.prototype.DisplayObject_draw.call(this, ctx, ignoreCache)) {
-                return true;
-            }
-            ctx.save();
-            this.updatePoints(ctx);
-            ctx.restore();
-            return true;
         };
         BitmapProjective.prototype.getPointsRectangle = function (points) {
             if (!points.length) {
@@ -103,8 +87,8 @@ define(["require", "exports", "./Bitmap", "../geom/Rectangle", "../geom/Vector2"
                 var rect = this.getPointsRectangle(points);
                 var width = rect.width;
                 var height = rect.height;
-                var imageWidth = this.image.width;
-                var imageHeight = this.image.height;
+                var imageWidth = this.source.width;
+                var imageHeight = this.source.height;
                 var transform = this.getProjectiveTransform(points);
                 var ptl = transform.transformProjectiveVector([0, 0, 1]);
                 var ptr = transform.transformProjectiveVector([1, 0, 1]);
@@ -251,18 +235,15 @@ define(["require", "exports", "./Bitmap", "../geom/Rectangle", "../geom/Vector2"
             var dv = (v4 - v1);
             var padu = padx * du;
             var padv = pady * dv;
-            ctx.drawImage(this.image, u1 * width, v1 * height, Math.min(u4 - u1 + padu, 1) * width, Math.min(v4 - v1 + padv, 1) * height, dx, dy, 1 + padx, 1 + pady);
+            this.source.draw(ctx, u1 * width, v1 * height, Math.min(u4 - u1 + padu, 1) * width, Math.min(v4 - v1 + padv, 1) * height, dx, dy, 1 + padx, 1 + pady);
             ctx.restore();
         };
         BitmapProjective.prototype.toString = function () {
             return "[BitmapProjective (name=" + this.name + ")]";
         };
         BitmapProjective.prototype.destruct = function () {
-            this.image = null;
-            this.sourceRect = null;
-            this.destinationRect = null;
-            this._imageNaturalWidth = null;
-            this._imageNaturalHeight = null;
+            this._points.length = 0;
+            this._points = null;
             _super.prototype.destruct.call(this);
         };
         return BitmapProjective;

@@ -69,12 +69,6 @@ class TexturePosition
 		this.texture.drawWebGL(ctx, this.x, this.y, this.width, this.height, this.destX, this.destY, this.destWidth, this.destHeight);
 		return true;
 	}
-	//
-	//public drawWebGL(ctx:WebGLRenderingContext):boolean
-	//{
-	//	// ctx.drawImage(<HTMLImageElement> this.bitmap, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
-	//	return true;
-	//}
 }
 
 export default TexturePosition;
